@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
+import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
+// import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
 
+import '../../data/graph_repository.dart';
 import '../bloc/graph_cubit.dart';
 import '../widget/graph_body.dart';
 
-class GraphScreen extends StatelessWidget {
-  const GraphScreen({super.key});
+@RoutePage()
+class GraphScreen extends StatelessWidget implements AutoRouteWrapper {
+  const GraphScreen({
+    @queryParam this.focus = '',
+    super.key,
+  });
+
+  final String focus;
+
+  @override
+  Widget wrappedRoute(BuildContext context) => BlocProvider(
+        create: (context) => GraphCubit(
+          GetIt.I<GraphRepository>(),
+          me: GetIt.I<ProfileCubit>().state.profile,
+          focus: focus,
+        ),
+        child: this,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +60,14 @@ class GraphScreen extends StatelessWidget {
         title: const Text('Graph view'),
 
         // Context selector
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(40),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 8),
-            child: ContextDropDown(onChanged: cubit.setContext),
-          ),
-        ),
+        // (hidden for now)
+        // bottom: PreferredSize(
+        //   preferredSize: const Size.fromHeight(40),
+        //   child: Padding(
+        //     padding: const EdgeInsets.only(left: 20, right: 20, bottom: 8),
+        //     child: ContextDropDown(onChanged: cubit.setContext),
+        //   ),
+        // ),
       ),
 
       // Graph

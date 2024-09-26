@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:auto_route/auto_route.dart';
 
 import '../bloc/auth_cubit.dart';
 
@@ -10,6 +10,7 @@ class AccountRemoveDialog extends StatelessWidget {
   }) =>
       showDialog(
         context: context,
+        useRootNavigator: false,
         builder: (context) => AccountRemoveDialog(id: id),
       );
 
@@ -21,19 +22,19 @@ class AccountRemoveDialog extends StatelessWidget {
   final String id;
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(BuildContext context) => AlertDialog.adaptive(
         content: const Text('Are you sure you want to remove this account?'),
         title: Text(id),
         actions: [
           TextButton(
-            onPressed: () {
-              context.read<AuthCubit>().removeAccount(id);
-              context.pop();
+            onPressed: () async {
+              await GetIt.I<AuthCubit>().removeAccount(id);
+              if (context.mounted) await context.maybePop();
             },
             child: const Text('Remove'),
           ),
           TextButton(
-            onPressed: context.pop,
+            onPressed: context.maybePop,
             child: const Text('Cancel'),
           ),
         ],

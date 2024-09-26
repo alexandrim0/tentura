@@ -1,0 +1,9 @@
+# import '/features/beacon/data/gql/beacon_model.graphql'
+
+mutation UpdatedBeaconsFetch {
+  updates(args: {prefix: "B"}) {
+    beacon {
+      ...BeaconModel
+    }
+  }
+}

@@ -7,7 +7,7 @@ class BeaconImage extends StatelessWidget {
   static String getBeaconUrl({
     required String userId,
     required String beaconId,
-    String serverName = appLinkBase,
+    String serverName = kAppLinkBase,
   }) =>
       'https://$serverName/images/$userId/$beaconId.jpg';
 
@@ -15,7 +15,7 @@ class BeaconImage extends StatelessWidget {
     required this.authorId,
     this.beaconId = '',
     this.boxFit = BoxFit.cover,
-    this.serverName = appLinkBase,
+    this.serverName = kAppLinkBase,
     this.height,
     this.width,
     super.key,

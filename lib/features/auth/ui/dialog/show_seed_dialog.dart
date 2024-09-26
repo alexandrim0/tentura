@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -13,24 +14,31 @@ class ShowSeedDialog extends StatelessWidget {
   }) =>
       showDialog(
         context: context,
-        builder: (context) => ShowSeedDialog(userId: userId),
+        useRootNavigator: false,
+        builder: (context) => ShowSeedDialog(
+          seed: GetIt.I<AuthCubit>().getSeedByAccountId(userId),
+          userId: userId,
+        ),
       );
 
   const ShowSeedDialog({
     required this.userId,
+    required this.seed,
     super.key,
   });
 
+  final String seed;
   final String userId;
 
   @override
   Widget build(BuildContext context) {
-    final seed = context.read<AuthCubit>().state.accounts[userId] ?? '';
+    final theme = Theme.of(context);
     return AlertDialog.adaptive(
       alignment: Alignment.center,
       actionsAlignment: MainAxisAlignment.spaceBetween,
-      titlePadding: paddingMediumA,
-      contentPadding: paddingMediumA,
+      titlePadding: kPaddingAll,
+      contentPadding: kPaddingAll,
+      backgroundColor: theme.colorScheme.surfaceBright,
 
       // Header
       title: Text(
@@ -38,7 +46,7 @@ class ShowSeedDialog extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.clip,
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headlineLarge,
+        style: theme.textTheme.headlineLarge,
       ),
 
       // QRCode
@@ -47,7 +55,7 @@ class ShowSeedDialog extends StatelessWidget {
         data: seed,
         decoration: PrettyQrDecoration(
           shape: PrettyQrSmoothSymbol(
-            color: Theme.of(context).colorScheme.secondary,
+            color: theme.colorScheme.onSurface,
           ),
         ),
       ),
@@ -69,7 +77,7 @@ class ShowSeedDialog extends StatelessWidget {
           ),
         ),
         TextButton(
-          onPressed: Navigator.of(context).pop,
+          onPressed: context.maybePop,
           child: const Text('Close'),
         ),
       ],

@@ -1,0 +1,7 @@
+# import 'comment_model.graphql'
+
+query CommentFetchByBeaconId($beacon_id: String!) {
+  comment(where: {beacon_id: {_eq: $beacon_id}, score: {_gt: "0"}}) {
+    ...CommentModel
+  }
+}

@@ -1,44 +1,41 @@
-import 'dart:typed_data';
+import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:tentura/domain/entity/geo.dart';
-import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/domain/use_case/pick_image_case.dart';
-import 'package:tentura/ui/bloc/state_base.dart';
 
 import '../../data/beacon_repository.dart';
+import '../../domain/entity/beacon.dart';
+import 'beacon_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'beacon_state.dart';
+export 'beacon_state.dart';
 
-class BeaconCubit extends Cubit<BeaconState> {
-  BeaconCubit(
-    this._repository, {
-    PickImageCase pickImageCase = const PickImageCase(),
-  })  : _pickImageCase = pickImageCase,
+class BeaconCubit extends Cubit<BeaconState> with PickImageCase {
+  static final _zeroDateTime = DateTime.fromMillisecondsSinceEpoch(0);
+
+  BeaconCubit({
+    required this.userId,
+    BeaconRepository? beaconRepository,
+  })  : _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
         super(const BeaconState()) {
-    _fetchSubscription.resume();
+    fetch();
   }
 
-  final PickImageCase _pickImageCase;
-  final BeaconRepository _repository;
+  final String userId;
 
-  late final _fetchSubscription = _repository.stream.listen(
-    (e) => emit(BeaconState(beacons: e.toList())),
-    onError: (Object e) => emit(state.setError(e.toString())),
-    cancelOnError: false,
-  );
-
-  @override
-  Future<void> close() async {
-    await _fetchSubscription.cancel();
-    return super.close();
-  }
+  final BeaconRepository _beaconRepository;
 
   Future<void> fetch() async {
     emit(state.setLoading());
-    return _repository.fetch();
+    try {
+      final beacons = await _beaconRepository.fetchBeaconsByUserId(userId);
+      emit(BeaconState(beacons: beacons.toList()));
+    } catch (e) {
+      emit(state.setError(e));
+    }
   }
 
   Future<void> create({
@@ -49,43 +46,49 @@ class BeaconCubit extends Cubit<BeaconState> {
     Uint8List? image,
     String? context,
   }) async {
-    final beacon = await _repository.create(Beacon.empty.copyWith(
-      title: title,
-      context: context,
-      dateRange: dateRange,
-      coordinates: coordinates,
-      description: description,
-      hasPicture: image != null,
-    ));
-    if (image != null && image.isNotEmpty) {
-      await _repository.putBeaconImage(
-        beaconId: beacon.id,
-        image: image,
-      );
+    try {
+      final beacon = await _beaconRepository.create(Beacon(
+        title: title,
+        dateRange: dateRange,
+        coordinates: coordinates,
+        description: description,
+        createdAt: _zeroDateTime,
+        updatedAt: _zeroDateTime,
+        hasPicture: image != null,
+        context: context ?? '',
+      ));
+      if (image != null && image.isNotEmpty) {
+        await _beaconRepository.putBeaconImage(
+            beaconId: beacon.id, image: image);
+      }
+      emit(BeaconState(beacons: [beacon, ...state.beacons]));
+    } catch (e) {
+      emit(state.setError(e));
     }
-    emit(BeaconState(
-      beacons: [
-        beacon,
-        ...state.beacons,
-      ],
-    ));
   }
 
   Future<void> delete(String beaconId) async {
-    await _repository.delete(beaconId);
-    emit(BeaconState(
-      beacons: state.beacons.where((e) => e.id != beaconId).toList(),
-    ));
+    try {
+      await _beaconRepository.delete(beaconId);
+      emit(BeaconState(
+        beacons: state.beacons.where((e) => e.id != beaconId).toList(),
+      ));
+    } catch (e) {
+      emit(state.setError(e));
+    }
   }
 
   Future<void> toggleEnabled(String beaconId) async {
-    final beacon = state.beacons.singleWhere((e) => e.id == beaconId);
-    state.beacons[state.beacons.indexOf(beacon)] = await _repository.setEnabled(
-      isEnabled: !beacon.enabled,
-      id: beaconId,
-    );
+    try {
+      final beacon = state.beacons.singleWhere((e) => e.id == beaconId);
+      state.beacons[state.beacons.indexOf(beacon)] =
+          await _beaconRepository.setEnabled(
+        isEnabled: !beacon.isEnabled,
+        id: beaconId,
+      );
+      emit(BeaconState(beacons: state.beacons));
+    } catch (e) {
+      emit(state.setError(e));
+    }
   }
-
-  Future<({String path, String name})?> pickImage() =>
-      _pickImageCase.pickImage();
 }

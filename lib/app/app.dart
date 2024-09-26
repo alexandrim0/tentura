@@ -1,76 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:tentura/consts.dart';
-import 'package:tentura/ui/theme_dark.dart';
-import 'package:tentura/ui/theme_light.dart';
-import 'package:tentura/ui/screens/error_screen.dart';
+import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/theme.dart';
 
-import 'package:tentura/features/home/home_route.dart';
-import 'package:tentura/features/intro/intro_route.dart';
-import 'package:tentura/features/auth/auth_login_route.dart';
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
-import 'package:tentura/features/profile/profile_edit_route.dart';
-import 'package:tentura/features/beacon/beacon_create_route.dart';
-import 'package:tentura/features/beacon_view/beacon_view_route.dart';
-import 'package:tentura/features/profile_view/profile_view_route.dart';
 import 'package:tentura/features/settings/ui/bloc/settings_cubit.dart';
-import 'package:tentura/features/app_link/ui/widget/app_link_router.dart';
-import 'package:tentura/features/app_link/app_link_route.dart';
-import 'package:tentura/features/rating/rating_route.dart';
-import 'package:tentura/features/graph/graph_route.dart';
+
+import 'di/di.dart';
 
 class App extends StatelessWidget {
-  App({super.key});
+  static Future<void> appRunner() async {
+    FlutterNativeSplash.preserve(
+      widgetsBinding: WidgetsFlutterBinding.ensureInitialized(),
+    );
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    await configureDependencies();
+    FlutterNativeSplash.remove();
+    runApp(const App());
+  }
 
-  final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (context, state) {
-        final authCubit = context.read<AuthCubit>();
-        final router = GoRouter(
-          debugLogDiagnostics: kDebugMode,
-          initialLocation: state.introEnabled ? pathIntro : pathHomeProfile,
-          navigatorKey: _rootNavigatorKey,
-          observers: [
-            SentryNavigatorObserver(),
+    final getIt = GetIt.instance;
+    final router = getIt<RootRouter>();
+    return BlocSelector<SettingsCubit, SettingsState, ThemeMode>(
+      bloc: getIt<SettingsCubit>(),
+      selector: (state) => state.themeMode,
+      builder: (context, themeMode) => MaterialApp.router(
+        title: kAppTitle,
+        theme: themeLight,
+        darkTheme: themeDark,
+        themeMode: themeMode,
+        color: const Color(0xFF3A1E5C),
+        debugShowCheckedModeBanner: false,
+        routerConfig: router.config(
+          deepLinkBuilder: kDebugMode ? router.deepLinkBuilder : null,
+          deepLinkTransformer: router.deepLinkTransformer,
+          navigatorObservers: () => [
+            getIt<SentryNavigatorObserver>(),
           ],
-          errorBuilder: (context, state) => ErrorScreen(error: state.error),
-          redirect: (context, state) => authCubit.state.isAuthenticated ||
-                  anonymousPath.contains(state.matchedLocation)
-              ? null
-              : pathAuthLogin,
-          routes: [
-            buildHomeRoute(parentNavigatorKey: _rootNavigatorKey),
-            buildIntroRoute(parentNavigatorKey: _rootNavigatorKey),
-            buildAuthLoginRoute(parentNavigatorKey: _rootNavigatorKey),
-            buildAppLinkViewRoute(parentNavigatorKey: _rootNavigatorKey),
-            buildProfileViewRoute(parentNavigatorKey: _rootNavigatorKey),
-            buildProfileEditRoute(parentNavigatorKey: _rootNavigatorKey),
-            buildBeaconCreateRoute(parentNavigatorKey: _rootNavigatorKey),
-            buildBeaconViewRoute(parentNavigatorKey: _rootNavigatorKey),
-            buildRatingRoute(parentNavigatorKey: _rootNavigatorKey),
-            buildGraphRoute(parentNavigatorKey: _rootNavigatorKey),
-          ],
-        );
-        return MaterialApp.router(
-          color: const Color(0x00B77EFF),
-          title: 'Tentura',
-          theme: themeLight,
-          darkTheme: themeDark,
-          themeMode: state.themeMode,
-          debugShowCheckedModeBanner: false,
-          builder: (context, child) => AppLinkRouter(
-            router: router,
-            child: child ?? const SizedBox.shrink(),
-          ),
-          routerConfig: router,
-        );
-      },
+          reevaluateListenable: router.reevaluateListenable,
+        ),
+        builder: (context, child) => kIsWeb &&
+                MediaQuery.of(context).orientation == Orientation.landscape
+            ? ColoredBox(
+                color: Theme.of(context).colorScheme.surfaceBright,
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: kWebConstraints,
+                    child: AspectRatio(
+                      aspectRatio: kWebAspectRatio,
+                      child: child,
+                    ),
+                  ),
+                ),
+              )
+            : child ?? const SizedBox(),
+      ),
     );
   }
 }

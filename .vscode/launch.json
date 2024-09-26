@@ -5,9 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "tentura",
+            "name": "tentura (debug)",
             "request": "launch",
             "type": "dart",
+            "flutterMode": "debug",
             "toolArgs": [
                 // "--enable-impeller",
                 "--flavor",
@@ -17,9 +18,23 @@
             ],
         },
         {
-            "name": "tentura-stage",
+            "name": "tentura-web (debug)",
             "request": "launch",
             "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+                "--dart-define",
+                "APP_LINK_BASE=tentura.intersubjective.space",
+            ],
+            "args": ["-d", "chrome", "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security"
+            ]
+        },
+        {
+            "name": "tentura-stage (debug)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
             "toolArgs": [
                 // "--enable-impeller",
                 "--flavor",

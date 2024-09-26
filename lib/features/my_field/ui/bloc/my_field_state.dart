@@ -1,49 +1,24 @@
-part of 'my_field_cubit.dart';
+import 'package:tentura/ui/bloc/state_base.dart';
 
-final class MyFieldState extends StateBase {
-  const MyFieldState({
-    this.beacons = const <Beacon>[],
-    this.context = '',
-    super.status,
-    super.error,
-  });
+import 'package:tentura/features/beacon/domain/entity/beacon.dart';
 
-  final List<Beacon> beacons;
-  final String context;
+part 'my_field_state.freezed.dart';
 
-  @override
-  List<Object?> get props => [
-        error,
-        status,
-        context,
-        beacons,
-        beacons.length,
-      ];
-
-  @override
-  MyFieldState copyWith({
+@freezed
+class MyFieldState with _$MyFieldState, StateFetchMixin {
+  const factory MyFieldState({
+    @Default('') String context,
+    @Default([]) List<Beacon> beacons,
+    @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
-    FetchStatus? status,
-    List<Beacon>? beacons,
-    String? context,
-  }) =>
-      MyFieldState(
-        error: error ?? this.error,
-        status: status ?? (error == null ? this.status : FetchStatus.isFailure),
-        beacons: beacons ?? this.beacons,
-        context: context ?? this.context,
-      );
+  }) = _MyFieldState;
 
-  @override
-  MyFieldState setError(Object error) => MyFieldState(
+  const MyFieldState._();
+
+  MyFieldState setLoading() => copyWith(status: FetchStatus.isLoading);
+
+  MyFieldState setError(Object error) => copyWith(
         status: FetchStatus.isFailure,
-        beacons: beacons,
         error: error,
-      );
-
-  @override
-  MyFieldState setLoading() => MyFieldState(
-        status: FetchStatus.isLoading,
-        beacons: beacons,
       );
 }

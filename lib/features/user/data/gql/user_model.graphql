@@ -1,0 +1,8 @@
+fragment UserModel on user {
+  id
+  title
+  description
+  has_picture
+  my_vote
+  score
+}

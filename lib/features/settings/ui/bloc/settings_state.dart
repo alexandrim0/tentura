@@ -1,35 +1,24 @@
-part of 'settings_cubit.dart';
+import 'package:flutter/material.dart';
 
-final class SettingsState extends StateBase {
-  const SettingsState({
-    this.introEnabled = true,
-    this.themeMode = ThemeMode.system,
-    super.status = FetchStatus.isSuccess,
-    super.error,
-  });
+import 'package:tentura/ui/bloc/state_base.dart';
 
-  final bool introEnabled;
-  final ThemeMode themeMode;
+part 'settings_state.freezed.dart';
 
-  @override
-  List<Object?> get props => [
-        introEnabled,
-        themeMode,
-        status,
-        error,
-      ];
-
-  @override
-  SettingsState copyWith({
-    bool? introEnabled,
-    ThemeMode? themeMode,
-    FetchStatus? status,
+@freezed
+class SettingsState with _$SettingsState, StateFetchMixin {
+  const factory SettingsState({
+    @Default(true) bool introEnabled,
+    @Default(ThemeMode.system) ThemeMode themeMode,
+    @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
-  }) =>
-      SettingsState(
-        introEnabled: introEnabled ?? this.introEnabled,
-        themeMode: themeMode ?? this.themeMode,
-        status: status ?? this.status,
-        error: error ?? this.error,
+  }) = _SettingsState;
+
+  const SettingsState._();
+
+  SettingsState setLoading() => copyWith(status: FetchStatus.isLoading);
+
+  SettingsState setError(Object error) => copyWith(
+        status: FetchStatus.isFailure,
+        error: error,
       );
 }

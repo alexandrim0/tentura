@@ -1,47 +1,75 @@
+import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import 'package:tentura/features/my_field/ui/widget/beacon_tile.dart';
+import 'package:tentura/features/beacon/ui/widget/beacon_tile.dart';
 
 import '../bloc/favorites_cubit.dart';
 
+@RoutePage()
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-        minimum: paddingMediumH,
-        child: BlocConsumer<FavoritesCubit, FavoritesState>(
-          listenWhen: (p, c) => c.hasError,
-          listener: showSnackBarError,
-          buildWhen: (p, c) => c.hasNoError,
-          builder: (context, state) => RefreshIndicator.adaptive(
-            onRefresh: context.read<FavoritesCubit>().fetch,
-            child: state.isLoading
-                ? const Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  )
-                : state.beacons.isEmpty
-                    ? CustomScrollView(
-                        slivers: [
-                          SliverFillRemaining(
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: const Text('Nothing here yet'),
-                            ),
-                          ),
-                        ],
-                      )
-                    : ListView.separated(
-                        itemCount: state.beacons.length,
-                        separatorBuilder: (_, __) => const Divider(),
-                        itemBuilder: (context, i) => BeaconTile(
-                          key: ValueKey(state.beacons[i]),
-                          beacon: state.beacons[i],
-                        ),
+  Widget build(BuildContext context) {
+    final favoritesCubit = GetIt.I<FavoritesCubit>();
+    return SafeArea(
+      minimum: kPaddingH,
+      child: BlocConsumer<FavoritesCubit, FavoritesState>(
+        bloc: favoritesCubit,
+        listenWhen: (p, c) => c.hasError,
+        listener: showSnackBarError,
+        buildWhen: (p, c) => c.hasNoError,
+        builder: (context, state) {
+          if (state.isLoading) {
+            // Loading state
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          } else if (state.beacons.isEmpty) {
+            // Empty state
+            return RefreshIndicator.adaptive(
+              onRefresh: favoritesCubit.fetch,
+              child: CustomScrollView(
+                slivers: [
+                  SliverFillRemaining(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'There is nothing here yet',
+                        style: Theme.of(context).textTheme.displaySmall,
+                        textAlign: TextAlign.center,
                       ),
-          ),
-        ),
-      );
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          // Beacons list
+          return RefreshIndicator.adaptive(
+            onRefresh: favoritesCubit.fetch,
+            child: ListView.separated(
+              key: const PageStorageKey('FavoritesListView'),
+              itemCount: state.beacons.length,
+              separatorBuilder: (_, __) => const Divider(),
+              itemBuilder: (context, i) {
+                final beacon = state.beacons[i];
+                return Padding(
+                  padding: kPaddingV,
+                  child: BeaconTile(
+                    beacon: beacon,
+                    key: ValueKey(beacon),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
 }

@@ -1,7 +1,6 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/geo.dart';
@@ -9,9 +8,11 @@ import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/dialog/choose_location_dialog.dart';
 
 import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
+import 'package:tentura/ui/widget/tentura_icons.dart';
 
 import '../bloc/beacon_cubit.dart';
 
+@RoutePage()
 class BeaconCreateScreen extends StatefulWidget {
   const BeaconCreateScreen({super.key});
 
@@ -61,7 +62,7 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
                       context: _context,
                       image: _image,
                     );
-                    if (context.mounted) context.pop();
+                    if (context.mounted) await context.maybePop();
                   } catch (e) {
                     if (context.mounted) {
                       showSnackBar(
@@ -90,20 +91,20 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
           key: _formKey,
           autovalidateMode: AutovalidateMode.disabled,
           child: ListView(
-            padding: const EdgeInsets.all(20),
+            padding: kPaddingAll,
             children: [
               // Title
               TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: _titleController,
                 decoration: const InputDecoration(
-                  hintText: 'Beacon title',
+                  hintText: 'Beacon title (required)',
                 ),
                 keyboardType: TextInputType.text,
-                maxLength: titleMaxLength,
+                maxLength: kTitleMaxLength,
                 onTapOutside: (event) => FocusScope.of(context).unfocus(),
                 validator: (value) {
-                  if (value == null || value.length < titleMinLength) {
+                  if (value == null || value.length < kTitleMinLength) {
                     return 'Title too short';
                   }
                   return null;
@@ -117,14 +118,14 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
                   hintText: 'Description',
                 ),
                 keyboardType: TextInputType.multiline,
-                maxLength: descriptionLength,
+                maxLength: kDescriptionLength,
                 maxLines: null,
                 onTapOutside: (event) => FocusScope.of(context).unfocus(),
               ),
 
               // Context
               ContextDropDown(
-                onChanged: (value) => _context = value,
+                onChanged: (value) async => _context = value,
               ),
 
               // Location
@@ -135,7 +136,7 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
                 decoration: InputDecoration(
                   hintText: 'Add location',
                   suffixIcon: _locationController.text.isEmpty
-                      ? const Icon(Icons.add_location_rounded)
+                      ? const Icon(TenturaIcons.location)
                       : IconButton(
                           onPressed: () {
                             _coordinates = null;
@@ -158,16 +159,16 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
                   }
                 },
               ),
-              const Padding(padding: paddingSmallV),
+              const Padding(padding: kPaddingSmallV),
 
               // Time
               TextFormField(
                 readOnly: true,
                 controller: _dateRangeController,
                 decoration: InputDecoration(
-                  hintText: 'Set time',
+                  hintText: 'Set display period',
                   suffixIcon: _dateRangeController.text.isEmpty
-                      ? const Icon(Icons.date_range_rounded)
+                      ? const Icon(TenturaIcons.calendar)
                       : IconButton(
                           onPressed: () {
                             _dateRange = null;
@@ -191,7 +192,8 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
                   }
                 },
               ),
-              const Padding(padding: paddingSmallV),
+              const Padding(
+                  padding: EdgeInsets.symmetric(vertical: kSpacingSmall)),
 
               // Image Input
               TextFormField(
@@ -213,7 +215,7 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
                   final newImage = await _beaconCubit.pickImage();
                   if (newImage != null) {
                     _imageController.text = newImage.name;
-                    _image = await File(newImage.path).readAsBytes();
+                    _image = newImage.bytes;
                     setState(() {});
                   }
                 },

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-import 'package:tentura/consts.dart';
+import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/ui/widget/share_code_icon_button.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/domain/entity/beacon.dart';
 
-import 'package:tentura/features/app_link/ui/widget/share_code_icon_button.dart';
-
+import '../../domain/entity/beacon.dart';
 import '../bloc/beacon_cubit.dart';
 import '../dialog/beacon_delete_dialog.dart';
 
@@ -22,31 +20,12 @@ class BeaconMineControl extends StatelessWidget {
   Widget build(BuildContext context) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Comments count
-          TextButton.icon(
-            onPressed: () => context.push(Uri(
-              path: pathBeaconView,
-              queryParameters: {
-                'id': beacon.id,
-                'expanded': 'true',
-              },
-            ).toString()),
-            icon: const Icon(Icons.comment_outlined),
-            label: Text(
-              beacon.comments_count.toString(),
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ),
-
           // Graph View
           IconButton(
             icon: const Icon(Icons.hub_outlined),
-            onPressed: (beacon.my_vote ?? -1) < 0
+            onPressed: beacon.myVote < 0
                 ? null
-                : () => context.push(Uri(
-                      path: pathGraph,
-                      queryParameters: {'focus': beacon.id},
-                    ).toString()),
+                : () => context.pushRoute(GraphRoute(focus: beacon.id)),
           ),
 
           // Share
@@ -61,7 +40,7 @@ class BeaconMineControl extends StatelessWidget {
                 PopupMenuItem<void>(
                   child: beaconCubit.state.beacons
                           .singleWhere((e) => e.id == beacon.id)
-                          .enabled
+                          .isEnabled
                       ? const Text('Disable beacon')
                       : const Text('Enable beacon'),
                   onTap: () async {

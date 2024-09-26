@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -7,11 +8,18 @@ import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
 import '../bloc/rating_cubit.dart';
 import '../widget/rating_list_tile.dart';
 
-class RatingScreen extends StatefulWidget {
+@RoutePage()
+class RatingScreen extends StatefulWidget implements AutoRouteWrapper {
   const RatingScreen({super.key});
 
   @override
   State<RatingScreen> createState() => _RatingScreenState();
+
+  @override
+  Widget wrappedRoute(BuildContext context) => BlocProvider(
+        create: (_) => RatingCubit(),
+        child: this,
+      );
 }
 
 class _RatingScreenState extends State<RatingScreen> {
@@ -112,7 +120,7 @@ class _RatingScreenState extends State<RatingScreen> {
           buildWhen: (p, c) => c.hasNoError,
           builder: (context, state) => ListView.separated(
             itemCount: state.items.length,
-            padding: paddingMediumH,
+            padding: kPaddingH,
             separatorBuilder: (context, i) => const Divider(),
             itemBuilder: (context, i) => RatingListTile(
               key: ValueKey(state.items[i]),

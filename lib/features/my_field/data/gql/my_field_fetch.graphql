@@ -1,4 +1,4 @@
-# import '/domain/entity/beacon.graphql'
+# import '/features/beacon/data/gql/beacon_model.graphql'
 
 query MyFieldFetch($context: String = "") {
   my_field(
@@ -6,7 +6,7 @@ query MyFieldFetch($context: String = "") {
       where: {beacon: {enabled: {_eq: true}}},
       order_by: {beacon: {score: desc}}) {
     beacon {
-      ...BeaconFields
+      ...BeaconModel
     }
   }
 }

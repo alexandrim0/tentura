@@ -1,66 +1,43 @@
-part of 'beacon_view_cubit.dart';
+import 'package:tentura/ui/bloc/state_base.dart';
 
-final class BeaconViewState extends StateBase {
-  const BeaconViewState({
-    required this.beacon,
-    this.focusCommentId = '',
-    this.comments = const [],
-    this.initiallyExpanded = false,
-    super.status,
-    super.error,
-  });
+import 'package:tentura/features/beacon/domain/entity/beacon.dart';
+import 'package:tentura/features/comment/domain/entity/comment.dart';
+import 'package:tentura/features/profile/domain/entity/profile.dart';
 
-  final Beacon beacon;
-  final String focusCommentId;
-  final List<Comment> comments;
-  final bool initiallyExpanded;
+part 'beacon_view_state.freezed.dart';
 
-  @override
-  List<Object?> get props => [
-        status,
-        error,
-        beacon,
-        comments,
-        focusCommentId,
-        initiallyExpanded,
-      ];
+@Freezed(makeCollectionsUnmodifiable: false)
+class BeaconViewState with _$BeaconViewState, StateFetchMixin {
+  const factory BeaconViewState({
+    required Beacon beacon,
+    @Default('') String focusCommentId,
+    @Default(false) bool hasReachedMax,
+    @Default([]) List<Comment> comments,
+    @Default(Profile()) Profile myProfile,
+    @Default(FetchStatus.isSuccess) FetchStatus status,
+    Object? error,
+  }) = _BeaconViewState;
+
+  const BeaconViewState._();
+
+  bool get hasNotReachedMax => !hasReachedMax;
+
+  bool get isBeaconMine => beacon.author.id == myProfile.id;
+  bool get isBeaconNotMine => beacon.author.id != myProfile.id;
 
   bool get hasFocusedComment => focusCommentId.isNotEmpty;
+  bool get hasNoFocusedComment => focusCommentId.isEmpty;
 
-  @override
-  BeaconViewState copyWith({
-    FetchStatus? status,
-    Object? error,
-    Beacon? beacon,
-    String? focusCommentId,
-    List<Comment>? comments,
-    bool? initiallyExpanded,
-  }) =>
-      BeaconViewState(
-        error: error ?? this.error,
-        status: status ?? this.status,
-        beacon: beacon ?? this.beacon,
-        comments: comments ?? this.comments,
-        focusCommentId: focusCommentId ?? this.focusCommentId,
-        initiallyExpanded: initiallyExpanded ?? this.initiallyExpanded,
-      );
+  bool checkIfCommentIsMine(Comment comment) =>
+      comment.author.id == myProfile.id;
 
-  @override
-  BeaconViewState setError(Object error) => BeaconViewState(
+  bool checkIfCommentIsNotMine(Comment comment) =>
+      comment.author.id != myProfile.id;
+
+  BeaconViewState setLoading() => copyWith(status: FetchStatus.isLoading);
+
+  BeaconViewState setError(Object error) => copyWith(
         status: FetchStatus.isFailure,
-        initiallyExpanded: initiallyExpanded,
-        focusCommentId: focusCommentId,
-        comments: comments,
-        beacon: beacon,
         error: error,
-      );
-
-  @override
-  BeaconViewState setLoading() => BeaconViewState(
-        status: FetchStatus.isLoading,
-        initiallyExpanded: initiallyExpanded,
-        focusCommentId: focusCommentId,
-        comments: comments,
-        beacon: beacon,
       );
 }

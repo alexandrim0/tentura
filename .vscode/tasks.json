@@ -7,21 +7,54 @@
 			"args": [
 				"build",
 				"apk",
-        "--flavor",
-        "prod",
+				"--flavor",
+				"prod",
 				"--target-platform",
 				"android-arm64",
 				"--split-per-abi",
 				"--no-tree-shake-icons",
 				"--dart-define",
-				"APP_LINK_BASE=tentura.intersubjective.space",
+				"APP_LINK_BASE=tentura.intersubjective.space"
 			],
 			"group": {
 				"kind": "build",
-				"isDefault": true
+				"isDefault": false
 			},
 			"problemMatcher": [],
 			"label": "flutter: flutter build apk"
+		},
+		{
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"web",
+				"--dart-define",
+				"APP_LINK_BASE=tentura.intersubjective.space"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"problemMatcher": [],
+			"label": "flutter: flutter build web"
+		},
+		{
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"web",
+				"--wasm",
+				"--dart-define",
+				"APP_LINK_BASE=tentura.intersubjective.space"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"problemMatcher": [],
+			"label": "flutter: flutter build web (wasm)"
 		}
 	]
 }

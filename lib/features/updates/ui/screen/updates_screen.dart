@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
+@RoutePage()
 class UpdatesScreen extends StatelessWidget {
   const UpdatesScreen({super.key});
 
@@ -20,9 +22,13 @@ class UpdatesScreen extends StatelessWidget {
           ],
         ),
         body: Center(
-          child: Text(
-            'Nothing here yet',
-            style: Theme.of(context).textTheme.displaySmall,
+          child: Padding(
+            padding: kPaddingH,
+            child: Text(
+              'There is nothing here yet',
+              style: Theme.of(context).textTheme.displaySmall,
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       );

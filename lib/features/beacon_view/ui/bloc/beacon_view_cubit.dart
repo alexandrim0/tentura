@@ -1,108 +1,120 @@
-import 'package:tentura/domain/entity/beacon.dart';
-import 'package:tentura/domain/entity/comment.dart';
+import 'package:get_it/get_it.dart';
+
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import '../../data/beacon_view_repository.dart';
+import 'package:tentura/features/beacon/domain/entity/beacon.dart';
+import 'package:tentura/features/profile/domain/entity/profile.dart';
+
+import '../../domain/use_case/beacon_view_case.dart';
+import 'beacon_view_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'beacon_view_state.dart';
+export 'beacon_view_state.dart';
 
 class BeaconViewCubit extends Cubit<BeaconViewState> {
   BeaconViewCubit({
-    required this.beaconViewRepository,
     required String id,
-    bool initiallyExpanded = false,
-  }) : super(switch (id) {
-          _ when id.startsWith('B') => BeaconViewState(
-              beacon: Beacon.empty.copyWith(id: id),
-              initiallyExpanded: initiallyExpanded,
-            ),
-          _ when id.startsWith('C') => BeaconViewState(
-              beacon: Beacon.empty,
-              focusCommentId: id,
-              initiallyExpanded: true,
-            ),
-          _ => BeaconViewState(
-              beacon: Beacon.empty,
-              status: FetchStatus.isFailure,
-              error: 'Wrong id!',
-            ),
-        }) {
-    fetch(fetchComments: state.initiallyExpanded);
-  }
-
-  final BeaconViewRepository beaconViewRepository;
-
-  Future<void> fetch({bool fetchComments = true}) async {
-    if (state.beacon.id.isEmpty && state.focusCommentId.isEmpty) return;
-    emit(state.setLoading());
-    try {
-      if (state.focusCommentId.isNotEmpty) {
+    required Profile myProfile,
+    BeaconViewCase? beaconViewCase,
+  })  : _beaconViewCase = beaconViewCase ?? GetIt.I<BeaconViewCase>(),
+        super(_idToState(id, myProfile)) {
+    state.hasFocusedComment
         // Show Beacon with one Comment
-        final (beacon, comment) =
-            await beaconViewRepository.fetchCommentById(state.focusCommentId);
-        emit(state.copyWith(
-          beacon: beacon,
-          comments: [comment],
-          initiallyExpanded: true,
-          status: FetchStatus.isSuccess,
-        ));
-      } else {
+        ? _fetchBeaconByCommentId()
         // show Beacon with all Comments
-        if (state.beacon.title.isEmpty) {
-          emit(state.copyWith(
-            beacon: await beaconViewRepository.fetchBeaconById(state.beacon.id),
-            status: FetchStatus.isSuccess,
-          ));
-        }
-        if (fetchComments) {
-          emit(state.setLoading());
-          emit(state.copyWith(
-            initiallyExpanded: true,
-            status: FetchStatus.isSuccess,
-            comments: List.of(
-              await beaconViewRepository
-                  .fetchCommentsByBeaconId(state.beacon.id),
-              growable: false,
-            ),
-          ));
-        }
-      }
-    } catch (e) {
-      emit(state.setError(e));
-    }
+        : _fetchBeaconByIdWithComments();
   }
+
+  final BeaconViewCase _beaconViewCase;
 
   Future<void> showAll() async {
-    emit(state.copyWith(
-      focusCommentId: '',
-    ));
-    return fetch();
-  }
-
-  Future<void> addComment(String text) async {
     emit(state.setLoading());
     try {
-      final comment = await beaconViewRepository.addComment(
-        beaconId: state.beacon.id,
-        text: text,
-      );
+      final comments =
+          await _beaconViewCase.fetchCommentsByBeaconId(state.beacon.id);
       emit(state.copyWith(
+        focusCommentId: '',
+        hasReachedMax: true,
+        comments: comments.toList(),
         status: FetchStatus.isSuccess,
-        comments: List.from(state.comments)..add(comment),
       ));
     } catch (e) {
       emit(state.setError(e));
     }
   }
 
-  Future<int> voteForComment({
-    required String commentId,
-    required int amount,
-  }) =>
-      beaconViewRepository.voteForComment(
-        commentId: commentId,
-        amount: amount,
+  Future<void> addComment(String text) async {
+    emit(state.setLoading());
+    try {
+      final comment = await _beaconViewCase.addComment(
+        beaconId: state.beacon.id,
+        content: text,
       );
+      emit(state.copyWith(
+        status: FetchStatus.isSuccess,
+        comments: state.comments..add(comment),
+      ));
+    } catch (e) {
+      emit(state.setError(e));
+    }
+  }
+
+  Future<void> _fetchBeaconByIdWithComments([int limit = 3]) async {
+    emit(state.setLoading());
+    try {
+      final (:beacon, :comments) =
+          await _beaconViewCase.fetchBeaconByIdWithComments(
+        beaconId: state.beacon.id,
+        limit: limit,
+      );
+      emit(state.copyWith(
+        beacon: beacon,
+        comments: comments.toList(),
+        hasReachedMax: comments.length < limit,
+        status: FetchStatus.isSuccess,
+      ));
+    } catch (e) {
+      emit(state.setError(e));
+    }
+  }
+
+  Future<void> _fetchBeaconByCommentId() async {
+    emit(state.setLoading());
+    try {
+      final (:beacon, :comment) =
+          await _beaconViewCase.fetchBeaconByCommentId(state.focusCommentId);
+      emit(state.copyWith(
+        beacon: beacon,
+        comments: [comment],
+        status: FetchStatus.isSuccess,
+      ));
+    } catch (e) {
+      emit(state.setError(e));
+    }
+  }
+
+  static final _zeroDateTime = DateTime.fromMillisecondsSinceEpoch(0);
+  static final _emptyBeacon = Beacon(
+    createdAt: _zeroDateTime,
+    updatedAt: _zeroDateTime,
+  );
+
+  static BeaconViewState _idToState(String id, Profile myProfile) =>
+      switch (id) {
+        _ when id.startsWith('B') => BeaconViewState(
+            beacon: _emptyBeacon.copyWith(id: id),
+            myProfile: myProfile,
+          ),
+        _ when id.startsWith('C') => BeaconViewState(
+            beacon: _emptyBeacon,
+            focusCommentId: id,
+            myProfile: myProfile,
+          ),
+        _ => BeaconViewState(
+            beacon: _emptyBeacon,
+            error: 'Wrong id: $id',
+            status: FetchStatus.isFailure,
+          ),
+      };
 }

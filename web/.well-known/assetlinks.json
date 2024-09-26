@@ -1,0 +1,14 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.intersubjective.tentura",
+      "sha256_cert_fingerprints":
+        [
+          "A6:0E:3E:25:9E:D5:62:22:00:BA:54:4C:CB:EA:3E:D8:D1:94:13:AD:26:C9:9A:AA:04:2A:85:77:91:D9:96:15",
+          "D7:AD:0E:0C:39:4E:DB:5B:45:BF:57:AC:8F:9C:2B:11:74:43:7C:0E:8D:48:A0:E3:9C:95:52:89:F7:FA:8E:D9"
+        ]
+    }
+  }
+]

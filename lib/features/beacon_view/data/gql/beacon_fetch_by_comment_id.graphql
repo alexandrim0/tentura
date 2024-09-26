@@ -1,0 +1,11 @@
+# import '/features/beacon/data/gql/beacon_model.graphql'
+# import '/features/comment/data/gql/comment_model.graphql'
+
+query BeaconFetchByCommentId($id: String!) {
+  comment_by_pk(id: $id) {
+    ...CommentModel
+    beacon {
+      ...BeaconModel
+    }
+  }
+}

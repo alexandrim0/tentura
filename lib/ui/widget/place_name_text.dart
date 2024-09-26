@@ -1,5 +1,5 @@
+import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:tentura/data/repository/geo_repository.dart';
 
@@ -15,7 +15,7 @@ class PlaceNameText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final geoRepository = context.read<GeoRepository>();
+    final geoRepository = GetIt.I<GeoRepository>();
     return geoRepository.cache.containsKey(coords)
         ? _buildText(geoRepository.cache[coords])
         : FutureBuilder(

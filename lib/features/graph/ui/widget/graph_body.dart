@@ -1,9 +1,9 @@
 import 'package:nil/nil.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter/foundation.dart';
 import 'package:force_directed_graphview/force_directed_graphview.dart';
 
-import 'package:tentura/consts.dart';
+import 'package:tentura/app/router/root_router.dart';
 
 import '../../domain/entity/edge_details.dart';
 import '../../domain/entity/node_details.dart';
@@ -20,7 +20,7 @@ class GraphBody extends StatefulWidget {
     this.animationDuration = const Duration(seconds: 2),
     this.canvasSize = const GraphCanvasSize.fixed(Size(4096, 4096)),
     this.layoutAlgorithm = const FruchtermanReingoldAlgorithm(
-      iterations: 1500,
+      iterations: kIsWeb && !kIsWasm ? 300 : 500,
       temperature: 500,
       optimalDistance: 100,
       showIterations: true,
@@ -46,7 +46,6 @@ class GraphBodyState extends State<GraphBody>
     vsync: this,
   );
 
-  late final _theme = Theme.of(context);
   late final _cubit = context.read<GraphCubit>();
 
   @override
@@ -62,56 +61,46 @@ class GraphBodyState extends State<GraphBody>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GraphView<NodeDetails, EdgeDetails<NodeDetails>>(
-      controller: _cubit.graphController,
-      canvasSize: widget.canvasSize,
-      minScale: widget.scaleRange.dx,
-      maxScale: widget.scaleRange.dy,
-      layoutAlgorithm: widget.layoutAlgorithm,
-      edgePainter: AnimatedHighlightedEdgePainter(
-        animation: CurvedAnimation(
-          parent: _animationController,
-          curve: const EaseInOutReynolds(),
+  Widget build(BuildContext context) =>
+      GraphView<NodeDetails, EdgeDetails<NodeDetails>>(
+        controller: _cubit.graphController,
+        canvasSize: widget.canvasSize,
+        minScale: widget.scaleRange.dx,
+        maxScale: widget.scaleRange.dy,
+        layoutAlgorithm: widget.layoutAlgorithm,
+        edgePainter: AnimatedHighlightedEdgePainter(
+          animation: CurvedAnimation(
+            parent: _animationController,
+            curve: const EaseInOutReynolds(),
+          ),
+          highlightRadius: 0.15,
+          highlightColor: Theme.of(context).colorScheme.surface,
+          isAnimated: _cubit.state.isAnimated,
         ),
-        highlightRadius: 0.15,
-        highlightColor: _theme.canvasColor,
-        isAnimated: _cubit.state.isAnimated,
-      ),
-      labelBuilder: widget.isLabeled
-          ? BottomLabelBuilder(
-              labelSize: widget.labelSize,
-              builder: (context, node) => switch (node) {
-                final UserNode node => Text(
-                    key: ValueKey(node),
-                    node.label,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                _ => nil,
-              },
-            )
-          : null,
-      nodeBuilder: (context, node) => GraphNodeWidget(
-        key: ValueKey(node),
-        nodeDetails: node,
-        onTap: () => _cubit.setFocus(node),
-        onDoubleTap: () => context.push(switch (node) {
-          final UserNode node => Uri(
-              path: pathProfileView,
-              queryParameters: {'id': node.id},
-            ),
-          final BeaconNode node => Uri(
-              path: pathBeaconView,
-              queryParameters: {
-                'id': node.id,
-                'expanded': 'false',
-              },
-            ),
-          _ => nil,
-        }
-            .toString()),
-      ),
-    );
-  }
+        labelBuilder: widget.isLabeled
+            ? BottomLabelBuilder(
+                labelSize: widget.labelSize,
+                builder: (context, node) => switch (node) {
+                  final UserNode node => Text(
+                      key: ValueKey(node),
+                      node.label,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  _ => nil,
+                },
+              )
+            : null,
+        nodeBuilder: (context, node) => GraphNodeWidget(
+          key: ValueKey(node),
+          nodeDetails: node,
+          onTap: () => _cubit.setFocus(node),
+          onDoubleTap: () => context.pushRoute(
+            switch (node) {
+              final UserNode node => ProfileViewRoute(id: node.id),
+              final BeaconNode node => BeaconViewRoute(id: node.id),
+            },
+          ),
+        ),
+      );
 }

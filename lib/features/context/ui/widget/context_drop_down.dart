@@ -1,67 +1,85 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
+import '../../domain/entity/context.dart';
 import '../bloc/context_cubit.dart';
 import '../dialog/context_add_dialog.dart';
 import '../dialog/context_remove_dialog.dart';
 
 class ContextDropDown extends StatelessWidget {
   const ContextDropDown({
-    this.onChanged,
+    required this.onChanged,
     super.key,
   });
 
-  final void Function(String?)? onChanged;
+  final Future<void> Function(String) onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<ContextCubit>();
+    final colorScheme = Theme.of(context).colorScheme;
+    final textStyle = TextStyle(color: colorScheme.onSurface);
     return BlocConsumer<ContextCubit, ContextState>(
-      builder: (context, state) => DropdownButton<String>(
-        key: ValueKey(state),
+      bloc: GetIt.I<ContextCubit>(),
+      builder: (context, state) => DropdownButton<Context>(
+        dropdownColor: colorScheme.surface,
         isExpanded: true,
         items: [
           DropdownMenuItem(
-            child: TextButton(
-              child: const Text('Add new context'),
-              onPressed: () async {
-                final newContext = await ContextAddDialog.show(context);
-                if (newContext != null) {
-                  await cubit.add(newContext);
-                  if (context.mounted) Navigator.of(context).pop();
-                }
-              },
+            value: const Context.add(),
+            child: Text(
+              'Add new topic',
+              style: textStyle,
             ),
           ),
-          const DropdownMenuItem(
-            value: '',
-            child: Text('All contexts'),
+          DropdownMenuItem(
+            value: const Context.all(),
+            child: Text(
+              'All topics',
+              style: textStyle,
+            ),
           ),
           for (final e in state.contexts)
             DropdownMenuItem(
-              value: e,
+              value: Context.value(e),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(e),
-                  IconButton(
-                    icon: const Icon(Icons.delete_forever),
-                    onPressed: () async {
-                      if (await ContextRemoveDialog.show(context) ?? false) {
-                        await cubit.delete(e);
-                      }
-                    },
+                  Text(
+                    e,
+                    style: textStyle,
                   ),
+                  if (state.selected == e)
+                    IconButton(
+                      icon: const Icon(Icons.delete_forever),
+                      onPressed: () async {
+                        final isCurrent = await ContextRemoveDialog.show(
+                          context,
+                          contextName: e,
+                        );
+                        if (isCurrent == null) return;
+                        if (isCurrent) unawaited(onChanged(''));
+                        if (context.mounted) await context.maybePop();
+                      },
+                    ),
                 ],
               ),
             ),
         ],
-        onChanged: (value) {
-          cubit.select(value);
-          onChanged?.call(value);
+        onChanged: (value) => switch (value) {
+          const Context.add() => ContextAddDialog.show(context)
+              .then((v) => v == null ? null : onChanged(v)),
+          const Context.all() => onChanged(GetIt.I<ContextCubit>().select('')),
+          final ContextValue c =>
+            onChanged(GetIt.I<ContextCubit>().select(c.name)),
+          _ => null,
         },
-        value: state.selected,
+        value: switch (state.selected) {
+          '' => const Context.all(),
+          final c => Context.value(c),
+        },
       ),
       listenWhen: (p, c) => c.hasError,
       listener: showSnackBarError,

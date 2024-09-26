@@ -1,28 +1,29 @@
 import 'package:flutter/foundation.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:injectable/injectable.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart'
+    if (dart.library.js_interop) '../service/geocoding_web_service.dart';
 
 import 'package:tentura/domain/entity/geo.dart';
 
 export 'package:tentura/domain/entity/geo.dart';
 
+@singleton
 class GeoRepository {
-  GeoRepository({
-    bool fetchOnCreate = true,
-  }) {
-    if (fetchOnCreate) getMyCoords();
-  }
-
   final Map<Coordinates, Place?> cache = {};
 
   Coordinates? _myCoords;
 
   Coordinates? get myCoordinates => _myCoords;
 
+  @PostConstruct()
+  void init() => getMyCoords();
+
   Future<Place?> getPlaceNameByCoords(
     Coordinates coords, {
     bool useCache = true,
   }) async {
+    if (kIsWeb) return null;
     if (useCache && cache.containsKey(coords)) return cache[coords];
     try {
       final places = await placemarkFromCoordinates(coords.lat, coords.long);
@@ -45,10 +46,12 @@ class GeoRepository {
     if (await _checkLocationPermission()) {
       try {
         final position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.lowest,
-          timeLimit: timeLimit,
+          locationSettings: LocationSettings(
+            accuracy: LocationAccuracy.lowest,
+            timeLimit: timeLimit,
+          ),
         );
-        return (lat: position.latitude, long: position.longitude);
+        return _myCoords = (lat: position.latitude, long: position.longitude);
       } catch (e) {
         if (kDebugMode) print(e);
       }

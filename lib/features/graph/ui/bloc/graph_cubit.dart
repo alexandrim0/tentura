@@ -2,28 +2,30 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:force_directed_graphview/force_directed_graphview.dart';
 
-import 'package:tentura/domain/entity/user.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
+
+import 'package:tentura/features/profile/domain/entity/profile.dart';
 
 import '../../data/graph_repository.dart';
 import '../../domain/entity/edge_details.dart';
 import '../../domain/entity/edge_directed.dart';
 import '../../domain/entity/node_details.dart';
+import 'graph_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'graph_state.dart';
+export 'graph_state.dart';
 
 class GraphCubit extends Cubit<GraphState> {
-  GraphCubit({
-    required User me,
-    required this.graphRepository,
+  GraphCubit(
+    this.graphRepository, {
+    required Profile me,
     String? focus,
   })  : _egoNode = UserNode(
           id: me.id,
           label: 'Me',
           pinned: true,
-          hasImage: me.has_picture,
+          hasImage: me.hasAvatar,
           score: 2,
           size: 80,
         ),
@@ -60,14 +62,14 @@ class GraphCubit extends Cubit<GraphState> {
     _fetch();
   }
 
-  void setContext(String? context) {
+  Future<void> setContext(String? context) {
     emit(state.copyWith(
-      context: context,
+      context: context ?? '',
       focus: '',
     ));
     graphController.clear();
     _fetchLimits.clear();
-    _fetch();
+    return _fetch();
   }
 
   void togglePositiveOnly() {

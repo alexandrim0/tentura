@@ -1,19 +1,31 @@
+import 'package:injectable/injectable.dart';
+
+import 'package:tentura/consts.dart';
 import 'package:tentura_sdk/tentura_sdk.dart';
 
-export 'package:tentura_sdk/tentura_sdk.dart' show DataSource, FetchPolicy;
+export 'package:tentura_sdk/tentura_sdk.dart' show DataSource;
 
+@singleton
 class RemoteApiService extends TenturaApi {
+  @FactoryMethod(preResolve: true)
+  static Future<RemoteApiService> create() async {
+    final api = RemoteApiService();
+    await api.init();
+    return api;
+  }
+
   RemoteApiService({
-    required super.serverName,
-    super.jwtExpiresIn,
-    super.storagePath,
-    super.userAgent,
+    super.storagePath = '',
+    super.userAgent = kAppTitle,
+    super.serverName = kAppLinkBase,
+    super.jwtExpiresIn = kJwtExpiresIn,
   });
+
+  @disposeMethod
+  Future<void> dispose() => close();
 }
 
 extension ErrorHandler<TData, TVars> on OperationResponse<TData, TVars> {
-  bool get hasNoErrors => !hasErrors;
-
   OperationResponse<TData, TVars> throwIfError({
     bool failOnNull = true,
     String? label,

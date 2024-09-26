@@ -6,7 +6,7 @@ import 'package:tentura/consts.dart';
 class AvatarImage extends StatelessWidget {
   static String getAvatarUrl({
     required String userId,
-    String serverName = appLinkBase,
+    String serverName = kAppLinkBase,
   }) =>
       'https://$serverName/images/$userId/avatar.jpg';
 
@@ -14,7 +14,7 @@ class AvatarImage extends StatelessWidget {
     required this.size,
     required this.userId,
     this.boxFit = BoxFit.cover,
-    this.serverName = appLinkBase,
+    this.serverName = kAppLinkBase,
     super.key,
   });
 

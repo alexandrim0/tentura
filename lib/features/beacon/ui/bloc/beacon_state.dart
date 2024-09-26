@@ -1,43 +1,23 @@
-part of 'beacon_cubit.dart';
+import 'package:tentura/ui/bloc/state_base.dart';
 
-final class BeaconState extends StateBase {
-  const BeaconState({
-    this.beacons = const [],
-    super.status,
-    super.error,
-  });
+import '../../domain/entity/beacon.dart';
 
-  final List<Beacon> beacons;
+part 'beacon_state.freezed.dart';
 
-  @override
-  List<Object?> get props => [
-        status,
-        error,
-        beacons,
-      ];
-
-  @override
-  BeaconState copyWith({
-    List<Beacon>? beacons,
-    FetchStatus? status,
+@Freezed(makeCollectionsUnmodifiable: false)
+class BeaconState with _$BeaconState, StateFetchMixin {
+  const factory BeaconState({
+    @Default([]) List<Beacon> beacons,
+    @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
-  }) =>
-      BeaconState(
-        beacons: beacons ?? this.beacons,
-        status: status ?? this.status,
-        error: error ?? this.error,
-      );
+  }) = _BeaconState;
 
-  @override
-  BeaconState setError(Object error) => BeaconState(
+  const BeaconState._();
+
+  BeaconState setLoading() => copyWith(status: FetchStatus.isLoading);
+
+  BeaconState setError(Object error) => copyWith(
         status: FetchStatus.isFailure,
-        beacons: beacons,
         error: error,
-      );
-
-  @override
-  BeaconState setLoading() => BeaconState(
-        status: FetchStatus.isLoading,
-        beacons: beacons,
       );
 }

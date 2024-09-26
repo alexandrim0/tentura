@@ -1,3 +1,4 @@
+import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 
 import '../bloc/settings_cubit.dart';
@@ -8,6 +9,7 @@ class ThemeSwitchButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       BlocSelector<SettingsCubit, SettingsState, ThemeMode>(
+        bloc: GetIt.I<SettingsCubit>(),
         selector: (state) => state.themeMode,
         builder: (context, themeMode) => SegmentedButton<ThemeMode>(
           selected: <ThemeMode>{themeMode},
@@ -30,7 +32,7 @@ class ThemeSwitchButton extends StatelessWidget {
             ),
           ],
           onSelectionChanged: (selected) =>
-              context.read<SettingsCubit>().setThemeMode(selected.single),
+              GetIt.I<SettingsCubit>().setThemeMode(selected.single),
         ),
       );
 }

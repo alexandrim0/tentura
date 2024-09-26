@@ -6,15 +6,21 @@ import 'package:tentura/consts.dart';
 
 import '../bloc/state_base.dart';
 
-const paddingMediumA = EdgeInsets.all(20);
+const kSpacingSmall = 8.0;
+const kSpacingMedium = 16.0;
+const kSpacingLarge = 24.0;
 
-const paddingMediumH = EdgeInsets.symmetric(horizontal: 20);
+const kPaddingAll = EdgeInsets.all(kSpacingMedium);
+const kPaddingH = EdgeInsets.symmetric(horizontal: kSpacingMedium);
+const kPaddingV = EdgeInsets.symmetric(vertical: kSpacingMedium);
+const kPaddingT = EdgeInsets.only(top: kSpacingMedium);
 
-const paddingLargeV = EdgeInsets.symmetric(vertical: 32);
+const kPaddingSmallT = EdgeInsets.only(top: kSpacingSmall);
+const kPaddingSmallV = EdgeInsets.symmetric(vertical: kSpacingSmall);
 
-const paddingMediumV = EdgeInsets.symmetric(vertical: 20);
-
-const paddingSmallV = EdgeInsets.symmetric(vertical: 8);
+/// 600px in MD guideline means large screen for vertical orientation
+const kWebConstraints = BoxConstraints(minWidth: 600);
+const kWebAspectRatio = 9 / 16;
 
 final _fYMD = DateFormat.yMd();
 String fYMD(DateTime? dateTime) =>
@@ -24,7 +30,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
   BuildContext context, {
   String? text,
   List<TextSpan>? textSpans,
-  Duration duration = snackBarDuration,
+  Duration duration = kSnackBarDuration,
   bool isFloating = false,
   bool isError = false,
   Color? color,
@@ -55,7 +61,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
 
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBarError(
   BuildContext context,
-  StateBase state,
+  StateFetchMixin state,
 ) =>
     showSnackBar(
       context,
