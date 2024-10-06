@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/app/root_router.dart';
-import 'package:tentura/data/service/remote_api_service.dart';
-import 'package:tentura/ui/widget/share_code_icon_button.dart';
-import 'package:tentura/ui/widget/avatar_positioned.dart';
-import 'package:tentura/ui/widget/gradient_stack.dart';
-import 'package:tentura/ui/widget/avatar_image.dart';
+import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/widget/avatar_image.dart';
+import 'package:tentura/ui/widget/tentura_icons.dart';
+import 'package:tentura/ui/widget/show_more_text.dart';
+import 'package:tentura/ui/widget/gradient_stack.dart';
+import 'package:tentura/ui/widget/deep_back_button.dart';
+import 'package:tentura/ui/widget/avatar_positioned.dart';
+import 'package:tentura/ui/widget/share_code_icon_button.dart';
 
 import 'package:tentura/features/beacon/ui/widget/beacon_tile.dart';
 
-import '../../data/profile_view_repository.dart';
-import '../cubit/profile_view_cubit.dart';
+import '../bloc/profile_view_cubit.dart';
 
 @RoutePage()
 class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
@@ -24,64 +25,63 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => ProfileViewCubit(
-          profileViewRepository: ProfileViewRepository(
-            remoteApiService: context.read<RemoteApiService>(),
-          ),
-          id: id,
-        ),
+        create: (_) => ProfileViewCubit(id: id),
         child: this,
       );
 
   @override
-  Widget build(BuildContext context) =>
-      BlocConsumer<ProfileViewCubit, ProfileViewState>(
-        listenWhen: (p, c) => c.hasError,
-        listener: showSnackBarError,
-        buildWhen: (p, c) => c.hasNoError,
-        builder: (context, state) {
-          if (state.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
-          }
-          final user = state.user;
-          final beacons = state.beacons;
-          final textTheme = Theme.of(context).textTheme;
-          return CustomScrollView(
+  Widget build(BuildContext context) {
+    final profileViewCubit = context.read<ProfileViewCubit>();
+    return BlocConsumer<ProfileViewCubit, ProfileViewState>(
+      bloc: profileViewCubit,
+      listenWhen: (p, c) => c.hasError,
+      listener: showSnackBarError,
+      buildWhen: (p, c) => c.hasNoError,
+      builder: (context, state) {
+        if (state.isLoading) {
+          return const Center(
+            child: CircularProgressIndicator.adaptive(),
+          );
+        }
+        final profile = state.profile;
+        final beacons = state.beacons;
+        final textTheme = Theme.of(context).textTheme;
+        return Scaffold(
+          body: CustomScrollView(
             slivers: [
               // Header
               SliverAppBar(
                 actions: [
                   // Graph View
                   IconButton(
-                    icon: const Icon(Icons.hub_outlined),
-                    onPressed: () => context.pushRoute(
-                      GraphRoute(focus: user.id),
-                    ),
+                    icon: const Icon(TenturaIcons.graph),
+                    onPressed: () =>
+                        context.pushRoute(GraphRoute(focus: profile.id)),
                   ),
 
                   // Share
-                  ShareCodeIconButton.id(user.id),
+                  ShareCodeIconButton.id(profile.id),
 
                   // More
                   PopupMenuButton(
                     itemBuilder: (context) => <PopupMenuEntry<void>>[
-                      PopupMenuItem<void>(
-                        onTap: () => context.read<ProfileViewCubit>().voteById(
-                              userId: user.id,
-                              amount: user.isFriend ? 0 : 1,
-                            ),
-                        child: user.isFriend
-                            ? const Text('Remove from my field')
-                            : const Text('Add to my field'),
-                      )
+                      if (profile.isFriend)
+                        PopupMenuItem(
+                          onTap: profileViewCubit.removeFriend,
+                          child: const Text('Remove from my field'),
+                        )
+                      else
+                        PopupMenuItem(
+                          onTap: profileViewCubit.addFriend,
+                          child: const Text('Add to my field'),
+                        ),
                     ],
+                    useRootNavigator: true,
                   ),
                 ],
                 floating: true,
+                leading: const DeepBackButton(),
                 expandedHeight: GradientStack.defaultHeight,
-                leading: const AutoLeadingButton(),
 
                 // Avatar
                 flexibleSpace: FlexibleSpaceBar(
@@ -89,7 +89,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
                     children: [
                       AvatarPositioned(
                         child: AvatarImage(
-                          userId: user.imageId,
+                          userId: profile.imageId,
                           size: AvatarPositioned.childSize,
                         ),
                       ),
@@ -101,25 +101,26 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
               // Body
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: paddingMediumH,
+                  padding: kPaddingH,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Title
                       Text(
-                        user.title.isEmpty ? 'No name' : user.title,
+                        profile.title.isEmpty ? 'No name' : profile.title,
                         textAlign: TextAlign.left,
                         style: textTheme.headlineLarge,
                       ),
-                      const Padding(padding: paddingSmallV),
+                      const Padding(padding: kPaddingSmallV),
 
                       // Description
-                      Text(
-                        user.description,
-                        textAlign: TextAlign.left,
-                        style: textTheme.bodyLarge,
+                      ShowMoreText(
+                        profile.description,
+                        style: ShowMoreText.buildTextStyle(context),
                       ),
                       const Divider(),
+
+                      const Padding(padding: kPaddingSmallT),
 
                       Text(
                         'Beacons',
@@ -132,18 +133,49 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
               ),
 
               // Beacons
-              if (beacons.isNotEmpty)
-                SliverList.separated(
-                  itemCount: beacons.length,
-                  itemBuilder: (context, i) => Padding(
-                    padding: paddingMediumH,
-                    child: BeaconTile(beacon: beacons[i]),
+              if (beacons.isEmpty)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: kPaddingAll,
+                    child: Text(
+                      'There are no beacons yet',
+                      style: textTheme.bodyMedium,
+                    ),
                   ),
+                )
+              else
+                SliverList.separated(
+                  key: ValueKey(beacons),
+                  itemCount: beacons.length,
+                  itemBuilder: (context, i) {
+                    final beacon = beacons[i];
+                    return Padding(
+                      padding: kPaddingAll,
+                      child: BeaconTile(
+                        beacon: beacon,
+                        key: ValueKey(beacon),
+                      ),
+                    );
+                  },
                   separatorBuilder: (_, __) =>
                       const Divider(endIndent: 20, indent: 20),
                 ),
+
+              // Show more
+              if (beacons.isNotEmpty && state.hasNotReachedMax)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: kPaddingAll,
+                    child: TextButton(
+                      onPressed: profileViewCubit.fetchMore,
+                      child: const Text('Show more'),
+                    ),
+                  ),
+                ),
             ],
-          );
-        },
-      );
+          ),
+        );
+      },
+    );
+  }
 }

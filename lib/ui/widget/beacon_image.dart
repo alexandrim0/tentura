@@ -4,24 +4,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:tentura/consts.dart';
 
 class BeaconImage extends StatelessWidget {
-  static String getBeaconUrl({
-    required String userId,
-    required String beaconId,
-    String serverName = appLinkBase,
-  }) =>
-      'https://$serverName/images/$userId/$beaconId.jpg';
-
   const BeaconImage({
     required this.authorId,
     this.beaconId = '',
     this.boxFit = BoxFit.cover,
-    this.serverName = appLinkBase,
     this.height,
     this.width,
     super.key,
   });
 
-  final String serverName;
   final String beaconId;
   final String authorId;
   final double? height;
@@ -39,16 +30,12 @@ class BeaconImage extends StatelessWidget {
     return beaconId.isEmpty || authorId.isEmpty
         ? placeholder
         : CachedNetworkImage(
+            filterQuality: FilterQuality.high,
+            imageUrl: '$kApiUri/images/$authorId/$beaconId.jpg',
             height: height,
             width: width,
-            filterQuality: FilterQuality.high,
             placeholder: (context, url) => placeholder,
             errorWidget: (context, url, error) => placeholder,
-            imageUrl: getBeaconUrl(
-              serverName: serverName,
-              userId: authorId,
-              beaconId: beaconId,
-            ),
           );
   }
 }

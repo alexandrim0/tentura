@@ -1,0 +1,6 @@
+mutation LikeBeaconById($beacon_id: String!, $amount: Int!) {
+  insert_vote_beacon_one(object: {amount: $amount, object: $beacon_id},
+  on_conflict: {constraint: vote_beacon_pkey, update_columns: amount}) {
+    amount
+  }
+}

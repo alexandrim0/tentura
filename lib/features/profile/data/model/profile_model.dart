@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:tentura/domain/entity/user.dart';
+import '../../domain/entity/profile.dart';
 
 part 'profile_model.freezed.dart';
 part 'profile_model.g.dart';
@@ -18,19 +18,19 @@ class ProfileModel with _$ProfileModel {
   factory ProfileModel.fromJson(Map<String, Object?> json) =>
       _$ProfileModelFromJson(json);
 
-  factory ProfileModel.fromEntity(User entity) => ProfileModel(
+  factory ProfileModel.fromEntity(Profile entity) => ProfileModel(
         id: entity.id,
         title: entity.title,
         description: entity.description,
-        hasPicture: entity.has_picture,
+        hasPicture: entity.hasAvatar,
       );
 
   const ProfileModel._();
 
-  User get toEntity => User.empty.copyWith(
+  Profile get toEntity => Profile(
         id: id,
         title: title,
         description: description,
-        hasPicture: hasPicture,
+        hasAvatar: hasPicture,
       );
 }

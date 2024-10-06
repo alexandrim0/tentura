@@ -1,3 +1,5 @@
+import 'package:injectable/injectable.dart';
+
 import 'package:tentura/data/service/remote_api_service.dart';
 
 import '../domain/entity/edge_directed.dart';
@@ -5,6 +7,7 @@ import '../domain/entity/node_details.dart';
 
 import 'gql/_g/graph_fetch.req.gql.dart';
 
+@injectable
 class GraphRepository {
   static const _label = 'Graph';
 

@@ -23,12 +23,12 @@ class ContextRemoveDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
         title: const Text('Are you sure?'),
-        content: Text('Context $contextName will be deleted!'),
+        content: Text('Topic $contextName will be removed from your list!'),
         actions: [
           TextButton(
             onPressed: () async {
               final isCurrent =
-                  await context.read<ContextCubit>().delete(contextName);
+                  await GetIt.I<ContextCubit>().delete(contextName);
               if (context.mounted) Navigator.of(context).pop(isCurrent);
             },
             child: const Text('Yes'),

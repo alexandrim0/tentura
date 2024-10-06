@@ -1,9 +1,8 @@
-# import '/domain/entity/beacon.graphql'
-
 mutation BeaconPinById($beacon_id: String!) {
-  insert_beacon_pinned_one(object: {beacon_id: $beacon_id}) {
-    beacon {
-      ...BeaconFields
-    }
+  insert_beacon_pinned_one(
+    object: {beacon_id: $beacon_id},
+    on_conflict: {constraint: beacon_pinned_pkey}
+  ) {
+    beacon_id
   }
 }

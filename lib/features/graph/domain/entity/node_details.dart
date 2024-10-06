@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:equatable/equatable.dart';
 import 'package:force_directed_graphview/force_directed_graphview.dart'
     show NodeBase;
 
 @immutable
-sealed class NodeDetails extends NodeBase with EquatableMixin {
+sealed class NodeDetails extends NodeBase {
   const NodeDetails({
     required this.id,
     this.hasImage = false,
@@ -19,10 +18,26 @@ sealed class NodeDetails extends NodeBase with EquatableMixin {
   final double score;
   final bool hasImage;
 
-  @override
-  List<Object> get props => [id];
-
   String get userId;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      label.hashCode ^
+      score.hashCode ^
+      userId.hashCode ^
+      hasImage.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is NodeDetails &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          label == other.label &&
+          score == other.score &&
+          userId == other.userId &&
+          hasImage == other.hasImage;
 }
 
 final class UserNode extends NodeDetails {
@@ -70,35 +85,6 @@ final class BeaconNode extends NodeDetails {
         label: label,
         userId: userId,
         hasImage: hasImage,
-        pinned: pinned,
-        score: score,
-      );
-}
-
-final class CommentNode extends NodeDetails {
-  const CommentNode({
-    required this.userId,
-    required this.beaconId,
-    required super.id,
-    super.pinned,
-    super.score,
-    super.size,
-  });
-
-  @override
-  final String userId;
-
-  final String beaconId;
-
-  @override
-  String get label => id;
-
-  @override
-  CommentNode copyWithPinned(bool pinned) => CommentNode(
-        id: id,
-        size: size,
-        userId: userId,
-        beaconId: beaconId,
         pinned: pinned,
         score: score,
       );

@@ -1,6 +1,8 @@
+import 'package:injectable/injectable.dart';
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:tentura/data/service/local_secure_storage.dart';
 
+@singleton
 class SettingsRepository {
   static const _repositoryKey = 'Settings:';
   static const _themeModeKey = '${_repositoryKey}themeMode';
@@ -24,5 +26,5 @@ class SettingsRepository {
       );
 
   Future<ThemeMode> setThemeMode(ThemeMode value) =>
-      _storage.write(_themeModeKey, value.toString()).then((_) => value);
+      _storage.write(_themeModeKey, value.name).then((_) => value);
 }

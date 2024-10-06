@@ -1,11 +1,13 @@
 import 'dart:async';
+import 'package:injectable/injectable.dart';
 
-import 'package:tentura/domain/entity/exception.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 
 import '../../data/repository/auth_repository.dart';
 import '../entity/account.dart';
+import '../exception.dart';
 
+@singleton
 class AuthCase {
   AuthCase({
     required AuthRepository authRepository,
@@ -22,9 +24,9 @@ class AuthCase {
   Future<Set<Account>> getAccountAll() => _authRepository.getAccountAll();
 
   Future<Account> addAccount(String seed) async {
-    if (seed.isEmpty) throw const SeedIsWrongException();
+    if (seed.isEmpty) throw const AuthSeedIsWrongException();
     final id = await _remoteApiService.signIn(seed: seed);
-    if (id.isEmpty) throw const IdIsWrongException();
+    if (id.isEmpty) throw const AuthIdIsWrongException();
     return _authRepository.addAccount(Account(id: id, seed: seed));
   }
 
@@ -39,7 +41,7 @@ class AuthCase {
     bool isPpremature = false,
   }) async {
     final account = await _authRepository.getAccountById(id);
-    if (account == null) throw const IdNotFoundException();
+    if (account == null) throw const AuthIdNotFoundException();
     await _remoteApiService.signIn(
       prematureUserId: isPpremature ? id : null,
       seed: account.seed,

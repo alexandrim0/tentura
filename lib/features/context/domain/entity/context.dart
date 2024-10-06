@@ -1,22 +1,12 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-sealed class Context {
-  const Context();
-}
+part 'context.freezed.dart';
 
-final class ContextNew extends Context {
-  const ContextNew();
-}
+@freezed
+sealed class Context with _$Context {
+  const factory Context.add() = ContextAdd;
 
-final class ContextAll extends Context {
-  const ContextAll();
-}
+  const factory Context.all() = ContextAll;
 
-final class ContextValue extends Context with EquatableMixin {
-  const ContextValue(this.name);
-
-  final String name;
-
-  @override
-  List<Object> get props => [name];
+  const factory Context.value(String name) = ContextValue;
 }

@@ -1,94 +1,96 @@
-import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 
-import 'package:tentura/domain/entity/geo.dart';
-import 'package:tentura/domain/entity/beacon.dart';
-import 'package:tentura/domain/use_case/pick_image_case.dart';
+import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import '../../data/beacon_repository.dart';
+import '../../domain/use_case/beacon_case.dart';
+import 'beacon_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'beacon_state.dart';
+export 'beacon_state.dart';
 
-class BeaconCubit extends Cubit<BeaconState> with PickImageCase {
-  BeaconCubit(this._repository) : super(const BeaconState()) {
-    _fetchSubscription.resume();
+@lazySingleton
+class BeaconCubit extends Cubit<BeaconState> {
+  BeaconCubit(this._beaconCase) : super(const BeaconState()) {
+    _authChanges.resume();
+    _beaconChanges.resume();
   }
 
-  final BeaconRepository _repository;
+  final BeaconCase _beaconCase;
 
-  late final _fetchSubscription = _repository.stream.listen(
-    (e) => emit(BeaconState(beacons: e.toList())),
-    onError: (Object e) => emit(state.setError(e.toString())),
+  late final _authChanges = _beaconCase.currentAccountChanges.listen(
+    (userId) async {
+      emit(BeaconState(
+        beacons: [],
+        userId: userId,
+        status: FetchStatus.isLoading,
+      ));
+      if (userId.isNotEmpty) await fetch();
+    },
     cancelOnError: false,
   );
 
+  late final _beaconChanges = _beaconCase.beaconChanges.listen(
+    (event) => switch (event) {
+      final RepositoryEventCreate<Beacon> entity => emit(state.copyWith(
+          beacons: state.beacons..add(entity.value),
+          status: FetchStatus.isSuccess,
+        )),
+      final RepositoryEventUpdate<Beacon> entity => emit(state.copyWith(
+          beacons: state.beacons
+            ..removeWhere((e) => e.id == entity.id)
+            ..add(entity.value),
+          status: FetchStatus.isSuccess,
+        )),
+      final RepositoryEventDelete<Beacon> entity => emit(state.copyWith(
+          beacons: state.beacons..removeWhere((e) => e.id == entity.id),
+          status: FetchStatus.isSuccess,
+        )),
+    },
+    cancelOnError: false,
+    onError: (Object e) => emit(state.setError(e)),
+  );
+
   @override
+  @disposeMethod
   Future<void> close() async {
-    await _fetchSubscription.cancel();
+    await _authChanges.cancel();
+    await _beaconChanges.cancel();
     return super.close();
   }
 
   Future<void> fetch() async {
     emit(state.setLoading());
-    return _repository.fetch();
-  }
-
-  Future<void> create({
-    required String title,
-    String description = '',
-    DateTimeRange? dateRange,
-    Coordinates? coordinates,
-    Uint8List? image,
-    String? context,
-  }) async {
-    final beacon = await _repository.create(Beacon.empty.copyWith(
-      title: title,
-      context: context,
-      dateRange: dateRange,
-      coordinates: coordinates,
-      description: description,
-      hasPicture: image != null,
-    ));
-    if (image != null && image.isNotEmpty) {
-      await _repository.putBeaconImage(
-        beaconId: beacon.id,
-        image: image,
-      );
+    try {
+      final beacons = await _beaconCase.fetchBeaconsByUserId(state.userId);
+      emit(state.copyWith(
+        beacons: beacons.toList(),
+        status: FetchStatus.isSuccess,
+      ));
+    } catch (e) {
+      emit(state.setError(e));
     }
-    // TBD: update GQL cache
-    emit(BeaconState(
-      beacons: [
-        beacon,
-        ...state.beacons,
-      ],
-    ));
   }
 
   Future<void> delete(String beaconId) async {
-    await _repository.delete(beaconId);
-    emit(BeaconState(
-      beacons: state.beacons.where((e) => e.id != beaconId).toList(),
-    ));
+    emit(state.setLoading());
+    try {
+      await _beaconCase.delete(beaconId);
+    } catch (e) {
+      emit(state.setError(e));
+    }
   }
 
   Future<void> toggleEnabled(String beaconId) async {
-    final beacon = state.beacons.singleWhere((e) => e.id == beaconId);
-    state.beacons[state.beacons.indexOf(beacon)] = await _repository.setEnabled(
-      isEnabled: !beacon.enabled,
-      id: beaconId,
-    );
-  }
-
-  Future<int> vote({
-    required int amount,
-    required String beaconId,
-  }) async {
-    final beacon = await _repository.vote(
-      id: beaconId,
-      amount: amount,
-    );
-    return beacon.my_vote ?? 0;
+    emit(state.setLoading());
+    try {
+      await _beaconCase.setEnabled(
+        !state.beacons.singleWhere((e) => e.id == beaconId).isEnabled,
+        id: beaconId,
+      );
+    } catch (e) {
+      emit(state.setError(e));
+    }
   }
 }

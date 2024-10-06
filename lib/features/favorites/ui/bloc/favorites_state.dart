@@ -1,50 +1,24 @@
-part of 'favorites_cubit.dart';
+import 'package:tentura/ui/bloc/state_base.dart';
 
-final class FavoritesState extends StateBase {
-  static const _listEquality = ListEquality<Beacon>();
+import 'package:tentura/features/beacon/domain/entity/beacon.dart';
 
-  const FavoritesState({
-    this.beacons = const <Beacon>[],
-    super.status,
-    super.error,
-  });
+part 'favorites_state.freezed.dart';
 
-  final List<Beacon> beacons;
-
-  @override
-  List<Object?> get props => [
-        error,
-        status,
-        beacons,
-        beacons.length,
-      ];
-
-  bool isSameAs(FavoritesState state) =>
-      _listEquality.equals(state.beacons, beacons);
-
-  @override
-  FavoritesState copyWith({
+@freezed
+class FavoritesState with _$FavoritesState, StateFetchMixin {
+  const factory FavoritesState({
+    @Default('') String userId,
+    @Default([]) List<Beacon> beacons,
+    @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
-    FetchStatus? status,
-    bool? hasReachedMax,
-    List<Beacon>? beacons,
-  }) =>
-      FavoritesState(
-        error: error ?? this.error,
-        status: status ?? (error == null ? this.status : FetchStatus.isFailure),
-        beacons: beacons ?? this.beacons,
-      );
+  }) = _FavoritesState;
 
-  @override
-  FavoritesState setError(Object error) => FavoritesState(
+  const FavoritesState._();
+
+  FavoritesState setLoading() => copyWith(status: FetchStatus.isLoading);
+
+  FavoritesState setError(Object error) => copyWith(
         status: FetchStatus.isFailure,
-        beacons: beacons,
         error: error,
-      );
-
-  @override
-  FavoritesState setLoading() => FavoritesState(
-        status: FetchStatus.isLoading,
-        beacons: beacons,
       );
 }

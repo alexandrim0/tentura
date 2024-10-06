@@ -1,6 +1,8 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:injectable/injectable.dart';
 import 'package:synchronized/synchronized.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+@singleton
 class LocalSecureStorage {
   static const _secureStorage = FlutterSecureStorage(
     aOptions: AndroidOptions(

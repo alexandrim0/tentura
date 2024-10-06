@@ -3,7 +3,6 @@ import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-import 'package:tentura/data/service/remote_api_service.dart';
 
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 // import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
@@ -24,8 +23,8 @@ class GraphScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
         create: (context) => GraphCubit(
-          GraphRepository(context.read<RemoteApiService>()),
-          me: context.read<ProfileCubit>().state.user,
+          GetIt.I<GraphRepository>(),
+          me: GetIt.I<ProfileCubit>().state.profile,
           focus: focus,
         ),
         child: this,

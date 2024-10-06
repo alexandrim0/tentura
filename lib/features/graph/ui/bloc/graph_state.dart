@@ -1,45 +1,24 @@
-part of 'graph_cubit.dart';
+import 'package:tentura/ui/bloc/state_base.dart';
 
-final class GraphState extends StateBase {
-  const GraphState({
-    required this.focus,
-    this.isAnimated = true,
-    this.positiveOnly = true,
-    this.context = '',
-    super.status,
-    super.error,
-  });
+part 'graph_state.freezed.dart';
 
-  final String focus;
-  final String context;
-  final bool isAnimated;
-  final bool positiveOnly;
-
-  @override
-  List<Object?> get props => [
-        positiveOnly,
-        isAnimated,
-        context,
-        status,
-        focus,
-        error,
-      ];
-
-  @override
-  GraphState copyWith({
-    String? focus,
-    String? context,
-    bool? isAnimated,
-    bool? positiveOnly,
-    FetchStatus? status,
+@freezed
+class GraphState with _$GraphState, StateFetchMixin {
+  const factory GraphState({
+    required String focus,
+    @Default('') String context,
+    @Default(true) bool isAnimated,
+    @Default(true) bool positiveOnly,
+    @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
-  }) =>
-      GraphState(
-        focus: focus ?? this.focus,
-        context: context ?? this.context,
-        isAnimated: isAnimated ?? this.isAnimated,
-        positiveOnly: positiveOnly ?? this.positiveOnly,
-        status: status ?? (error == null ? this.status : FetchStatus.isFailure),
-        error: error ?? this.error,
+  }) = _GraphState;
+
+  const GraphState._();
+
+  GraphState setLoading() => copyWith(status: FetchStatus.isLoading);
+
+  GraphState setError(Object error) => copyWith(
+        status: FetchStatus.isFailure,
+        error: error,
       );
 }

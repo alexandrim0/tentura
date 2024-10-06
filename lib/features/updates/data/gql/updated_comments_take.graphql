@@ -1,9 +1,9 @@
-# import '/domain/entity/comment.graphql'
+# import '/features/comment/data/gql/comment_model.graphql'
 
 mutation UpdatedCommentsFetch {
   updates(args: {prefix: "C"}) {
     comment {
-      ...CommentFields
+      ...CommentModel
     }
   }
 }

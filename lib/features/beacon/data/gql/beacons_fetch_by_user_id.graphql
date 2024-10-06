@@ -1,7 +1,10 @@
-# import '/domain/entity/beacon.graphql'
+# import 'beacon_model.graphql'
 
 query BeaconsFetchByUserId($user_id: String!, $enabled: Boolean = true) {
-  beacon(where: {_and: {user_id: {_eq: $user_id}, enabled: {_eq: $enabled}}}, order_by: {created_at: desc}) {
-    ...BeaconFields
+  beacon(
+    where: {_and: {user_id: {_eq: $user_id}, enabled: {_eq: $enabled}}},
+    order_by: {created_at: desc}
+  ) {
+    ...BeaconModel
   }
 }

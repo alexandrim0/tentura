@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:nil/nil.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:force_directed_graphview/force_directed_graphview.dart';
 
-import 'package:tentura/app/root_router.dart';
+import 'package:tentura/app/router/root_router.dart';
 
 import '../../domain/entity/edge_details.dart';
 import '../../domain/entity/node_details.dart';
@@ -46,7 +46,6 @@ class GraphBodyState extends State<GraphBody>
     vsync: this,
   );
 
-  late final _theme = Theme.of(context);
   late final _cubit = context.read<GraphCubit>();
 
   @override
@@ -75,7 +74,7 @@ class GraphBodyState extends State<GraphBody>
             curve: const EaseInOutReynolds(),
           ),
           highlightRadius: 0.15,
-          highlightColor: _theme.canvasColor,
+          highlightColor: Theme.of(context).colorScheme.surface,
           isAnimated: _cubit.state.isAnimated,
         ),
         labelBuilder: widget.isLabeled
@@ -100,7 +99,6 @@ class GraphBodyState extends State<GraphBody>
             switch (node) {
               final UserNode node => ProfileViewRoute(id: node.id),
               final BeaconNode node => BeaconViewRoute(id: node.id),
-              _ => throw Exception('Wrong node type!'),
             },
           ),
         ),

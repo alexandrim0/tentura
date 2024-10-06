@@ -1,9 +1,9 @@
-# import '/domain/entity/user.graphql'
+# import '/features/user/data/gql/user_model.graphql'
 
 mutation UpdatedUsersTake {
   updates(args: {prefix: "U"}) {
     user {
-      ...UserFields
+      ...UserModel
     }
   }
 }

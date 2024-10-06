@@ -1,43 +1,23 @@
-part of 'profile_cubit.dart';
+import 'package:tentura/ui/bloc/state_base.dart';
 
-final class ProfileState extends StateBase {
-  const ProfileState({
-    required this.user,
-    super.status,
-    super.error,
-  });
+import '../../domain/entity/profile.dart';
 
-  final User user;
+part 'profile_state.freezed.dart';
 
-  @override
-  List<Object?> get props => [
-        status,
-        error,
-        user,
-      ];
-
-  @override
-  ProfileState copyWith({
-    User? user,
-    FetchStatus? status,
+@freezed
+class ProfileState with _$ProfileState, StateFetchMixin {
+  const factory ProfileState({
+    @Default(Profile()) Profile profile,
+    @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
-  }) =>
-      ProfileState(
-        user: user ?? this.user,
-        status: status ?? this.status,
-        error: error ?? this.error,
-      );
+  }) = _ProfileState;
 
-  @override
-  ProfileState setError(Object error) => ProfileState(
+  const ProfileState._();
+
+  ProfileState setLoading() => copyWith(status: FetchStatus.isLoading);
+
+  ProfileState setError(Object error) => copyWith(
         status: FetchStatus.isFailure,
-        user: user,
         error: error,
-      );
-
-  @override
-  ProfileState setLoading() => ProfileState(
-        status: FetchStatus.isLoading,
-        user: user,
       );
 }

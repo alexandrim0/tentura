@@ -1,23 +1,21 @@
-part of 'auth_cubit.dart';
+import 'package:collection/collection.dart';
 
-final class AuthState extends StateBase {
-  const AuthState({
-    this.currentAccountId = '',
-    this.accounts = const {},
-    super.status,
-    super.error,
-  });
+import 'package:tentura/ui/bloc/state_base.dart';
 
-  final String currentAccountId;
-  final Set<Account> accounts;
+import '../../domain/entity/account.dart';
 
-  @override
-  List<Object?> get props => [
-        currentAccountId,
-        accounts,
-        status,
-        error,
-      ];
+part 'auth_state.freezed.dart';
+
+@freezed
+class AuthState with _$AuthState, StateFetchMixin {
+  const factory AuthState({
+    @Default('') String currentAccountId,
+    @Default({}) Set<Account> accounts,
+    @Default(FetchStatus.isSuccess) FetchStatus status,
+    Object? error,
+  }) = _AuthState;
+
+  const AuthState._();
 
   bool get isAuthenticated => currentAccountId.isNotEmpty;
 
@@ -26,32 +24,10 @@ final class AuthState extends StateBase {
   Account? get currentAccount =>
       accounts.singleWhereOrNull((e) => e.id == currentAccountId);
 
-  @override
-  AuthState copyWith({
-    String? currentAccountId,
-    Set<Account>? accounts,
-    FetchStatus? status,
-    Object? error,
-  }) =>
-      AuthState(
-        currentAccountId: currentAccountId ?? this.currentAccountId,
-        accounts: accounts ?? this.accounts,
-        status: status ?? this.status,
-        error: error ?? this.error,
-      );
+  AuthState setLoading() => copyWith(status: FetchStatus.isLoading);
 
-  @override
-  AuthState setError(Object error) => AuthState(
-        accounts: accounts,
-        currentAccountId: currentAccountId,
+  AuthState setError(Object error) => copyWith(
         status: FetchStatus.isFailure,
         error: error,
-      );
-
-  @override
-  AuthState setLoading() => AuthState(
-        accounts: accounts,
-        currentAccountId: currentAccountId,
-        status: FetchStatus.isLoading,
       );
 }

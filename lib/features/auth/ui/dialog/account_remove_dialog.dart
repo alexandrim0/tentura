@@ -27,9 +27,9 @@ class AccountRemoveDialog extends StatelessWidget {
         title: Text(id),
         actions: [
           TextButton(
-            onPressed: () {
-              context.read<AuthCubit>().removeAccount(id);
-              context.maybePop();
+            onPressed: () async {
+              await GetIt.I<AuthCubit>().removeAccount(id);
+              if (context.mounted) await context.maybePop();
             },
             child: const Text('Remove'),
           ),

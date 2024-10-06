@@ -25,8 +25,14 @@
             "toolArgs": [
                 "--dart-define",
                 "APP_LINK_BASE=tentura.intersubjective.space",
+                "--dart-define",
+                "API_URI=https://tentura.intersubjective.space",
             ],
-            "args": ["--web-browser-flag=--disable-web-security"]
+            "args": [
+                "-d", "chrome",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
+            ]
         },
         {
             "name": "tentura-stage (debug)",

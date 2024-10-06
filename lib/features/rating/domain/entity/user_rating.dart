@@ -1,22 +1,14 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'package:tentura/domain/entity/user.dart';
+import 'package:tentura/features/profile/domain/entity/profile.dart';
 
-class UserRating extends Equatable {
-  const UserRating({
-    required this.egoScore,
-    required this.userScore,
-    required this.user,
-  });
+part 'user_rating.freezed.dart';
 
-  final double egoScore;
-  final double userScore;
-  final User user;
-
-  @override
-  List<Object> get props => [
-        egoScore,
-        userScore,
-        user,
-      ];
+@freezed
+class UserRating with _$UserRating {
+  const factory UserRating({
+    required double egoScore,
+    required double userScore,
+    required Profile profile,
+  }) = _UserRating;
 }

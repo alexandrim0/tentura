@@ -22,8 +22,9 @@ class ProfileEditScreen extends StatefulWidget {
 class _ProfileEditScreenState extends State<ProfileEditScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late final _profileCubit = context.read<ProfileCubit>();
-  late final _profile = _profileCubit.state.user;
+  final _profileCubit = GetIt.I<ProfileCubit>();
+
+  late final _profile = _profileCubit.state.profile;
 
   late final _nameController = TextEditingController(
     text: _profile.title,
@@ -32,7 +33,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     text: _profile.description,
   );
 
-  late bool _hasPicture = _profile.has_picture;
+  late bool _hasAvatar = _profile.hasAvatar;
 
   Uint8List? _imageBytes;
 
@@ -72,7 +73,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 child: _imageBytes == null
                     ? AvatarImage(
                         size: AvatarPositioned.childSize,
-                        userId: _hasPicture ? _profile.imageId : '',
+                        userId: _hasAvatar ? _profile.imageId : '',
                       )
                     : Container(
                         clipBehavior: Clip.hardEdge,
@@ -90,26 +91,27 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               Positioned(
                 top: 225,
                 left: 200,
-                child: _hasPicture
+                child: _hasAvatar
                     ? IconButton.filledTonal(
                         iconSize: 50,
                         icon: const Icon(Icons.highlight_remove_outlined),
-                        onPressed: () => setState(() {
-                          _hasPicture = false;
-                          _imageBytes = null;
-                        }),
+                        onPressed: () {
+                          setState(() {
+                            _hasAvatar = false;
+                            _imageBytes = null;
+                          });
+                        },
                       )
                     : IconButton.filledTonal(
                         iconSize: 50,
                         icon: const Icon(Icons.add_a_photo_outlined),
                         onPressed: () async {
-                          final image = await _profileCubit.pickImage();
-                          if (image != null) {
-                            setState(() {
-                              _hasPicture = true;
-                              _imageBytes = image.bytes;
-                            });
-                          }
+                          final image = await pickImage();
+                          if (image == null) return;
+                          setState(() {
+                            _hasAvatar = true;
+                            _imageBytes = image.bytes;
+                          });
                         },
                       ),
               ),
@@ -118,15 +120,12 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
           // Username
           Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 20,
-            ),
+            padding: kPaddingAll,
             child: Form(
               key: _formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: TextFormField(
-                maxLength: titleMaxLength,
+                maxLength: kTitleMaxLength,
                 controller: _nameController,
                 style: textTheme.headlineLarge,
                 decoration: const InputDecoration(
@@ -134,7 +133,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 ),
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),
                 validator: (value) {
-                  if (value == null || value.length < titleMinLength) {
+                  if (value == null || value.length < kTitleMinLength) {
                     return 'Have to be at least 3 char long!';
                   }
                   return null;
@@ -144,24 +143,42 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
           ),
 
           // User Description
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 20,
-            ),
-            child: TextFormField(
-              minLines: 1,
-              maxLines: 20,
-              style: textTheme.bodyLarge,
-              maxLength: descriptionLength,
-              controller: _descriptionController,
-              keyboardType: TextInputType.multiline,
-              decoration: const InputDecoration(
-                labelText: 'Description',
+          Expanded(
+            child: Padding(
+              padding: kPaddingH,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final textStyle = textTheme.bodyMedium!;
+                  final painter = TextPainter(
+                    text: TextSpan(text: 'A', style: textStyle),
+                    maxLines: 1,
+                    textDirection: TextDirection.ltr,
+                  )..layout();
+
+                  final lineHeight = painter.height;
+                  final maxLines = constraints.maxHeight > 0
+                      ? (constraints.maxHeight / lineHeight).floor()
+                      : 1;
+
+                  return TextFormField(
+                    minLines: 1,
+                    maxLines: maxLines,
+                    style: textStyle,
+                    maxLength: kDescriptionLength,
+                    controller: _descriptionController,
+                    keyboardType: TextInputType.multiline,
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      labelStyle: textTheme.bodyMedium,
+                    ),
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                  );
+                },
               ),
-              onTapOutside: (_) => FocusScope.of(context).unfocus(),
             ),
           ),
+
+          const Padding(padding: kPaddingT),
         ],
       ),
     );
@@ -173,13 +190,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       if (_imageBytes != null) {
         await _profileCubit.putAvatarImage(_imageBytes!);
         await CachedNetworkImage.evictFromCache(
-          AvatarImage.getAvatarUrl(userId: _profile.id),
+          AvatarImage.getAvatarUrl(_profile.id),
         );
       }
       await _profileCubit.update(_profile.copyWith(
         title: _nameController.text,
         description: _descriptionController.text,
-        hasPicture: _hasPicture,
+        hasAvatar: _hasAvatar,
       ));
       if (mounted) await context.maybePop();
     } catch (e) {

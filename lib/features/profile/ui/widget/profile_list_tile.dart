@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
-import 'package:tentura/app/root_router.dart';
-import 'package:tentura/data/service/local_secure_storage.dart';
-import 'package:tentura/data/service/remote_api_service.dart';
-import 'package:tentura/ui/dialog/share_code_dialog.dart';
+import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/widget/avatar_image.dart';
+import 'package:tentura/ui/dialog/share_code_dialog.dart';
 
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 import 'package:tentura/features/auth/ui/dialog/show_seed_dialog.dart';
 import 'package:tentura/features/auth/ui/dialog/account_remove_dialog.dart';
 
-import '../../data/repository/profile_local_repository.dart';
-import '../../data/repository/profile_remote_repository.dart';
-import '../../domain/use_case/profile_case.dart';
 import '../bloc/profile_cubit.dart';
 
 class AccountListTile extends StatelessWidget {
@@ -26,25 +21,15 @@ class AccountListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-        create: (context) => ProfileCubit(
-          // TBD: use GetIt
-          ProfileCase(
-            profileLocalRepository: ProfileLocalRepository(
-              context.read<LocalSecureStorage>(),
-            ),
-            profileRemoteRepository: ProfileRemoteRepository(
-              context.read<RemoteApiService>(),
-            ),
-          ),
-          id: userId,
-        ),
+        create: (_) => ProfileCubit(id: userId),
         child: BlocBuilder<ProfileCubit, ProfileState>(
           builder: (context, state) => ListTile(
+            contentPadding: EdgeInsets.zero,
             leading: AvatarImage(
-              userId: state.user.imageId,
+              userId: state.profile.imageId,
               size: 40,
             ),
-            title: Text(state.user.title),
+            title: Text(state.profile.title),
             trailing: PopupMenuButton(
               itemBuilder: (context) => <PopupMenuEntry<void>>[
                 // Share account code
@@ -54,7 +39,7 @@ class AccountListTile extends StatelessWidget {
                     context,
                     header: userId,
                     link: Uri.https(
-                      appLinkBase,
+                      kAppLinkBase,
                       pathAppLinkView,
                       {'id': userId},
                     ),
@@ -78,7 +63,7 @@ class AccountListTile extends StatelessWidget {
             ),
 
             // Log in
-            onTap: () => context.read<AuthCubit>().signIn(userId),
+            onTap: () => GetIt.I<AuthCubit>().signIn(userId),
           ),
         ),
       );

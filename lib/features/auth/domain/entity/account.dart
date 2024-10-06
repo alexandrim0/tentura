@@ -1,18 +1,11 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class Account extends Equatable {
-  const Account({
-    required this.id,
-    required this.seed,
-  });
+part 'account.freezed.dart';
 
-  final String id;
-
-  final String seed;
-
-  @override
-  List<Object> get props => [
-        id,
-        seed,
-      ];
+@freezed
+class Account with _$Account {
+  const factory Account({
+    required String id,
+    required String seed,
+  }) = _Account;
 }

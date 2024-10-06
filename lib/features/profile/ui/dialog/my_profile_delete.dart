@@ -27,10 +27,9 @@ class MyProfileDeleteDialog extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () async {
-              final authCubit = context.read<AuthCubit>();
-              final profileCubit = context.read<ProfileCubit>();
               try {
-                await profileCubit.delete();
+                final authCubit = GetIt.I<AuthCubit>();
+                await GetIt.I<ProfileCubit>().delete();
                 await authCubit.removeAccount(authCubit.state.currentAccountId);
               } catch (e) {
                 if (context.mounted) {

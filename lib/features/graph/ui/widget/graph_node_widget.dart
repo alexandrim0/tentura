@@ -30,15 +30,6 @@ class GraphNodeWidget extends StatelessWidget {
             authorId: beacon.userId,
             beaconId: beacon.hasImage ? beacon.id : '',
           ),
-        final CommentNode _ => Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              color: Theme.of(context).canvasColor,
-              shape: BoxShape.circle,
-            ),
-            child: const Text('C'),
-          ),
       },
     );
     return onTap == null && onDoubleTap == null

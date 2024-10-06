@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
-import 'package:tentura/app/root_router.dart';
+import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 
@@ -25,61 +25,64 @@ class _ConnectScreenState extends State<ConnectScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: SafeArea(
-          minimum: paddingMediumA,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Padding(
-                padding: paddingMediumA,
-                child: Text(
-                  'If you have Code, please write it here',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Padding(
-                padding: paddingMediumA,
-                child: TextFormField(
-                  controller: _inputController,
-                  decoration: const InputDecoration(
-                    filled: true,
+          minimum: kPaddingAll,
+          child: Padding(
+            padding: kPaddingAll,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Padding(
+                  padding: kPaddingSmallT,
+                  child: Text(
+                    'If you have the Code, please write it here:',
+                    textAlign: TextAlign.center,
                   ),
-                  maxLength: idLength,
-                  textAlign: TextAlign.center,
-                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                 ),
-              ),
-              Padding(
-                padding: paddingMediumA,
-                child: FilledButton(
-                  child: const Text('Search'),
-                  onPressed: () => _goWithCode(_inputController.text),
+                Padding(
+                  padding: kPaddingT,
+                  child: TextFormField(
+                    controller: _inputController,
+                    decoration: const InputDecoration(
+                      filled: true,
+                    ),
+                    maxLength: kIdLength,
+                    textAlign: TextAlign.center,
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                  ),
                 ),
-              ),
-              const Padding(
-                padding: paddingMediumA,
-                child: Text(
-                  'or',
-                  textAlign: TextAlign.center,
+                Padding(
+                  padding: kPaddingV,
+                  child: FilledButton(
+                    child: const Text('Search'),
+                    onPressed: () => _goWithCode(_inputController.text),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: paddingMediumA,
-                child: FilledButton(
-                  child: const Text('Scan QR'),
-                  onPressed: () async {
-                    final code = await QRScanDialog.show(context);
-                    if (context.mounted) _goWithCode(code);
-                  },
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 32),
+                  child: Text(
+                    'or',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: kPaddingV,
+                  child: FilledButton(
+                    onPressed: () async {
+                      final code = await QRScanDialog.show(context);
+                      if (context.mounted) _goWithCode(code);
+                    },
+                    child: const Text('Scan QR'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
 
   void _goWithCode(String? code) {
     if (code == null || code.isEmpty) return;
-    if (code.length != idLength) {
+    if (code.length != kIdLength) {
       showSnackBar(
         context,
         isError: true,
