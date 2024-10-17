@@ -1,6 +1,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:tentura/features/profile/domain/entity/profile.dart';
+
 import '../../domain/use_case/friends_case.dart';
 import 'friends_state.dart';
 
@@ -26,6 +28,7 @@ class FriendsCubit extends Cubit<FriendsState> {
 
   late final _likeChanges = _friendsCase.friendsChanges.listen(
     (profile) {
+      emit(state.setLoading());
       if (profile.isFriend) {
         state.friends[profile.id] = profile;
       } else {
@@ -57,4 +60,8 @@ class FriendsCubit extends Cubit<FriendsState> {
       emit(state.setError(e));
     }
   }
+
+  Future<void> addFriend(Profile user) => _friendsCase.addFriend(user);
+
+  Future<void> removeFriend(Profile user) => _friendsCase.removeFriend(user);
 }

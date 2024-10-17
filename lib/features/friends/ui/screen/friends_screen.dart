@@ -14,49 +14,45 @@ class FriendsScreen extends StatelessWidget {
   const FriendsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('My Friends'),
-          actions: [
-            // More button
-            IconButton(
-              icon: const Icon(Icons.more_vert),
-              onPressed: () {},
-            ),
-          ],
-        ),
-        body: BlocConsumer<FriendsCubit, FriendsState>(
-          bloc: GetIt.I<FriendsCubit>(),
-          listenWhen: (p, c) => c.hasError,
-          listener: showSnackBarError,
-          buildWhen: (p, c) => c.hasNoError,
-          builder: (context, state) {
-            if (state.friends.isEmpty) {
-              return Center(
-                child: Text(
-                  'There is nothing here yet',
-                  style: Theme.of(context).textTheme.displaySmall,
-                  textAlign: TextAlign.center,
-                ),
-              );
-            }
-            final friends = state.friends.values.toList();
+  Widget build(BuildContext context) {
+    final friendsCubit = GetIt.I<FriendsCubit>();
+    return SafeArea(
+      child: BlocConsumer<FriendsCubit, FriendsState>(
+        bloc: friendsCubit,
+        listenWhen: (p, c) => c.hasError,
+        listener: showSnackBarError,
+        buildWhen: (p, c) => c.hasNoError,
+        builder: (context, state) {
+          late final friends = state.friends.values.toList();
+          return RefreshIndicator.adaptive(
+            onRefresh: friendsCubit.fetch,
+            child: state.friends.isEmpty
 
-            // Friends List
-            return ListView.separated(
-              padding: kPaddingAll,
-              itemCount: friends.length,
-              itemBuilder: (context, i) {
-                final profile = friends[i];
-                return FriendListTile(
-                  key: ValueKey(profile),
-                  profile: profile,
-                );
-              },
-              separatorBuilder: (context, i) => const Divider(),
-            );
-          },
-        ),
-      );
+                // Empty state
+                ? Center(
+                    child: Text(
+                      'There is nothing here yet',
+                      style: Theme.of(context).textTheme.displaySmall,
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+
+                // Friends List
+                : ListView.separated(
+                    padding: kPaddingAll,
+                    itemCount: friends.length,
+                    itemBuilder: (context, i) {
+                      final profile = friends[i];
+                      return FriendListTile(
+                        key: ValueKey(profile),
+                        profile: profile,
+                      );
+                    },
+                    separatorBuilder: (context, i) => const Divider(),
+                  ),
+          );
+        },
+      ),
+    );
+  }
 }

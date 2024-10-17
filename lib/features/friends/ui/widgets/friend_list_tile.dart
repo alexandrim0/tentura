@@ -5,6 +5,8 @@ import 'package:tentura/ui/widget/avatar_image.dart';
 
 import 'package:tentura/features/profile/domain/entity/profile.dart';
 
+import '../dialog/friend_remove_dialog.dart';
+
 class FriendListTile extends StatelessWidget {
   const FriendListTile({
     required this.profile,
@@ -34,8 +36,8 @@ class FriendListTile extends StatelessWidget {
 
         // More button
         trailing: IconButton(
-          icon: const Icon(Icons.more_vert),
-          onPressed: () {},
+          icon: const Icon(Icons.person_remove_outlined),
+          onPressed: () => FriendRemoveDialog.show(context, profile: profile),
         ),
       ),
     );
