@@ -15,6 +15,7 @@ export 'root_router.gr.dart';
 const pathRoot = '/';
 const pathConnect = '/connect';
 const pathBeaconView = '/beacon/view';
+const pathProfileChat = '/profile/chat';
 const pathProfileView = '/profile/view';
 const pathAppLinkView = '/shared/view';
 
@@ -172,6 +173,14 @@ class RootRouter extends RootStackRouter {
           keepHistory: false,
           maintainState: false,
           page: GraphRoute.page,
+        ),
+
+        // Chat
+        AutoRoute(
+          keepHistory: false,
+          maintainState: false,
+          path: pathProfileChat,
+          page: ChatRoute.page,
         ),
 
         // default

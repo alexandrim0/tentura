@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:tentura/features/profile/domain/entity/profile.dart';
+import 'package:tentura/features/auth/domain/use_case/auth_case.dart';
 
 import '../../domain/use_case/friends_case.dart';
 import 'friends_state.dart';
@@ -10,14 +11,18 @@ export 'friends_state.dart';
 
 @lazySingleton
 class FriendsCubit extends Cubit<FriendsState> {
-  FriendsCubit(this._friendsCase) : super(const FriendsState()) {
+  FriendsCubit(
+    this._authCase,
+    this._friendsCase,
+  ) : super(const FriendsState()) {
     _authChanges.resume();
-    _likeChanges.resume();
+    _friendsChanges.resume();
   }
 
+  final AuthCase _authCase;
   final FriendsCase _friendsCase;
 
-  late final _authChanges = _friendsCase.currentAccountChanges.listen(
+  late final _authChanges = _authCase.currentAccountChanges.listen(
     (userId) {
       // ignore: prefer_const_constructors
       emit(FriendsState(friends: {}));
@@ -26,7 +31,7 @@ class FriendsCubit extends Cubit<FriendsState> {
     cancelOnError: false,
   );
 
-  late final _likeChanges = _friendsCase.friendsChanges.listen(
+  late final _friendsChanges = _friendsCase.friendsChanges.listen(
     (profile) {
       emit(state.setLoading());
       if (profile.isFriend) {
@@ -43,7 +48,7 @@ class FriendsCubit extends Cubit<FriendsState> {
   @disposeMethod
   Future<void> close() async {
     await _authChanges.cancel();
-    await _likeChanges.cancel();
+    await _friendsChanges.cancel();
     return super.close();
   }
 

@@ -12,7 +12,6 @@ import 'package:tentura/features/beacon/ui/widget/beacon_mine_control.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_tile_control.dart';
 import 'package:tentura/features/comment/ui/widget/comment_card.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
-import 'package:tentura/features/like/ui/bloc/like_cubit.dart';
 
 import '../bloc/beacon_view_cubit.dart';
 import '../widget/new_comment_input.dart';
@@ -52,86 +51,75 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
         ),
       ),
       bottomSheet: const NewCommentInput(),
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<BeaconViewCubit, BeaconViewState>(
-            listener: showSnackBarError,
-            listenWhen: (p, c) => c.hasError,
-          ),
-          BlocListener<LikeCubit, LikeState>(
-            bloc: GetIt.I<LikeCubit>(),
-            listener: showSnackBarError,
-            listenWhen: (p, c) => c.hasError,
-          ),
-        ],
-        child: BlocBuilder<BeaconViewCubit, BeaconViewState>(
-          buildWhen: (p, c) => c.status.isSuccess,
-          builder: (context, state) {
-            final beacon = state.beacon;
-            return ListView(
-              padding: kPaddingH + const EdgeInsets.only(bottom: 80),
-              children: [
-                // User row (Avatar and Name)
-                BeaconAuthorInfo(
-                  author: beacon.author,
-                  key: ValueKey(beacon.author),
+      body: BlocConsumer<BeaconViewCubit, BeaconViewState>(
+        listener: showSnackBarError,
+        listenWhen: (p, c) => c.hasError,
+        buildWhen: (p, c) => c.status.isSuccess,
+        builder: (context, state) {
+          final beacon = state.beacon;
+          return ListView(
+            padding: kPaddingH + const EdgeInsets.only(bottom: 80),
+            children: [
+              // User row (Avatar and Name)
+              BeaconAuthorInfo(
+                author: beacon.author,
+                key: ValueKey(beacon.author),
+              ),
+
+              // Beacon Info
+              BeaconInfo(
+                key: ValueKey(beacon),
+                beacon: beacon,
+                isTitleLarge: true,
+                isShowMoreEnabled: false,
+              ),
+
+              // Buttons Row
+              Padding(
+                padding: kPaddingSmallV,
+                child: state.isBeaconMine
+                    ? BeaconMineControl(
+                        beacon: beacon,
+                        key: ValueKey(beacon.id),
+                      )
+                    : BeaconTileControl(
+                        beacon: beacon,
+                        key: ValueKey(beacon.id),
+                      ),
+              ),
+
+              // Comments Section
+              const Text(
+                'Comments',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              // Comments list
+              for (final comment in state.comments.reversed)
+                CommentCard(
+                  comment: comment,
+                  key: ValueKey(comment),
+                  isMine: state.checkIfCommentIsMine(comment),
                 ),
 
-                // Beacon Info
-                BeaconInfo(
-                  key: ValueKey(beacon),
-                  beacon: beacon,
-                  isTitleLarge: true,
-                  isShowMoreEnabled: false,
-                ),
-
-                // Buttons Row
+              // Show All Button
+              if (state.comments.isNotEmpty && state.hasNotReachedMax)
                 Padding(
                   padding: kPaddingSmallV,
-                  child: state.isBeaconMine
-                      ? BeaconMineControl(
-                          beacon: beacon,
-                          key: ValueKey(beacon.id),
-                        )
-                      : BeaconTileControl(
-                          beacon: beacon,
-                          key: ValueKey(beacon.id),
-                        ),
-                ),
-
-                // Comments Section
-                const Text(
-                  'Comments',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                // Comments list
-                for (final comment in state.comments.reversed)
-                  CommentCard(
-                    comment: comment,
-                    key: ValueKey(comment),
-                    isMine: state.checkIfCommentIsMine(comment),
-                  ),
-
-                // Show All Button
-                if (state.comments.isNotEmpty && state.hasNotReachedMax)
-                  Padding(
-                    padding: kPaddingSmallV,
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        onPressed: context.read<BeaconViewCubit>().showAll,
-                        child: const Text('Show all comments'),
-                      ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: context.read<BeaconViewCubit>().showAll,
+                      child: const Text('Show all comments'),
                     ),
                   ),
-              ],
-            );
-          },
-        ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }

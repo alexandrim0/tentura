@@ -17,27 +17,34 @@ class FriendListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () => context.pushRoute(
-        ProfileViewRoute(id: profile.id),
-      ),
-      child: ListTile(
-        // Avatar
-        leading: AvatarImage(
+    return ListTile(
+      // Avatar
+      leading: GestureDetector(
+        onTap: () => context.pushRoute(
+          ProfileViewRoute(id: profile.id),
+        ),
+        child: AvatarImage(
           userId: profile.id,
           size: 40,
         ),
+      ),
 
-        // Title
-        title: Text(
+      // Title
+      title: GestureDetector(
+        onTap: () => context.pushRoute(
+          ChatRoute(id: profile.id),
+        ),
+        child: Text(
           profile.title,
         ),
+      ),
 
-        // More button
-        trailing: IconButton(
-          icon: const Icon(Icons.person_remove_outlined),
-          onPressed: () => FriendRemoveDialog.show(context, profile: profile),
+      // Remove from friends list
+      trailing: IconButton(
+        icon: const Icon(Icons.person_remove_outlined),
+        onPressed: () => FriendRemoveDialog.show(
+          context,
+          profile: profile,
         ),
       ),
     );
