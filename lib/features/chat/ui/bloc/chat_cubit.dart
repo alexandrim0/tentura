@@ -21,12 +21,25 @@ class ChatCubit extends Cubit<ChatState> {
           friend: friend,
           messages: [],
         )) {
-    fetch();
+    _updates.resume();
   }
 
   final ChatCase _chatCase;
 
-  final _uuid = const Uuid();
+  late final _updates = _chatCase.updates.listen(
+    (messages) {
+      for (final message in messages) {
+        // state.
+      }
+    },
+    cancelOnError: false,
+  );
+
+  @override
+  Future<void> close() async {
+    await _updates.cancel();
+    return super.close();
+  }
 
   Future<void> fetch() async {}
 
@@ -37,25 +50,27 @@ class ChatCubit extends Cubit<ChatState> {
       partialText: partialText,
       status: Status.sending,
     );
-    state.messages.add(message);
-    final messageIndex = state.messages.lastIndexOf(message);
+    // state.messages.add(message);
+    // final messageIndex = state.messages.lastIndexOf(message);
     emit(state.setLoading());
     try {
       final response = await _chatCase.sendMessage(emptyMessage.copyWith(
         object: state.friend.id,
         content: partialText.text,
       ));
-      state.messages[messageIndex] = message.copyWith(
-        createdAt: response.createdAt.millisecondsSinceEpoch,
-        status: Status.delivered,
-        remoteId: response.id,
-      ) as TextMessage;
+      // state.messages[messageIndex] = message.copyWith(
+      //   createdAt: response.createdAt.millisecondsSinceEpoch,
+      //   status: Status.delivered,
+      //   remoteId: response.id,
+      // ) as TextMessage;
       emit(state.setSuccess());
     } catch (e) {
-      state.messages[messageIndex] = message.copyWith(
-        status: Status.error,
-      ) as TextMessage;
+      // state.messages[messageIndex] = message.copyWith(
+      //   status: Status.error,
+      // ) as TextMessage;
       state.setError(e);
     }
   }
+
+  static const _uuid = Uuid();
 }

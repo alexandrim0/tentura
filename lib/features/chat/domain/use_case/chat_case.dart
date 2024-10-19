@@ -9,6 +9,8 @@ class ChatCase {
 
   final ChatRepository _chatRepository;
 
+  Stream<Iterable<ChatMessage>> get updates => _chatRepository.updates;
+
   Future<ChatMessage> sendMessage(ChatMessage message) =>
       _chatRepository.sendMessage(message);
 }
