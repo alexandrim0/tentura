@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 import '../../data/repository/chat_repository.dart';
+import '../entity/chat_message.dart';
 
 @lazySingleton
 class ChatCase {
@@ -8,6 +9,6 @@ class ChatCase {
 
   final ChatRepository _chatRepository;
 
-  Future<void> sendMessage(String message) =>
+  Future<ChatMessage> sendMessage(ChatMessage message) =>
       _chatRepository.sendMessage(message);
 }

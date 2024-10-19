@@ -1,0 +1,7 @@
+# import '/features/chat/data/gql/message_model.graphql'
+
+query MessagesFetch {
+  message(order_by: {created_at: asc}) {
+    ...MessageModel
+  }
+}

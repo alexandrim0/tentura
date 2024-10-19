@@ -10,7 +10,7 @@ class ChatState with _$ChatState, StateFetchMixin {
     @Default(User(id: '')) User me,
     @Default(User(id: '')) User friend,
     @Default(false) bool hasReachedMax,
-    @Default([]) List<TextMessage> messages,
+    @Default([]) List<Message> messages,
     @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
   }) = _ChatState;
@@ -18,6 +18,11 @@ class ChatState with _$ChatState, StateFetchMixin {
   const ChatState._();
 
   bool get hasNotReachedMax => !hasReachedMax;
+
+  ChatState setSuccess() => copyWith(
+        status: FetchStatus.isSuccess,
+        error: null,
+      );
 
   ChatState setLoading() => copyWith(status: FetchStatus.isLoading);
 
