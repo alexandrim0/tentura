@@ -77,6 +77,7 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
           showUserNames: true,
           messages: state.messages,
           onSendPressed: chatCubit.onSendPressed,
+          onMessageVisibilityChanged: chatCubit.onMessageVisibilityChanged,
         ),
       ),
     );

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:ferry/ferry.dart';
+import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_http_link/gql_http_link.dart';
+import 'package:gql_websocket_link/gql_websocket_link.dart';
 
 import 'consts.dart';
 import 'client/auth_link.dart';
@@ -21,12 +23,37 @@ class TenturaApi extends TenturaApiBase {
     _gqlClient = Client(
       link: Link.concat(
         AuthLink(() => getToken().then((v) => v.value)),
-        HttpLink(
-          apiUrl + pathGraphQLEndpoint,
-          defaultHeaders: {
-            'accept': 'application/json',
-          },
-        ),
+        Link.split(
+            (Request request) =>
+                request.operation.getOperationType() ==
+                OperationType.subscription,
+            TransportWebSocketLink(
+              TransportWsClientOptions(
+                connectionParams: () async {
+                  final token = await getToken();
+                  return {
+                    'headers': {
+                      'content-type': 'application/json',
+                      'Authorization': 'Bearer ${token.value}'
+                    },
+                  };
+                },
+                socketMaker: WebSocketMaker.url(
+                  () => Uri.parse(apiUrl)
+                      .replace(
+                        scheme: 'wss',
+                        path: pathGraphQLEndpoint,
+                      )
+                      .toString(),
+                ),
+              ),
+            ),
+            HttpLink(
+              apiUrl + pathGraphQLEndpoint,
+              defaultHeaders: {
+                'accept': 'application/json',
+              },
+            )),
       ),
       defaultFetchPolicies: {
         OperationType.query: FetchPolicy.NoCache,

@@ -45,6 +45,13 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
     backgroundColor: isError
         ? theme.colorScheme.error
         : color ?? theme.snackBarTheme.backgroundColor,
+    action: kDebugMode
+        ? SnackBarAction(
+            label: 'print',
+            // ignore: avoid_print
+            onPressed: () => print(text),
+          )
+        : null,
     content: RichText(
       text: TextSpan(
         text: text,

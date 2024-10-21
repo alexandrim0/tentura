@@ -6,7 +6,7 @@ subscription MessageStream(
   ) {
     message_stream(
       batch_size: $batch_size,
-      cursor: {initial_value: {updated_at: $updated_at}}
+      cursor: {initial_value: {updated_at: $updated_at}, ordering: ASC}
     ) {
       ...MessageModel
     }

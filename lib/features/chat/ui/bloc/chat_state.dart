@@ -7,6 +7,7 @@ part 'chat_state.freezed.dart';
 @Freezed(makeCollectionsUnmodifiable: false)
 class ChatState with _$ChatState, StateFetchMixin {
   const factory ChatState({
+    required DateTime cursor,
     @Default(User(id: '')) User me,
     @Default(User(id: '')) User friend,
     @Default(false) bool hasReachedMax,

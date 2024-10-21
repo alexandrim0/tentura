@@ -7,3 +7,7 @@ sealed class ChatException implements Exception {
 final class ChatMessageCreateException extends ChatException {
   const ChatMessageCreateException(super.message);
 }
+
+final class ChatMessageUpdateException extends ChatException {
+  const ChatMessageUpdateException(super.message);
+}
