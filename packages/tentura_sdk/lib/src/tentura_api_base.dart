@@ -13,6 +13,7 @@ abstract class TenturaApiBase {
     this.jwtExpiresIn = const Duration(minutes: 1),
     this.userAgent = 'Tentura client',
     this.storagePath = '',
+    this.isDebugMode = false,
   })  : _imageService = ImageService(apiUrl: apiUrl),
         _tokenService = TokenService(
           apiUrl: apiUrl,
@@ -23,6 +24,7 @@ abstract class TenturaApiBase {
   final String userAgent;
   final String storagePath;
   final Duration jwtExpiresIn;
+  final bool isDebugMode;
 
   final TokenService _tokenService;
   final ImageService _imageService;

@@ -9,8 +9,9 @@ class TenturaApi extends TenturaApiBase {
   TenturaApi({
     required super.apiUrl,
     super.jwtExpiresIn,
-    super.userAgent,
     super.storagePath,
+    super.isDebugMode,
+    super.userAgent,
   });
 
   late final Client _gqlClient;

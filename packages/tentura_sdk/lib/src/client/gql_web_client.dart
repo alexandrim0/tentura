@@ -5,19 +5,29 @@ import 'package:gql_http_link/gql_http_link.dart';
 import 'package:gql_websocket_link/gql_websocket_link.dart';
 
 import 'auth_link.dart';
+import 'error_link.dart';
 import 'message.dart';
 
 Future<Client> buildClient({
   required String serverUrl,
   required Future<GetTokenResponse> Function() getToken,
+  bool isDebugMode = false,
 }) async =>
     Client(
-      link: Link.concat(
+      link: Link.from([
+        //
         AuthLink(() => getToken().then((v) => v.value)),
+
+        //
+        if (isDebugMode) buildErrorLink(),
+
+        //
         Link.split(
             (Request request) =>
                 request.operation.getOperationType() ==
                 OperationType.subscription,
+
+            //
             TransportWebSocketLink(
               TransportWsClientOptions(
                 connectionParams: () async {
@@ -34,13 +44,15 @@ Future<Client> buildClient({
                 ),
               ),
             ),
+
+            //
             HttpLink(
               serverUrl,
               defaultHeaders: {
                 'accept': 'application/json',
               },
             )),
-      ),
+      ]),
       defaultFetchPolicies: {
         OperationType.query: FetchPolicy.NoCache,
       },
