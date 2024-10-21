@@ -50,10 +50,4 @@ class TenturaApi extends TenturaApiBase {
         forward,
   ]) =>
       _gqlClient.request(request);
-
-  @override
-  Future<void> addRequestToRequestController<TData, TVars>(
-    OperationRequest<TData, TVars> request,
-  ) =>
-      _gqlClient.addRequestToRequestController(request);
 }

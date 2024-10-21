@@ -78,8 +78,4 @@ abstract class TenturaApiBase {
             OperationRequest<TData, TVars>)?
         forward,
   ]);
-
-  Future<void> addRequestToRequestController<TData, TVars>(
-    OperationRequest<TData, TVars> request,
-  );
 }
