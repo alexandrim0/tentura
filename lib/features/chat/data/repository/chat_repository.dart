@@ -57,10 +57,9 @@ class ChatRepository {
       );
 
   Future<DateTime> setMessageSeen(String id) => _remoteApiService
-      .request(
-        GMessageSetDeliveredReq(
-            (b) => b.vars.id = (GuuidBuilder()..value = id)),
-      )
+      .request(GMessageSetDeliveredReq(
+        (b) => b.vars.id = (GuuidBuilder()..value = id),
+      ))
       .firstWhere((e) => e.dataSource == DataSource.Link)
       .then((r) => r.dataOrThrow(label: _label).update_message_by_pk)
       .then(
