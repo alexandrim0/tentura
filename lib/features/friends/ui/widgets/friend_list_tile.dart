@@ -30,13 +30,9 @@ class FriendListTile extends StatelessWidget {
       ),
 
       // Title
-      title: GestureDetector(
-        onTap: () => context.pushRoute(
-          ChatRoute(id: profile.id),
-        ),
-        child: Text(
-          profile.title,
-        ),
+      title: Text(profile.title),
+      onTap: () => context.pushRoute(
+        ChatRoute(id: profile.id),
       ),
 
       // Remove from friends list

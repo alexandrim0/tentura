@@ -8,19 +8,17 @@ part 'chat_state.freezed.dart';
 class ChatState with _$ChatState, StateFetchMixin {
   const factory ChatState({
     required DateTime cursor,
+    required List<Message> messages,
     @Default(User(id: '')) User me,
     @Default(User(id: '')) User friend,
-    @Default(false) bool hasReachedMax,
-    @Default([]) List<Message> messages,
     @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
   }) = _ChatState;
 
   const ChatState._();
 
-  bool get hasNotReachedMax => !hasReachedMax;
-
-  ChatState setSuccess() => copyWith(
+  ChatState setCursor([DateTime? cursor]) => copyWith(
+        cursor: cursor ?? DateTime.timestamp(),
         status: FetchStatus.isSuccess,
         error: null,
       );

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart' as chat;
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/widget/deep_back_button.dart';
@@ -26,14 +25,9 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
         create: (context) {
-          final myProfile = GetIt.I<ProfileCubit>().state.profile;
           return ChatCubit(
-            me: types.User(
-              id: myProfile.id,
-              firstName: myProfile.title,
-              imageUrl: myProfile.imageId,
-            ),
-            friend: types.User(id: id),
+            me: GetIt.I<ProfileCubit>().state.profile,
+            friendId: id,
           );
         },
         child: this,
@@ -53,7 +47,10 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
     return Scaffold(
       // Header
       appBar: AppBar(
-        title: const Text('Chat'),
+        title: BlocSelector<ChatCubit, ChatState, String>(
+          selector: (state) => state.friend.firstName ?? '...',
+          builder: (context, state) => Text(state),
+        ),
         leading: const DeepBackButton(),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4),
@@ -76,8 +73,9 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
           theme: chatTheme,
           showUserNames: true,
           messages: state.messages,
-          onSendPressed: chatCubit.onSendPressed,
+          nameBuilder: (user) => Text(user.firstName ?? user.id),
           onMessageVisibilityChanged: chatCubit.onMessageVisibilityChanged,
+          onSendPressed: chatCubit.onSendPressed,
         ),
       ),
     );

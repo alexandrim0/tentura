@@ -5,14 +5,18 @@ import 'package:tentura/data/gql/_g/schema.schema.gql.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 
+import 'package:tentura/features/user/data/model/user_model.dart';
+
+import '../../domain/typedef.dart';
 import '../../domain/exception.dart';
 import '../../domain/entity/chat_message.dart';
 import '../gql/_g/message_create.req.gql.dart';
 import '../gql/_g/message_set_delivered.req.gql.dart';
+import '../gql/_g/messages_fetch.req.gql.dart';
 import '../gql/_g/messages_stream.req.gql.dart';
 import '../model/message_model.dart';
 
-@lazySingleton
+@singleton
 class ChatRepository {
   ChatRepository(this._remoteApiService);
 
@@ -26,25 +30,36 @@ class ChatRepository {
   @disposeMethod
   Future<void> dispose() => _controller.close();
 
+  Future<ChatFetchResult> fetch(String friendId) => _remoteApiService
+      .request(GMessagesFetchReq((b) => b.vars.id = friendId))
+      .firstWhere((e) => e.dataSource == DataSource.Link)
+      .then((r) => r.dataOrThrow(label: _label))
+      .then(
+        (v) => (
+          profile: (v.user_by_pk! as UserModel).toEntity,
+          messages: v.message.map((e) => (e as MessageModel).toEntity),
+        ),
+      );
+
   Stream<Iterable<ChatMessage>> watchUpdates({
-    int batchSize = 10,
+    int batchSize = 1,
     DateTime? fromMoment,
   }) =>
       _remoteApiService
-          .request(GMessageStreamReq(
-            (b) => b.vars
+          .request(
+            GMessageStreamReq((b) => b.vars
               ..batch_size = batchSize
-              ..updated_at = fromMoment,
-          ))
+              ..updated_at = fromMoment),
+          )
           .map((e) => e.dataOrThrow(label: _label).message_stream)
           .map((e) => e.map((v) => (v as MessageModel).toEntity));
 
   Future<ChatMessage> sendMessage(ChatMessage message) => _remoteApiService
-      .request(GMessageCreateReq(
-        (b) => b.vars
+      .request(
+        GMessageCreateReq((b) => b.vars
           ..object = message.object
-          ..message = message.content,
-      ))
+          ..message = message.content),
+      )
       .firstWhere((e) => e.dataSource == DataSource.Link)
       .then((r) => r.dataOrThrow(label: _label).insert_message_one)
       .then(

@@ -47,12 +47,12 @@ Future<Client> buildClient(
               final token = await tokenStream
                   .where((e) => e is GetTokenResponse)
                   .first as GetTokenResponse;
-              return {
+              return Future.value({
                 'headers': {
                   'content-type': 'application/json',
                   'Authorization': 'Bearer ${token.value}'
                 },
-              };
+              });
             },
             socketMaker: WebSocketMaker.url(
               () => Uri.parse(params.serverUrl)

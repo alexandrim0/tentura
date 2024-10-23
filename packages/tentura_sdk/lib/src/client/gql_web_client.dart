@@ -32,12 +32,12 @@ Future<Client> buildClient({
               TransportWsClientOptions(
                 connectionParams: () async {
                   final token = await getToken();
-                  return {
+                  return Future.value({
                     'headers': {
                       'content-type': 'application/json',
                       'Authorization': 'Bearer ${token.value}'
                     },
-                  };
+                  });
                 },
                 socketMaker: WebSocketMaker.url(
                   () => Uri.parse(serverUrl).replace(scheme: 'wss').toString(),

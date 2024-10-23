@@ -1,6 +1,10 @@
+# import '/features/user/data/gql/user_model.graphql'
 # import '/features/chat/data/gql/message_model.graphql'
 
-query MessagesFetch {
+query MessagesFetch($id: String!) {
+  user_by_pk(id: $id) {
+    ...UserModel
+  }
   message(order_by: {created_at: asc}) {
     ...MessageModel
   }
