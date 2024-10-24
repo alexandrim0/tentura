@@ -69,13 +69,13 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
         listenWhen: (p, c) => c.hasError,
         buildWhen: (p, c) => c.status.isSuccess,
         builder: (context, state) => chat.Chat(
-          user: state.me,
+          dateIsUtc: true,
           theme: chatTheme,
-          showUserNames: true,
-          messages: state.messages,
-          nameBuilder: (user) => Text(user.firstName ?? user.id),
           onMessageVisibilityChanged: chatCubit.onMessageVisibilityChanged,
           onSendPressed: chatCubit.onSendPressed,
+          onEndReached: chatCubit.onEndReached,
+          messages: state.messages,
+          user: state.me,
         ),
       ),
     );

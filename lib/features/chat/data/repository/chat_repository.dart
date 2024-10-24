@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:tentura/data/gql/_g/schema.schema.gql.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
-import 'package:tentura/domain/entity/repository_event.dart';
+// import 'package:tentura/domain/entity/repository_event.dart';
 
 import 'package:tentura/features/user/data/model/user_model.dart';
 
@@ -22,13 +22,15 @@ class ChatRepository {
 
   final RemoteApiService _remoteApiService;
 
-  final _controller =
-      StreamController<RepositoryEvent<ChatMessage>>.broadcast();
+  // final _controller =
+  //     StreamController<RepositoryEvent<ChatMessage>>.broadcast();
 
-  Stream<RepositoryEvent<ChatMessage>> get changes => _controller.stream;
+  // Stream<RepositoryEvent<ChatMessage>> get changes => _controller.stream;
 
   @disposeMethod
-  Future<void> dispose() => _controller.close();
+  Future<void> dispose() async {
+    // return _controller.close();
+  }
 
   Future<ChatFetchResult> fetch(String friendId) => _remoteApiService
       .request(GMessagesFetchReq((b) => b.vars.id = friendId))

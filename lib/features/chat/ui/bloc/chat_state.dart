@@ -17,13 +17,10 @@ class ChatState with _$ChatState, StateFetchMixin {
 
   const ChatState._();
 
-  ChatState setCursor([DateTime? cursor]) => copyWith(
-        cursor: cursor ?? DateTime.timestamp(),
-        status: FetchStatus.isSuccess,
+  ChatState setLoading() => copyWith(
+        status: FetchStatus.isLoading,
         error: null,
       );
-
-  ChatState setLoading() => copyWith(status: FetchStatus.isLoading);
 
   ChatState setError(Object error) => copyWith(
         status: FetchStatus.isFailure,
