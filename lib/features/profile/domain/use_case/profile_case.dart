@@ -8,7 +8,7 @@ import '../../data/repository/profile_local_repository.dart';
 import '../../data/repository/profile_remote_repository.dart';
 import '../entity/profile.dart';
 
-@singleton
+@lazySingleton
 class ProfileCase {
   ProfileCase({
     required AuthRepository authRepository,

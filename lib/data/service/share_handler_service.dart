@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:share_handler_multi/share_handler_multi.dart';
 
-@singleton
+@lazySingleton
 class ShareHandlerService {
   ShareHandlerService() {
     if (kIsWeb) {

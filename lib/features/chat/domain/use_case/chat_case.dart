@@ -4,7 +4,7 @@ import '../../data/repository/chat_repository.dart';
 import '../entity/chat_message.dart';
 import '../typedef.dart';
 
-@singleton
+@lazySingleton
 class ChatCase {
   ChatCase(this._chatRepository);
 

@@ -15,7 +15,7 @@ export 'package:get_it/get_it.dart';
 
 export 'context_state.dart';
 
-@singleton
+@lazySingleton
 class ContextCubit extends Cubit<ContextState> {
   ContextCubit({
     bool fromCache = true,

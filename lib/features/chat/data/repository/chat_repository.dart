@@ -16,7 +16,7 @@ import '../gql/_g/messages_fetch.req.gql.dart';
 import '../gql/_g/messages_stream.req.gql.dart';
 import '../model/message_model.dart';
 
-@singleton
+@lazySingleton
 class ChatRepository {
   ChatRepository(this._remoteApiService);
 

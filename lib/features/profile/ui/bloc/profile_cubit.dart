@@ -13,7 +13,7 @@ export 'package:get_it/get_it.dart';
 
 export 'profile_state.dart';
 
-@singleton
+@lazySingleton
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit({
     required String id,
@@ -25,7 +25,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   @factoryMethod
-  ProfileCubit.current({
+  ProfileCubit.global({
     required ProfileCase profileCase,
   })  : _profileCase = profileCase,
         super(const ProfileState()) {
