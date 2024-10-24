@@ -53,7 +53,10 @@ class BeaconViewCubit extends Cubit<BeaconViewState> {
       );
       emit(state.copyWith(
         status: FetchStatus.isSuccess,
-        comments: state.comments..add(comment),
+        comments: state.comments
+          ..add(comment.copyWith(
+            author: state.myProfile,
+          )),
       ));
     } catch (e) {
       emit(state.setError(e));

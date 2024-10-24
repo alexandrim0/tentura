@@ -33,19 +33,20 @@ class BeaconCubit extends Cubit<BeaconState> {
 
   late final _beaconChanges = _beaconCase.beaconChanges.listen(
     (event) => switch (event) {
-      final RepositoryEventCreate<Beacon> entity => emit(state.copyWith(
-          beacons: state.beacons..add(entity.value),
-          status: FetchStatus.isSuccess,
+      final RepositoryEventCreate<Beacon> entity => emit(BeaconState(
+          beacons: state.beacons..insert(0, entity.value),
+          // beacons: [entity.value, ...state.beacons],
+          userId: state.userId,
         )),
-      final RepositoryEventUpdate<Beacon> entity => emit(state.copyWith(
+      final RepositoryEventUpdate<Beacon> entity => emit(BeaconState(
           beacons: state.beacons
             ..removeWhere((e) => e.id == entity.id)
             ..add(entity.value),
-          status: FetchStatus.isSuccess,
+          userId: state.userId,
         )),
-      final RepositoryEventDelete<Beacon> entity => emit(state.copyWith(
+      final RepositoryEventDelete<Beacon> entity => emit(BeaconState(
           beacons: state.beacons..removeWhere((e) => e.id == entity.id),
-          status: FetchStatus.isSuccess,
+          userId: state.userId,
         )),
     },
     cancelOnError: false,
@@ -68,6 +69,18 @@ class BeaconCubit extends Cubit<BeaconState> {
         beacons: beacons.toList(),
         status: FetchStatus.isSuccess,
       ));
+    } catch (e) {
+      emit(state.setError(e));
+    }
+  }
+
+  Future<void> create({
+    required Beacon beacon,
+    Uint8List? image,
+  }) async {
+    emit(state.setLoading());
+    try {
+      await _beaconCase.create(beacon: beacon, image: image);
     } catch (e) {
       emit(state.setError(e));
     }

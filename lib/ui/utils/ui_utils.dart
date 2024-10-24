@@ -1,6 +1,5 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:tentura/consts.dart';
@@ -46,6 +45,13 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
     backgroundColor: isError
         ? theme.colorScheme.error
         : color ?? theme.snackBarTheme.backgroundColor,
+    action: kDebugMode
+        ? SnackBarAction(
+            label: 'print',
+            // ignore: avoid_print
+            onPressed: () => print(text),
+          )
+        : null,
     content: RichText(
       text: TextSpan(
         text: text,

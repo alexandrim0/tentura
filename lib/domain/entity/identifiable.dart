@@ -1,3 +1,3 @@
-abstract interface class Identifiable {
+abstract class Identifiable {
   String get id;
 }

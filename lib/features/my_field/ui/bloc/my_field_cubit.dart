@@ -11,10 +11,11 @@ export 'my_field_state.dart';
 
 class MyFieldCubit extends Cubit<MyFieldState> {
   MyFieldCubit({
+    String initialContext = '',
     MyFieldRepository? repository,
   })  : _repository = repository ?? GetIt.I<MyFieldRepository>(),
         super(const MyFieldState()) {
-    fetch('');
+    fetch(initialContext);
   }
 
   final MyFieldRepository _repository;

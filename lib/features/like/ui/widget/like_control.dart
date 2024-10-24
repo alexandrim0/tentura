@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+import 'package:tentura/domain/entity/likable.dart';
+import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
 
-import '../../domain/entity/likable_entity.dart';
-import '../../domain/typedef.dart';
 import '../bloc/like_cubit.dart';
 
 class LikeControl extends StatelessWidget {
@@ -13,7 +13,7 @@ class LikeControl extends StatelessWidget {
     super.key,
   });
 
-  final LikableEntity entity;
+  final Likable entity;
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +32,12 @@ class LikeControl extends StatelessWidget {
             onPressed: () async =>
                 likeCubit.addLikeAmount(entity: entity, amount: 1),
           ),
-          StreamBuilder<LikeAmount>(
+          StreamBuilder<RepositoryEvent<Likable>>(
             key: ValueKey(entity),
-            initialData: likeCubit.state.getLikeAmount(entity),
+            initialData: RepositoryEventCreate(entity),
             stream: likeCubit.likeChanges.where((e) => e.id == entity.id),
             builder: (context, snapshot) => Text(
-              (snapshot.data?.amount ?? 0).toString(),
+              (snapshot.data?.value.votes ?? 0).toString(),
               style: theme.textTheme.bodyMedium,
             ),
           ),

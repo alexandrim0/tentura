@@ -31,6 +31,7 @@ class BeaconAuthorInfo extends StatelessWidget {
               size: 40,
             ),
           ),
+
           // User displayName
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,6 +46,16 @@ class BeaconAuthorInfo extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+
+          // An Eye
+          Padding(
+            padding: const EdgeInsets.only(left: kSpacingSmall),
+            child: Icon(
+              author.isSeeingMe
+                  ? Icons.remove_red_eye
+                  : Icons.remove_red_eye_outlined,
+            ),
           ),
         ],
       ),

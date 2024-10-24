@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import 'package:tentura/features/profile/domain/entity/profile.dart';
+import 'package:tentura/features/friends/domain/use_case/friends_case.dart';
 
 import '../../domain/use_case/profile_view_case.dart';
 import 'profile_view_state.dart';
@@ -14,12 +15,15 @@ export 'profile_view_state.dart';
 class ProfileViewCubit extends Cubit<ProfileViewState> {
   ProfileViewCubit({
     required String id,
+    FriendsCase? friendsCase,
     ProfileViewCase? profileViewCase,
-  })  : _profileViewCase = profileViewCase ?? GetIt.I<ProfileViewCase>(),
+  })  : _friendsCase = friendsCase ?? GetIt.I<FriendsCase>(),
+        _profileViewCase = profileViewCase ?? GetIt.I<ProfileViewCase>(),
         super(ProfileViewState(profile: Profile(id: id))) {
     fetchProfile();
   }
 
+  final FriendsCase _friendsCase;
   final ProfileViewCase _profileViewCase;
 
   Future<void> fetchProfile([int limit = 3]) async {
@@ -65,9 +69,7 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
     try {
       emit(state.copyWith(
         status: FetchStatus.isSuccess,
-        profile: state.profile.copyWith(
-          myVote: await _profileViewCase.addFriend(state.profile.id),
-        ),
+        profile: await _friendsCase.addFriend(state.profile),
       ));
     } catch (e) {
       emit(state.setError(e));
@@ -79,9 +81,7 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
     try {
       emit(state.copyWith(
         status: FetchStatus.isSuccess,
-        profile: state.profile.copyWith(
-          myVote: await _profileViewCase.removeFriend(state.profile.id),
-        ),
+        profile: await _friendsCase.removeFriend(state.profile),
       ));
     } catch (e) {
       emit(state.setError(e));

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show DateTimeRange;
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'package:tentura/domain/entity/identifiable.dart';
+import 'package:tentura/domain/entity/likable.dart';
 
 import 'package:tentura/features/geo/domain/entity/coordinates.dart';
 import 'package:tentura/features/profile/domain/entity/profile.dart';
@@ -10,7 +10,7 @@ import 'package:tentura/features/profile/domain/entity/profile.dart';
 part 'beacon.freezed.dart';
 
 @freezed
-class Beacon with _$Beacon implements Identifiable {
+class Beacon with _$Beacon implements Likable {
   const factory Beacon({
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -29,6 +29,9 @@ class Beacon with _$Beacon implements Identifiable {
   }) = _Beacon;
 
   const Beacon._();
+
+  @override
+  int get votes => myVote;
 
   String get imageId => hasPicture ? id : '';
 }

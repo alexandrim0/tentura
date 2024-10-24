@@ -14,6 +14,7 @@ class TenturaApi extends TenturaApiBase {
     super.jwtExpiresIn = const Duration(minutes: 1),
     super.userAgent = 'Tentura client',
     super.storagePath = '',
+    super.isDebugMode = false,
   });
 
   late final SendPort _replyPort;
@@ -28,6 +29,7 @@ class TenturaApi extends TenturaApiBase {
         userAgent: userAgent,
         serverUrl: apiUrl + pathGraphQLEndpoint,
         storagePath: storagePath,
+        isDebugMode: isDebugMode,
       ),
       messageHandler: (message) async => switch (message) {
         final InitMessage m => _replyPort = m.replyPort,
@@ -50,10 +52,4 @@ class TenturaApi extends TenturaApiBase {
         forward,
   ]) =>
       _gqlClient.request(request);
-
-  @override
-  Future<void> addRequestToRequestController<TData, TVars>(
-    OperationRequest<TData, TVars> request,
-  ) =>
-      _gqlClient.addRequestToRequestController(request);
 }

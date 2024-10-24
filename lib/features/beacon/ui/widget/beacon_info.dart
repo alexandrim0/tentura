@@ -148,10 +148,7 @@ class BeaconInfo extends StatelessWidget {
                       ),
                     ),
                     onPressed: () async {
-                      await GetIt.I<ContextCubit>().add(
-                        contextName: beacon.context,
-                        select: false,
-                      );
+                      await GetIt.I<ContextCubit>().add(beacon.context);
                       if (context.mounted) {
                         showSnackBar(
                           context,

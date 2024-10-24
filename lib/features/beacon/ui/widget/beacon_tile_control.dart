@@ -6,7 +6,6 @@ import 'package:tentura/ui/widget/tentura_icons.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 
 import 'package:tentura/features/favorites/ui/widget/beacon_pin_icon_button.dart';
-import 'package:tentura/features/like/domain/entity/likable_entity.dart';
 import 'package:tentura/features/like/ui/widget/like_control.dart';
 
 import '../../domain/entity/beacon.dart';
@@ -44,7 +43,7 @@ class BeaconTileControl extends StatelessWidget {
             const Spacer(),
             // Like\Dislike
             LikeControl(
-              entity: LikableBeacon(beacon),
+              entity: beacon,
               key: ValueKey(beacon),
             ),
           ],

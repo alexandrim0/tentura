@@ -1,9 +1,10 @@
 import 'package:injectable/injectable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/entity/likable_entity.dart';
+import 'package:tentura/domain/entity/likable.dart';
+import 'package:tentura/domain/entity/repository_event.dart';
+
 import '../../domain/use_case/like_case.dart';
-import '../../domain/typedef.dart';
 import 'like_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +22,7 @@ class LikeCubit extends Cubit<LikeState> {
 
   late final _likeChanges = _likeCase.likeChanges.listen(
     (e) {
-      state.likes[e.id] = e.amount;
+      state.likes[e.id] = e.value.votes;
       emit(LikeState(likes: state.likes));
     },
     cancelOnError: false,
@@ -33,7 +34,7 @@ class LikeCubit extends Cubit<LikeState> {
     cancelOnError: false,
   );
 
-  Stream<LikeAmount> get likeChanges => _likeCase.likeChanges;
+  Stream<RepositoryEvent<Likable>> get likeChanges => _likeCase.likeChanges;
 
   @override
   @disposeMethod
@@ -44,12 +45,12 @@ class LikeCubit extends Cubit<LikeState> {
   }
 
   Future<void> addLikeAmount({
-    required LikableEntity entity,
+    required Likable entity,
     required int amount,
   }) async {
     try {
       await _likeCase.addLikeAmount(
-        amount: state.getLikeAmount(entity).amount + amount,
+        amount: entity.votes + amount,
         entity: entity,
       );
     } catch (e) {

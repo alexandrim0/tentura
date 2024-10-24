@@ -924,6 +924,160 @@ input Int_comparison_exp {
   _nin: [Int!]
 }
 
+"""
+columns and relationships of "message"
+"""
+type message {
+  created_at: timestamptz!
+  delivered: Boolean!
+  id: uuid!
+  message: String!
+  object: String!
+  subject: String!
+  updated_at: timestamptz!
+}
+
+"""
+Boolean expression to filter rows from the table "message". All fields are combined with a logical 'AND'.
+"""
+input message_bool_exp {
+  _and: [message_bool_exp!]
+  _not: message_bool_exp
+  _or: [message_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  delivered: Boolean_comparison_exp
+  id: uuid_comparison_exp
+  message: String_comparison_exp
+  object: String_comparison_exp
+  subject: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "message"
+"""
+enum message_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  message_pkey
+}
+
+"""
+input type for inserting data into table "message"
+"""
+input message_insert_input {
+  message: String
+  object: String
+}
+
+"""
+response of any mutation on the table "message"
+"""
+type message_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [message!]!
+}
+
+"""
+on_conflict condition type for table "message"
+"""
+input message_on_conflict {
+  constraint: message_constraint!
+  update_columns: [message_update_column!]! = []
+  where: message_bool_exp
+}
+
+"""Ordering options when selecting data from "message"."""
+input message_order_by {
+  created_at: order_by
+  delivered: order_by
+  id: order_by
+  message: order_by
+  object: order_by
+  subject: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: message"""
+input message_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "message"
+"""
+enum message_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  delivered
+
+  """column name"""
+  id
+
+  """column name"""
+  message
+
+  """column name"""
+  object
+
+  """column name"""
+  subject
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "message"
+"""
+input message_set_input {
+  delivered: Boolean
+}
+
+"""
+Streaming cursor of the table "message"
+"""
+input message_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: message_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input message_stream_cursor_value_input {
+  created_at: timestamptz
+  delivered: Boolean
+  id: uuid
+  message: String
+  object: String
+  subject: String
+  updated_at: timestamptz
+}
+
+"""
+update columns of table "message"
+"""
+enum message_update_column {
+  """column name"""
+  delivered
+}
+
+input message_updates {
+  """sets the columns of the filtered rows to the given values"""
+  _set: message_set_input
+
+  """filter the rows which have to be updated"""
+  where: message_bool_exp!
+}
+
 """mutation root"""
 type mutation_root {
   """
@@ -966,6 +1120,19 @@ type mutation_root {
   delete_comment_by_pk(id: String!): comment
 
   """
+  delete data from the table: "message"
+  """
+  delete_message(
+    """filter the rows which have to be deleted"""
+    where: message_bool_exp!
+  ): message_mutation_response
+
+  """
+  delete single row from the table: "message"
+  """
+  delete_message_by_pk(id: uuid!): message
+
+  """
   delete data from the table: "user"
   """
   delete_user(
@@ -990,6 +1157,19 @@ type mutation_root {
   delete single row from the table: "user_context"
   """
   delete_user_context_by_pk(context_name: String!, user_id: String!): user_context
+
+  """
+  delete data from the table: "vote_user"
+  """
+  delete_vote_user(
+    """filter the rows which have to be deleted"""
+    where: vote_user_bool_exp!
+  ): vote_user_mutation_response
+
+  """
+  delete single row from the table: "vote_user"
+  """
+  delete_vote_user_by_pk(object: String!, subject: String!): vote_user
 
   """
   insert data into the table: "beacon"
@@ -1056,6 +1236,28 @@ type mutation_root {
     """upsert condition"""
     on_conflict: comment_on_conflict
   ): comment
+
+  """
+  insert data into the table: "message"
+  """
+  insert_message(
+    """the rows to be inserted"""
+    objects: [message_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: message_on_conflict
+  ): message_mutation_response
+
+  """
+  insert a single row into the table: "message"
+  """
+  insert_message_one(
+    """the row to be inserted"""
+    object: message_insert_input!
+
+    """upsert condition"""
+    on_conflict: message_on_conflict
+  ): message
 
   """
   insert data into the table: "user_context"
@@ -1172,6 +1374,34 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [beacon_updates!]!
   ): [beacon_mutation_response]
+
+  """
+  update data of the table: "message"
+  """
+  update_message(
+    """sets the columns of the filtered rows to the given values"""
+    _set: message_set_input
+
+    """filter the rows which have to be updated"""
+    where: message_bool_exp!
+  ): message_mutation_response
+
+  """
+  update single row of the table: "message"
+  """
+  update_message_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: message_set_input
+    pk_columns: message_pk_columns_input!
+  ): message
+
+  """
+  update multiples rows of table: "message"
+  """
+  update_message_many(
+    """updates to execute, in order"""
+    updates: [message_updates!]!
+  ): [message_mutation_response]
 
   """
   update data of the table: "user"
@@ -1540,6 +1770,29 @@ type query_root {
     """filter the rows returned"""
     where: edge_bool_exp
   ): [edge!]!
+
+  """
+  fetch data from the table: "message"
+  """
+  message(
+    """distinct select on columns"""
+    distinct_on: [message_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_order_by!]
+
+    """filter the rows returned"""
+    where: message_bool_exp
+  ): [message!]!
+
+  """fetch data from the table: "message" using primary key columns"""
+  message_by_pk(id: uuid!): message
 
   """
   fetch data from the table: "mutual_score"
@@ -1954,6 +2207,43 @@ type subscription_root {
     """filter the rows returned"""
     where: edge_bool_exp
   ): [edge!]!
+
+  """
+  fetch data from the table: "message"
+  """
+  message(
+    """distinct select on columns"""
+    distinct_on: [message_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_order_by!]
+
+    """filter the rows returned"""
+    where: message_bool_exp
+  ): [message!]!
+
+  """fetch data from the table: "message" using primary key columns"""
+  message_by_pk(id: uuid!): message
+
+  """
+  fetch data from the table in a streaming manner: "message"
+  """
+  message_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [message_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: message_bool_exp
+  ): [message!]!
 
   """
   fetch data from the table: "mutual_score"
@@ -2629,6 +2919,23 @@ input user_updates {
 
   """filter the rows which have to be updated"""
   where: user_bool_exp!
+}
+
+scalar uuid
+
+"""
+Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
+"""
+input uuid_comparison_exp {
+  _eq: uuid
+  _gt: uuid
+  _gte: uuid
+  _in: [uuid!]
+  _is_null: Boolean
+  _lt: uuid
+  _lte: uuid
+  _neq: uuid
+  _nin: [uuid!]
 }
 
 """

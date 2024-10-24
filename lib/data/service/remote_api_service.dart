@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/consts.dart';
@@ -18,6 +19,7 @@ class RemoteApiService extends TenturaApi {
     super.apiUrl = kApiUri,
     super.storagePath = '',
     super.userAgent = kAppTitle,
+    super.isDebugMode = kDebugMode,
     super.jwtExpiresIn = kJwtExpiresIn,
   });
 

@@ -27,9 +27,13 @@ class HomeScreen extends StatelessWidget {
               icon: Icon(Icons.cable),
               label: 'Connect',
             ),
+            // NavigationDestination(
+            //   icon: Icon(TenturaIcons.updates),
+            //   label: 'Updates',
+            // ),
             NavigationDestination(
-              icon: Icon(TenturaIcons.updates),
-              label: 'Updates',
+              icon: Icon(Icons.contacts_outlined),
+              label: 'Friends',
             ),
             NavigationDestination(
               icon: ProfileNavBarItem(),
@@ -42,7 +46,8 @@ class HomeScreen extends StatelessWidget {
           MyFieldRoute(),
           FavoritesRoute(),
           ConnectRoute(),
-          UpdatesRoute(),
+          // UpdatesRoute(),
+          FriendsRoute(),
           ProfileMineRoute(),
         ],
       );

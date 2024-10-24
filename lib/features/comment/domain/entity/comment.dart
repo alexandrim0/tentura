@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'package:tentura/domain/entity/likable.dart';
 import 'package:tentura/features/profile/domain/entity/profile.dart';
 
 part 'comment.freezed.dart';
 
 @freezed
-class Comment with _$Comment {
+class Comment with _$Comment implements Likable {
   const factory Comment({
     required DateTime createdAt,
     @Default('') String id,
@@ -16,4 +17,9 @@ class Comment with _$Comment {
     @Default(0) int myVote,
     @Default(Profile()) Profile author,
   }) = _Comment;
+
+  const Comment._();
+
+  @override
+  int get votes => myVote;
 }

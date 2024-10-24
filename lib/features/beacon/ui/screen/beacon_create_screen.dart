@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -10,16 +9,24 @@ import 'package:tentura/ui/widget/tentura_icons.dart';
 import 'package:tentura/features/geo/domain/entity/coordinates.dart';
 import 'package:tentura/features/geo/ui/dialog/choose_location_dialog.dart';
 import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
+import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
 
-import '../../domain/use_case/beacon_case.dart';
+import '../../domain/entity/beacon.dart';
+import '../bloc/beacon_cubit.dart';
 import '../dialog/beacon_publish_dialog.dart';
 
 @RoutePage()
-class BeaconCreateScreen extends StatefulWidget {
+class BeaconCreateScreen extends StatefulWidget implements AutoRouteWrapper {
   const BeaconCreateScreen({super.key});
 
   @override
   State<BeaconCreateScreen> createState() => _BeaconCreateScreenState();
+
+  @override
+  Widget wrappedRoute(BuildContext context) => BlocProvider(
+        create: (_) => ContextCubit(),
+        child: this,
+      );
 }
 
 class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
@@ -33,8 +40,6 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
   DateTimeRange? _dateRange;
   Coordinates? _coordinates;
   Uint8List? _image;
-
-  var _context = '';
 
   @override
   void dispose() {
@@ -77,7 +82,7 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
                 ),
                 keyboardType: TextInputType.text,
                 maxLength: kTitleMaxLength,
-                onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                onTapOutside: (_) => FocusScope.of(context).unfocus(),
                 validator: _titleValidator,
               ),
 
@@ -90,15 +95,13 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
                 keyboardType: TextInputType.multiline,
                 maxLength: kDescriptionLength,
                 maxLines: null,
-                onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                onTapOutside: (_) => FocusScope.of(context).unfocus(),
               ),
 
               // Context
-              Padding(
+              const Padding(
                 padding: kPaddingSmallV,
-                child: ContextDropDown(
-                  onChanged: (value) async => _context = value,
-                ),
+                child: ContextDropDown(key: Key('BeaconContextSelector')),
               ),
 
               // Location
@@ -243,15 +246,16 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
 
   Future<void> _onPublish() async {
     if (_formKey.currentState?.validate() ?? false) {
+      final contextName = context.read<ContextCubit>().state.selected;
       if (await BeaconPublishDialog.show(context) ?? false) {
         try {
-          await GetIt.I<BeaconCase>().create(
+          await GetIt.I<BeaconCubit>().create(
             beacon: emptyBeacon.copyWith(
               title: _titleController.text,
               description: _descriptionController.text,
               coordinates: _coordinates,
               dateRange: _dateRange,
-              context: _context,
+              context: contextName,
             ),
             image: _image,
           );

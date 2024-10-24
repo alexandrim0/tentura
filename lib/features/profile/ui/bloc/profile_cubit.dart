@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'package:get_it/get_it.dart';
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/ui/bloc/state_base.dart';
-
-import 'package:tentura/features/auth/domain/exception.dart';
 
 import '../../domain/entity/profile.dart';
 import '../../domain/use_case/profile_case.dart';
@@ -16,7 +13,7 @@ export 'package:get_it/get_it.dart';
 
 export 'profile_state.dart';
 
-@lazySingleton
+@singleton
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit({
     required String id,
@@ -34,13 +31,14 @@ class ProfileCubit extends Cubit<ProfileState> {
         super(const ProfileState()) {
     _authChanges = _profileCase.currentAccountChanges.listen(
       (id) async {
-        emit(ProfileState(profile: Profile(id: id)));
+        emit(ProfileState(
+          profile: Profile(id: id),
+          status: FetchStatus.isLoading,
+        ));
         if (kDebugMode) print('Current User Id: $id');
         if (id.isNotEmpty) await fetch(fromCache: true);
       },
       cancelOnError: false,
-      onError: (Object? e) =>
-          emit(state.setError(e ?? const AuthExceptionUnknown())),
     );
   }
 
@@ -55,7 +53,12 @@ class ProfileCubit extends Cubit<ProfileState> {
     return super.close();
   }
 
+  bool checkIfIsMe(String id) => id == state.profile.id;
+
+  bool checkIfIsNotMe(String id) => id != state.profile.id;
+
   Future<void> fetch({bool fromCache = false}) async {
+    if (state.profile.id.isEmpty) return;
     emit(state.setLoading());
     try {
       emit(ProfileState(
@@ -88,9 +91,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(state.setError(e));
     }
   }
-
-  // Future<({String name, Uint8List bytes})?> pickImage() =>
-  //     _profileCase.pickImage();
 
   Future<void> putAvatarImage(Uint8List image) async {
     emit(state.setLoading());

@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/domain/entity/repository_event.dart';
+
 import 'package:tentura/features/auth/data/repository/auth_repository.dart';
 
 import '../../data/context_repository.dart';
+import '../entity/context.dart';
 
 @lazySingleton
 class ContextCase {
@@ -19,27 +22,17 @@ class ContextCase {
   Stream<String> get currentAccountChanges =>
       _authRepository.currentAccountChanges();
 
-  Future<Iterable<String>> fetch() => _contextRepository.fetch();
+  Stream<RepositoryEvent<Context>> get contextChanges =>
+      _contextRepository.changes;
 
-  Future<String> add(String contextName) async {
-    final context = await _contextRepository.add(contextName);
-    if (context == null) {
-      throw Exception('Could not add context [$contextName]');
-    }
-    return context;
-  }
+  Future<Iterable<String>> fetch({bool fromCache = true}) =>
+      _contextRepository.fetch(fromCache: fromCache);
 
-  Future<String> delete({
-    required String userId,
-    required String contextName,
-  }) async {
-    final context = await _contextRepository.delete(
-      contextName: contextName,
-      userId: userId,
-    );
-    if (context == null) {
-      throw Exception('Could not delete context [$contextName]');
-    }
-    return context;
-  }
+  Future<void> add(String contextName) async =>
+      _contextRepository.add(contextName);
+
+  Future<void> delete(String contextName) async => _contextRepository.delete(
+        userId: await _authRepository.getCurrentAccountId(),
+        contextName: contextName,
+      );
 }

@@ -1,10 +1,12 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+import 'package:tentura/domain/entity/likable.dart';
 
 part 'profile.freezed.dart';
 
 @freezed
-class Profile with _$Profile {
+class Profile with _$Profile implements Likable {
   const factory Profile({
     @Default('') String id,
     @Default('') String title,
@@ -16,7 +18,14 @@ class Profile with _$Profile {
 
   const Profile._();
 
+  @override
+  int get votes => myVote;
+
   String get imageId => hasAvatar ? id : '';
 
   bool get isFriend => myVote > 0;
+
+  bool get isSeeingMe => score > 0;
+
+  bool get needEdit => id.isNotEmpty && title.isEmpty;
 }

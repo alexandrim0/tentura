@@ -1,12 +1,17 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'package:tentura/domain/entity/identifiable.dart';
+
 part 'context.freezed.dart';
 
 @freezed
-sealed class Context with _$Context {
-  const factory Context.add() = ContextAdd;
+class Context with _$Context implements Identifiable {
+  const factory Context({
+    @Default('') String name,
+  }) = _Context;
 
-  const factory Context.all() = ContextAll;
+  const Context._();
 
-  const factory Context.value(String name) = ContextValue;
+  @override
+  String get id => name;
 }

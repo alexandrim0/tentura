@@ -19,6 +19,9 @@ class AuthCase {
 
   final RemoteApiService _remoteApiService;
 
+  Stream<String> get currentAccountChanges =>
+      _authRepository.currentAccountChanges();
+
   Future<String> getCurrentAccountId() => _authRepository.getCurrentAccountId();
 
   Future<Set<Account>> getAccountAll() => _authRepository.getAccountAll();
@@ -38,12 +41,12 @@ class AuthCase {
 
   Future<Account> signIn(
     String id, {
-    bool isPpremature = false,
+    bool isPremature = false,
   }) async {
     final account = await _authRepository.getAccountById(id);
     if (account == null) throw const AuthIdNotFoundException();
     await _remoteApiService.signIn(
-      prematureUserId: isPpremature ? id : null,
+      prematureUserId: isPremature ? id : null,
       seed: account.seed,
     );
     await _authRepository.setCurrentAccountId(id);

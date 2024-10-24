@@ -9,50 +9,31 @@ import 'package:tentura/ui/widget/avatar_positioned.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 
 import 'package:tentura/features/beacon/ui/bloc/beacon_cubit.dart';
-import 'package:tentura/features/beacon/ui/widget/beacon_mine_tile.dart';
+import 'package:tentura/features/beacon/ui/widget/beacon_mine_list.dart';
 
 import '../bloc/profile_cubit.dart';
 import '../widget/profile_mine_menu_button.dart';
 
 @RoutePage()
-class ProfileMineScreen extends StatelessWidget implements AutoRouteWrapper {
+class ProfileMineScreen extends StatelessWidget {
   const ProfileMineScreen({super.key});
 
   @override
-  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: GetIt.I<BeaconCubit>()),
-          BlocProvider.value(value: GetIt.I<ProfileCubit>()),
-        ],
-        child: MultiBlocListener(
-          listeners: [
-            BlocListener<BeaconCubit, BeaconState>(
-              listenWhen: (p, c) => c.hasError,
-              listener: showSnackBarError,
-            ),
-            BlocListener<ProfileCubit, ProfileState>(
-              listenWhen: (p, c) => c.hasError,
-              listener: showSnackBarError,
-            ),
-          ],
-          child: this,
-        ),
-      );
-
-  @override
-  Widget build(BuildContext context) => RefreshIndicator.adaptive(
-        onRefresh: () async => Future.wait([
-          GetIt.I<BeaconCubit>().fetch(),
-          GetIt.I<ProfileCubit>().fetch(),
-        ]),
-        child: Builder(
-          builder: (context) {
-            final textTheme = Theme.of(context).textTheme;
-            final beaconsCubit = context.watch<BeaconCubit>();
-            final profileCubit = context.watch<ProfileCubit>();
-            final beacons = beaconsCubit.state.beacons;
-            final profile = profileCubit.state.profile;
-            return CustomScrollView(
+  Widget build(BuildContext context) =>
+      BlocConsumer<ProfileCubit, ProfileState>(
+        bloc: GetIt.I<ProfileCubit>(),
+        listenWhen: (p, c) => c.hasError,
+        listener: showSnackBarError,
+        buildWhen: (p, c) => c.hasNoError,
+        builder: (context, state) {
+          final profile = state.profile;
+          final textTheme = Theme.of(context).textTheme;
+          return RefreshIndicator.adaptive(
+            onRefresh: () async => Future.wait([
+              GetIt.I<BeaconCubit>().fetch(),
+              GetIt.I<ProfileCubit>().fetch(),
+            ]),
+            child: CustomScrollView(
               slivers: [
                 // Header
                 SliverAppBar(
@@ -100,8 +81,8 @@ class ProfileMineScreen extends StatelessWidget implements AutoRouteWrapper {
                           padding: kPaddingSmallV,
                           child: Text(
                             profile.title.isEmpty ? 'No name' : profile.title,
-                            textAlign: TextAlign.left,
                             style: textTheme.headlineLarge,
+                            textAlign: TextAlign.left,
                           ),
                         ),
 
@@ -141,42 +122,10 @@ class ProfileMineScreen extends StatelessWidget implements AutoRouteWrapper {
                 ),
 
                 // Beacons List
-                if (beacons.isEmpty)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        right: kSpacingMedium,
-                        bottom: kSpacingMedium,
-                        left: kSpacingMedium,
-                      ),
-                      child: Text(
-                        'There are no beacons yet',
-                        style: textTheme.bodyMedium,
-                      ),
-                    ),
-                  )
-                else
-                  SliverList.separated(
-                    key: const PageStorageKey('MyBeaconsListView'),
-                    itemCount: beacons.length,
-                    itemBuilder: (context, i) {
-                      final beacon = beacons[i];
-                      return Padding(
-                        padding: kPaddingH,
-                        child: BeaconMineTile(
-                          beacon: beacon,
-                          key: ValueKey(beacon),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (_, __) => const Divider(
-                      endIndent: 20,
-                      indent: 20,
-                    ),
-                  ),
+                const BeaconMineList(),
               ],
-            );
-          },
-        ),
+            ),
+          );
+        },
       );
 }
