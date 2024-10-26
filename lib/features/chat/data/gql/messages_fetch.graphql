@@ -1,5 +1,6 @@
-# import '/features/user/data/gql/user_model.graphql'
 # import '/features/chat/data/gql/message_model.graphql'
+# import '/features/profile/data/gql/user_model.graphql'
+
 
 query MessagesFetch($id: String!) {
   user_by_pk(id: $id) {

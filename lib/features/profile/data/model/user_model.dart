@@ -1,5 +1,4 @@
-import 'package:tentura/features/profile/domain/entity/profile.dart';
-
+import '../../domain/entity/profile.dart';
 import '../gql/_g/user_model.data.gql.dart';
 
 extension type const UserModel(GUserModel i) implements GUserModel {

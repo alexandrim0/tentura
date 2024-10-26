@@ -1,5 +1,5 @@
 # import '/features/beacon/data/gql/beacon_model.graphql'
-# import '/features/user/data/gql/user_model.graphql'
+# import '/features/profile/data/gql/user_model.graphql'
 
 query ProfileFetchByUserId($user_id: String!, $limit: Int = 3) {
   user_by_pk(id: $user_id) {
