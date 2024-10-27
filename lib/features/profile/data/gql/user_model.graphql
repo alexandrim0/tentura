@@ -4,5 +4,4 @@ fragment UserModel on user {
   description
   has_picture
   my_vote
-  score
 }

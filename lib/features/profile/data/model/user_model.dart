@@ -8,6 +8,5 @@ extension type const UserModel(GUserModel i) implements GUserModel {
         description: i.description,
         hasAvatar: i.has_picture,
         myVote: i.my_vote ?? 0,
-        score: double.tryParse(i.score?.value ?? '') ?? 0,
       );
 }

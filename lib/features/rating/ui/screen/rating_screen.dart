@@ -39,9 +39,8 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
         final items = filter.isEmpty
             ? state.items
             : state.items
-                .where((e) => e.profile.title
-                    .toLowerCase()
-                    .contains(filter.toLowerCase()))
+                .where(
+                    (e) => e.title.toLowerCase().contains(filter.toLowerCase()))
                 .toList();
 
         return Scaffold(
@@ -116,7 +115,7 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
             separatorBuilder: (context, i) => const Divider(),
             itemBuilder: (context, i) => RatingListTile(
               key: ValueKey(items[i]),
-              userRating: items[i],
+              profile: items[i],
             ),
           ),
         );

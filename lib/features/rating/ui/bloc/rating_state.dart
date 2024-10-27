@@ -1,13 +1,13 @@
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import '../../domain/entity/user_rating.dart';
+import 'package:tentura/features/profile/domain/entity/profile.dart';
 
 part 'rating_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
 class RatingState with _$RatingState, StateFetchMixin {
   const factory RatingState({
-    @Default([]) List<UserRating> items,
+    @Default([]) List<Profile> items,
     @Default('') String context,
     @Default('') String searchFilter,
     @Default(false) bool isSortedByAsc,

@@ -61,19 +61,15 @@ class RatingCubit extends Cubit<RatingState> {
 
   void _sort() {
     if (state.isSortedByEgo) {
-      state.items.sort((a, b) {
-        final c = state.isSortedByAsc
-            ? a.egoScore - b.egoScore
-            : b.egoScore - a.egoScore;
-        return (c * 10000).toInt();
-      });
+      state.items.sort((a, b) =>
+          10000 *
+          (state.isSortedByAsc ? a.rScore - b.rScore : b.rScore - a.rScore)
+              .toInt());
     } else {
-      state.items.sort((a, b) {
-        final c = state.isSortedByAsc
-            ? a.userScore - b.userScore
-            : b.userScore - a.userScore;
-        return (c * 10000).toInt();
-      });
+      state.items.sort((a, b) =>
+          10000 *
+          (state.isSortedByAsc ? a.score - b.score : b.score - a.score)
+              .toInt());
     }
   }
 }

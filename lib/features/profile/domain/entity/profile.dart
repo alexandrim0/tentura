@@ -12,6 +12,7 @@ class Profile with _$Profile implements Likable {
     @Default('') String title,
     @Default('') String description,
     @Default(false) bool hasAvatar,
+    @Default(0) double rScore,
     @Default(0) double score,
     @Default(0) int myVote,
   }) = _Profile;
@@ -25,7 +26,7 @@ class Profile with _$Profile implements Likable {
 
   bool get isFriend => myVote > 0;
 
-  bool get isSeeingMe => score > 0;
+  bool get isSeeingMe => rScore > 0;
 
   bool get needEdit => id.isNotEmpty && title.isEmpty;
 }
