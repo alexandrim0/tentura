@@ -23,6 +23,7 @@ extension type const BeaconModel(GBeaconModel i) implements GBeaconModel {
                 lat: double.tryParse(i.lat?.value ?? '') ?? 0,
                 long: double.tryParse(i.long?.value ?? '') ?? 0,
               ),
+        score: double.tryParse(i.scores?.first.dst_score?.value ?? '') ?? 0,
         author: (i.author as UserModel).toEntity,
       );
 }

@@ -9,4 +9,8 @@ fragment CommentModel on comment {
   author {
     ...UserModel
   }
+  scores {
+    src_score
+    dst_score
+  }
 }

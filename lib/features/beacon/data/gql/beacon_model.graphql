@@ -17,4 +17,8 @@ fragment BeaconModel on beacon {
   author {
     ...UserModel
   }
+  scores {
+    src_score
+    dst_score
+  }
 }

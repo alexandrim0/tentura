@@ -79,9 +79,21 @@ type beacon {
   A computed field, executes function "beacon_get_scores"
   """
   scores(
-    """JSON select path"""
-    path: String
-  ): jsonb
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]
   timerange: tstzrange
   title: String!
   updated_at: timestamptz!
@@ -153,7 +165,7 @@ input beacon_bool_exp {
   lat: float8_comparison_exp
   long: float8_comparison_exp
   my_vote: Int_comparison_exp
-  scores: jsonb_comparison_exp
+  scores: mutual_score_bool_exp
   timerange: tstzrange_comparison_exp
   title: String_comparison_exp
   updated_at: timestamptz_comparison_exp
@@ -265,7 +277,7 @@ input beacon_order_by {
   lat: order_by
   long: order_by
   my_vote: order_by
-  scores: order_by
+  scores_aggregate: mutual_score_aggregate_order_by
   timerange: order_by
   title: order_by
   updated_at: order_by
@@ -617,9 +629,21 @@ type comment {
   A computed field, executes function "comment_get_scores"
   """
   scores(
-    """JSON select path"""
-    path: String
-  ): jsonb
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]
   user_id: String!
 
   """An array relationship"""
@@ -674,7 +698,7 @@ input comment_bool_exp {
   created_at: timestamptz_comparison_exp
   id: String_comparison_exp
   my_vote: Int_comparison_exp
-  scores: jsonb_comparison_exp
+  scores: mutual_score_bool_exp
   user_id: String_comparison_exp
   vote_comments: vote_comment_bool_exp
 }
@@ -760,7 +784,7 @@ input comment_order_by {
   created_at: order_by
   id: order_by
   my_vote: order_by
-  scores: order_by
+  scores_aggregate: mutual_score_aggregate_order_by
   user_id: order_by
   vote_comments_aggregate: vote_comment_aggregate_order_by
 }
@@ -935,43 +959,6 @@ input Int_comparison_exp {
 }
 
 scalar json
-
-scalar jsonb
-
-input jsonb_cast_exp {
-  String: String_comparison_exp
-}
-
-"""
-Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'.
-"""
-input jsonb_comparison_exp {
-  _cast: jsonb_cast_exp
-
-  """is the column contained in the given json value"""
-  _contained_in: jsonb
-
-  """does the column contain the given json value at the top level"""
-  _contains: jsonb
-  _eq: jsonb
-  _gt: jsonb
-  _gte: jsonb
-
-  """does the string exist as a top-level key in the column"""
-  _has_key: String
-
-  """do all of these strings exist as top-level keys in the column"""
-  _has_keys_all: [String!]
-
-  """do any of these strings exist as top-level keys in the column"""
-  _has_keys_any: [String!]
-  _in: [jsonb!]
-  _is_null: Boolean
-  _lt: jsonb
-  _lte: jsonb
-  _neq: jsonb
-  _nin: [jsonb!]
-}
 
 """
 columns and relationships of "message"
@@ -1610,6 +1597,31 @@ type mutual_score {
 }
 
 """
+order by aggregate values of table "mutual_score"
+"""
+input mutual_score_aggregate_order_by {
+  avg: mutual_score_avg_order_by
+  count: order_by
+  max: mutual_score_max_order_by
+  min: mutual_score_min_order_by
+  stddev: mutual_score_stddev_order_by
+  stddev_pop: mutual_score_stddev_pop_order_by
+  stddev_samp: mutual_score_stddev_samp_order_by
+  sum: mutual_score_sum_order_by
+  var_pop: mutual_score_var_pop_order_by
+  var_samp: mutual_score_var_samp_order_by
+  variance: mutual_score_variance_order_by
+}
+
+"""
+order by avg() on columns of table "mutual_score"
+"""
+input mutual_score_avg_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
 Boolean expression to filter rows from the table "mutual_score". All fields are combined with a logical 'AND'.
 """
 input mutual_score_bool_exp {
@@ -1623,6 +1635,26 @@ input mutual_score_bool_exp {
   src: String_comparison_exp
   src_score: float8_comparison_exp
   user: user_bool_exp
+}
+
+"""
+order by max() on columns of table "mutual_score"
+"""
+input mutual_score_max_order_by {
+  dst: order_by
+  dst_score: order_by
+  src: order_by
+  src_score: order_by
+}
+
+"""
+order by min() on columns of table "mutual_score"
+"""
+input mutual_score_min_order_by {
+  dst: order_by
+  dst_score: order_by
+  src: order_by
+  src_score: order_by
 }
 
 """Ordering options when selecting data from "mutual_score"."""
@@ -1654,6 +1686,30 @@ enum mutual_score_select_column {
 }
 
 """
+order by stddev() on columns of table "mutual_score"
+"""
+input mutual_score_stddev_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by stddev_pop() on columns of table "mutual_score"
+"""
+input mutual_score_stddev_pop_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by stddev_samp() on columns of table "mutual_score"
+"""
+input mutual_score_stddev_samp_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
 Streaming cursor of the table "mutual_score"
 """
 input mutual_score_stream_cursor_input {
@@ -1670,6 +1726,38 @@ input mutual_score_stream_cursor_value_input {
   dst_score: float8
   src: String
   src_score: float8
+}
+
+"""
+order by sum() on columns of table "mutual_score"
+"""
+input mutual_score_sum_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by var_pop() on columns of table "mutual_score"
+"""
+input mutual_score_var_pop_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by var_samp() on columns of table "mutual_score"
+"""
+input mutual_score_var_samp_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by variance() on columns of table "mutual_score"
+"""
+input mutual_score_variance_order_by {
+  dst_score: order_by
+  src_score: order_by
 }
 
 input my_field_args {
@@ -2667,9 +2755,21 @@ type user {
   A computed field, executes function "user_get_scores"
   """
   scores(
-    """JSON select path"""
-    path: String
-  ): jsonb
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]
   title: String!
   updated_at: timestamptz!
 
@@ -2762,7 +2862,7 @@ input user_bool_exp {
   id: String_comparison_exp
   my_vote: Int_comparison_exp
   public_key: String_comparison_exp
-  scores: jsonb_comparison_exp
+  scores: mutual_score_bool_exp
   title: String_comparison_exp
   updated_at: timestamptz_comparison_exp
   voteUsersBySubject: vote_user_bool_exp
@@ -2891,7 +2991,7 @@ input user_order_by {
   id: order_by
   my_vote: order_by
   public_key: order_by
-  scores: order_by
+  scores_aggregate: mutual_score_aggregate_order_by
   title: order_by
   updated_at: order_by
   voteUsersBySubject_aggregate: vote_user_aggregate_order_by

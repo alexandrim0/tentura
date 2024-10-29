@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:tentura/domain/entity/likable.dart';
+
 import 'package:tentura/features/profile/domain/entity/profile.dart';
 
 part 'comment.freezed.dart';

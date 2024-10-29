@@ -10,6 +10,7 @@ extension type const CommentModel(GCommentModel i) implements GCommentModel {
         beaconId: i.beacon_id,
         createdAt: i.created_at,
         myVote: i.my_vote ?? 0,
+        score: double.tryParse(i.scores?.first.dst_score?.value ?? '') ?? 0,
         author: (i.author as UserModel).toEntity,
       );
 }

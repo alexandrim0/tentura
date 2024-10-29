@@ -4,7 +4,6 @@
 query ProfileFetchByUserId($user_id: String!, $limit: Int = 3) {
   user_by_pk(id: $user_id) {
     ...UserModel
-    scores
     beacons(
       where: {
         _and: {user_id: {_eq: $user_id},
