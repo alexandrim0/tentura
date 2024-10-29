@@ -1,4 +1,4 @@
-# import '/features/user/data/gql/user_model.graphql'
+# import '/features/profile/data/gql/user_model.graphql'
 
 query FriendsFetch {
   vote_user(where: {amount: {_gt: 0}}) {

@@ -11,7 +11,7 @@ import '../gql/_g/beacon_fetch_pinned.req.gql.dart';
 import '../gql/_g/beacon_pin_by_id.req.gql.dart';
 import '../gql/_g/beacon_unpin_by_id.req.gql.dart';
 
-@singleton
+@lazySingleton
 class FavoritesRemoteRepository {
   FavoritesRemoteRepository(this._remoteApiService);
 

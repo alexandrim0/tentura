@@ -10,7 +10,7 @@ import '../entity/beacon.dart';
 
 export '../entity/beacon.dart';
 
-@singleton
+@lazySingleton
 class BeaconCase {
   const BeaconCase(
     this._authRepository,

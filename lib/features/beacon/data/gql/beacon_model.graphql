@@ -1,3 +1,5 @@
+# import '/features/profile/data/gql/user_model.graphql'
+
 fragment BeaconModel on beacon {
   id
   title
@@ -12,11 +14,11 @@ fragment BeaconModel on beacon {
   timerange
   has_picture
   my_vote
-  score
   author {
-    id
-    title
-    has_picture
-    score
+    ...UserModel
+  }
+  scores {
+    src_score
+    dst_score
   }
 }

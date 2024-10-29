@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/widget/avatar_image.dart';
 
-import '../../domain/entity/user_rating.dart';
+import 'package:tentura/features/profile/domain/entity/profile.dart';
 
 class RatingListTile extends StatelessWidget {
   RatingListTile({
-    required this.userRating,
+    required this.profile,
     this.height = 40,
     this.ratio = 2.5,
     super.key,
@@ -16,7 +16,7 @@ class RatingListTile extends StatelessWidget {
 
   final double ratio;
   final double height;
-  final UserRating userRating;
+  final Profile profile;
 
   late final _barbellSize = Size(height * ratio, height);
 
@@ -24,20 +24,20 @@ class RatingListTile extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () => context.pushRoute(
-          ProfileViewRoute(id: userRating.profile.id),
+          ProfileViewRoute(id: profile.id),
         ),
         child: Row(
           children: [
             Padding(
               padding: const EdgeInsets.all(8),
               child: AvatarImage(
-                userId: userRating.profile.imageId,
+                userId: profile.imageId,
                 size: height,
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8),
-              child: Text(userRating.profile.title),
+              child: Text(profile.title),
             ),
             const Spacer(),
             Padding(
@@ -45,8 +45,8 @@ class RatingListTile extends StatelessWidget {
               child: CustomPaint(
                 size: _barbellSize,
                 painter: _CustomBarbellPainter(
-                  userRating.userScore,
-                  userRating.egoScore,
+                  profile.score,
+                  profile.rScore,
                 ),
               ),
             ),

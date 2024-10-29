@@ -5,7 +5,7 @@ import 'package:tentura/data/service/remote_api_service.dart';
 import 'package:tentura/features/beacon/data/model/beacon_model.dart';
 import 'package:tentura/features/beacon/domain/entity/beacon.dart';
 import 'package:tentura/features/profile/domain/entity/profile.dart';
-import 'package:tentura/features/user/data/model/user_model.dart';
+import 'package:tentura/features/profile/data/model/user_model.dart';
 
 import 'gql/_g/profile_fetch_by_user_id.req.gql.dart';
 

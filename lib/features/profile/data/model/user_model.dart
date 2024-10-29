@@ -1,5 +1,4 @@
-import 'package:tentura/features/profile/domain/entity/profile.dart';
-
+import '../../domain/entity/profile.dart';
 import '../gql/_g/user_model.data.gql.dart';
 
 extension type const UserModel(GUserModel i) implements GUserModel {
@@ -9,6 +8,5 @@ extension type const UserModel(GUserModel i) implements GUserModel {
         description: i.description,
         hasAvatar: i.has_picture,
         myVote: i.my_vote ?? 0,
-        score: double.tryParse(i.score?.value ?? '') ?? 0,
       );
 }

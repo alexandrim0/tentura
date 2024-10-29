@@ -37,7 +37,7 @@ class GraphRepository {
         final beacon = data.beacon_by_pk;
         final result = <EdgeDirected>{};
         for (final e in data.graph) {
-          final weight = double.parse(e.score!.value);
+          final weight = double.parse(e.dst_score!.value);
           if (e.user == null) {
             if (beacon != null && e.dst == beacon.id) {
               result.add((
@@ -49,7 +49,7 @@ class GraphRepository {
                   label: beacon.title,
                   userId: beacon.author.id,
                   hasImage: beacon.has_picture,
-                  score: double.parse(beacon.score!.value),
+                  score: weight,
                 )
               ));
             }
@@ -62,7 +62,7 @@ class GraphRepository {
                 id: e.user!.id,
                 label: e.user!.title,
                 hasImage: e.user!.has_picture,
-                score: double.parse(e.user!.score!.value),
+                score: weight,
               ),
             ));
           }

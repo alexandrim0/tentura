@@ -5,7 +5,7 @@ import 'package:tentura/data/gql/_g/schema.schema.gql.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 // import 'package:tentura/domain/entity/repository_event.dart';
 
-import 'package:tentura/features/user/data/model/user_model.dart';
+import 'package:tentura/features/profile/data/model/user_model.dart';
 
 import '../../domain/typedef.dart';
 import '../../domain/exception.dart';
@@ -16,7 +16,7 @@ import '../gql/_g/messages_fetch.req.gql.dart';
 import '../gql/_g/messages_stream.req.gql.dart';
 import '../model/message_model.dart';
 
-@singleton
+@lazySingleton
 class ChatRepository {
   ChatRepository(this._remoteApiService);
 

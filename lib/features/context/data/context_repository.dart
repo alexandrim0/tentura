@@ -10,7 +10,7 @@ import 'gql/_g/context_add.req.gql.dart';
 import 'gql/_g/context_delete.req.gql.dart';
 import 'gql/_g/context_fetch.req.gql.dart';
 
-@singleton
+@lazySingleton
 class ContextRepository {
   static const _label = 'Context';
 

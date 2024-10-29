@@ -74,7 +74,26 @@ type beacon {
   A computed field, executes function "beacon_get_my_vote"
   """
   my_vote: Int
-  score: float8
+
+  """
+  A computed field, executes function "beacon_get_scores"
+  """
+  scores(
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]
   timerange: tstzrange
   title: String!
   updated_at: timestamptz!
@@ -146,7 +165,7 @@ input beacon_bool_exp {
   lat: float8_comparison_exp
   long: float8_comparison_exp
   my_vote: Int_comparison_exp
-  score: float8_comparison_exp
+  scores: mutual_score_bool_exp
   timerange: tstzrange_comparison_exp
   title: String_comparison_exp
   updated_at: timestamptz_comparison_exp
@@ -258,7 +277,7 @@ input beacon_order_by {
   lat: order_by
   long: order_by
   my_vote: order_by
-  score: order_by
+  scores_aggregate: mutual_score_aggregate_order_by
   timerange: order_by
   title: order_by
   updated_at: order_by
@@ -607,9 +626,24 @@ type comment {
   my_vote: Int
 
   """
-  A computed field, executes function "comment_get_score"
+  A computed field, executes function "comment_get_scores"
   """
-  score: float8
+  scores(
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]
   user_id: String!
 
   """An array relationship"""
@@ -664,7 +698,7 @@ input comment_bool_exp {
   created_at: timestamptz_comparison_exp
   id: String_comparison_exp
   my_vote: Int_comparison_exp
-  score: float8_comparison_exp
+  scores: mutual_score_bool_exp
   user_id: String_comparison_exp
   vote_comments: vote_comment_bool_exp
 }
@@ -750,7 +784,7 @@ input comment_order_by {
   created_at: order_by
   id: order_by
   my_vote: order_by
-  score: order_by
+  scores_aggregate: mutual_score_aggregate_order_by
   user_id: order_by
   vote_comments_aggregate: vote_comment_aggregate_order_by
 }
@@ -924,6 +958,8 @@ input Int_comparison_exp {
   _nin: [Int!]
 }
 
+scalar json
+
 """
 columns and relationships of "message"
 """
@@ -1034,13 +1070,6 @@ enum message_select_column {
 }
 
 """
-input type for updating data in table "message"
-"""
-input message_set_input {
-  delivered: Boolean
-}
-
-"""
 Streaming cursor of the table "message"
 """
 input message_stream_cursor_input {
@@ -1063,17 +1092,14 @@ input message_stream_cursor_value_input {
 }
 
 """
-update columns of table "message"
+placeholder for update columns of table "message" (current role has no relevant permissions)
 """
 enum message_update_column {
-  """column name"""
-  delivered
+  """placeholder (do not use)"""
+  _PLACEHOLDER
 }
 
 input message_updates {
-  """sets the columns of the filtered rows to the given values"""
-  _set: message_set_input
-
   """filter the rows which have to be updated"""
   where: message_bool_exp!
 }
@@ -1379,9 +1405,6 @@ type mutation_root {
   update data of the table: "message"
   """
   update_message(
-    """sets the columns of the filtered rows to the given values"""
-    _set: message_set_input
-
     """filter the rows which have to be updated"""
     where: message_bool_exp!
   ): message_mutation_response
@@ -1389,11 +1412,7 @@ type mutation_root {
   """
   update single row of the table: "message"
   """
-  update_message_by_pk(
-    """sets the columns of the filtered rows to the given values"""
-    _set: message_set_input
-    pk_columns: message_pk_columns_input!
-  ): message
+  update_message_by_pk(pk_columns: message_pk_columns_input!): message
 
   """
   update multiples rows of table: "message"
@@ -1563,6 +1582,11 @@ type mutation_root {
 columns and relationships of "mutual_score"
 """
 type mutual_score {
+  """An object relationship"""
+  beacon: beacon
+
+  """An object relationship"""
+  comment: comment
   dst: String
   dst_score: float8
   src: String
@@ -1573,12 +1597,39 @@ type mutual_score {
 }
 
 """
+order by aggregate values of table "mutual_score"
+"""
+input mutual_score_aggregate_order_by {
+  avg: mutual_score_avg_order_by
+  count: order_by
+  max: mutual_score_max_order_by
+  min: mutual_score_min_order_by
+  stddev: mutual_score_stddev_order_by
+  stddev_pop: mutual_score_stddev_pop_order_by
+  stddev_samp: mutual_score_stddev_samp_order_by
+  sum: mutual_score_sum_order_by
+  var_pop: mutual_score_var_pop_order_by
+  var_samp: mutual_score_var_samp_order_by
+  variance: mutual_score_variance_order_by
+}
+
+"""
+order by avg() on columns of table "mutual_score"
+"""
+input mutual_score_avg_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
 Boolean expression to filter rows from the table "mutual_score". All fields are combined with a logical 'AND'.
 """
 input mutual_score_bool_exp {
   _and: [mutual_score_bool_exp!]
   _not: mutual_score_bool_exp
   _or: [mutual_score_bool_exp!]
+  beacon: beacon_bool_exp
+  comment: comment_bool_exp
   dst: String_comparison_exp
   dst_score: float8_comparison_exp
   src: String_comparison_exp
@@ -1586,8 +1637,30 @@ input mutual_score_bool_exp {
   user: user_bool_exp
 }
 
+"""
+order by max() on columns of table "mutual_score"
+"""
+input mutual_score_max_order_by {
+  dst: order_by
+  dst_score: order_by
+  src: order_by
+  src_score: order_by
+}
+
+"""
+order by min() on columns of table "mutual_score"
+"""
+input mutual_score_min_order_by {
+  dst: order_by
+  dst_score: order_by
+  src: order_by
+  src_score: order_by
+}
+
 """Ordering options when selecting data from "mutual_score"."""
 input mutual_score_order_by {
+  beacon: beacon_order_by
+  comment: comment_order_by
   dst: order_by
   dst_score: order_by
   src: order_by
@@ -1613,6 +1686,30 @@ enum mutual_score_select_column {
 }
 
 """
+order by stddev() on columns of table "mutual_score"
+"""
+input mutual_score_stddev_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by stddev_pop() on columns of table "mutual_score"
+"""
+input mutual_score_stddev_pop_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by stddev_samp() on columns of table "mutual_score"
+"""
+input mutual_score_stddev_samp_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
 Streaming cursor of the table "mutual_score"
 """
 input mutual_score_stream_cursor_input {
@@ -1629,6 +1726,38 @@ input mutual_score_stream_cursor_value_input {
   dst_score: float8
   src: String
   src_score: float8
+}
+
+"""
+order by sum() on columns of table "mutual_score"
+"""
+input mutual_score_sum_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by var_pop() on columns of table "mutual_score"
+"""
+input mutual_score_var_pop_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by var_samp() on columns of table "mutual_score"
+"""
+input mutual_score_var_samp_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by variance() on columns of table "mutual_score"
+"""
+input mutual_score_variance_order_by {
+  dst_score: order_by
+  src_score: order_by
 }
 
 input my_field_args {
@@ -1747,7 +1876,7 @@ type query_root {
   ): [edge!]!
 
   """
-  execute function "graph" which returns "edge"
+  execute function "graph" which returns "mutual_score"
   """
   graph(
     """
@@ -1756,7 +1885,7 @@ type query_root {
     args: graph_args!
 
     """distinct select on columns"""
-    distinct_on: [edge_select_column!]
+    distinct_on: [mutual_score_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -1765,11 +1894,11 @@ type query_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [edge_order_by!]
+    order_by: [mutual_score_order_by!]
 
     """filter the rows returned"""
-    where: edge_bool_exp
-  ): [edge!]!
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
 
   """
   fetch data from the table: "message"
@@ -1815,7 +1944,7 @@ type query_root {
   ): [mutual_score!]!
 
   """
-  execute function "my_field" which returns "edge"
+  execute function "my_field" which returns "mutual_score"
   """
   my_field(
     """
@@ -1824,7 +1953,7 @@ type query_root {
     args: my_field_args!
 
     """distinct select on columns"""
-    distinct_on: [edge_select_column!]
+    distinct_on: [mutual_score_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -1833,11 +1962,11 @@ type query_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [edge_order_by!]
+    order_by: [mutual_score_order_by!]
 
     """filter the rows returned"""
-    where: edge_bool_exp
-  ): [edge!]!
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
 
   """
   execute function "rating" which returns "mutual_score"
@@ -2184,7 +2313,7 @@ type subscription_root {
   ): [edge!]!
 
   """
-  execute function "graph" which returns "edge"
+  execute function "graph" which returns "mutual_score"
   """
   graph(
     """
@@ -2193,7 +2322,7 @@ type subscription_root {
     args: graph_args!
 
     """distinct select on columns"""
-    distinct_on: [edge_select_column!]
+    distinct_on: [mutual_score_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -2202,11 +2331,11 @@ type subscription_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [edge_order_by!]
+    order_by: [mutual_score_order_by!]
 
     """filter the rows returned"""
-    where: edge_bool_exp
-  ): [edge!]!
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
 
   """
   fetch data from the table: "message"
@@ -2280,7 +2409,7 @@ type subscription_root {
   ): [mutual_score!]!
 
   """
-  execute function "my_field" which returns "edge"
+  execute function "my_field" which returns "mutual_score"
   """
   my_field(
     """
@@ -2289,7 +2418,7 @@ type subscription_root {
     args: my_field_args!
 
     """distinct select on columns"""
-    distinct_on: [edge_select_column!]
+    distinct_on: [mutual_score_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -2298,11 +2427,11 @@ type subscription_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [edge_order_by!]
+    order_by: [mutual_score_order_by!]
 
     """filter the rows returned"""
-    where: edge_bool_exp
-  ): [edge!]!
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
 
   """
   execute function "rating" which returns "mutual_score"
@@ -2550,6 +2679,7 @@ input tstzrange_comparison_exp {
 }
 
 input updates_args {
+  hasura_session: json
   prefix: String
 }
 
@@ -2620,7 +2750,26 @@ type user {
   """
   my_vote: Int
   public_key: String!
-  score: float8
+
+  """
+  A computed field, executes function "user_get_scores"
+  """
+  scores(
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]
   title: String!
   updated_at: timestamptz!
 
@@ -2713,7 +2862,7 @@ input user_bool_exp {
   id: String_comparison_exp
   my_vote: Int_comparison_exp
   public_key: String_comparison_exp
-  score: float8_comparison_exp
+  scores: mutual_score_bool_exp
   title: String_comparison_exp
   updated_at: timestamptz_comparison_exp
   voteUsersBySubject: vote_user_bool_exp
@@ -2842,7 +2991,7 @@ input user_order_by {
   id: order_by
   my_vote: order_by
   public_key: order_by
-  score: order_by
+  scores_aggregate: mutual_score_aggregate_order_by
   title: order_by
   updated_at: order_by
   voteUsersBySubject_aggregate: vote_user_aggregate_order_by
