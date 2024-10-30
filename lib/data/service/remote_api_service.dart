@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura/consts.dart';
 import 'package:tentura_sdk/tentura_sdk.dart';
 
-export 'package:tentura_sdk/tentura_sdk.dart' show DataSource;
+export 'package:tentura_sdk/tentura_sdk.dart';
 
 @singleton
 class RemoteApiService extends TenturaApi {

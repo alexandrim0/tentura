@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 
-import '../domain/entity/context.dart';
+import '../domain/entity/context_entity.dart';
 import '../domain/exception.dart';
 import 'gql/_g/context_add.req.gql.dart';
 import 'gql/_g/context_delete.req.gql.dart';
@@ -20,9 +20,10 @@ class ContextRepository {
 
   final _cache = <String>{};
 
-  final _controller = StreamController<RepositoryEvent<Context>>.broadcast();
+  final _controller =
+      StreamController<RepositoryEvent<ContextEntity>>.broadcast();
 
-  Stream<RepositoryEvent<Context>> get changes => _controller.stream;
+  Stream<RepositoryEvent<ContextEntity>> get changes => _controller.stream;
 
   @disposeMethod
   Future<void> dispose() => _controller.close();
@@ -48,7 +49,7 @@ class ContextRepository {
     if (response == null) throw ContextCreateException(contextName);
     _cache.add(contextName);
     _controller
-        .add(RepositoryEventCreate(Context(name: response.context_name)));
+        .add(RepositoryEventCreate(ContextEntity(name: response.context_name)));
   }
 
   Future<void> delete({
@@ -63,7 +64,7 @@ class ContextRepository {
         .then((r) => r.dataOrThrow(label: _label).delete_user_context_by_pk);
     if (response == null) throw ContextDeleteException(contextName);
     _cache.remove(contextName);
-    _controller.add(RepositoryEventDelete(Context(
+    _controller.add(RepositoryEventDelete(ContextEntity(
       name: response.context_name,
     )));
   }

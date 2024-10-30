@@ -6,7 +6,7 @@ import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import '../../domain/exception.dart';
-import '../../domain/entity/context.dart';
+import '../../domain/entity/context_entity.dart';
 import '../../domain/use_case/context_case.dart';
 import 'context_state.dart';
 
@@ -43,15 +43,15 @@ class ContextCubit extends Cubit<ContextState> {
 
   late final _contextChanges = _contextCase.contextChanges.listen(
     (event) => switch (event) {
-      final RepositoryEventCreate<Context> entity => emit(ContextState(
+      final RepositoryEventCreate<ContextEntity> entity => emit(ContextState(
           contexts: state.contexts..add(entity.value.name),
           selected: state.selected,
         )),
-      final RepositoryEventDelete<Context> entity => emit(ContextState(
+      final RepositoryEventDelete<ContextEntity> entity => emit(ContextState(
           contexts: state.contexts..remove(entity.id),
           selected: state.selected == entity.id ? '' : state.selected,
         )),
-      RepositoryEventUpdate<Context>() => throw UnimplementedError(),
+      RepositoryEventUpdate<ContextEntity>() => throw UnimplementedError(),
     },
     cancelOnError: false,
     onError: (Object? e) =>

@@ -16,7 +16,11 @@ class RatingRepository {
 
   Future<Iterable<Profile>> fetch({required String context}) =>
       _remoteApiService
-          .request(GRatingFetchReq((r) => r.vars.context = context))
+          .request(GRatingFetchReq((r) => r
+            ..context = const Context().withEntry(HttpLinkHeaders(headers: {
+              headerQueryContext: context,
+            }))
+            ..vars.context = context))
           .firstWhere((e) => e.dataSource == DataSource.Link)
           .then((r) => r.dataOrThrow(label: _label).rating)
           .then(

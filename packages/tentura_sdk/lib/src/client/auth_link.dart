@@ -1,5 +1,5 @@
-import 'package:ferry/ferry.dart' show Link, NextLink;
-import 'package:gql_exec/gql_exec.dart' show HttpLinkHeaders, Request, Response;
+import 'package:ferry/ferry.dart';
+import 'package:gql_exec/gql_exec.dart';
 
 class AuthLink extends Link {
   const AuthLink(this._getToken);
@@ -23,6 +23,13 @@ class AuthLink extends Link {
                 headers: {
                   ...?headers?.headers,
                   'Authorization': 'Bearer $token',
+
+                  // TBD: move to separated Link?
+                  // if (request.operation.getOperationType() ==
+                  //         OperationType.query &&
+                  //     request.variables.containsKey('context'))
+                  //   'X-Hasura-Query-Context':
+                  //       request.variables['context'].toString(),
                 },
               ),
             ),

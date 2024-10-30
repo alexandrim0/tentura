@@ -6,7 +6,7 @@ import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/features/auth/data/repository/auth_repository.dart';
 
 import '../../data/context_repository.dart';
-import '../entity/context.dart';
+import '../entity/context_entity.dart';
 
 @lazySingleton
 class ContextCase {
@@ -22,7 +22,7 @@ class ContextCase {
   Stream<String> get currentAccountChanges =>
       _authRepository.currentAccountChanges();
 
-  Stream<RepositoryEvent<Context>> get contextChanges =>
+  Stream<RepositoryEvent<ContextEntity>> get contextChanges =>
       _contextRepository.changes;
 
   Future<Iterable<String>> fetch({bool fromCache = true}) =>
