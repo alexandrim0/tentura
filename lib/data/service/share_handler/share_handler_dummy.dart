@@ -1,4 +1,4 @@
-import 'package:share_handler_multi/share_handler_multi.dart';
+import 'package:share_handler/share_handler.dart' show ShareHandlerPlatform;
 
 class ShareHandler {
   static ShareHandlerPlatform get instance =>
