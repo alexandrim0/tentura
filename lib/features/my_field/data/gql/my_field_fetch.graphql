@@ -9,6 +9,5 @@ query MyFieldFetch($context: String = "") {
     beacon {
       ...BeaconModel
     }
-    dst_score
   }
 }

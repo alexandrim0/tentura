@@ -4,21 +4,20 @@ fragment BeaconModel on beacon {
   id
   title
   description
+  has_picture
   created_at
   updated_at
   is_pinned
+  timerange
   context
   enabled
-  lat
-  long
-  timerange
-  has_picture
   my_vote
+  long
+  lat
   author {
     ...UserModel
   }
   scores {
-    src_score
     dst_score
   }
 }

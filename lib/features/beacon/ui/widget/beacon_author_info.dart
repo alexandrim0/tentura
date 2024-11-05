@@ -47,6 +47,7 @@ class BeaconAuthorInfo extends StatelessWidget {
               ),
             ],
           ),
+          const Spacer(),
 
           // An Eye
           Padding(
