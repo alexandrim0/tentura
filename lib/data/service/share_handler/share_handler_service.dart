@@ -16,7 +16,7 @@ class ShareHandlerService {
   late final StreamSubscription<SharedMedia> _subscription;
 
   @disposeMethod
-  Future<void> dispose() async => kIsWeb ? null : _subscription.cancel();
+  Future<void> dispose() => kIsWeb ? Future.value() : _subscription.cancel();
 
   void _handler(SharedMedia? e) {
     if (e == null) return;

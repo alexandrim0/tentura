@@ -10,8 +10,8 @@ class CachedImage extends StatelessWidget {
   const CachedImage({
     required this.imageUrl,
     required this.placeholder,
-    this.boxFit = BoxFit.cover,
     this.filterQuality = FilterQuality.high,
+    this.boxFit = BoxFit.cover,
     this.height,
     this.width,
     super.key,
@@ -32,8 +32,10 @@ class CachedImage extends StatelessWidget {
           width: width,
           height: height,
           filterQuality: filterQuality,
-          errorBuilder: (context, url, error) => placeholder,
-          loadingBuilder: (context, child, loadingProgress) => placeholder,
+          errorBuilder: (context, url, error) {
+            if (kDebugMode) print(error);
+            return placeholder;
+          },
         )
       : CachedNetworkImage(
           fit: boxFit,
