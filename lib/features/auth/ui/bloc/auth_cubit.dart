@@ -28,11 +28,16 @@ class AuthCubit extends Cubit<AuthState> {
       } catch (e) {
         return AuthCubit(
           authCase: authCase,
-          state: state.copyWith(currentAccountId: ''),
+          state: state.copyWith(
+            currentAccountId: '',
+          ),
         );
       }
     }
-    return AuthCubit(authCase: authCase, state: state);
+    return AuthCubit(
+      authCase: authCase,
+      state: state,
+    );
   }
 
   AuthCubit({
