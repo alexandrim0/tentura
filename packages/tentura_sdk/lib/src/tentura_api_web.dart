@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'package:ferry/ferry.dart';
+import 'package:ferry/ferry.dart'
+    show Client, OperationRequest, OperationResponse;
 
 import 'consts.dart';
 import 'tentura_api_base.dart';

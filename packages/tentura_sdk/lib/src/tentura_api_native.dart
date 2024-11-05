@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:isolate';
-import 'package:ferry/ferry.dart';
+import 'package:ferry/ferry.dart' show OperationRequest, OperationResponse;
 import 'package:ferry/ferry_isolate.dart';
 
 import 'consts.dart';
