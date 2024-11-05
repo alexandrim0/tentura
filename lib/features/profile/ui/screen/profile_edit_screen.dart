@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/app/router/root_router.dart';
@@ -189,9 +188,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     try {
       if (_imageBytes != null) {
         await _profileCubit.putAvatarImage(_imageBytes!);
-        await CachedNetworkImage.evictFromCache(
-          AvatarImage.getAvatarUrl(_profileCubit.state.profile.id),
-        );
+        await AvatarImage.evictFromCache(_profileCubit.state.profile.id);
       }
       await _profileCubit.update(_profileCubit.state.profile.copyWith(
         description: _description,

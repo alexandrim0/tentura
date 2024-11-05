@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:tentura/consts.dart';
 
+import 'cached_image/cached_image.dart';
+
 class AvatarImage extends StatelessWidget {
-  static String getAvatarUrl(String userId) =>
-      '$kApiUri/images/$userId/avatar.jpg';
+  static Future<void> evictFromCache(String id) =>
+      kIsWeb ? Future.value() : CachedImage.evictFromCache(_getAvatarUrl(id));
 
   const AvatarImage({
     required this.size,
@@ -30,15 +32,16 @@ class AvatarImage extends StatelessWidget {
       borderRadius: BorderRadius.circular(size / 2),
       child: userId.isEmpty
           ? placeholder
-          : CachedNetworkImage(
-              height: size,
+          : CachedImage(
               width: size,
-              fit: boxFit,
-              filterQuality: FilterQuality.high,
-              imageUrl: getAvatarUrl(userId),
-              placeholder: (context, url) => placeholder,
-              errorWidget: (context, url, error) => placeholder,
+              height: size,
+              boxFit: boxFit,
+              placeholder: placeholder,
+              imageUrl: _getAvatarUrl(userId),
             ),
     );
   }
+
+  static String _getAvatarUrl(String userId) =>
+      '$kApiUri/images/$userId/avatar.jpg';
 }
