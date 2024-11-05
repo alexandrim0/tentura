@@ -7,7 +7,6 @@ class ContextRemoveDialog extends StatelessWidget {
   }) =>
       showDialog<bool>(
         context: context,
-        useRootNavigator: false,
         builder: (_) => ContextRemoveDialog(contextName: contextName),
       );
 

@@ -59,7 +59,7 @@ class AuthRepository {
     return result;
   }
 
-  Future<Account> addAccount(Account account) async {
+  Future<Account> putAccount(Account account) async {
     await _setIdAll((await _getIdAll())..add(account.id));
     await _localStorage.write(
       '$_accountKey${account.id}',

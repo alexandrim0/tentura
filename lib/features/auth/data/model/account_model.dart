@@ -16,10 +16,15 @@ class AccountModel with _$AccountModel {
   factory AccountModel.fromJson(Map<String, Object?> json) =>
       _$AccountModelFromJson(json);
 
-  factory AccountModel.fromEntity(Account entity) =>
-      AccountModel(id: entity.id, seed: entity.seed);
+  factory AccountModel.fromEntity(Account entity) => AccountModel(
+        id: entity.id,
+        seed: entity.seed,
+      );
 
   const AccountModel._();
 
-  Account get toEntity => Account(id: id, seed: seed);
+  Account get toEntity => Account(
+        id: id,
+        seed: seed,
+      );
 }

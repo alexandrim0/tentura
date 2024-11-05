@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'package:ferry/ferry.dart';
+import 'package:ferry/ferry.dart' show OperationRequest, OperationResponse;
 
 import 'client/message.dart';
 import 'service/image_service.dart';

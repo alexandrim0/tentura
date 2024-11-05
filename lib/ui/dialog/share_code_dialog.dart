@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import '../theme.dart';
+import '../widget/qr_code.dart';
 
 class ShareCodeDialog extends StatelessWidget {
   static Future<void> show(
@@ -16,7 +14,6 @@ class ShareCodeDialog extends StatelessWidget {
   }) =>
       showDialog(
         context: context,
-        useRootNavigator: false,
         builder: (context) => ShareCodeDialog(
           header: header,
           link: link.toString(),
@@ -43,38 +40,33 @@ class ShareCodeDialog extends StatelessWidget {
       backgroundColor: theme.colorScheme.surfaceBright,
 
       // Header
-      title: GestureDetector(
-        onTap: () async {
-          await Clipboard.setData(ClipboardData(text: link));
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Link has been copied')),
-            );
-          }
-        },
-        child: Text(
-          header,
-          maxLines: 1,
-          overflow: TextOverflow.clip,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.headlineLarge,
-        ),
+      title: Text(
+        header,
+        maxLines: 1,
+        overflow: TextOverflow.clip,
+        textAlign: TextAlign.center,
+        style: theme.textTheme.headlineMedium,
       ),
 
       // QRCode
-      content: PrettyQrView.data(
-        key: ValueKey(header),
+      content: QrCode(
         data: header,
-        decoration: PrettyQrDecoration(
-          shape: PrettyQrSmoothSymbol(
-            // We can`t read inverted QR
-            color: themeLight.colorScheme.onSurface,
-          ),
-        ),
       ),
 
       // Buttons
       actions: [
+        TextButton(
+          child: const Text('Copy to clipboard'),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: link));
+            if (context.mounted) {
+              showSnackBar(
+                context,
+                text: 'Seed copied to clipboard!',
+              );
+            }
+          },
+        ),
         Builder(
           builder: (context) => TextButton(
             child: const Text('Share Link'),
@@ -88,7 +80,7 @@ class ShareCodeDialog extends StatelessWidget {
           ),
         ),
         TextButton(
-          onPressed: context.maybePop,
+          onPressed: Navigator.of(context).pop,
           child: const Text('Close'),
         ),
       ],

@@ -30,13 +30,13 @@ class AuthCase {
     if (seed.isEmpty) throw const AuthSeedIsWrongException();
     final id = await _remoteApiService.signIn(seed: seed);
     if (id.isEmpty) throw const AuthIdIsWrongException();
-    return _authRepository.addAccount(Account(id: id, seed: seed));
+    return _authRepository.putAccount(Account(id: id, seed: seed));
   }
 
   Future<Account> signUp() async {
     final (:id, :seed) = await _remoteApiService.signUp();
     await _authRepository.setCurrentAccountId(id);
-    return _authRepository.addAccount(Account(id: id, seed: seed));
+    return _authRepository.putAccount(Account(id: id, seed: seed));
   }
 
   Future<Account> signIn(
@@ -54,13 +54,13 @@ class AuthCase {
   }
 
   Future<void> signOut() async {
-    _remoteApiService.signOut().ignore();
+    await _remoteApiService.signOut();
     await _authRepository.setCurrentAccountId(null);
   }
 
   /// Remove account only from local storage
   Future<void> removeAccount(String id) async {
-    _remoteApiService.signOut().ignore();
+    await _remoteApiService.signOut();
     await _authRepository.removeAccountById(id);
     if (await _authRepository.getCurrentAccountId() == id) {
       await _authRepository.setCurrentAccountId(null);

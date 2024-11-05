@@ -17,19 +17,22 @@ class GraphRepository {
 
   Future<Set<EdgeDirected>> fetch({
     bool positiveOnly = true,
-    String? context,
+    String context = '',
     String? focus,
     int offset = 0,
     int limit = 5,
   }) =>
       _remoteApiService
           .request(GGraphFetchReq(
-            (b) => b.vars
-              ..focus = focus
-              ..limit = limit
-              ..offset = offset
-              ..context = context
-              ..positive_only = positiveOnly,
+            (b) => b
+              ..context = const Context().withEntry(HttpLinkHeaders(headers: {
+                headerQueryContext: context,
+              }))
+              ..vars.focus = focus
+              ..vars.limit = limit
+              ..vars.offset = offset
+              ..vars.context = context
+              ..vars.positive_only = positiveOnly,
           ))
           .firstWhere((e) => e.dataSource == DataSource.Link)
           .then((r) {

@@ -23,7 +23,6 @@ class Beacon with _$Beacon implements Likable {
     @Default(false) bool hasPicture,
     @Default(false) bool isEnabled,
     @Default(false) bool isPinned,
-    @Default(0) int commentsCount,
     @Default(0) double score,
     @Default(0) int myVote,
     @Default(Profile()) Profile author,

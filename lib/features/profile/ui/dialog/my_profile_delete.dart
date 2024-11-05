@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -10,7 +9,6 @@ import '../bloc/profile_cubit.dart';
 class MyProfileDeleteDialog extends StatelessWidget {
   static Future<void> show(BuildContext context) => showDialog<void>(
         context: context,
-        useRootNavigator: false,
         builder: (context) => const MyProfileDeleteDialog(),
       );
 
@@ -40,12 +38,12 @@ class MyProfileDeleteDialog extends StatelessWidget {
                   );
                 }
               }
-              if (context.mounted) await context.maybePop();
+              if (context.mounted) Navigator.of(context).pop();
             },
             child: const Text('Delete'),
           ),
           TextButton(
-            onPressed: context.maybePop,
+            onPressed: Navigator.of(context).pop,
             child: const Text('Cancel'),
           ),
         ],
