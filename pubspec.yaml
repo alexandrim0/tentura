@@ -41,10 +41,10 @@ dependencies:
 
   # UI related
   readmore: ^3.0.0
+  qr_flutter: ^4.1.0
   flutter_map: ^7.0.2
   flutter_svg: ^2.0.13
   google_fonts: ^6.2.1
-  pretty_qr_code: ^3.3.0
   vector_graphics: ^1.1.14
   flutter_chat_ui: ^1.6.15
   flutter_chat_types: ^3.6.2

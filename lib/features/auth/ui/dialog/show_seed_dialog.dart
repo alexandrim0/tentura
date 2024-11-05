@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pretty_qr_code/pretty_qr_code.dart';
 
-import 'package:tentura/ui/theme.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/widget/qr_code.dart';
 
 import '../bloc/auth_cubit.dart';
 
@@ -49,15 +48,8 @@ class ShowSeedDialog extends StatelessWidget {
       ),
 
       // QRCode
-      content: PrettyQrView.data(
-        key: ValueKey(seed),
+      content: QrCode(
         data: seed,
-        decoration: PrettyQrDecoration(
-          shape: PrettyQrSmoothSymbol(
-            // We can`t read inverted QR
-            color: themeLight.colorScheme.onSurface,
-          ),
-        ),
       ),
 
       // Buttons
