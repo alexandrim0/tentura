@@ -76,7 +76,6 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
                           child: const Text('Add to my field'),
                         ),
                     ],
-                    useRootNavigator: true,
                   ),
                 ],
                 floating: true,

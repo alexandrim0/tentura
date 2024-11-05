@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
+import 'package:tentura/ui/theme.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import '../bloc/auth_cubit.dart';
@@ -14,7 +14,6 @@ class ShowSeedDialog extends StatelessWidget {
   }) =>
       showDialog(
         context: context,
-        useRootNavigator: false,
         builder: (context) => ShowSeedDialog(
           seed: GetIt.I<AuthCubit>().getSeedByAccountId(userId),
           userId: userId,
@@ -43,6 +42,7 @@ class ShowSeedDialog extends StatelessWidget {
       // Header
       title: Text(
         seed,
+        maxLines: 1,
         overflow: TextOverflow.clip,
         textAlign: TextAlign.center,
         style: theme.textTheme.headlineMedium,
@@ -54,29 +54,28 @@ class ShowSeedDialog extends StatelessWidget {
         data: seed,
         decoration: PrettyQrDecoration(
           shape: PrettyQrSmoothSymbol(
-            color: theme.colorScheme.onSurface,
+            // We can`t read inverted QR
+            color: themeLight.colorScheme.onSurface,
           ),
         ),
       ),
 
       // Buttons
       actions: [
-        Builder(
-          builder: (context) => TextButton(
-            child: const Text('Copy to clipboard'),
-            onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: seed));
-              if (context.mounted) {
-                showSnackBar(
-                  context,
-                  text: 'Seed copied to clipboard!',
-                );
-              }
-            },
-          ),
+        TextButton(
+          child: const Text('Copy to clipboard'),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: seed));
+            if (context.mounted) {
+              showSnackBar(
+                context,
+                text: 'Seed copied to clipboard!',
+              );
+            }
+          },
         ),
         TextButton(
-          onPressed: context.maybePop,
+          onPressed: Navigator.of(context).pop,
           child: const Text('Close'),
         ),
       ],
