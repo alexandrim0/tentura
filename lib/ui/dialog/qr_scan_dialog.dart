@@ -19,19 +19,9 @@ class QRScanDialog extends StatefulWidget {
 }
 
 class _QRScanDialogState extends State<QRScanDialog> {
-  late final Rect _scanWindow = _getScanWindow();
+  late final _scanWindow = _getScanWindow();
 
   var _hasResult = false;
-
-  @override
-  void initState() {
-    super.initState();
-    if (kIsWeb) {
-      MobileScannerPlatform.instance.setBarcodeLibraryScriptUrl(
-        '/packages/zxing.min.js',
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) => Dialog.fullscreen(
@@ -42,17 +32,21 @@ class _QRScanDialogState extends State<QRScanDialog> {
             foregroundColor: Colors.white,
           ),
           extendBodyBehindAppBar: true,
-          body: Stack(
-            children: [
-              MobileScanner(
-                onDetect: _handleBarcode,
-                scanWindow: kIsWeb ? null : _scanWindow,
-              ),
-              CustomPaint(
-                painter: _ScannerOverlay(frame: _scanWindow),
-              ),
-            ],
-          ),
+          body: kIsWeb
+              ? MobileScanner(
+                  onDetect: _handleBarcode,
+                )
+              : Stack(
+                  children: [
+                    MobileScanner(
+                      onDetect: _handleBarcode,
+                      scanWindow: kIsWeb ? null : _scanWindow,
+                    ),
+                    CustomPaint(
+                      painter: _ScannerOverlay(frame: _scanWindow),
+                    ),
+                  ],
+                ),
         ),
       );
 
