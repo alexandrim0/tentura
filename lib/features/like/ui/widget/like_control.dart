@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:tentura/domain/entity/likable.dart';
-import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
 
 import '../bloc/like_cubit.dart';
@@ -29,22 +28,20 @@ class LikeControl extends StatelessWidget {
         children: [
           IconButton(
             icon: const Icon(TenturaIcons.arrowUp),
-            onPressed: () async =>
-                likeCubit.addLikeAmount(entity: entity, amount: 1),
+            onPressed: () => likeCubit.incrementLike(entity),
           ),
-          StreamBuilder<RepositoryEvent<Likable>>(
+          BlocSelector<LikeCubit, LikeState, int>(
             key: ValueKey(entity),
-            initialData: RepositoryEventCreate(entity),
-            stream: likeCubit.likeChanges.where((e) => e.id == entity.id),
-            builder: (context, snapshot) => Text(
-              (snapshot.data?.value.votes ?? 0).toString(),
+            bloc: likeCubit,
+            selector: (state) => state.likes[entity.id] ?? entity.votes,
+            builder: (context, state) => Text(
+              state.toString(),
               style: theme.textTheme.bodyMedium,
             ),
           ),
           IconButton(
             icon: const Icon(TenturaIcons.arrowDown),
-            onPressed: () async =>
-                likeCubit.addLikeAmount(entity: entity, amount: -1),
+            onPressed: () => likeCubit.decrementLike(entity),
           ),
         ],
       ),
