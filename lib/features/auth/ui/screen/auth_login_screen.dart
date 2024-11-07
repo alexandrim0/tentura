@@ -49,7 +49,7 @@ class AuthLoginScreen extends StatelessWidget {
       buildWhen: (p, c) => c.hasNoError,
       builder: (context, state) {
         final authCubit = GetIt.I<AuthCubit>();
-        final accounts = state.accounts.map((e) => e.id).toList();
+        final accounts = state.accounts.map((e) => e.id).toList()..sort();
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
@@ -76,20 +76,26 @@ class AuthLoginScreen extends StatelessWidget {
                   ListView.separated(
                     shrinkWrap: true,
                     itemCount: accounts.length,
-                    itemBuilder: (context, i) => AccountListTile(
-                      userId: accounts[i],
-                    ),
+                    itemBuilder: (context, i) {
+                      final account = accounts[i];
+                      return AccountListTile(
+                        key: ValueKey(account),
+                        userId: account,
+                      );
+                    },
                     separatorBuilder: (context, i) => const Divider(),
                   ),
+
                 // Recover from seed (QR)
                 Padding(
                   padding: kPaddingAll,
                   child: OutlinedButton(
-                    child: const Text('Recover by QR'),
                     onPressed: () async =>
                         authCubit.addAccount(await QRScanDialog.show(context)),
+                    child: const Text('Recover by QR'),
                   ),
                 ),
+
                 // Recover from seed (clipboard)
                 Padding(
                   padding: kPaddingH,
@@ -98,23 +104,23 @@ class AuthLoginScreen extends StatelessWidget {
                     onPressed: () async {
                       if (await Clipboard.hasStrings() && context.mounted) {
                         await authCubit.addAccount(
-                            (await Clipboard.getData(Clipboard.kTextPlain))
-                                ?.text);
+                          (await Clipboard.getData(Clipboard.kTextPlain))?.text,
+                        );
                       }
                     },
                   ),
                 ),
                 const Spacer(),
+
                 // Create new account
                 Padding(
-                  padding: kPaddingAll,
+                  padding: kPaddingAll +
+                      const EdgeInsets.only(bottom: 60 - kSpacingMedium),
                   child: FilledButton(
                     onPressed: authCubit.signUp,
                     child: const Text('Create new'),
                   ),
                 ),
-                const Padding(
-                    padding: EdgeInsets.only(bottom: 60 - kSpacingMedium)),
               ],
             ),
           ),

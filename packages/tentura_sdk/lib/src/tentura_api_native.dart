@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:isolate';
-import 'package:ferry/ferry.dart';
+import 'package:ferry/ferry.dart' show OperationRequest, OperationResponse;
 import 'package:ferry/ferry_isolate.dart';
 
 import 'consts.dart';
@@ -10,10 +10,11 @@ import 'tentura_api_base.dart';
 
 class TenturaApi extends TenturaApiBase {
   TenturaApi({
-    required super.serverName,
+    required super.apiUrl,
     super.jwtExpiresIn = const Duration(minutes: 1),
     super.userAgent = 'Tentura client',
     super.storagePath = '',
+    super.isDebugMode = false,
   });
 
   late final SendPort _replyPort;
@@ -26,11 +27,9 @@ class TenturaApi extends TenturaApiBase {
       buildClient,
       params: (
         userAgent: userAgent,
-        serverUrl: Uri.https(
-          serverName,
-          pathGraphQLEndpoint,
-        ).toString(),
+        serverUrl: apiUrl + pathGraphQLEndpoint,
         storagePath: storagePath,
+        isDebugMode: isDebugMode,
       ),
       messageHandler: (message) async => switch (message) {
         final InitMessage m => _replyPort = m.replyPort,
@@ -53,10 +52,4 @@ class TenturaApi extends TenturaApiBase {
         forward,
   ]) =>
       _gqlClient.request(request);
-
-  @override
-  Future<void> addRequestToRequestController<TData, TVars>(
-    OperationRequest<TData, TVars> request,
-  ) =>
-      _gqlClient.addRequestToRequestController(request);
 }

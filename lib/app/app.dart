@@ -33,39 +33,41 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     final getIt = GetIt.instance;
     final router = getIt<RootRouter>();
-    return BlocSelector<SettingsCubit, SettingsState, ThemeMode>(
-      bloc: getIt<SettingsCubit>(),
-      selector: (state) => state.themeMode,
-      builder: (context, themeMode) => MaterialApp.router(
-        title: kAppTitle,
-        theme: themeLight,
-        darkTheme: themeDark,
-        themeMode: themeMode,
-        color: const Color(0xFF3A1E5C),
-        debugShowCheckedModeBanner: false,
-        routerConfig: router.config(
-          deepLinkBuilder: kDebugMode ? router.deepLinkBuilder : null,
-          deepLinkTransformer: router.deepLinkTransformer,
-          navigatorObservers: () => [
-            getIt<SentryNavigatorObserver>(),
-          ],
-          reevaluateListenable: router.reevaluateListenable,
-        ),
-        builder: (context, child) => kIsWeb &&
-                MediaQuery.of(context).orientation == Orientation.landscape
-            ? ColoredBox(
-                color: Theme.of(context).colorScheme.surfaceBright,
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: kWebConstraints,
-                    child: AspectRatio(
-                      aspectRatio: kWebAspectRatio,
-                      child: child,
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surface,
+      child: BlocSelector<SettingsCubit, SettingsState, ThemeMode>(
+        bloc: getIt<SettingsCubit>(),
+        selector: (state) => state.themeMode,
+        builder: (context, themeMode) => MaterialApp.router(
+          title: kAppTitle,
+          theme: themeLight,
+          darkTheme: themeDark,
+          themeMode: themeMode,
+          debugShowCheckedModeBanner: false,
+          routerConfig: router.config(
+            deepLinkBuilder: router.deepLinkBuilder,
+            deepLinkTransformer: router.deepLinkTransformer,
+            navigatorObservers: () => [
+              getIt<SentryNavigatorObserver>(),
+            ],
+            reevaluateListenable: router.reevaluateListenable,
+          ),
+          builder: (context, child) => kIsWeb &&
+                  MediaQuery.of(context).orientation == Orientation.landscape
+              ? ColoredBox(
+                  color: Theme.of(context).colorScheme.surfaceBright,
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: kWebConstraints,
+                      child: AspectRatio(
+                        aspectRatio: kWebAspectRatio,
+                        child: child,
+                      ),
                     ),
                   ),
-                ),
-              )
-            : child ?? const SizedBox(),
+                )
+              : child ?? const SizedBox(),
+        ),
       ),
     );
   }

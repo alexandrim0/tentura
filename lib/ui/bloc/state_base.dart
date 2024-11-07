@@ -1,3 +1,4 @@
+export 'package:flutter/foundation.dart';
 export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -12,6 +13,9 @@ extension FetchStatusX on FetchStatus {
 mixin StateFetchMixin {
   FetchStatus get status;
   Object? get error;
+
+  bool get isSuccess => status.isSuccess;
+  bool get isNotSuccess => !status.isSuccess;
 
   bool get isLoading => status.isLoading;
   bool get isNotLoading => !status.isLoading;

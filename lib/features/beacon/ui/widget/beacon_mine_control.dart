@@ -1,3 +1,4 @@
+import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tentura/app/router/root_router.dart';
@@ -34,7 +35,7 @@ class BeaconMineControl extends StatelessWidget {
           // Menu
           PopupMenuButton<void>(
             itemBuilder: (context) {
-              final beaconCubit = context.read<BeaconCubit>();
+              final beaconCubit = GetIt.I<BeaconCubit>();
               return [
                 // Enable / Disable
                 PopupMenuItem<void>(

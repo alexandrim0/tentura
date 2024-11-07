@@ -1,6 +1,7 @@
-import 'package:tentura/features/beacon/domain/entity/beacon.dart';
-import 'package:tentura/features/profile/domain/entity/profile.dart';
+import 'package:tentura/features/geo/domain/entity/coordinates.dart';
+import 'package:tentura/features/profile/data/model/user_model.dart';
 
+import '../../domain/entity/beacon.dart';
 import '../gql/_g/beacon_model.data.gql.dart';
 
 extension type const BeaconModel(GBeaconModel i) implements GBeaconModel {
@@ -17,16 +18,12 @@ extension type const BeaconModel(GBeaconModel i) implements GBeaconModel {
         context: i.context ?? '',
         myVote: i.my_vote ?? 0,
         coordinates: i.lat == null || i.long == null
-            ? (lat: 0, long: 0)
-            : (
+            ? Coordinates.zero
+            : Coordinates(
                 lat: double.tryParse(i.lat?.value ?? '') ?? 0,
                 long: double.tryParse(i.long?.value ?? '') ?? 0,
               ),
-        author: Profile(
-          id: i.author.id,
-          title: i.author.title,
-          hasAvatar: i.author.has_picture,
-          score: double.tryParse(i.author.score?.value ?? '') ?? 0,
-        ),
+        score: double.tryParse(i.scores?.first.dst_score?.value ?? '') ?? 0,
+        author: (i.author as UserModel).toEntity,
       );
 }

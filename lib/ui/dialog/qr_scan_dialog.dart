@@ -1,15 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import 'package:tentura/ui/utils/ui_utils.dart';
+import '../utils/screen_size.dart';
 
 class QRScanDialog extends StatefulWidget {
   static Future<String?> show(BuildContext context) => showDialog<String>(
         context: context,
         useSafeArea: false,
-        useRootNavigator: false,
         builder: (context) => const QRScanDialog(),
       );
 
@@ -19,99 +18,39 @@ class QRScanDialog extends StatefulWidget {
   State<QRScanDialog> createState() => _QRScanDialogState();
 }
 
-class _QRScanDialogState extends State<QRScanDialog>
-    with WidgetsBindingObserver {
-  final _controller = MobileScannerController(
-    formats: [BarcodeFormat.qrCode],
-  );
+class _QRScanDialogState extends State<QRScanDialog> {
+  late final _scanWindow = _getScanWindow();
 
-  StreamSubscription<BarcodeCapture>? _subscription;
-
-  bool _torchEnabled = false;
-  bool _hasResult = false;
-
-  late Rect _scanWindow;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _subscription = _controller.barcodes.listen(_handleBarcode);
-    unawaited(_controller.start());
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (!_controller.value.isInitialized) return;
-
-    switch (state) {
-      case AppLifecycleState.detached:
-      case AppLifecycleState.hidden:
-      case AppLifecycleState.paused:
-        return;
-
-      case AppLifecycleState.resumed:
-        _subscription = _controller.barcodes.listen(_handleBarcode);
-        unawaited(_controller.start());
-
-      case AppLifecycleState.inactive:
-        unawaited(_subscription?.cancel());
-        _subscription = null;
-        unawaited(_controller.stop());
-    }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _scanWindow = _getScanWindow(context);
-    unawaited(_controller.updateScanWindow(_scanWindow));
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    unawaited(_subscription?.cancel());
-    unawaited(_controller.dispose());
-    _subscription = null;
-    super.dispose();
-  }
+  var _hasResult = false;
 
   @override
   Widget build(BuildContext context) => Dialog.fullscreen(
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Scan the QR Code'),
-            actions: [
-              IconButton(
-                icon: _torchEnabled
-                    ? const Icon(Icons.flashlight_off_outlined)
-                    : const Icon(Icons.flashlight_on_outlined),
-                onPressed: () async {
-                  await _controller.toggleTorch();
-                  setState(() => _torchEnabled = !_torchEnabled);
-                },
-              ),
-            ],
             backgroundColor: Colors.transparent,
             foregroundColor: Colors.white,
           ),
           extendBodyBehindAppBar: true,
-          body: Stack(
-            children: [
-              MobileScanner(
-                controller: _controller,
-                scanWindow: _scanWindow,
-              ),
-              CustomPaint(
-                painter: _ScannerOverlay(frame: _scanWindow),
-              ),
-            ],
-          ),
+          body: kIsWeb
+              ? MobileScanner(
+                  onDetect: _handleBarcode,
+                )
+              : Stack(
+                  children: [
+                    MobileScanner(
+                      onDetect: _handleBarcode,
+                      scanWindow: kIsWeb ? null : _scanWindow,
+                    ),
+                    CustomPaint(
+                      painter: _ScannerOverlay(frame: _scanWindow),
+                    ),
+                  ],
+                ),
         ),
       );
 
-  Rect _getScanWindow(BuildContext context) {
+  Rect _getScanWindow() {
     final size = MediaQuery.of(context).size;
     final scanAreaSize = switch (ScreenSize.get(size)) {
       ScreenSmall _ => size.width * 0.75,
@@ -130,7 +69,7 @@ class _QRScanDialogState extends State<QRScanDialog>
     if (_hasResult || captured.barcodes.isEmpty) return;
     if (context.mounted) {
       _hasResult = true;
-      context.maybePop(captured.barcodes.first.rawValue);
+      Navigator.of(context).pop(captured.barcodes.first.rawValue);
     }
   }
 }

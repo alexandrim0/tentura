@@ -14,10 +14,7 @@ export 'favorites_state.dart';
 
 @lazySingleton
 class FavoritesCubit extends Cubit<FavoritesState> {
-  FavoritesCubit(this._favoritesCase)
-      : super(const FavoritesState(
-          status: FetchStatus.isLoading,
-        )) {
+  FavoritesCubit(this._favoritesCase) : super(const FavoritesState()) {
     _authChanges.resume();
     _favoritesChanges.resume();
   }
@@ -25,13 +22,13 @@ class FavoritesCubit extends Cubit<FavoritesState> {
   final FavoritesCase _favoritesCase;
 
   late final _authChanges = _favoritesCase.currentAccountChanges.listen(
-    (userId) {
+    (userId) async {
       emit(FavoritesState(
         beacons: [],
         userId: userId,
         status: FetchStatus.isLoading,
       ));
-      fetch();
+      if (userId.isNotEmpty) await fetch();
     },
     cancelOnError: false,
   );

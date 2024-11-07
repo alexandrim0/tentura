@@ -6,7 +6,7 @@ import '../../domain/entity/account.dart';
 
 part 'auth_state.freezed.dart';
 
-@freezed
+@Freezed(makeCollectionsUnmodifiable: false)
 class AuthState with _$AuthState, StateFetchMixin {
   const factory AuthState({
     @Default('') String currentAccountId,

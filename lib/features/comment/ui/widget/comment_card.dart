@@ -6,7 +6,6 @@ import 'package:tentura/ui/widget/show_more_text.dart';
 import 'package:tentura/ui/widget/avatar_image.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import 'package:tentura/features/like/domain/entity/likable_entity.dart';
 import 'package:tentura/features/like/ui/widget/like_control.dart';
 
 import '../../domain/entity/comment.dart';
@@ -87,7 +86,7 @@ class CommentCard extends StatelessWidget {
               // Vote
               if (!isMine)
                 LikeControl(
-                  entity: LikableComment(comment),
+                  entity: comment,
                   key: ValueKey(comment),
                 ),
             ],

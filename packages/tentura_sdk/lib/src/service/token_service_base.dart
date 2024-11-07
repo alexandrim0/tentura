@@ -14,11 +14,11 @@ abstract class TokenServiceBase {
   static const _jwtHeader = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.';
 
   TokenServiceBase({
-    required this.serverName,
+    required this.apiUrl,
     this.jwtExpiresIn = const Duration(minutes: 1),
   });
 
-  final String serverName;
+  final String apiUrl;
   final Duration jwtExpiresIn;
 
   KeyPair? keyPair;
@@ -91,7 +91,7 @@ abstract class TokenServiceBase {
 
   Future<JWT> _fetchJWT(String path) async {
     final response = await post(
-      Uri.https(serverName, path),
+      Uri.parse(apiUrl + path),
       headers: {
         'Authorization': 'Bearer ${_createAuthRequestToken()}',
       },

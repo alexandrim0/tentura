@@ -14,6 +14,10 @@ class ProfileState with _$ProfileState, StateFetchMixin {
 
   const ProfileState._();
 
+  bool get isAuthorized => status.isSuccess && profile.id.isNotEmpty;
+
+  bool get isNotAuthorized => !isAuthorized;
+
   ProfileState setLoading() => copyWith(status: FetchStatus.isLoading);
 
   ProfileState setError(Object error) => copyWith(

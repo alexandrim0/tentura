@@ -25,9 +25,32 @@
             "toolArgs": [
                 "--dart-define",
                 "APP_LINK_BASE=tentura.intersubjective.space",
+                "--dart-define",
+                "API_URI=https://tentura.intersubjective.space",
             ],
-            "args": ["-d", "chrome", "--web-port", "8888",
-                "--web-browser-flag=--disable-web-security"
+            "args": [
+                "-d", "chrome",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
+            ]
+        },
+        {
+            "name": "tentura-wasm (debug)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "toolArgs": [
+                "--wasm",
+                "--dart-define",
+                "APP_LINK_BASE=tentura.intersubjective.space",
+                "--dart-define",
+                "API_URI=https://tentura.intersubjective.space",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--wasm",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
             ]
         },
         {
@@ -44,7 +67,7 @@
             ],
         },
         {
-            "name": "tentura (profile mode)",
+            "name": "tentura (profile)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
@@ -57,7 +80,7 @@
             ],
         },
         {
-            "name": "tentura (release mode)",
+            "name": "tentura (release)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
@@ -69,5 +92,24 @@
                 "APP_LINK_BASE=tentura.intersubjective.space",
             ],
         },
-    ]
+        {
+            "name": "tentura-wasm (release)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "toolArgs": [
+                "--wasm",
+                "--dart-define",
+                "APP_LINK_BASE=tentura.intersubjective.space",
+                "--dart-define",
+                "API_URI=https://tentura.intersubjective.space",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--wasm",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
+            ]
+        },
+   ]
 }

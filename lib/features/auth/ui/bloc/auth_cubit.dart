@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/entity/account.dart';
 import '../../domain/exception.dart';
 import '../../domain/use_case/auth_case.dart';
 import 'auth_state.dart';
@@ -24,32 +23,46 @@ class AuthCubit extends Cubit<AuthState> {
       try {
         await authCase.signIn(
           state.currentAccountId,
-          isPpremature: true,
+          isPremature: true,
         );
       } catch (e) {
         return AuthCubit(
           authCase: authCase,
-          state: state.copyWith(currentAccountId: ''),
+          state: state.copyWith(
+            currentAccountId: '',
+          ),
         );
       }
     }
-    return AuthCubit(authCase: authCase, state: state);
+    return AuthCubit(
+      authCase: authCase,
+      state: state,
+    );
   }
 
   AuthCubit({
     required AuthCase authCase,
     AuthState state = const AuthState(),
   })  : _authCase = authCase,
-        super(state);
+        super(state) {
+    _authChanges.resume();
+  }
 
   final AuthCase _authCase;
 
+  late final _authChanges = _authCase.currentAccountChanges.listen(
+    (id) => emit(AuthState(
+      accounts: state.accounts,
+      currentAccountId: id,
+    )),
+    cancelOnError: false,
+  );
+
   @disposeMethod
-  Future<void> dispose() => close();
-
-  bool checkIfIsMe(String id) => id == state.currentAccountId;
-
-  bool checkIfIsNotMe(String id) => id != state.currentAccountId;
+  Future<void> dispose() async {
+    await _authChanges.cancel();
+    return close();
+  }
 
   String getSeedByAccountId(String id) =>
       state.accounts.firstWhereOrNull((e) => e.id == id)?.seed ?? '';
@@ -61,13 +74,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
     emit(state.setLoading());
     try {
-      final account = await _authCase.addAccount(seed);
       emit(AuthState(
-        currentAccountId: account.id,
-        accounts: {
-          ...state.accounts,
-          Account(id: account.id, seed: seed),
-        },
+        accounts: state.accounts..add(await _authCase.addAccount(seed)),
       ));
     } catch (e) {
       emit(state.setError(e));
@@ -77,13 +85,8 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signUp() async {
     emit(state.setLoading());
     try {
-      final account = await _authCase.signUp();
       emit(AuthState(
-        currentAccountId: account.id,
-        accounts: {
-          ...state.accounts,
-          account,
-        },
+        accounts: state.accounts..add(await _authCase.signUp()),
       ));
     } catch (e) {
       emit(state.setError(e));
@@ -93,35 +96,31 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signIn(String id) async {
     emit(state.setLoading());
     try {
-      final account = await _authCase.signIn(id);
-      emit(AuthState(
-        accounts: state.accounts,
-        currentAccountId: account.id,
-      ));
+      await _authCase.signIn(id);
     } catch (e) {
       emit(state.setError(e));
     }
   }
 
-  Future<void> signOut({bool willEmit = true}) async {
+  Future<void> signOut() async {
+    emit(state.setLoading());
     try {
       await _authCase.signOut();
     } catch (e) {
       emit(state.setError(e));
-    } finally {
-      if (willEmit) emit(AuthState(accounts: state.accounts));
     }
   }
 
   /// Remove account from local storage
   Future<void> removeAccount(String id) async {
+    emit(state.setLoading());
     try {
       await _authCase.removeAccount(id);
+      emit(AuthState(
+        accounts: state.accounts..removeWhere((e) => e.id == id),
+      ));
     } catch (e) {
       emit(state.setError(e));
-    } finally {
-      state.accounts.removeWhere((e) => e.id == id);
-      emit(AuthState(accounts: {...state.accounts}));
     }
   }
 }

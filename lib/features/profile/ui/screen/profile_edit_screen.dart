@@ -1,9 +1,8 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:tentura/consts.dart';
+import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_image.dart';
 import 'package:tentura/ui/widget/gradient_stack.dart';
@@ -24,28 +23,25 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
   final _profileCubit = GetIt.I<ProfileCubit>();
 
-  late final _profile = _profileCubit.state.profile;
+  bool _hasAvatar = false;
 
-  late final _nameController = TextEditingController(
-    text: _profile.title,
-  );
-  late final _descriptionController = TextEditingController(
-    text: _profile.description,
-  );
+  String _title = '';
 
-  late bool _hasAvatar = _profile.hasAvatar;
+  String _description = '';
 
   Uint8List? _imageBytes;
 
   @override
-  void dispose() {
-    _descriptionController.dispose();
-    _nameController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _hasAvatar = _profileCubit.state.profile.hasAvatar;
+    _description = _profileCubit.state.profile.description;
+    _title = _profileCubit.state.profile.title;
   }
 
   @override
   Widget build(BuildContext context) {
+    final profile = _profileCubit.state.profile;
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
@@ -73,7 +69,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 child: _imageBytes == null
                     ? AvatarImage(
                         size: AvatarPositioned.childSize,
-                        userId: _hasAvatar ? _profile.imageId : '',
+                        userId: _hasAvatar ? profile.imageId : '',
                       )
                     : Container(
                         clipBehavior: Clip.hardEdge,
@@ -95,22 +91,23 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     ? IconButton.filledTonal(
                         iconSize: 50,
                         icon: const Icon(Icons.highlight_remove_outlined),
-                        onPressed: () => setState(() {
-                          _hasAvatar = false;
-                          _imageBytes = null;
-                        }),
+                        onPressed: () {
+                          setState(() {
+                            _hasAvatar = false;
+                            _imageBytes = null;
+                          });
+                        },
                       )
                     : IconButton.filledTonal(
                         iconSize: 50,
                         icon: const Icon(Icons.add_a_photo_outlined),
                         onPressed: () async {
-                          final image = await _profileCubit.pickImage();
-                          if (image != null) {
-                            setState(() {
-                              _hasAvatar = true;
-                              _imageBytes = image.bytes;
-                            });
-                          }
+                          final image = await pickImage();
+                          if (image == null) return;
+                          setState(() {
+                            _hasAvatar = true;
+                            _imageBytes = image.bytes;
+                          });
                         },
                       ),
               ),
@@ -124,12 +121,14 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               key: _formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: TextFormField(
+                initialValue: _profileCubit.state.profile.title,
                 maxLength: kTitleMaxLength,
-                controller: _nameController,
                 style: textTheme.headlineLarge,
                 decoration: const InputDecoration(
                   labelText: 'Name',
+                  hintText: 'Please, fill Title',
                 ),
+                onChanged: (value) => _title = value,
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),
                 validator: (value) {
                   if (value == null || value.length < kTitleMinLength) {
@@ -164,12 +163,13 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     maxLines: maxLines,
                     style: textStyle,
                     maxLength: kDescriptionLength,
-                    controller: _descriptionController,
+                    initialValue: _profileCubit.state.profile.description,
                     keyboardType: TextInputType.multiline,
                     decoration: InputDecoration(
                       labelText: 'Description',
                       labelStyle: textTheme.bodyMedium,
                     ),
+                    onChanged: (value) => _description = value,
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   );
                 },
@@ -188,16 +188,17 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     try {
       if (_imageBytes != null) {
         await _profileCubit.putAvatarImage(_imageBytes!);
-        await CachedNetworkImage.evictFromCache(
-          AvatarImage.getAvatarUrl(userId: _profile.id),
-        );
+        await AvatarImage.evictFromCache(_profileCubit.state.profile.id);
       }
-      await _profileCubit.update(_profile.copyWith(
-        title: _nameController.text,
-        description: _descriptionController.text,
+      await _profileCubit.update(_profileCubit.state.profile.copyWith(
+        description: _description,
         hasAvatar: _hasAvatar,
+        title: _title,
       ));
-      if (mounted) await context.maybePop();
+      if (mounted) {
+        if (await context.maybePop()) return;
+        if (mounted) await context.pushRoute(const ProfileMineRoute());
+      }
     } catch (e) {
       if (mounted) {
         showSnackBar(

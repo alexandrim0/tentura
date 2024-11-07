@@ -7,6 +7,7 @@ part 'beacon_state.freezed.dart';
 @Freezed(makeCollectionsUnmodifiable: false)
 class BeaconState with _$BeaconState, StateFetchMixin {
   const factory BeaconState({
+    @Default('') String userId,
     @Default([]) List<Beacon> beacons,
     @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
