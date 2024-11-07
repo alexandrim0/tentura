@@ -1,3 +1,5 @@
+import 'package:injectable/injectable.dart';
+
 import 'package:tentura/data/service/remote_api_service.dart';
 
 import '../domain/entity/edge_directed.dart';
@@ -5,6 +7,7 @@ import '../domain/entity/node_details.dart';
 
 import 'gql/_g/graph_fetch.req.gql.dart';
 
+@injectable
 class GraphRepository {
   static const _label = 'Graph';
 
@@ -14,19 +17,22 @@ class GraphRepository {
 
   Future<Set<EdgeDirected>> fetch({
     bool positiveOnly = true,
-    String? context,
+    String context = '',
     String? focus,
     int offset = 0,
     int limit = 5,
   }) =>
       _remoteApiService
           .request(GGraphFetchReq(
-            (b) => b.vars
-              ..focus = focus
-              ..limit = limit
-              ..offset = offset
-              ..context = context
-              ..positive_only = positiveOnly,
+            (b) => b
+              ..context = const Context().withEntry(HttpLinkHeaders(headers: {
+                headerQueryContext: context,
+              }))
+              ..vars.focus = focus
+              ..vars.limit = limit
+              ..vars.offset = offset
+              ..vars.context = context
+              ..vars.positive_only = positiveOnly,
           ))
           .firstWhere((e) => e.dataSource == DataSource.Link)
           .then((r) {
@@ -34,7 +40,7 @@ class GraphRepository {
         final beacon = data.beacon_by_pk;
         final result = <EdgeDirected>{};
         for (final e in data.graph) {
-          final weight = double.parse(e.score!.value);
+          final weight = double.parse(e.dst_score!.value);
           if (e.user == null) {
             if (beacon != null && e.dst == beacon.id) {
               result.add((
@@ -46,7 +52,7 @@ class GraphRepository {
                   label: beacon.title,
                   userId: beacon.author.id,
                   hasImage: beacon.has_picture,
-                  score: double.parse(beacon.score!.value),
+                  score: weight,
                 )
               ));
             }
@@ -59,7 +65,7 @@ class GraphRepository {
                 id: e.user!.id,
                 label: e.user!.title,
                 hasImage: e.user!.has_picture,
-                score: double.parse(e.user!.score!.value),
+                score: weight,
               ),
             ));
           }

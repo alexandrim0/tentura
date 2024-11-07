@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:auto_route/auto_route.dart';
-import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/widget/qr_code.dart';
 
 import '../bloc/auth_cubit.dart';
 
@@ -14,63 +13,61 @@ class ShowSeedDialog extends StatelessWidget {
   }) =>
       showDialog(
         context: context,
-        builder: (context) => ShowSeedDialog(userId: userId),
+        builder: (context) => ShowSeedDialog(
+          seed: GetIt.I<AuthCubit>().getSeedByAccountId(userId),
+          userId: userId,
+        ),
       );
 
   const ShowSeedDialog({
     required this.userId,
+    required this.seed,
     super.key,
   });
 
+  final String seed;
   final String userId;
 
   @override
   Widget build(BuildContext context) {
-    final seed = context.read<AuthCubit>().state.accounts[userId] ?? '';
+    final theme = Theme.of(context);
     return AlertDialog.adaptive(
       alignment: Alignment.center,
       actionsAlignment: MainAxisAlignment.spaceBetween,
-      titlePadding: paddingMediumA,
-      contentPadding: paddingMediumA,
+      titlePadding: kPaddingAll,
+      contentPadding: kPaddingAll,
+      backgroundColor: theme.colorScheme.surfaceBright,
 
       // Header
       title: Text(
-        userId,
+        seed,
         maxLines: 1,
         overflow: TextOverflow.clip,
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headlineLarge,
+        style: theme.textTheme.headlineMedium,
       ),
 
       // QRCode
-      content: PrettyQrView.data(
-        key: ValueKey(seed),
+      content: QrCode(
         data: seed,
-        decoration: PrettyQrDecoration(
-          shape: PrettyQrSmoothSymbol(
-            color: Theme.of(context).colorScheme.secondary,
-          ),
-        ),
       ),
 
       // Buttons
       actions: [
-        Builder(
-          builder: (context) => TextButton(
-            child: const Text('Copy to clipboard'),
-            onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: seed));
-              if (context.mounted) {
-                showSnackBar(
-                  context,
-                  text: 'Seed copied to clipboard!',
-                );
-              }
-            },
-          ),
+        TextButton(
+          child: const Text('Copy to clipboard'),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: seed));
+            if (context.mounted) {
+              showSnackBar(
+                context,
+                text: 'Seed copied to clipboard!',
+              );
+            }
+          },
         ),
         TextButton(
-          onPressed: context.maybePop,
+          onPressed: Navigator.of(context).pop,
           child: const Text('Close'),
         ),
       ],

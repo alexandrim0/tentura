@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -16,7 +15,7 @@ class MyProfileDeleteDialog extends StatelessWidget {
   const MyProfileDeleteDialog({super.key});
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(BuildContext context) => AlertDialog.adaptive(
         title: const Text(
           'Are you sure you want to delete your profile?',
         ),
@@ -26,16 +25,10 @@ class MyProfileDeleteDialog extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () async {
-              final authCubit = context.read<AuthCubit>();
-              final myId = authCubit.state.currentAccount;
-              final profileCubit = context.read<ProfileCubit>();
               try {
-                await profileCubit.delete();
-                await authCubit.signOut();
-                authCubit.removeAccount(myId);
-                if (context.mounted) {
-                  await context.maybePop();
-                }
+                final authCubit = GetIt.I<AuthCubit>();
+                await GetIt.I<ProfileCubit>().delete();
+                await authCubit.removeAccount(authCubit.state.currentAccountId);
               } catch (e) {
                 if (context.mounted) {
                   showSnackBar(
@@ -43,14 +36,14 @@ class MyProfileDeleteDialog extends StatelessWidget {
                     isError: true,
                     text: e.toString(),
                   );
-                  await context.maybePop();
                 }
               }
+              if (context.mounted) Navigator.of(context).pop();
             },
             child: const Text('Delete'),
           ),
           TextButton(
-            onPressed: context.maybePop,
+            onPressed: Navigator.of(context).pop,
             child: const Text('Cancel'),
           ),
         ],

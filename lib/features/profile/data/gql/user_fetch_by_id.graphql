@@ -1,7 +1,7 @@
-# import '/domain/entity/user.graphql'
+# import 'user_model.graphql'
 
 query UserFetchById($id: String!) {
   user_by_pk(id: $id) {
-    ...UserFields
+    ...UserModel
   }
 }

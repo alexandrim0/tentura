@@ -36,6 +36,7 @@ class _NewCommentInputState extends State<NewCommentInput> {
             IconButton(
               icon: const Icon(Icons.send),
               onPressed: () async {
+                if (_textController.text.isEmpty) return;
                 await context
                     .read<BeaconViewCubit>()
                     .addComment(_textController.text);

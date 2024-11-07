@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:auto_route/auto_route.dart';
 
 class ContextAddDialog extends StatefulWidget {
   static Future<String?> show(BuildContext context) => showDialog<String>(
@@ -23,18 +22,18 @@ class _ContextAddDialogState extends State<ContextAddDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
-        title: const Text('Adding a new context'),
+  Widget build(BuildContext context) => AlertDialog.adaptive(
+        title: const Text('Add a new topic'),
         content: TextField(
           controller: _controller,
         ),
         actions: [
           TextButton(
-            onPressed: () => context.maybePop(_controller.text.trim()),
+            onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
             child: const Text('Ok'),
           ),
           TextButton(
-            onPressed: context.maybePop,
+            onPressed: Navigator.of(context).pop,
             child: const Text('Cancel'),
           ),
         ],

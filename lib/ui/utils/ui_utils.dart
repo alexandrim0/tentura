@@ -1,20 +1,26 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:image_picker/image_picker.dart';
 
 import 'package:tentura/consts.dart';
 
 import '../bloc/state_base.dart';
 
-const paddingMediumA = EdgeInsets.all(20);
+const kSpacingSmall = 8.0;
+const kSpacingMedium = 16.0;
+const kSpacingLarge = 24.0;
 
-const paddingMediumH = EdgeInsets.symmetric(horizontal: 20);
+const kPaddingAll = EdgeInsets.all(kSpacingMedium);
+const kPaddingH = EdgeInsets.symmetric(horizontal: kSpacingMedium);
+const kPaddingV = EdgeInsets.symmetric(vertical: kSpacingMedium);
+const kPaddingT = EdgeInsets.only(top: kSpacingMedium);
 
-const paddingLargeV = EdgeInsets.symmetric(vertical: 32);
+const kPaddingSmallT = EdgeInsets.only(top: kSpacingSmall);
+const kPaddingSmallV = EdgeInsets.symmetric(vertical: kSpacingSmall);
 
-const paddingMediumV = EdgeInsets.symmetric(vertical: 20);
-
-const paddingSmallV = EdgeInsets.symmetric(vertical: 8);
+/// 600px in MD guideline means large screen for vertical orientation
+const kWebConstraints = BoxConstraints(minWidth: 600);
+const kWebAspectRatio = 9 / 16;
 
 final _fYMD = DateFormat.yMd();
 String fYMD(DateTime? dateTime) =>
@@ -24,7 +30,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
   BuildContext context, {
   String? text,
   List<TextSpan>? textSpans,
-  Duration duration = snackBarDuration,
+  Duration duration = kSnackBarDuration,
   bool isFloating = false,
   bool isError = false,
   Color? color,
@@ -39,6 +45,13 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
     backgroundColor: isError
         ? theme.colorScheme.error
         : color ?? theme.snackBarTheme.backgroundColor,
+    action: kDebugMode
+        ? SnackBarAction(
+            label: 'print',
+            // ignore: avoid_print
+            onPressed: () => print(text),
+          )
+        : null,
     content: RichText(
       text: TextSpan(
         text: text,
@@ -55,7 +68,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
 
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBarError(
   BuildContext context,
-  StateBase state,
+  StateFetchMixin state,
 ) =>
     showSnackBar(
       context,
@@ -63,37 +76,16 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBarError(
       text: state.error?.toString() ?? 'Unknown error!',
     );
 
-sealed class ScreenSize {
-  static ScreenSize get(Size size) => switch (size.height) {
-        < ScreenSmall.height => const ScreenSmall(),
-        < ScreenMedium.height => const ScreenMedium(),
-        < ScreenLarge.height => const ScreenLarge(),
-        _ => const ScreenBig(),
-      };
-
-  const ScreenSize();
-}
-
-class ScreenSmall extends ScreenSize {
-  static const height = 600;
-
-  const ScreenSmall();
-}
-
-class ScreenMedium extends ScreenSize {
-  static const height = 800;
-
-  const ScreenMedium();
-}
-
-class ScreenLarge extends ScreenSize {
-  static const height = 1200;
-
-  const ScreenLarge();
-}
-
-class ScreenBig extends ScreenSize {
-  static const height = 1600;
-
-  const ScreenBig();
+Future<({String name, Uint8List bytes})?> pickImage() async {
+  final xFile = await ImagePicker().pickImage(
+    source: ImageSource.gallery,
+    // TBD: resize and convert by package:image
+    maxWidth: 600,
+  );
+  return xFile == null
+      ? null
+      : (
+          name: xFile.name,
+          bytes: await xFile.readAsBytes(),
+        );
 }

@@ -18,16 +18,6 @@ void main() {
     id: 'B2',
     userId: userNode2.id,
   );
-  final commentNode1 = CommentNode(
-    id: 'C1',
-    userId: userNode1.id,
-    beaconId: beaconNode1.id,
-  );
-  final commentNode2 = CommentNode(
-    id: 'C2',
-    userId: userNode2.id,
-    beaconId: beaconNode2.id,
-  );
 
   test('test set 1', () {
     final s = <NodeDetails>{
@@ -35,8 +25,6 @@ void main() {
       userNode2,
       beaconNode1,
       beaconNode2,
-      commentNode1,
-      commentNode2,
     };
 
     expect(s.length, 6);
@@ -48,8 +36,6 @@ void main() {
       const Node(data: userNode2, size: 40),
       Node(data: beaconNode1, size: 40),
       Node(data: beaconNode2, size: 40),
-      Node(data: commentNode1, size: 40),
-      Node(data: commentNode2, size: 40),
     };
 
     expect(s.length, 6);

@@ -1,12 +1,14 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import 'package:tentura/ui/utils/ui_utils.dart';
+import '../utils/screen_size.dart';
 
 class QRScanDialog extends StatefulWidget {
   static Future<String?> show(BuildContext context) => showDialog<String>(
         context: context,
+        useSafeArea: false,
         builder: (context) => const QRScanDialog(),
       );
 
@@ -17,75 +19,59 @@ class QRScanDialog extends StatefulWidget {
 }
 
 class _QRScanDialogState extends State<QRScanDialog> {
-  final _controller = MobileScannerController();
+  late final _scanWindow = _getScanWindow();
 
-  bool _torchEnabled = false;
-  bool _hasResult = false;
-
-  late Rect _scanWindow;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final size = MediaQuery.of(context).size;
-    final scanAreaSize = switch (ScreenSize.get(size)) {
-      ScreenSmall _ => size.width * 0.7,
-      ScreenMedium _ => size.width * 0.7,
-      ScreenLarge _ => size.width * 0.6,
-      ScreenBig _ => size.width * 0.5,
-    };
-    _scanWindow = Rect.fromCenter(
-      center: size.center(Offset.zero),
-      width: scanAreaSize,
-      height: scanAreaSize,
-    );
-    _controller.updateScanWindow(_scanWindow);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  var _hasResult = false;
 
   @override
   Widget build(BuildContext context) => Dialog.fullscreen(
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Scan the QR Code'),
-            actions: [
-              IconButton(
-                icon: _torchEnabled
-                    ? const Icon(Icons.flashlight_off_outlined)
-                    : const Icon(Icons.flashlight_on_outlined),
-                onPressed: () async {
-                  await _controller.toggleTorch();
-                  setState(() => _torchEnabled = !_torchEnabled);
-                },
-              ),
-            ],
             backgroundColor: Colors.transparent,
             foregroundColor: Colors.white,
           ),
           extendBodyBehindAppBar: true,
-          body: Stack(
-            children: [
-              MobileScanner(
-                controller: _controller,
-                scanWindow: _scanWindow,
-                onDetect: (BarcodeCapture captured) {
-                  if (_hasResult || captured.barcodes.isEmpty) return;
-                  if (context.mounted) {
-                    _hasResult = true;
-                    context.maybePop(captured.barcodes.first.rawValue);
-                  }
-                },
-              ),
-              CustomPaint(painter: _ScannerOverlay(frame: _scanWindow)),
-            ],
-          ),
+          body: kIsWeb
+              ? MobileScanner(
+                  onDetect: _handleBarcode,
+                )
+              : Stack(
+                  children: [
+                    MobileScanner(
+                      onDetect: _handleBarcode,
+                      scanWindow: kIsWeb ? null : _scanWindow,
+                    ),
+                    CustomPaint(
+                      painter: _ScannerOverlay(frame: _scanWindow),
+                    ),
+                  ],
+                ),
         ),
       );
+
+  Rect _getScanWindow() {
+    final size = MediaQuery.of(context).size;
+    final scanAreaSize = switch (ScreenSize.get(size)) {
+      ScreenSmall _ => size.width * 0.75,
+      ScreenMedium _ => size.width * 0.7,
+      ScreenLarge _ => size.width * 0.6,
+      ScreenBig _ => size.width * 0.5,
+    };
+    return Rect.fromCenter(
+      center: size.center(Offset.zero),
+      width: scanAreaSize,
+      height: scanAreaSize,
+    );
+  }
+
+  void _handleBarcode(BarcodeCapture captured) {
+    if (_hasResult || captured.barcodes.isEmpty) return;
+    if (context.mounted) {
+      _hasResult = true;
+      Navigator.of(context).pop(captured.barcodes.first.rawValue);
+    }
+  }
 }
 
 class _ScannerOverlay extends CustomPainter {

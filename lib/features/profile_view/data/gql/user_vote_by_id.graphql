@@ -1,6 +1,0 @@
-mutation UserVoteById($object: String!, $amount: Int!) {
-  insert_vote_user_one(object: {object: $object, amount: $amount},
-  on_conflict: {constraint: vote_user_pkey, update_columns: amount}) {
-    amount
-  }
-}

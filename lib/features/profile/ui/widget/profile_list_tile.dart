@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
-import 'package:tentura/app/root_router.dart';
+import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/widget/avatar_image.dart';
 import 'package:tentura/ui/dialog/share_code_dialog.dart';
 
@@ -21,14 +21,15 @@ class AccountListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider(
-        create: (context) => ProfileCubit.dummy(userId: userId),
+        create: (_) => ProfileCubit(id: userId),
         child: BlocBuilder<ProfileCubit, ProfileState>(
           builder: (context, state) => ListTile(
+            contentPadding: EdgeInsets.zero,
             leading: AvatarImage(
-              userId: state.user.imageId,
+              userId: state.profile.imageId,
               size: 40,
             ),
-            title: Text(state.user.title),
+            title: Text(state.profile.title),
             trailing: PopupMenuButton(
               itemBuilder: (context) => <PopupMenuEntry<void>>[
                 // Share account code
@@ -38,7 +39,7 @@ class AccountListTile extends StatelessWidget {
                     context,
                     header: userId,
                     link: Uri.https(
-                      appLinkBase,
+                      kAppLinkBase,
                       pathAppLinkView,
                       {'id': userId},
                     ),
@@ -62,7 +63,7 @@ class AccountListTile extends StatelessWidget {
             ),
 
             // Log in
-            onTap: () => context.read<AuthCubit>().signIn(userId),
+            onTap: () => GetIt.I<AuthCubit>().signIn(userId),
           ),
         ),
       );

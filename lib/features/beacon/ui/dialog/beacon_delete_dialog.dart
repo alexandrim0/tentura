@@ -1,5 +1,5 @@
+import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
-import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -12,7 +12,7 @@ class BeaconDeleteDialog extends StatelessWidget {
   }) =>
       showDialog(
         context: context,
-        builder: (context) => BeaconDeleteDialog(id: id),
+        builder: (_) => BeaconDeleteDialog(id: id),
       );
 
   const BeaconDeleteDialog({
@@ -23,14 +23,16 @@ class BeaconDeleteDialog extends StatelessWidget {
   final String id;
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
-        title: const Text('Are you sure you want to delete this beacon?'),
+  Widget build(BuildContext context) => AlertDialog.adaptive(
+        title: const Text(
+          'Are you sure you want to delete this beacon?',
+        ),
         actions: [
+          // Delete
           TextButton(
             onPressed: () async {
               try {
-                await context.read<BeaconCubit>().delete(id);
-                if (context.mounted) await context.maybePop();
+                await GetIt.I<BeaconCubit>().delete(id);
               } catch (e) {
                 if (context.mounted) {
                   showSnackBar(
@@ -40,11 +42,14 @@ class BeaconDeleteDialog extends StatelessWidget {
                   );
                 }
               }
+              if (context.mounted) Navigator.of(context).pop();
             },
             child: const Text('Delete'),
           ),
+
+          // Cancel
           TextButton(
-            onPressed: context.maybePop,
+            onPressed: Navigator.of(context).pop,
             child: const Text('Cancel'),
           ),
         ],

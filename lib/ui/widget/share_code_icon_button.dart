@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
-import 'package:tentura/app/root_router.dart';
+import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/ui/widget/tentura_icons.dart';
 
 import '../dialog/share_code_dialog.dart';
 
@@ -16,7 +17,7 @@ class ShareCodeIconButton extends StatelessWidget {
       : this(
           header: id,
           link: Uri.https(
-            appLinkBase,
+            kAppLinkBase,
             pathAppLinkView,
             {'id': id},
           ),
@@ -28,7 +29,7 @@ class ShareCodeIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => IconButton(
-        icon: const Icon(Icons.share_outlined),
+        icon: const Icon(TenturaIcons.share),
         onPressed: () => ShareCodeDialog.show(
           context,
           link: link,

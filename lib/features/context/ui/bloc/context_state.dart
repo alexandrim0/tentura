@@ -1,48 +1,25 @@
-part of 'context_cubit.dart';
+import 'package:tentura/ui/bloc/state_base.dart';
 
-final class ContextState extends StateBase {
-  const ContextState({
-    this.contexts = const {},
-    this.selected = '',
-    super.status,
-    super.error,
-  });
+part 'context_state.freezed.dart';
 
-  final Set<String> contexts;
-  final String selected;
-
-  @override
-  List<Object?> get props => [
-        selected,
-        contexts,
-        status,
-        error,
-      ];
-
-  @override
-  ContextState copyWith({
-    String? selected,
-    Set<String>? contexts,
-    FetchStatus? status,
+@Freezed(makeCollectionsUnmodifiable: false)
+class ContextState with _$ContextState, StateFetchMixin {
+  const factory ContextState({
+    @Default('') String selected,
+    @Default({}) Set<String> contexts,
+    @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
-  }) =>
-      ContextState(
-        contexts: contexts ?? this.contexts,
-        selected: selected ?? this.selected,
-        status: status ?? this.status,
-        error: error ?? this.error,
-      );
+  }) = _ContextState;
 
-  @override
-  ContextState setError(Object error) => ContextState(
-        status: FetchStatus.isFailure,
-        contexts: contexts,
-        error: error,
-      );
+  const ContextState._();
 
-  @override
-  ContextState setLoading() => ContextState(
+  ContextState setLoading() => copyWith(
         status: FetchStatus.isLoading,
-        contexts: contexts,
+        error: null,
+      );
+
+  ContextState setError(Object error) => copyWith(
+        status: FetchStatus.isFailure,
+        error: error,
       );
 }

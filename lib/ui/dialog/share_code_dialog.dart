@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
+
+import '../widget/qr_code.dart';
 
 class ShareCodeDialog extends StatelessWidget {
   static Future<void> show(
@@ -29,51 +30,60 @@ class ShareCodeDialog extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => AlertDialog.adaptive(
-        alignment: Alignment.center,
-        actionsAlignment: MainAxisAlignment.spaceBetween,
-        titlePadding: paddingMediumA,
-        contentPadding: paddingMediumA,
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AlertDialog.adaptive(
+      alignment: Alignment.center,
+      actionsAlignment: MainAxisAlignment.spaceBetween,
+      titlePadding: kPaddingAll,
+      contentPadding: kPaddingAll,
+      backgroundColor: theme.colorScheme.surfaceBright,
 
-        // Header
-        title: Text(
-          header,
-          maxLines: 1,
-          overflow: TextOverflow.clip,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineLarge,
+      // Header
+      title: Text(
+        header,
+        maxLines: 1,
+        overflow: TextOverflow.clip,
+        textAlign: TextAlign.center,
+        style: theme.textTheme.headlineMedium,
+      ),
+
+      // QRCode
+      content: QrCode(
+        data: header,
+      ),
+
+      // Buttons
+      actions: [
+        TextButton(
+          child: const Text('Copy to clipboard'),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: link));
+            if (context.mounted) {
+              showSnackBar(
+                context,
+                text: 'Seed copied to clipboard!',
+              );
+            }
+          },
         ),
-
-        // QRCode
-        content: PrettyQrView.data(
-          key: ValueKey(header),
-          data: header,
-          decoration: PrettyQrDecoration(
-            shape: PrettyQrSmoothSymbol(
-              color: Theme.of(context).colorScheme.secondary,
-            ),
+        Builder(
+          builder: (context) => TextButton(
+            child: const Text('Share Link'),
+            onPressed: () {
+              final box = context.findRenderObject()! as RenderBox;
+              Share.share(
+                link,
+                sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+              );
+            },
           ),
         ),
-
-        // Buttons
-        actions: [
-          Builder(
-            builder: (context) => TextButton(
-              child: const Text('Share Link'),
-              onPressed: () {
-                final box = context.findRenderObject()! as RenderBox;
-                Share.share(
-                  link,
-                  sharePositionOrigin:
-                      box.localToGlobal(Offset.zero) & box.size,
-                );
-              },
-            ),
-          ),
-          TextButton(
-            onPressed: context.maybePop,
-            child: const Text('Close'),
-          ),
-        ],
-      );
+        TextButton(
+          onPressed: Navigator.of(context).pop,
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
 }

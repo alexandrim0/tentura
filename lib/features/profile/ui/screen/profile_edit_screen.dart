@@ -1,10 +1,9 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:tentura/consts.dart';
-import 'package:tentura/ui/dialog/error_dialog.dart';
+import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_image.dart';
 import 'package:tentura/ui/widget/gradient_stack.dart';
 import 'package:tentura/ui/widget/avatar_positioned.dart';
@@ -22,29 +21,27 @@ class ProfileEditScreen extends StatefulWidget {
 class _ProfileEditScreenState extends State<ProfileEditScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  late final _profileCubit = context.read<ProfileCubit>();
-  late final _profile = _profileCubit.state.user;
+  final _profileCubit = GetIt.I<ProfileCubit>();
 
-  late final _nameController = TextEditingController(
-    text: _profile.title,
-  );
-  late final _descriptionController = TextEditingController(
-    text: _profile.description,
-  );
+  bool _hasAvatar = false;
 
-  late bool _hasPicture = _profile.has_picture;
+  String _title = '';
+
+  String _description = '';
 
   Uint8List? _imageBytes;
 
   @override
-  void dispose() {
-    _descriptionController.dispose();
-    _nameController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _hasAvatar = _profileCubit.state.profile.hasAvatar;
+    _description = _profileCubit.state.profile.description;
+    _title = _profileCubit.state.profile.title;
   }
 
   @override
   Widget build(BuildContext context) {
+    final profile = _profileCubit.state.profile;
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
@@ -72,7 +69,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 child: _imageBytes == null
                     ? AvatarImage(
                         size: AvatarPositioned.childSize,
-                        userId: _hasPicture ? _profile.imageId : '',
+                        userId: _hasAvatar ? profile.imageId : '',
                       )
                     : Container(
                         clipBehavior: Clip.hardEdge,
@@ -90,26 +87,27 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               Positioned(
                 top: 225,
                 left: 200,
-                child: _hasPicture
+                child: _hasAvatar
                     ? IconButton.filledTonal(
                         iconSize: 50,
                         icon: const Icon(Icons.highlight_remove_outlined),
-                        onPressed: () => setState(() {
-                          _hasPicture = false;
-                          _imageBytes = null;
-                        }),
+                        onPressed: () {
+                          setState(() {
+                            _hasAvatar = false;
+                            _imageBytes = null;
+                          });
+                        },
                       )
                     : IconButton.filledTonal(
                         iconSize: 50,
                         icon: const Icon(Icons.add_a_photo_outlined),
                         onPressed: () async {
-                          final image = await _profileCubit.pickImage();
-                          if (image != null) {
-                            setState(() {
-                              _hasPicture = true;
-                              _imageBytes = image.bytes;
-                            });
-                          }
+                          final image = await pickImage();
+                          if (image == null) return;
+                          setState(() {
+                            _hasAvatar = true;
+                            _imageBytes = image.bytes;
+                          });
                         },
                       ),
               ),
@@ -118,23 +116,22 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
           // Username
           Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 20,
-            ),
+            padding: kPaddingAll,
             child: Form(
               key: _formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: TextFormField(
-                maxLength: titleMaxLength,
-                controller: _nameController,
+                initialValue: _profileCubit.state.profile.title,
+                maxLength: kTitleMaxLength,
                 style: textTheme.headlineLarge,
                 decoration: const InputDecoration(
                   labelText: 'Name',
+                  hintText: 'Please, fill Title',
                 ),
+                onChanged: (value) => _title = value,
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),
                 validator: (value) {
-                  if (value == null || value.length < titleMinLength) {
+                  if (value == null || value.length < kTitleMinLength) {
                     return 'Have to be at least 3 char long!';
                   }
                   return null;
@@ -144,24 +141,43 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
           ),
 
           // User Description
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 20,
-            ),
-            child: TextFormField(
-              minLines: 1,
-              maxLines: 20,
-              style: textTheme.bodyLarge,
-              maxLength: descriptionLength,
-              controller: _descriptionController,
-              keyboardType: TextInputType.multiline,
-              decoration: const InputDecoration(
-                labelText: 'Description',
+          Expanded(
+            child: Padding(
+              padding: kPaddingH,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final textStyle = textTheme.bodyMedium!;
+                  final painter = TextPainter(
+                    text: TextSpan(text: 'A', style: textStyle),
+                    maxLines: 1,
+                    textDirection: TextDirection.ltr,
+                  )..layout();
+
+                  final lineHeight = painter.height;
+                  final maxLines = constraints.maxHeight > 0
+                      ? (constraints.maxHeight / lineHeight).floor()
+                      : 1;
+
+                  return TextFormField(
+                    minLines: 1,
+                    maxLines: maxLines,
+                    style: textStyle,
+                    maxLength: kDescriptionLength,
+                    initialValue: _profileCubit.state.profile.description,
+                    keyboardType: TextInputType.multiline,
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      labelStyle: textTheme.bodyMedium,
+                    ),
+                    onChanged: (value) => _description = value,
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                  );
+                },
               ),
-              onTapOutside: (_) => FocusScope.of(context).unfocus(),
             ),
           ),
+
+          const Padding(padding: kPaddingT),
         ],
       ),
     );
@@ -172,21 +188,23 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     try {
       if (_imageBytes != null) {
         await _profileCubit.putAvatarImage(_imageBytes!);
-        await CachedNetworkImage.evictFromCache(
-          AvatarImage.getAvatarUrl(userId: _profile.id),
-        );
+        await AvatarImage.evictFromCache(_profileCubit.state.profile.id);
       }
-      await _profileCubit.update(
-        title: _nameController.text,
-        description: _descriptionController.text,
-        hasPicture: _hasPicture,
-      );
-      if (mounted) await context.maybePop();
+      await _profileCubit.update(_profileCubit.state.profile.copyWith(
+        description: _description,
+        hasAvatar: _hasAvatar,
+        title: _title,
+      ));
+      if (mounted) {
+        if (await context.maybePop()) return;
+        if (mounted) await context.pushRoute(const ProfileMineRoute());
+      }
     } catch (e) {
       if (mounted) {
-        await showAdaptiveDialog<void>(
-          context: context,
-          builder: (_) => ErrorDialog(error: e),
+        showSnackBar(
+          context,
+          isError: true,
+          text: e.toString(),
         );
       }
     }

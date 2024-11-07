@@ -1,10 +1,11 @@
+import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 
-import 'package:tentura/app/root_router.dart';
-import 'package:tentura/domain/entity/beacon.dart';
+import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
+import '../../domain/entity/beacon.dart';
 import '../bloc/beacon_cubit.dart';
 import '../dialog/beacon_delete_dialog.dart';
 
@@ -20,29 +21,12 @@ class BeaconMineControl extends StatelessWidget {
   Widget build(BuildContext context) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Comments count
-          TextButton.icon(
-            onPressed: () => context.pushRoute(
-              BeaconViewRoute(
-                id: beacon.id,
-                initiallyExpanded: true,
-              ),
-            ),
-            icon: const Icon(Icons.comment_outlined),
-            label: Text(
-              beacon.comments_count.toString(),
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ),
-
           // Graph View
           IconButton(
             icon: const Icon(Icons.hub_outlined),
-            onPressed: (beacon.my_vote ?? -1) < 0
+            onPressed: beacon.myVote < 0
                 ? null
-                : () => context.pushRoute(
-                      GraphRoute(focus: beacon.id),
-                    ),
+                : () => context.pushRoute(GraphRoute(focus: beacon.id)),
           ),
 
           // Share
@@ -51,13 +35,13 @@ class BeaconMineControl extends StatelessWidget {
           // Menu
           PopupMenuButton<void>(
             itemBuilder: (context) {
-              final beaconCubit = context.read<BeaconCubit>();
+              final beaconCubit = GetIt.I<BeaconCubit>();
               return [
                 // Enable / Disable
                 PopupMenuItem<void>(
                   child: beaconCubit.state.beacons
                           .singleWhere((e) => e.id == beacon.id)
-                          .enabled
+                          .isEnabled
                       ? const Text('Disable beacon')
                       : const Text('Enable beacon'),
                   onTap: () async {

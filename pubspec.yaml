@@ -2,72 +2,79 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 0.7.0
+version: 0.8.5
 
 environment:
-  sdk: '>=3.5.0 <4.0.0'
-  flutter: ^3.24.1
+  sdk: '>=3.5.3 <4.0.0'
+  flutter: ^3.24.4
 
 dependencies:
   flutter:
     sdk: flutter
   nil: ^1.1.1
+  uuid: ^4.4.2
   intl: ^0.19.0
-  equatable: ^2.0.5
+  get_it: ^8.0.2
+  latlong2: ^0.9.1
+  injectable: ^2.5.0
   auto_route: ^9.2.2
   collection: ^1.18.0
   built_value: ^8.9.2
-  # synchronized: ^3.0.0
   flutter_bloc: ^8.1.6
-  hydrated_bloc: ^9.1.5
+  synchronized: ^3.3.0
+  sentry_flutter: ^8.7.0
+  json_annotation: ^4.9.0
+  freezed_annotation: ^2.4.4
 
   # Platform related
-  hive: ^2.2.3
   geocoding: ^3.0.0
-  share_plus: ^10.0.2
   geolocator: ^13.0.1
+  share_plus: ^10.1.1
   image_picker: ^1.1.2
-  path_provider: ^2.1.4
-  # share_handler: ^0.0.21
-  mobile_scanner: ^5.2.1
-  package_info_plus: ^8.0.2
+  share_handler: ^0.0.22
+  mobile_scanner: ^6.0.2
   flutter_secure_storage: ^9.2.2
 
   # UI related
-  latlong2: ^0.9.1
+  readmore: ^3.0.0
+  qr_flutter: ^4.1.0
   flutter_map: ^7.0.2
-  flutter_svg: ^2.0.10
-  dots_indicator: ^3.0.0
-  pretty_qr_code: ^3.3.0
-  vector_graphics: ^1.1.11
-  cached_network_image: ^3.4.0
+  flutter_svg: ^2.0.13
+  google_fonts: ^6.2.1
+  vector_graphics: ^1.1.14
+  flutter_chat_ui: ^1.6.15
+  flutter_chat_types: ^3.6.2
+  cached_network_image: ^3.4.1
   flutter_native_splash: ^2.4.0
+  # smooth_page_indicator: ^1.2.0
   force_directed_graphview: ^0.6.2
-
-  # Logging & etc
-  # logger: ^2.4.0
-  # logging: ^1.2.0
-  # sentry_link: ^0.4.0
-  sentry_flutter: ^8.7.0
-  # sentry_logging: ^7.8.0
-  # logging_appenders: ^1.1.0
+  flutter_map_cancellable_tile_provider: ^3.0.0
 
   # Local
   tentura_sdk:
     path: packages/tentura_sdk
 
+dependency_overrides:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.7
+  freezed: ^2.5.7
   build_runner: ^2.4.11
   ferry_generator: ^0.12.0
+  json_serializable: ^6.8.0
   very_good_analysis: ^6.0.0
+  build_web_compilers: ^4.0.11
   auto_route_generator: ^9.0.0
-  flutter_launcher_icons: ^0.13.1
+  injectable_generator: ^2.6.2
+  flutter_launcher_icons: ^0.14.0
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Tentura
+      fonts:
+        - asset: assets/fonts/tentura-icons.ttf
   assets:
     - assets/images/
     - assets/intro/
@@ -77,16 +84,3 @@ sentry:
   upload_source_maps: true
   upload_sources: true
   ignore_missing: true
-
-flutter_launcher_icons:
-  ios: true
-  android: true
-  remove_alpha_ios: true
-  image_path: "assets/images/logo1024.png"
-
-flutter_native_splash:
-  color: "#FFFFFF"
-  image: "assets/images/splash_light.png"
-  color_dark: "#3A1E5C"
-  image_dark: "assets/images/splash_dark.png"
-  # background_image_dark: "assets/images/background_dark.png"

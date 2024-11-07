@@ -1,74 +1,81 @@
-import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:collection/collection.dart';
+import 'package:injectable/injectable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:tentura/data/service/remote_api_service.dart';
-import 'package:tentura/ui/bloc/state_base.dart';
+import '../../domain/exception.dart';
+import '../../domain/use_case/auth_case.dart';
+import 'auth_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
+export 'package:get_it/get_it.dart';
 
-part 'auth_state.dart';
+export 'auth_state.dart';
 
-//
-// If code obfuscation is needed then visit
-//   https://github.com/felangel/bloc/issues/3255
-//
-class AuthCubit extends Cubit<AuthState> with HydratedMixin<AuthState> {
-  AuthCubit(RemoteApiService remoteApiService)
-      : _remoteApiService = remoteApiService,
-        super(const AuthState()) {
-    hydrate();
+@singleton
+class AuthCubit extends Cubit<AuthState> {
+  @FactoryMethod(preResolve: true)
+  static Future<AuthCubit> hydrated(AuthCase authCase) async {
+    final state = AuthState(
+      accounts: await authCase.getAccountAll(),
+      currentAccountId: await authCase.getCurrentAccountId(),
+    );
     if (state.isAuthenticated) {
       try {
-        _remoteApiService.signIn(
-          seed: state.accounts[state.currentAccount]!,
-          prematureUserId: state.currentAccount,
+        await authCase.signIn(
+          state.currentAccountId,
+          isPremature: true,
         );
       } catch (e) {
-        emit(state.setError(e));
+        return AuthCubit(
+          authCase: authCase,
+          state: state.copyWith(
+            currentAccountId: '',
+          ),
+        );
       }
     }
+    return AuthCubit(
+      authCase: authCase,
+      state: state,
+    );
   }
 
-  final RemoteApiService _remoteApiService;
+  AuthCubit({
+    required AuthCase authCase,
+    AuthState state = const AuthState(),
+  })  : _authCase = authCase,
+        super(state) {
+    _authChanges.resume();
+  }
 
-  @override
-  AuthState? fromJson(Map<String, dynamic> json) => json.isEmpty
-      ? null
-      : AuthState(
-          currentAccount: json['currentAccount'] as String? ?? '',
-          accounts: {
-            for (final e in (json['accounts'] as Map? ?? {}).entries)
-              e.key.toString(): e.value.toString(),
-          },
-        );
+  final AuthCase _authCase;
 
-  @override
-  Map<String, dynamic>? toJson(AuthState state) =>
-      state.currentAccount == this.state.currentAccount &&
-              state.accounts == this.state.accounts
-          ? null
-          : {
-              'currentAccount': state.currentAccount,
-              'accounts': state.accounts,
-            };
+  late final _authChanges = _authCase.currentAccountChanges.listen(
+    (id) => emit(AuthState(
+      accounts: state.accounts,
+      currentAccountId: id,
+    )),
+    cancelOnError: false,
+  );
 
-  bool checkIfIsMe(String id) => id == state.currentAccount;
+  @disposeMethod
+  Future<void> dispose() async {
+    await _authChanges.cancel();
+    return close();
+  }
 
-  bool checkIfIsNotMe(String id) => id != state.currentAccount;
+  String getSeedByAccountId(String id) =>
+      state.accounts.firstWhereOrNull((e) => e.id == id)?.seed ?? '';
 
-  Future<void> recoverAccount(String? seed) async {
+  Future<void> addAccount(String? seed) async {
     if (seed == null) return;
-    if (state.accounts.values.contains(seed)) {
-      return emit(state.setError(const SeedExistsException()));
+    if (state.accounts.any((e) => e.seed == seed)) {
+      return emit(state.setError(const AuthSeedExistsException()));
     }
     emit(state.setLoading());
     try {
-      final id = await _remoteApiService.signIn(seed: seed);
       emit(AuthState(
-        currentAccount: id,
-        accounts: {
-          ...state.accounts,
-          id: seed,
-        },
+        accounts: state.accounts..add(await _authCase.addAccount(seed)),
       ));
     } catch (e) {
       emit(state.setError(e));
@@ -78,13 +85,8 @@ class AuthCubit extends Cubit<AuthState> with HydratedMixin<AuthState> {
   Future<void> signUp() async {
     emit(state.setLoading());
     try {
-      final (:id, :seed) = await _remoteApiService.signUp();
       emit(AuthState(
-        currentAccount: id,
-        accounts: {
-          ...state.accounts,
-          id: seed,
-        },
+        accounts: state.accounts..add(await _authCase.signUp()),
       ));
     } catch (e) {
       emit(state.setError(e));
@@ -94,38 +96,31 @@ class AuthCubit extends Cubit<AuthState> with HydratedMixin<AuthState> {
   Future<void> signIn(String id) async {
     emit(state.setLoading());
     try {
-      await _remoteApiService.signIn(seed: state.accounts[id]!);
-      emit(AuthState(
-        currentAccount: id,
-        accounts: state.accounts,
-      ));
+      await _authCase.signIn(id);
     } catch (e) {
       emit(state.setError(e));
     }
   }
 
-  Future<void> signOut({bool willEmit = true}) async {
+  Future<void> signOut() async {
+    emit(state.setLoading());
     try {
-      await _remoteApiService.signOut();
-    } finally {
-      if (willEmit) emit(AuthState(accounts: state.accounts));
+      await _authCase.signOut();
+    } catch (e) {
+      emit(state.setError(e));
     }
   }
 
   /// Remove account from local storage
-  void removeAccount(String id) {
-    state.accounts.remove(id);
-    emit(AuthState(
-      accounts: {...state.accounts},
-      currentAccount: state.currentAccount,
-    ));
+  Future<void> removeAccount(String id) async {
+    emit(state.setLoading());
+    try {
+      await _authCase.removeAccount(id);
+      emit(AuthState(
+        accounts: state.accounts..removeWhere((e) => e.id == id),
+      ));
+    } catch (e) {
+      emit(state.setError(e));
+    }
   }
-}
-
-class SeedExistsException implements Exception {
-  const SeedExistsException();
-}
-
-class SeedIsWrongException implements Exception {
-  const SeedIsWrongException();
 }

@@ -1,64 +1,27 @@
-part of 'rating_cubit.dart';
+import 'package:tentura/ui/bloc/state_base.dart';
 
-final class RatingState extends StateBase {
-  const RatingState({
-    this.items = const [],
-    this.context = '',
-    this.searchFilter = '',
-    this.isSortedByAsc = false,
-    this.isSortedByEgo = false,
-    super.status,
-    super.error,
-  });
+import 'package:tentura/features/profile/domain/entity/profile.dart';
 
-  final String context;
-  final String searchFilter;
-  final bool isSortedByAsc;
-  final bool isSortedByEgo;
-  final List<UserRating> items;
+part 'rating_state.freezed.dart';
 
-  @override
-  List<Object?> get props => [
-        isSortedByAsc,
-        isSortedByEgo,
-        searchFilter,
-        items.length,
-        items.firstOrNull,
-        items.lastOrNull,
-        context,
-        status,
-        error,
-        items,
-      ];
-
-  @override
-  RatingState copyWith({
-    List<UserRating>? items,
-    String? searchFilter,
-    String? context,
-    bool? isSortedByAsc,
-    bool? isSortedByEgo,
-    FetchStatus? status,
+@Freezed(makeCollectionsUnmodifiable: false)
+class RatingState with _$RatingState, StateFetchMixin {
+  const factory RatingState({
+    @Default([]) List<Profile> items,
+    @Default('') String context,
+    @Default('') String searchFilter,
+    @Default(false) bool isSortedByAsc,
+    @Default(false) bool isSortedByEgo,
+    @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
-  }) =>
-      RatingState(
-        items: items ?? this.items,
-        context: context ?? this.context,
-        searchFilter: searchFilter ?? this.searchFilter,
-        isSortedByAsc: isSortedByAsc ?? this.isSortedByAsc,
-        isSortedByEgo: isSortedByEgo ?? this.isSortedByEgo,
-        status: status ?? this.status,
-        error: error ?? this.error,
-      );
+  }) = _RatingState;
 
-  @override
+  const RatingState._();
+
+  RatingState setLoading() => copyWith(status: FetchStatus.isLoading);
+
   RatingState setError(Object error) => copyWith(
         status: FetchStatus.isFailure,
         error: error,
-      );
-
-  @override
-  RatingState setLoading() => copyWith(
-        status: FetchStatus.isLoading,
       );
 }

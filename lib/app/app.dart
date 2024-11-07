@@ -1,53 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-import 'package:tentura/app/root_router.dart';
-import 'package:tentura/ui/theme_light.dart';
-import 'package:tentura/ui/theme_dark.dart';
+import 'package:tentura/consts.dart';
+import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/theme.dart';
 
+import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 import 'package:tentura/features/settings/ui/bloc/settings_cubit.dart';
 
-class App extends StatelessWidget {
-  const App({
-    required this.router,
-    super.key,
-  });
+import 'di/di.dart';
 
-  final RootRouter router;
+class App extends StatelessWidget {
+  static Future<void> appRunner() async {
+    FlutterNativeSplash.preserve(
+      widgetsBinding: WidgetsFlutterBinding.ensureInitialized(),
+    );
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    await configureDependencies();
+    FlutterNativeSplash.remove();
+    runApp(const App());
+  }
+
+  const App({super.key});
 
   @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<SettingsCubit, SettingsState>(
-        buildWhen: (p, c) => p.themeMode != c.themeMode,
-        builder: (context, state) => MaterialApp.router(
+  Widget build(BuildContext context) {
+    final getIt = GetIt.instance;
+    final router = getIt<RootRouter>();
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.surface,
+      child: BlocSelector<SettingsCubit, SettingsState, ThemeMode>(
+        bloc: getIt<SettingsCubit>(),
+        selector: (state) => state.themeMode,
+        builder: (context, themeMode) => MaterialApp.router(
+          title: kAppTitle,
+          theme: themeLight,
+          darkTheme: themeDark,
+          themeMode: themeMode,
           debugShowCheckedModeBanner: false,
-          color: const Color(0x003A1E5C),
           routerConfig: router.config(
-            deepLinkBuilder: (deepLink) {
-              if (kDebugMode) print('DeepLinkBuilder: ${deepLink.uri}');
-              return deepLink;
-            },
-            deepLinkTransformer: (Uri uri) => uri.path == pathAppLinkView
-                ? SynchronousFuture(uri.replace(
-                    path: switch (uri.queryParameters['id']) {
-                      final String id when id.startsWith('U') =>
-                        pathProfileView,
-                      final String id when id.startsWith('B') => pathBeaconView,
-                      final String id when id.startsWith('C') => pathBeaconView,
-                      _ => pathConnect,
-                    },
-                  ))
-                : SynchronousFuture(uri),
+            deepLinkBuilder: router.deepLinkBuilder,
+            deepLinkTransformer: router.deepLinkTransformer,
             navigatorObservers: () => [
-              SentryNavigatorObserver(),
+              getIt<SentryNavigatorObserver>(),
             ],
             reevaluateListenable: router.reevaluateListenable,
           ),
-          title: 'Tentura',
-          theme: themeLight,
-          darkTheme: themeDark,
-          themeMode: state.themeMode,
+          builder: (context, child) => kIsWeb &&
+                  MediaQuery.of(context).orientation == Orientation.landscape
+              ? ColoredBox(
+                  color: Theme.of(context).colorScheme.surfaceBright,
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: kWebConstraints,
+                      child: AspectRatio(
+                        aspectRatio: kWebAspectRatio,
+                        child: child,
+                      ),
+                    ),
+                  ),
+                )
+              : child ?? const SizedBox(),
         ),
-      );
+      ),
+    );
+  }
 }

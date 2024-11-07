@@ -8,7 +8,16 @@ targets:
 
       auto_route_generator:auto_router_generator:
         generate_for:
-          - lib/app/root_router.dart
+          - lib/app/router/root_router.dart
+
+      freezed:
+        options:
+          # This can significantly speed up code-generation.
+          format: true
+          copy_with: true
+          equal: true
+          when: false
+          map: false
 
       ferry_generator|graphql_builder:
         enabled: true

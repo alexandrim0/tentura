@@ -1,80 +1,104 @@
-import 'dart:typed_data';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'dart:async';
+import 'package:get_it/get_it.dart';
+import 'package:injectable/injectable.dart';
 
-import 'package:tentura/domain/entity/user.dart';
-import 'package:tentura/domain/use_case/pick_image_case.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import '../../data/profile_repository.dart';
+import '../../domain/entity/profile.dart';
+import '../../domain/use_case/profile_case.dart';
+import 'profile_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
+export 'package:get_it/get_it.dart';
 
-part 'profile_state.dart';
+export 'profile_state.dart';
 
-//
-// If code obfuscation is needed then visit
-//   https://github.com/felangel/bloc/issues/3255
-//
-class ProfileCubit extends Cubit<ProfileState>
-    with HydratedMixin<ProfileState> {
-  ProfileCubit(
-    this._repository, {
-    PickImageCase pickImageCase = const PickImageCase(),
-  })  : id = _repository.userId,
-        _pickImageCase = pickImageCase,
-        super(ProfileState(user: User.empty)) {
-    hydrate();
-    fetch();
+@lazySingleton
+class ProfileCubit extends Cubit<ProfileState> {
+  ProfileCubit({
+    required String id,
+    bool fromCache = true,
+    ProfileCase? profileCase,
+  })  : _profileCase = profileCase ?? GetIt.I<ProfileCase>(),
+        super(ProfileState(profile: Profile(id: id))) {
+    fetch(fromCache: fromCache);
   }
 
-  ProfileCubit.dummy({
-    required String userId,
-  })  : id = userId,
-        _pickImageCase = const PickImageCase(),
-        _repository = const ProfileRepositoryDummy(),
-        super(ProfileState(user: User.empty)) {
-    hydrate();
+  @factoryMethod
+  ProfileCubit.global({
+    required ProfileCase profileCase,
+  })  : _profileCase = profileCase,
+        super(const ProfileState()) {
+    _authChanges = _profileCase.currentAccountChanges.listen(
+      (id) async {
+        emit(ProfileState(
+          profile: Profile(id: id),
+          status: FetchStatus.isLoading,
+        ));
+        if (kDebugMode) print('Current User Id: $id');
+        if (id.isNotEmpty) await fetch(fromCache: true);
+      },
+      cancelOnError: false,
+    );
   }
 
-  @override
-  final String id;
+  final ProfileCase _profileCase;
 
-  final PickImageCase _pickImageCase;
-  final ProfileRepository _repository;
+  StreamSubscription<String>? _authChanges;
 
   @override
-  ProfileState? fromJson(Map<String, dynamic> json) =>
-      json.isEmpty ? null : ProfileState(user: User.fromJson(json));
+  @disposeMethod
+  Future<void> close() async {
+    await _authChanges?.cancel();
+    return super.close();
+  }
 
-  @override
-  Map<String, dynamic>? toJson(ProfileState state) => state.user.toJson();
+  bool checkIfIsMe(String id) => id == state.profile.id;
 
-  Future<void> fetch() async => emit(ProfileState(
-        user: await _repository.fetch(),
+  bool checkIfIsNotMe(String id) => id != state.profile.id;
+
+  Future<void> fetch({bool fromCache = false}) async {
+    if (state.profile.id.isEmpty) return;
+    emit(state.setLoading());
+    try {
+      emit(ProfileState(
+        profile: await _profileCase.fetch(
+          state.profile.id,
+          fromCache: fromCache,
+        ),
       ));
-
-  Future<void> update({
-    required String title,
-    required String description,
-    required bool hasPicture,
-  }) async {
-    if (title == state.user.title &&
-        description == state.user.description &&
-        hasPicture == state.user.has_picture) return;
-    emit(ProfileState(
-      user: await _repository.update(
-        title: title,
-        description: description,
-        hasPicture: hasPicture,
-      ),
-    ));
+    } catch (e) {
+      emit(state.setError(e));
+    }
   }
 
-  Future<void> delete() => _repository.delete();
+  Future<void> update(Profile profile) async {
+    if (profile == state.profile) return;
+    emit(state.setLoading());
+    try {
+      emit(ProfileState(profile: await _profileCase.update(profile)));
+    } catch (e) {
+      emit(state.setError(e));
+    }
+  }
 
-  Future<void> putAvatarImage(Uint8List image) =>
-      _repository.putAvatarImage(image);
+  Future<void> delete() async {
+    emit(state.setLoading());
+    try {
+      await _profileCase.delete(state.profile.id);
+      emit(const ProfileState());
+    } catch (e) {
+      emit(state.setError(e));
+    }
+  }
 
-  Future<({String name, Uint8List bytes})?> pickImage() =>
-      _pickImageCase.pickImage();
+  Future<void> putAvatarImage(Uint8List image) async {
+    emit(state.setLoading());
+    try {
+      await _profileCase.putAvatarImage(image);
+      emit(ProfileState(profile: state.profile));
+    } catch (e) {
+      emit(state.setError(e));
+    }
+  }
 }
