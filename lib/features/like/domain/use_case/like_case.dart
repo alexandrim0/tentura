@@ -26,7 +26,7 @@ class LikeCase {
   Stream<String> get currentAccountChanges =>
       _authRepository.currentAccountChanges();
 
-  Future<void> addLikeAmount({
+  Future<void> setLikeAmount({
     required Likable entity,
     required int amount,
   }) =>
