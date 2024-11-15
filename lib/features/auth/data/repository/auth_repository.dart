@@ -52,7 +52,7 @@ class AuthRepository {
           Profile(
             id: account.id,
             title: account.title,
-            hasAvatar: account.hasPicture,
+            hasAvatar: account.hasAvatar,
           ),
       ];
 
@@ -110,7 +110,7 @@ class AuthRepository {
       _database.accounts.replaceOne(Account(
         id: account.id,
         title: account.title,
-        hasPicture: account.hasAvatar,
+        hasAvatar: account.hasAvatar,
       ));
 
   Future<void> _setCurrentAccountId(String? id) async {
@@ -129,7 +129,7 @@ class AuthRepository {
     await _database.accounts.insertOne(Account(
       id: id,
       title: '',
-      hasPicture: false,
+      hasAvatar: false,
     ));
     await _setCurrentAccountId(id);
 

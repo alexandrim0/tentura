@@ -29,10 +29,12 @@ class AuthCubit extends Cubit<AuthState> {
     );
     if (state.isAuthenticated) {
       try {
-        await authRepository.signIn(
-          state.currentAccountId,
-          isPremature: true,
-        );
+        await authRepository
+            .signIn(
+              state.currentAccountId,
+              isPremature: true,
+            )
+            .timeout(const Duration(seconds: 3));
       } catch (e) {
         state = state.copyWith(
           currentAccountId: '',
