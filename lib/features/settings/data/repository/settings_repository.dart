@@ -13,12 +13,11 @@ class SettingsRepository {
       .getSingleOrNull()
       .then((v) => v?.valueBool ?? true);
 
-  Future<void> setIsIntroEnabled(bool value) => _database.settings
-      .replaceOne(SettingsCompanion.insert(
+  Future<void> setIsIntroEnabled(bool value) =>
+      _database.settings.insertOnConflictUpdate(SettingsCompanion.insert(
         key: _isIntroEnabledKey,
         valueBool: Value(value),
-      ))
-      .then((_) => value);
+      ));
 
   Future<String?> getThemeModeName() =>
       (_database.settings.select()..where((t) => t.key.equals(_themeModeKey)))
@@ -26,7 +25,7 @@ class SettingsRepository {
           .then((v) => v?.valueText);
 
   Future<void> setThemeMode(String value) => _database.settings
-      .replaceOne(SettingsCompanion.insert(
+      .insertOnConflictUpdate(SettingsCompanion.insert(
         key: _themeModeKey,
         valueText: Value(value),
       ))
