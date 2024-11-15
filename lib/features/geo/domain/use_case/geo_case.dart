@@ -1,11 +1,12 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/domain/entity/coordinates.dart';
+
 import '../../data/repository/geo_repository.dart';
-import '../entity/coordinates.dart';
 import '../entity/location.dart';
 import '../entity/place.dart';
 
-export '../../domain/entity/coordinates.dart';
+export '../../../../domain/entity/coordinates.dart';
 export '../../domain/entity/location.dart';
 export '../../domain/entity/place.dart';
 

@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import '../../data/rating_repository.dart';
+import '../../data/repository/rating_repository.dart';
 import 'rating_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';

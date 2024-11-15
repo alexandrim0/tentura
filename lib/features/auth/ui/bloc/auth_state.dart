@@ -1,16 +1,14 @@
-import 'package:collection/collection.dart';
-
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-
-import '../../domain/entity/account.dart';
 
 part 'auth_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
 class AuthState with _$AuthState, StateFetchMixin {
   const factory AuthState({
+    required DateTime updatedAt,
     @Default('') String currentAccountId,
-    @Default({}) Set<Account> accounts,
+    @Default([]) List<Profile> accounts,
     @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
   }) = _AuthState;
@@ -21,8 +19,9 @@ class AuthState with _$AuthState, StateFetchMixin {
 
   bool get isNotAuthenticated => currentAccountId.isEmpty;
 
-  Account? get currentAccount =>
-      accounts.singleWhereOrNull((e) => e.id == currentAccountId);
+  Profile get currentAccount => currentAccountId.isEmpty
+      ? const Profile()
+      : accounts.singleWhere((e) => e.id == currentAccountId);
 
   AuthState setLoading() => copyWith(status: FetchStatus.isLoading);
 

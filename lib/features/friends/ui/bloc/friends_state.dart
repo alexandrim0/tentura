@@ -1,6 +1,5 @@
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-
-import 'package:tentura/features/profile/domain/entity/profile.dart';
 
 part 'friends_state.freezed.dart';
 

@@ -1,4 +1,4 @@
-# import 'user_model.graphql'
+# import '/data/gql/user_model.graphql'
 
 mutation UserUpdate(
     $id: String!,

@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/domain/entity/beacon.dart';
+import 'package:tentura/domain/entity/comment.dart';
 import 'package:tentura/domain/entity/likable.dart';
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
-
-import 'package:tentura/features/beacon/domain/entity/beacon.dart';
-import 'package:tentura/features/comment/domain/entity/comment.dart';
-import 'package:tentura/features/profile/domain/entity/profile.dart';
 
 import '../../domain/exception.dart';
 import '../gql/_g/like_beacon_by_id.req.gql.dart';

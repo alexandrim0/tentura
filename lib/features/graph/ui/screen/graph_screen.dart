@@ -7,7 +7,7 @@ import 'package:tentura/ui/bloc/state_base.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 // import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
 
-import '../../data/graph_repository.dart';
+import '../../data/repository/graph_repository.dart';
 import '../bloc/graph_cubit.dart';
 import '../widget/graph_body.dart';
 

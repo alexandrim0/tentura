@@ -11,5 +11,5 @@ Future<void> main() => SentryFlutter.init(
           'AuthenticationNotFoundException',
         ]
         ..tracesSampleRate = 1.0,
-      appRunner: App.appRunner,
+      appRunner: App.runner,
     );

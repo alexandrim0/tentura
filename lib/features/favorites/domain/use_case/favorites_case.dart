@@ -1,7 +1,8 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/domain/entity/beacon.dart';
+
 import 'package:tentura/features/auth/data/repository/auth_repository.dart';
-import 'package:tentura/features/beacon/domain/entity/beacon.dart';
 
 import '../../data/repository/favorites_remote_repository.dart';
 

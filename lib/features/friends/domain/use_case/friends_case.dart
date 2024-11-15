@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura/features/profile/domain/entity/profile.dart';
+import 'package:tentura/domain/entity/profile.dart';
+
 import 'package:tentura/features/like/data/repository/like_remote_repository.dart';
 
 import '../../data/repository/friends_remote_repository.dart';

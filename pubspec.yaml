@@ -2,7 +2,7 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 0.8.5
+version: 0.9.0
 
 environment:
   sdk: '>=3.5.3 <4.0.0'
@@ -27,10 +27,13 @@ dependencies:
   freezed_annotation: ^2.4.4
 
   # Platform related
+  drift: ^2.21.0
   geocoding: ^3.0.0
-  geolocator: ^13.0.1
-  share_plus: ^10.1.1
+  drift_dev: ^2.21.2
+  geolocator: ^13.0.2
+  share_plus: ^10.1.2
   image_picker: ^1.1.2
+  drift_flutter: ^0.2.1
   share_handler: ^0.0.22
   mobile_scanner: ^6.0.2
   flutter_secure_storage: ^9.2.2
@@ -39,8 +42,9 @@ dependencies:
   readmore: ^3.0.0
   qr_flutter: ^4.1.0
   flutter_map: ^7.0.2
-  flutter_svg: ^2.0.13
+  flutter_svg: ^2.0.14
   google_fonts: ^6.2.1
+  drift_db_viewer: ^2.1.0
   vector_graphics: ^1.1.14
   flutter_chat_ui: ^1.6.15
   flutter_chat_types: ^3.6.2

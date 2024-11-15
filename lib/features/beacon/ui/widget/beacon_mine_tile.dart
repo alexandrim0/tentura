@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import '../../domain/entity/beacon.dart';
 import 'beacon_info.dart';
 import 'beacon_mine_control.dart';
 

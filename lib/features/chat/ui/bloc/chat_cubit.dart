@@ -2,9 +2,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart';
 
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-
-import 'package:tentura/features/profile/domain/entity/profile.dart';
 
 import '../../domain/entity/chat_message.dart';
 import '../../domain/use_case/chat_case.dart';

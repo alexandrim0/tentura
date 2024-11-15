@@ -1,4 +1,4 @@
-# import '/features/beacon/data/gql/beacon_model.graphql'
+# import '/data/gql/beacon_model.graphql'
 
 query MyFieldFetch($context: String = "") {
   my_field(

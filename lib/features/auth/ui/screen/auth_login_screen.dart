@@ -5,10 +5,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import 'package:tentura/features/profile/ui/widget/profile_list_tile.dart';
-
 import '../../domain/exception.dart';
 import '../bloc/auth_cubit.dart';
+import '../widget/account_list_tile.dart';
 
 @RoutePage()
 class AuthLoginScreen extends StatelessWidget {
@@ -49,7 +48,6 @@ class AuthLoginScreen extends StatelessWidget {
       buildWhen: (p, c) => c.hasNoError,
       builder: (context, state) {
         final authCubit = GetIt.I<AuthCubit>();
-        final accounts = state.accounts.map((e) => e.id).toList()..sort();
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
@@ -75,12 +73,12 @@ class AuthLoginScreen extends StatelessWidget {
                   // Accounts list
                   ListView.separated(
                     shrinkWrap: true,
-                    itemCount: accounts.length,
+                    itemCount: state.accounts.length,
                     itemBuilder: (context, i) {
-                      final account = accounts[i];
+                      final account = state.accounts[i];
                       return AccountListTile(
                         key: ValueKey(account),
-                        userId: account,
+                        account: account,
                       );
                     },
                     separatorBuilder: (context, i) => const Divider(),

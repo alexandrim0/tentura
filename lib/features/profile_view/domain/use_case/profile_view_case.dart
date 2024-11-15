@@ -1,9 +1,10 @@
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura/features/beacon/domain/entity/beacon.dart';
+import 'package:tentura/domain/entity/beacon.dart';
+
 import 'package:tentura/features/beacon/data/repository/beacon_repository.dart';
 
-import '../../data/profile_view_repository.dart';
+import '../../data/repository/profile_view_repository.dart';
 
 @lazySingleton
 class ProfileViewCase {

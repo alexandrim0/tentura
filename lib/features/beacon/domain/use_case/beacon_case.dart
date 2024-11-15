@@ -1,14 +1,12 @@
 import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 
 import 'package:tentura/features/auth/data/repository/auth_repository.dart';
 
 import '../../data/repository/beacon_repository.dart';
-import '../entity/beacon.dart';
-
-export '../entity/beacon.dart';
 
 @lazySingleton
 class BeaconCase {

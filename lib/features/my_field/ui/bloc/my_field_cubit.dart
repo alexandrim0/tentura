@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/my_field_repository.dart';
+import '../../data/repository/my_field_repository.dart';
 import 'my_field_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';

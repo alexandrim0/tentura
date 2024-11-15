@@ -13,6 +13,7 @@ export 'package:auto_route/auto_route.dart';
 export 'root_router.gr.dart';
 
 const pathRoot = '/';
+const pathDrift = '/drift';
 const pathConnect = '/connect';
 const pathBeaconView = '/beacon/view';
 const pathProfileChat = '/profile/chat';
@@ -182,6 +183,14 @@ class RootRouter extends RootStackRouter {
           path: pathProfileChat,
           page: ChatRoute.page,
         ),
+
+        if (kDebugMode)
+          AutoRoute(
+            keepHistory: false,
+            maintainState: false,
+            path: pathDrift,
+            page: DriftRoute.page,
+          ),
 
         // default
         RedirectRoute(

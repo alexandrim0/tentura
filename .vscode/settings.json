@@ -3,5 +3,7 @@
     "**/_g": true,
     "**/*.g.dart": true,
     "**/*.freezed.dart": true,
+    "lib/app/di/di.config.dart": true,
+    "lib/app/router/root_router.gr.dart": true,
   }
 }

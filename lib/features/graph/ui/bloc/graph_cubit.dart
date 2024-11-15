@@ -2,11 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:force_directed_graphview/force_directed_graphview.dart';
 
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import 'package:tentura/features/profile/domain/entity/profile.dart';
-
-import '../../data/graph_repository.dart';
+import '../../data/repository/graph_repository.dart';
 import '../../domain/entity/edge_details.dart';
 import '../../domain/entity/edge_directed.dart';
 import '../../domain/entity/node_details.dart';
