@@ -111,5 +111,22 @@
                 "--web-browser-flag=--disable-web-security",
             ]
         },
-   ]
+        {
+            "name": "tentura (widgetbook)",
+            "request": "launch",
+            "program": "widgetbook/lib/main.dart",
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define",
+                "APP_LINK_BASE=tentura.intersubjective.space",
+                "--dart-define",
+                "API_URI=https://tentura.intersubjective.space",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
+            ]
+        },
+  ]
 }
