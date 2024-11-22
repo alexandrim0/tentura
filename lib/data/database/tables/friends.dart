@@ -1,11 +1,17 @@
 import 'package:drift/drift.dart';
 
 class Friends extends Table {
-  TextColumn get subject => text()();
-  TextColumn get object => text()();
+  TextColumn get subjectId => text()();
+
+  TextColumn get objectId => text()();
+
   TextColumn get title => text().withDefault(const Constant(''))();
+
   BoolColumn get hasAvatar => boolean().withDefault(const Constant(false))();
 
   @override
-  Set<Column> get primaryKey => {subject, object};
+  bool get withoutRowId => true;
+
+  @override
+  Set<Column> get primaryKey => {subjectId, objectId};
 }

@@ -1,8 +1,13 @@
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' show Status;
 
-import 'db_connection.dart';
+import 'package:tentura/consts.dart';
+
+import 'schema/schema_versions.dart';
 import 'tables/accounts.dart';
+import 'tables/friends.dart';
+import 'tables/messages.dart';
 import 'tables/settings.dart';
 
 export 'package:drift/drift.dart';
@@ -12,15 +17,14 @@ part 'database.g.dart';
 @DriftDatabase(
   tables: [
     Accounts,
+    Friends,
+    Messages,
     Settings,
   ],
 )
-@lazySingleton
+@singleton
 final class Database extends _$Database {
-  @factoryMethod
-  Database.global() : super(dbConnect('database'));
-
-  Database.forTesting(super.e);
+  Database(super.e);
 
   @override
   int get schemaVersion => 1;
@@ -29,12 +33,27 @@ final class Database extends _$Database {
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (migrator) async {
           await migrator.createAll();
-          // Create a bunch of default values on the first start.
-          // await batch((b) {});
+
+          await batch((b) {
+            b.insertAll(
+              settings,
+              [
+                SettingsCompanion.insert(
+                  key: kSettingsThemeMode,
+                  valueText: const Value('system'),
+                ),
+                SettingsCompanion.insert(
+                  key: kSettingsIsIntroEnabledKey,
+                  valueBool: const Value(true),
+                ),
+              ],
+            );
+          });
         },
         beforeOpen: (details) async {
-          await customStatement('PRAGMA foreign_keys = ON');
+          await customStatement('PRAGMA foreign_keys = ON;');
         },
+        onUpgrade: stepByStep(),
       );
 
   @disposeMethod

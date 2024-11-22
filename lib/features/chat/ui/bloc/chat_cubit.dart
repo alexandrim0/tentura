@@ -5,8 +5,8 @@ import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
+import '../../data/repository/chat_repository.dart';
 import '../../domain/entity/chat_message.dart';
-import '../../domain/use_case/chat_case.dart';
 import 'chat_state.dart';
 
 export 'chat_state.dart';
@@ -15,8 +15,8 @@ class ChatCubit extends Cubit<ChatState> {
   ChatCubit({
     required Profile me,
     required String friendId,
-    ChatCase? chatCase,
-  })  : _chatCase = chatCase ?? GetIt.I<ChatCase>(),
+    ChatRepository? chatRepository,
+  })  : _chatRepository = chatRepository ?? GetIt.I<ChatRepository>(),
         super(ChatState(
           me: User(
             id: me.id,
@@ -31,33 +31,22 @@ class ChatCubit extends Cubit<ChatState> {
     fetch();
   }
 
-  final ChatCase _chatCase;
+  final ChatRepository _chatRepository;
 
   // late final _uuid = const Uuid();
 
-  late final _updates = _chatCase.watchUpdates(fromMoment: state.cursor).listen(
-    (messages) {
-      if (messages.isEmpty) return;
-      final messagesFiltered = _filterMessagesByUserId(
-        messages,
-        state.friend.id,
-      );
-      if (messagesFiltered.isEmpty) return;
-      final messagesConverted = _convertMessages(
-        messagesFiltered,
-        state.friend,
-      );
-
-      for (final message in messagesConverted) {
-        final index = state.messages.indexWhere((e) => e.id == message.id);
-        if (index < 0) {
-          state.messages.add(message);
-        } else {
-          state.messages[index] = message;
-        }
+  late final _updates =
+      _chatRepository.watchUpdates(state.cursor).where(_filterMessages).listen(
+    (m) {
+      final message = _mapMessage(m);
+      final index = state.messages.indexWhere((e) => e.id == message.id);
+      if (index < 0) {
+        state.messages.add(message);
+      } else {
+        state.messages[index] = message;
       }
       emit(state.copyWith(
-        cursor: messagesFiltered.last.updatedAt,
+        cursor: m.updatedAt,
         status: FetchStatus.isSuccess,
         error: null,
       ));
@@ -73,33 +62,26 @@ class ChatCubit extends Cubit<ChatState> {
   }
 
   Future<void> fetch() async {
+    emit(state.setLoading());
     try {
-      final fetchResult = await _chatCase.fetch(state.friend.id);
-      final friend = User(
-        id: fetchResult.profile.id,
-        firstName: fetchResult.profile.title,
-        imageUrl: fetchResult.profile.imageId,
-      );
-      final messagesFiltered = _filterMessagesByUserId(
-        fetchResult.messages,
-        friend.id,
-      );
-
-      if (messagesFiltered.isNotEmpty) {
-        final messages = _convertMessages(messagesFiltered, friend).toList();
-        emit(ChatState(
-          me: state.me,
-          friend: friend,
-          messages: messages,
-          cursor: messagesFiltered.last.updatedAt,
-        ));
-      } else {
-        emit(state.copyWith(
-          friend: friend,
-          status: FetchStatus.isSuccess,
-          error: null,
-        ));
-      }
+      final fetchResult = await _chatRepository.fetch(state.friend.id);
+      emit(state.copyWith(
+        friend: User(
+          id: fetchResult.profile.id,
+          firstName: fetchResult.profile.title,
+          imageUrl: fetchResult.profile.imageId,
+        ),
+      ));
+      final messages =
+          fetchResult.messages.where(_filterMessages).map(_mapMessage).toList();
+      emit(ChatState(
+        me: state.me,
+        friend: state.friend,
+        messages: messages,
+        cursor: messages.isEmpty
+            ? DateTime.timestamp()
+            : DateTime.fromMillisecondsSinceEpoch(messages.last.updatedAt!),
+      ));
       _updates.resume();
     } catch (e) {
       emit(state.setError(e));
@@ -108,7 +90,7 @@ class ChatCubit extends Cubit<ChatState> {
 
   Future<void> onSendPressed(PartialText partialText) async {
     try {
-      await _chatCase.sendMessage(emptyMessage.copyWith(
+      await _chatRepository.sendMessage(emptyMessage.copyWith(
         object: state.friend.id,
         content: partialText.text,
       ));
@@ -116,35 +98,6 @@ class ChatCubit extends Cubit<ChatState> {
       emit(state.setError(e));
     }
   }
-
-  // Future<void> onSendPressed(PartialText partialText) async {
-  //   final message = TextMessage.fromPartial(
-  //     id: _uuid.v4(),
-  //     author: state.me,
-  //     partialText: partialText,
-  //     status: Status.sending,
-  //   );
-  //   state.messages.add(message);
-  //   final messageIndex = state.messages.lastIndexOf(message);
-  //   try {
-  //     final response = await _chatCase.sendMessage(emptyMessage.copyWith(
-  //       object: state.friend.id,
-  //       content: partialText.text,
-  //     ));
-  //     state.messages[messageIndex] = message.copyWith(
-  //       createdAt: response.createdAt.microsecondsSinceEpoch,
-  //       remoteId: response.id,
-  //       status: Status.sent,
-  //     ) as TextMessage;
-  //     emit(state.setCursor());
-  //   } catch (e) {
-  //     state.messages[messageIndex] = message.copyWith(
-  //       status: Status.error,
-  //     ) as TextMessage;
-  //     emit(state.setCursor());
-  //     emit(state.setError(e));
-  //   }
-  // }
 
   Future<void> onMessageVisibilityChanged(
     Message message,
@@ -154,19 +107,8 @@ class ChatCubit extends Cubit<ChatState> {
     if (!isVisible) return;
     if (message.status != Status.sent) return;
     if (message.author.id == state.me.id) return;
-    final messageIndex =
-        state.messages.lastIndexWhere((e) => e.remoteId == message.remoteId);
     try {
-      final updatedAt = await _chatCase.setMessageSeen(message.remoteId!);
-      state.messages[messageIndex] = message.copyWith(
-        updatedAt: updatedAt.millisecondsSinceEpoch,
-        status: Status.seen,
-      );
-      emit(state.copyWith(
-        cursor: updatedAt,
-        status: FetchStatus.isSuccess,
-        error: null,
-      ));
+      await _chatRepository.setMessageSeen(message.remoteId!);
     } catch (e) {
       emit(state.setError(e));
     }
@@ -176,29 +118,18 @@ class ChatCubit extends Cubit<ChatState> {
     if (kDebugMode) print('End riched');
   }
 
-  Iterable<ChatMessage> _filterMessagesByUserId(
-    Iterable<ChatMessage> messages,
-    String id,
-  ) =>
-      messages.where((e) => e.subject == id || e.object == id);
+  bool _filterMessages(ChatMessage message) =>
+      message.subject == state.friend.id || message.object == state.friend.id;
 
-  Iterable<TextMessage> _convertMessages(
-    Iterable<ChatMessage> messages,
-    User friend,
-  ) =>
-      messages.map((e) => TextMessage(
-            id: e.id,
-            remoteId: e.id,
-            text: e.content,
-            showStatus: true,
-            type: MessageType.text,
-            createdAt: e.createdAt.millisecondsSinceEpoch,
-            updatedAt: e.updatedAt.millisecondsSinceEpoch,
-            author: e.subject == state.me.id
-                ? state.me
-                : e.subject == friend.id
-                    ? friend
-                    : const User(id: 'Unknown'),
-            status: e.delivered ? Status.seen : Status.sent,
-          ));
+  TextMessage _mapMessage(ChatMessage message) => TextMessage(
+        id: message.id,
+        remoteId: message.id,
+        text: message.content,
+        showStatus: true,
+        type: MessageType.text,
+        createdAt: message.createdAt.millisecondsSinceEpoch,
+        updatedAt: message.updatedAt.millisecondsSinceEpoch,
+        status: message.delivered ? Status.seen : Status.sent,
+        author: message.subject == state.me.id ? state.me : state.friend,
+      );
 }

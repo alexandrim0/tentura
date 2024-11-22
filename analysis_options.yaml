@@ -4,6 +4,7 @@ analyzer:
   exclude:
     - "**/*.gql.dart"
     - "**/*.gql.g.dart"
+    - "test/generated_migrations/*.dart"
 
 linter:
   rules:

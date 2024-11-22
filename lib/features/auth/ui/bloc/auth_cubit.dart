@@ -15,26 +15,25 @@ export 'package:get_it/get_it.dart';
 
 export 'auth_state.dart';
 
-@lazySingleton
+@singleton
 class AuthCubit extends Cubit<AuthState> {
   @FactoryMethod(preResolve: true)
   static Future<AuthCubit> hydrated(
     AuthRepository authRepository,
     ProfileRepository profileRepository,
   ) async {
+    final accounts = await authRepository.getAccountsAll();
     var state = AuthState(
-      accounts: (await authRepository.getAccountsAll())..sort(),
+      accounts: accounts..sort(_compareProfile),
       currentAccountId: await authRepository.getCurrentAccountId(),
       updatedAt: DateTime.timestamp(),
     );
     if (state.isAuthenticated) {
       try {
-        await authRepository
-            .signIn(
-              state.currentAccountId,
-              isPremature: true,
-            )
-            .timeout(const Duration(seconds: 3));
+        await authRepository.signIn(
+          state.currentAccountId,
+          isPremature: true,
+        );
       } catch (e) {
         state = state.copyWith(
           currentAccountId: '',
@@ -53,23 +52,23 @@ class AuthCubit extends Cubit<AuthState> {
     this._profileRepository,
     AuthState state,
   ) : super(state) {
-    _authChanges = _authRepository.currentAccountChanges().listen(
-          _onAuthChanged,
-          cancelOnError: false,
-        );
-    _profileChanges = _profileRepository.changes.listen(
-      _onProfileChanged,
-      cancelOnError: false,
-    );
+    _authChanges.resume();
+    _profileChanges.resume();
   }
 
   final AuthRepository _authRepository;
 
   final ProfileRepository _profileRepository;
 
-  late final StreamSubscription<String> _authChanges;
+  late final _authChanges = _authRepository.currentAccountChanges().listen(
+        _onAuthChanged,
+        cancelOnError: false,
+      );
 
-  late final StreamSubscription<RepositoryEvent<Profile>> _profileChanges;
+  late final _profileChanges = _profileRepository.changes.listen(
+    _onProfileChanged,
+    cancelOnError: false,
+  );
 
   @disposeMethod
   Future<void> dispose() async {
@@ -78,6 +77,10 @@ class AuthCubit extends Cubit<AuthState> {
     return close();
   }
 
+  bool checkIfIsMe(String id) => id == state.currentAccountId;
+
+  bool checkIfIsNotMe(String id) => id != state.currentAccountId;
+
   Future<String> getSeedByAccountId(String id) =>
       _authRepository.getSeedByAccountId(id);
 
@@ -85,16 +88,13 @@ class AuthCubit extends Cubit<AuthState> {
     if (seed == null) return;
     emit(state.setLoading());
     try {
-      final account = await _authRepository.addAccount(seed);
-      final profile = await _profileRepository.fetch(account.id);
+      final accountId = await _authRepository.addAccount(seed);
+      final account = await _profileRepository.fetch(accountId);
       await _authRepository.updateAccount(account);
       emit(AuthState(
         accounts: state.accounts
-          ..add(account.copyWith(
-            title: profile.title,
-            hasAvatar: profile.hasAvatar,
-          ))
-          ..sort(),
+          ..add(account)
+          ..sort(_compareProfile),
         updatedAt: DateTime.timestamp(),
       ));
     } catch (e) {
@@ -105,11 +105,12 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signUp() async {
     emit(state.setLoading());
     try {
-      final account = await _authRepository.signUp();
       emit(AuthState(
         accounts: state.accounts
-          ..add(account)
-          ..sort(),
+          ..add(Profile(
+            id: await _authRepository.signUp(),
+          ))
+          ..sort(_compareProfile),
         updatedAt: DateTime.timestamp(),
       ));
     } catch (e) {
@@ -189,4 +190,6 @@ class AuthCubit extends Cubit<AuthState> {
       case RepositoryEventCreate<Profile>():
     }
   }
+
+  static int _compareProfile(Profile p1, Profile p2) => p1.id.compareTo(p2.id);
 }

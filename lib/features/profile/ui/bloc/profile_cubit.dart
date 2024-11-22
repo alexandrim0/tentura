@@ -31,16 +31,11 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   StreamSubscription<String>? _authChanges;
 
-  @override
   @disposeMethod
-  Future<void> close() async {
+  Future<void> dispose() async {
     await _authChanges?.cancel();
     return super.close();
   }
-
-  bool checkIfIsMe(String id) => id == state.profile.id;
-
-  bool checkIfIsNotMe(String id) => id != state.profile.id;
 
   Future<void> fetch() async {
     if (state.profile.id.isEmpty) return;

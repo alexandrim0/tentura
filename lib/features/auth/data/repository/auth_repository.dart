@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/data/database/database.dart';
@@ -41,14 +40,14 @@ class AuthRepository {
   Future<String> getSeedByAccountId(String id) async =>
       await _localSecureStorage.read(_getAccountKey(id)) ?? '';
 
-  Future<String> getCurrentAccountId() => _currentAccountId.isEmpty
+  Future<String> getCurrentAccountId() async => _currentAccountId.isEmpty
       ? _localSecureStorage
           .read(_currentAccountKey)
           .then((v) => _currentAccountId = v ?? '')
-      : SynchronousFuture(_currentAccountId);
+      : _currentAccountId;
 
   Future<List<Profile>> getAccountsAll() async => [
-        for (final account in await _database.accounts.all().get())
+        for (final account in await _database.managers.accounts.get())
           Profile(
             id: account.id,
             title: account.title,
@@ -56,24 +55,43 @@ class AuthRepository {
           ),
       ];
 
-  Future<Profile> addAccount(String seed) async {
+  Future<Profile?> getAccountById(String id) => _database.managers.accounts
+      .filter((f) => f.id.equals(id))
+      .getSingleOrNull()
+      .then(
+        (e) => e == null
+            ? null
+            : Profile(
+                id: e.id,
+                title: e.title,
+                hasAvatar: e.hasAvatar,
+              ),
+      );
+
+  Future<String> addAccount(String seed) async {
     if (seed.isEmpty) throw const AuthSeedIsWrongException();
 
     final id = await _remoteApiService.signIn(seed: seed);
 
     if (id.isEmpty) throw const AuthIdIsWrongException();
 
-    return _addAccount(id, seed);
+    await _addAccount(id, seed);
+
+    return id;
   }
 
-  Future<Profile> signUp() async {
+  Future<String> signUp() async {
     final (:id, :seed) = await _remoteApiService.signUp();
 
     if (id.isEmpty) throw const AuthIdIsWrongException();
 
     if (seed.isEmpty) throw const AuthSeedIsWrongException();
 
-    return _addAccount(id, seed);
+    await _addAccount(id, seed);
+
+    await _setCurrentAccountId(id);
+
+    return id;
   }
 
   Future<void> signIn(
@@ -97,7 +115,7 @@ class AuthRepository {
   Future<void> removeAccount(String id) async {
     await _remoteApiService.signOut();
 
-    await _database.accounts.deleteWhere((t) => t.id.equals(id));
+    await _database.managers.accounts.filter((e) => e.id.equals(id)).delete();
 
     await _localSecureStorage.delete(_getAccountKey(id));
 
@@ -106,12 +124,12 @@ class AuthRepository {
     }
   }
 
-  Future<void> updateAccount(Profile account) =>
-      _database.accounts.replaceOne(Account(
-        id: account.id,
-        title: account.title,
-        hasAvatar: account.hasAvatar,
-      ));
+  Future<void> updateAccount(Profile account) => _database.managers.accounts
+      .filter((f) => f.id.equals(account.id))
+      .update((o) => o(
+            title: Value(account.title),
+            hasAvatar: Value(account.hasAvatar),
+          ));
 
   Future<void> _setCurrentAccountId(String? id) async {
     await _localSecureStorage.write(
@@ -121,19 +139,15 @@ class AuthRepository {
     _controller.add(_currentAccountId);
   }
 
-  Future<Profile> _addAccount(String id, String seed) async {
+  Future<void> _addAccount(String id, String seed) async {
     await _localSecureStorage.write(
       _getAccountKey(id),
       seed,
     );
-    await _database.accounts.insertOne(Account(
-      id: id,
-      title: '',
-      hasAvatar: false,
-    ));
-    await _setCurrentAccountId(id);
-
-    return Profile(id: id);
+    await _database.managers.accounts.create(
+      (o) => o(id: id),
+      mode: InsertMode.insert,
+    );
   }
 
   static const _repositoryKey = 'Auth';

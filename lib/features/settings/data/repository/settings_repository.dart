@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/data/database/database.dart';
 
 @singleton
@@ -8,29 +9,21 @@ class SettingsRepository {
 
   final Database _database;
 
-  Future<bool> getIsIntroEnabled() => (_database.settings.select()
-        ..where((t) => t.key.equals(_isIntroEnabledKey)))
+  Future<bool> getIsIntroEnabled() => _database.managers.settings
+      .filter((f) => f.key.equals(kSettingsIsIntroEnabledKey))
       .getSingleOrNull()
       .then((v) => v?.valueBool ?? true);
 
-  Future<void> setIsIntroEnabled(bool value) =>
-      _database.settings.insertOnConflictUpdate(SettingsCompanion.insert(
-        key: _isIntroEnabledKey,
-        valueBool: Value(value),
-      ));
+  Future<void> setIsIntroEnabled(bool value) => _database.managers.settings
+      .filter((f) => f.key.equals(kSettingsIsIntroEnabledKey))
+      .update((o) => o(valueBool: Value(value)));
 
-  Future<String?> getThemeModeName() =>
-      (_database.settings.select()..where((t) => t.key.equals(_themeModeKey)))
-          .getSingleOrNull()
-          .then((v) => v?.valueText);
+  Future<String?> getThemeModeName() => _database.managers.settings
+      .filter((f) => f.key.equals(kSettingsThemeMode))
+      .getSingleOrNull()
+      .then((v) => v?.valueText);
 
-  Future<void> setThemeMode(String value) => _database.settings
-      .insertOnConflictUpdate(SettingsCompanion.insert(
-        key: _themeModeKey,
-        valueText: Value(value),
-      ))
-      .then((_) => value);
-
-  static const _themeModeKey = 'themeMode';
-  static const _isIntroEnabledKey = 'isIntroEnabled';
+  Future<void> setThemeMode(String value) => _database.managers.settings
+      .filter((f) => f.key.equals(kSettingsThemeMode))
+      .update((o) => o(valueText: Value(value)));
 }

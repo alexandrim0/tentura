@@ -12,7 +12,9 @@ export 'settings_state.dart';
 @singleton
 class SettingsCubit extends Cubit<SettingsState> {
   @FactoryMethod(preResolve: true)
-  static Future<SettingsCubit> hydrated(SettingsRepository repository) async {
+  static Future<SettingsCubit> hydrated(
+    SettingsRepository repository,
+  ) async {
     final isIntroEnabled = await repository.getIsIntroEnabled();
     final themeModeName = await repository.getThemeModeName();
     return SettingsCubit(
@@ -39,16 +41,24 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> dispose() => close();
 
   Future<void> setThemeMode(ThemeMode themeMode) async {
-    await _repository.setThemeMode(themeMode.name);
-    emit(state.copyWith(
-      themeMode: themeMode,
-    ));
+    try {
+      await _repository.setThemeMode(themeMode.name);
+      emit(state.copyWith(
+        themeMode: themeMode,
+      ));
+    } catch (e) {
+      emit(state.setError(e));
+    }
   }
 
   Future<void> setIntroEnabled(bool isEnabled) async {
-    await _repository.setIsIntroEnabled(isEnabled);
-    emit(state.copyWith(
-      introEnabled: isEnabled,
-    ));
+    try {
+      await _repository.setIsIntroEnabled(isEnabled);
+      emit(state.copyWith(
+        introEnabled: isEnabled,
+      ));
+    } catch (e) {
+      emit(state.setError(e));
+    }
   }
 }
