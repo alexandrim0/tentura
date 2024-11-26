@@ -83,6 +83,7 @@ android {
             versionNameSuffix "-stage"
         }
     }
+    buildToolsVersion '34.0.0'
 
 }
 

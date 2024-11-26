@@ -19,7 +19,7 @@ class ProfileNavBarItem extends StatelessWidget {
           menuChildren: [
             for (final account in authCubit.state.accounts)
               _AccountMenuItem(
-                key: Key('ProfileMenuItem:${account.imageId}'),
+                key: ValueKey(account),
                 title: account.title,
                 imageId: account.imageId,
                 isMe: account.id == state.currentAccountId,
@@ -30,7 +30,7 @@ class ProfileNavBarItem extends StatelessWidget {
               ),
           ],
           child: GestureDetector(
-            key: Key('ProfileNavbarItem:${state.currentAccount.imageId}'),
+            key: Key('ProfileNavbarItem:${state.currentAccount}'),
             onLongPress: state.accounts.length > 1 ? menuController.open : null,
             child: FittedBox(
               fit: BoxFit.scaleDown,

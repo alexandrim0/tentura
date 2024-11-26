@@ -37,7 +37,6 @@ dependencies:
   drift_flutter: ^0.2.1
   share_handler: ^0.0.22
   mobile_scanner: ^6.0.2
-  # sqlite3_flutter_libs: ^0.5.26
   flutter_secure_storage: ^9.2.2
 
   # UI related
