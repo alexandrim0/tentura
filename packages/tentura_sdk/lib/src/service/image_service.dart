@@ -3,10 +3,10 @@ import 'package:http/http.dart';
 
 class ImageService {
   const ImageService({
-    required this.apiUrl,
+    required this.apiUrlBase,
   });
 
-  final String apiUrl;
+  final String apiUrlBase;
 
   Future<void> putAvatar({
     required String token,
@@ -14,7 +14,7 @@ class ImageService {
     required Uint8List image,
   }) =>
       put(
-        Uri.parse('$apiUrl/images/$userId/avatar.jpg'),
+        Uri.parse('$apiUrlBase/images/$userId/avatar.jpg'),
         headers: {
           'Content-Type': 'image/jpeg',
           'Authorization': 'Bearer $token',
@@ -29,7 +29,7 @@ class ImageService {
     required Uint8List image,
   }) =>
       put(
-        Uri.parse('$apiUrl/images/$userId/$beaconId.jpg'),
+        Uri.parse('$apiUrlBase/images/$userId/$beaconId.jpg'),
         headers: {
           'Content-Type': 'image/jpeg',
           'Authorization': 'Bearer $token',

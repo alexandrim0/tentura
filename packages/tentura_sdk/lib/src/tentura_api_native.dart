@@ -10,7 +10,7 @@ import 'tentura_api_base.dart';
 
 class TenturaApi extends TenturaApiBase {
   TenturaApi({
-    required super.apiUrl,
+    required super.apiUrlBase,
     super.jwtExpiresIn = const Duration(minutes: 1),
     super.userAgent = 'Tentura client',
     super.storagePath = '',
@@ -27,9 +27,9 @@ class TenturaApi extends TenturaApiBase {
       buildClient,
       params: (
         userAgent: userAgent,
-        serverUrl: apiUrl + pathGraphQLEndpoint,
-        storagePath: storagePath,
         isDebugMode: isDebugMode,
+        storagePath: storagePath,
+        serverUrl: apiUrlBase + pathGraphQLEndpoint,
       ),
       messageHandler: (message) async => switch (message) {
         final InitMessage m => _replyPort = m.replyPort,

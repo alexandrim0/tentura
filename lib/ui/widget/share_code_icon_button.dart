@@ -15,13 +15,12 @@ class ShareCodeIconButton extends StatelessWidget {
 
   ShareCodeIconButton.id(String id, {Key? key})
       : this(
-          header: id,
-          link: Uri.https(
-            kAppLinkBase,
-            pathAppLinkView,
-            {'id': id},
-          ),
           key: key,
+          header: id,
+          link: Uri.parse(kAppLinkBase).replace(
+            queryParameters: {'id': id},
+            path: pathAppLinkView,
+          ),
         );
 
   final String header;

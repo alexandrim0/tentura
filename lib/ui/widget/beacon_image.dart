@@ -31,7 +31,7 @@ class BeaconImage extends StatelessWidget {
     return beaconId.isEmpty || authorId.isEmpty
         ? placeholder
         : CachedImage(
-            imageUrl: '$kApiUri/images/$authorId/$beaconId.jpg',
+            imageUrl: '$kAppLinkBase/images/$authorId/$beaconId.jpg',
             placeholder: placeholder,
             boxFit: boxFit,
             height: height,

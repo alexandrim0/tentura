@@ -20,12 +20,7 @@ const kSettingsThemeMode = 'themeMode';
 
 const kSettingsIsIntroEnabledKey = 'isIntroEnabled';
 
-const kAppLinkBase = String.fromEnvironment('APP_LINK_BASE');
-
-const kApiUri = String.fromEnvironment(
-  'API_URI',
-  defaultValue: 'https://$kAppLinkBase',
-);
+const kAppLinkBase = 'https://${const String.fromEnvironment('APP_LINK_BASE')}';
 
 const kOsmUrlTemplate = String.fromEnvironment(
   'OSM_LINK_BASE',

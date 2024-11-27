@@ -43,5 +43,5 @@ class AvatarImage extends StatelessWidget {
   }
 
   static String _getAvatarUrl(String userId) =>
-      '$kApiUri/images/$userId/avatar.jpg';
+      '$kAppLinkBase/images/$userId/avatar.jpg';
 }

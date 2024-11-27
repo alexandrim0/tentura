@@ -8,7 +8,7 @@ import 'client/gql_web_client.dart';
 
 class TenturaApi extends TenturaApiBase {
   TenturaApi({
-    required super.apiUrl,
+    required super.apiUrlBase,
     super.jwtExpiresIn,
     super.storagePath,
     super.isDebugMode,
@@ -20,7 +20,7 @@ class TenturaApi extends TenturaApiBase {
   @override
   Future<void> init() async {
     _gqlClient = await buildClient(
-      serverUrl: apiUrl + pathGraphQLEndpoint,
+      serverUrl: apiUrlBase + pathGraphQLEndpoint,
       getToken: getToken,
     );
   }

@@ -49,8 +49,6 @@
 				"--wasm",
 				"--release",
 				"--dart-define",
-				"API_URI=",
-				"--dart-define",
 				"APP_LINK_BASE=tentura.intersubjective.space"
 			],
 			"group": {
