@@ -41,7 +41,7 @@ class ChatCubit extends Cubit<ChatState> {
       final message = _mapMessage(m);
       final index = state.messages.indexWhere((e) => e.id == message.id);
       if (index < 0) {
-        state.messages.add(message);
+        state.messages.insert(0, message);
       } else {
         state.messages[index] = message;
       }
@@ -72,8 +72,11 @@ class ChatCubit extends Cubit<ChatState> {
           imageUrl: fetchResult.profile.imageId,
         ),
       ));
-      final messages =
-          fetchResult.messages.where(_filterMessages).map(_mapMessage).toList();
+      final messages = fetchResult.messages
+          .where(_filterMessages)
+          .map(_mapMessage)
+          .toList()
+        ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
       emit(ChatState(
         me: state.me,
         friend: state.friend,

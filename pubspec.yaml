@@ -43,7 +43,7 @@ dependencies:
   readmore: ^3.0.0
   qr_flutter: ^4.1.0
   flutter_map: ^7.0.2
-  flutter_svg: ^2.0.15
+  flutter_svg: ^2.0.16
   google_fonts: ^6.2.1
   vector_graphics: ^1.1.15
   flutter_chat_ui: ^1.6.15
