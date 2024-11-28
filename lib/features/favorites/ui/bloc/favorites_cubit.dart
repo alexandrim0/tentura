@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-
-import 'package:tentura/features/beacon/domain/entity/beacon.dart';
 
 import '../../domain/use_case/favorites_case.dart';
 import 'favorites_state.dart';

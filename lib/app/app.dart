@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
@@ -15,13 +16,18 @@ import 'package:tentura/features/settings/ui/bloc/settings_cubit.dart';
 import 'di/di.dart';
 
 class App extends StatelessWidget {
-  static Future<void> appRunner() async {
+  static Future<void> runner() async {
     FlutterNativeSplash.preserve(
       widgetsBinding: WidgetsFlutterBinding.ensureInitialized(),
     );
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    if (kIsWeb) {
+      MobileScannerPlatform.instance.setBarcodeLibraryScriptUrl(
+        '/packages/zxing.min.js',
+      );
+    }
     await configureDependencies();
     FlutterNativeSplash.remove();
     runApp(const App());
@@ -31,14 +37,12 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final getIt = GetIt.instance;
-    final router = getIt<RootRouter>();
-    return ColoredBox(
-      color: Theme.of(context).colorScheme.surface,
-      child: BlocSelector<SettingsCubit, SettingsState, ThemeMode>(
-        bloc: getIt<SettingsCubit>(),
-        selector: (state) => state.themeMode,
-        builder: (context, themeMode) => MaterialApp.router(
+    return BlocSelector<SettingsCubit, SettingsState, ThemeMode>(
+      bloc: GetIt.I<SettingsCubit>(),
+      selector: (state) => state.themeMode,
+      builder: (context, themeMode) {
+        final router = GetIt.I<RootRouter>();
+        return MaterialApp.router(
           title: kAppTitle,
           theme: themeLight,
           darkTheme: themeDark,
@@ -48,7 +52,7 @@ class App extends StatelessWidget {
             deepLinkBuilder: router.deepLinkBuilder,
             deepLinkTransformer: router.deepLinkTransformer,
             navigatorObservers: () => [
-              getIt<SentryNavigatorObserver>(),
+              GetIt.I<SentryNavigatorObserver>(),
             ],
             reevaluateListenable: router.reevaluateListenable,
           ),
@@ -67,8 +71,8 @@ class App extends StatelessWidget {
                   ),
                 )
               : child ?? const SizedBox(),
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -1,9 +1,8 @@
 import 'package:get_it/get_it.dart';
 
+import 'package:tentura/domain/entity/beacon.dart';
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-
-import 'package:tentura/features/beacon/domain/entity/beacon.dart';
-import 'package:tentura/features/profile/domain/entity/profile.dart';
 
 import '../../domain/use_case/beacon_view_case.dart';
 import 'beacon_view_state.dart';

@@ -1,48 +1,37 @@
+import 'dart:async';
 import 'package:injectable/injectable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:tentura/features/profile/domain/entity/profile.dart';
-import 'package:tentura/features/auth/domain/use_case/auth_case.dart';
+import 'package:tentura/domain/entity/profile.dart';
+
+import 'package:tentura/features/auth/data/repository/auth_repository.dart';
 
 import '../../domain/use_case/friends_case.dart';
 import 'friends_state.dart';
 
 export 'friends_state.dart';
 
-@lazySingleton
+@singleton
 class FriendsCubit extends Cubit<FriendsState> {
   FriendsCubit(
-    this._authCase,
     this._friendsCase,
+    AuthRepository _authRepository,
   ) : super(const FriendsState()) {
-    _authChanges.resume();
-    _friendsChanges.resume();
+    _authChanges = _authRepository.currentAccountChanges().listen(
+          _onAuthChanged,
+          cancelOnError: false,
+        );
+    _friendsChanges = _friendsCase.friendsChanges.listen(
+      _onFriendsChanged,
+      cancelOnError: false,
+    );
   }
 
-  final AuthCase _authCase;
   final FriendsCase _friendsCase;
 
-  late final _authChanges = _authCase.currentAccountChanges.listen(
-    (userId) {
-      // ignore: prefer_const_constructors
-      emit(FriendsState(friends: {}));
-      if (userId.isNotEmpty) fetch();
-    },
-    cancelOnError: false,
-  );
+  late final StreamSubscription<String> _authChanges;
 
-  late final _friendsChanges = _friendsCase.friendsChanges.listen(
-    (profile) {
-      emit(state.setLoading());
-      if (profile.isFriend) {
-        state.friends[profile.id] = profile;
-      } else {
-        state.friends.remove(profile.id);
-      }
-      emit(FriendsState(friends: state.friends));
-    },
-    cancelOnError: false,
-  );
+  late final StreamSubscription<Profile> _friendsChanges;
 
   @override
   @disposeMethod
@@ -69,4 +58,20 @@ class FriendsCubit extends Cubit<FriendsState> {
   Future<void> addFriend(Profile user) => _friendsCase.addFriend(user);
 
   Future<void> removeFriend(Profile user) => _friendsCase.removeFriend(user);
+
+  void _onAuthChanged(String userId) {
+    // ignore: prefer_const_constructors
+    emit(FriendsState(friends: {}));
+    if (userId.isNotEmpty) fetch();
+  }
+
+  void _onFriendsChanged(Profile profile) {
+    emit(state.setLoading());
+    if (profile.isFriend) {
+      state.friends[profile.id] = profile;
+    } else {
+      state.friends.remove(profile.id);
+    }
+    emit(FriendsState(friends: state.friends));
+  }
 }

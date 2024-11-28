@@ -51,7 +51,8 @@ class ContextCubit extends Cubit<ContextState> {
           contexts: state.contexts..remove(entity.id),
           selected: state.selected == entity.id ? '' : state.selected,
         )),
-      RepositoryEventUpdate<ContextEntity>() => throw UnimplementedError(),
+      RepositoryEventUpdate<ContextEntity>() => null,
+      RepositoryEventFetch<ContextEntity>() => null,
     },
     cancelOnError: false,
     onError: (Object? e) =>

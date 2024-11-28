@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
@@ -35,7 +36,6 @@ class BeaconCubit extends Cubit<BeaconState> {
     (event) => switch (event) {
       final RepositoryEventCreate<Beacon> entity => emit(BeaconState(
           beacons: state.beacons..insert(0, entity.value),
-          // beacons: [entity.value, ...state.beacons],
           userId: state.userId,
         )),
       final RepositoryEventUpdate<Beacon> entity => emit(BeaconState(
@@ -48,6 +48,7 @@ class BeaconCubit extends Cubit<BeaconState> {
           beacons: state.beacons..removeWhere((e) => e.id == entity.id),
           userId: state.userId,
         )),
+      final RepositoryEventFetch<Beacon> _ => null,
     },
     cancelOnError: false,
     onError: (Object e) => emit(state.setError(e)),

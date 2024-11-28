@@ -1,4 +1,4 @@
-# import 'beacon_model.graphql'
+# import '/data/gql/beacon_model.graphql'
 
 query BeaconsFetchByUserId($user_id: String!, $enabled: Boolean = true) {
   beacon(

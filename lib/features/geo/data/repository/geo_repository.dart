@@ -4,7 +4,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart'
     if (dart.library.js_interop) '../service/geocoding_web_service.dart';
 
-import '../../domain/entity/coordinates.dart';
+import 'package:tentura/domain/entity/coordinates.dart';
+
 import '../../domain/entity/place.dart';
 
 @singleton

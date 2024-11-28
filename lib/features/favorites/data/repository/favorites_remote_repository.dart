@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/domain/entity/beacon.dart';
+import 'package:tentura/data/model/beacon_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
-
-import 'package:tentura/features/beacon/data/model/beacon_model.dart';
-import 'package:tentura/features/beacon/domain/entity/beacon.dart';
 
 import '../../domain/exception.dart';
 import '../gql/_g/beacon_fetch_pinned.req.gql.dart';

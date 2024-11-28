@@ -9,18 +9,18 @@ import 'service/token_service_native.dart'
 
 abstract class TenturaApiBase {
   TenturaApiBase({
-    required this.apiUrl,
+    required this.apiUrlBase,
     this.jwtExpiresIn = const Duration(minutes: 1),
     this.userAgent = 'Tentura client',
     this.storagePath = '',
     this.isDebugMode = false,
-  })  : _imageService = ImageService(apiUrl: apiUrl),
+  })  : _imageService = ImageService(apiUrlBase: apiUrlBase),
         _tokenService = TokenService(
-          apiUrl: apiUrl,
+          apiUrlBase: apiUrlBase,
           jwtExpiresIn: jwtExpiresIn,
         );
 
-  final String apiUrl;
+  final String apiUrlBase;
   final String userAgent;
   final String storagePath;
   final Duration jwtExpiresIn;

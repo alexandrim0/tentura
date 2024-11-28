@@ -3,12 +3,12 @@ import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/data/gql/_g/schema.schema.gql.dart';
+import 'package:tentura/data/model/beacon_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
+import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 
-import '../model/beacon_model.dart';
 import '../../domain/exception.dart';
-import '../../domain/entity/beacon.dart';
 import '../gql/_g/beacon_create.req.gql.dart';
 import '../gql/_g/beacon_fetch_by_id.req.gql.dart';
 import '../gql/_g/beacon_delete_by_id.req.gql.dart';

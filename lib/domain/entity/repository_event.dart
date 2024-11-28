@@ -9,6 +9,11 @@ sealed class RepositoryEvent<T extends Identifiable> implements Identifiable {
   String get id => value.id;
 }
 
+final class RepositoryEventFetch<T extends Identifiable>
+    extends RepositoryEvent<T> {
+  const RepositoryEventFetch(super.value);
+}
+
 final class RepositoryEventCreate<T extends Identifiable>
     extends RepositoryEvent<T> {
   const RepositoryEventCreate(super.value);

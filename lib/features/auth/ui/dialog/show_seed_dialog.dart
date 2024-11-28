@@ -10,14 +10,18 @@ class ShowSeedDialog extends StatelessWidget {
   static Future<void> show(
     BuildContext context, {
     required String userId,
-  }) =>
-      showDialog(
+  }) async {
+    final seed = await GetIt.I<AuthCubit>().getSeedByAccountId(userId);
+    if (context.mounted) {
+      return showDialog(
         context: context,
         builder: (context) => ShowSeedDialog(
-          seed: GetIt.I<AuthCubit>().getSeedByAccountId(userId),
+          seed: seed,
           userId: userId,
         ),
       );
+    }
+  }
 
   const ShowSeedDialog({
     required this.userId,

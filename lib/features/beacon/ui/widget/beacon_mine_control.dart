@@ -2,10 +2,10 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import '../../domain/entity/beacon.dart';
 import '../bloc/beacon_cubit.dart';
 import '../dialog/beacon_delete_dialog.dart';
 

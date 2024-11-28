@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_image.dart';
-
-import 'package:tentura/features/profile/domain/entity/profile.dart';
 
 class BeaconAuthorInfo extends StatelessWidget {
   const BeaconAuthorInfo({

@@ -1,23 +1,26 @@
 const kIdLength = 13;
-const kCodeLength = 7;
-const kTitleMinLength = 3;
-const kTitleMaxLength = 32;
-const kDescriptionLength = 2048;
-const kCommentsShown = 3;
-const kMaxLines = 3;
 
-const kSnackBarDuration = Duration(seconds: 5);
+const kCodeLength = 7;
+
+const kTitleMinLength = 3;
+
+const kTitleMaxLength = 32;
+
+const kDescriptionLength = 2048;
+
+const kCommentsShown = 3;
+
+const kMaxLines = 3;
 
 const kAppTitle = 'Tentura';
 
 const kZeroNodeId = 'U000000000000';
 
-const kAppLinkBase = String.fromEnvironment('APP_LINK_BASE');
+const kSettingsThemeMode = 'themeMode';
 
-const kApiUri = String.fromEnvironment(
-  'API_URI',
-  defaultValue: 'https://$kAppLinkBase',
-);
+const kSettingsIsIntroEnabledKey = 'isIntroEnabled';
+
+const kAppLinkBase = 'https://${const String.fromEnvironment('APP_LINK_BASE')}';
 
 const kOsmUrlTemplate = String.fromEnvironment(
   'OSM_LINK_BASE',
@@ -30,3 +33,5 @@ const kJwtExpiresIn = Duration(
     defaultValue: 3600,
   ),
 );
+
+const kSnackBarDuration = Duration(seconds: 5);

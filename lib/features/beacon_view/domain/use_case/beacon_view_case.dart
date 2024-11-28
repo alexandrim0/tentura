@@ -1,7 +1,8 @@
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura/features/comment/data/comment_repository.dart';
-import 'package:tentura/features/comment/domain/entity/comment.dart';
+import 'package:tentura/domain/entity/comment.dart';
+
+import 'package:tentura/features/comment/data/repository/comment_repository.dart';
 
 import '../../data/repository/beacon_view_repository.dart';
 import '../typedef.dart';

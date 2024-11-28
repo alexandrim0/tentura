@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/entity/beacon.dart';
+import 'package:tentura/domain/entity/beacon.dart';
+
 import 'beacon_author_info.dart';
 import 'beacon_info.dart';
 import 'beacon_tile_control.dart';

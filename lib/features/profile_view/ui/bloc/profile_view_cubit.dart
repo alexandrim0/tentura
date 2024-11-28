@@ -1,8 +1,8 @@
 import 'package:get_it/get_it.dart';
 
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import 'package:tentura/features/profile/domain/entity/profile.dart';
 import 'package:tentura/features/friends/domain/use_case/friends_case.dart';
 
 import '../../domain/use_case/profile_view_case.dart';

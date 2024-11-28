@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
+import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 import 'package:tentura/features/settings/ui/bloc/settings_cubit.dart';
 
 import 'root_router.gr.dart';
@@ -23,17 +23,18 @@ const pathAppLinkView = '/shared/view';
 @AutoRouterConfig()
 class RootRouter extends RootStackRouter {
   RootRouter({
-    required ProfileCubit profileCubit,
+    required AuthCubit authCubit,
     required SettingsCubit settingsCubit,
-  })  : _profileCubit = profileCubit,
+  })  : _authCubit = authCubit,
         _settingsCubit = settingsCubit;
 
   late final reevaluateListenable = _ReevaluateFromStreams([
     _settingsCubit.stream.map((e) => e.introEnabled),
-    _profileCubit.stream,
+    _authCubit.stream.map((e) => e.currentAccount),
   ]);
 
-  final ProfileCubit _profileCubit;
+  final AuthCubit _authCubit;
+
   final SettingsCubit _settingsCubit;
 
   @override
@@ -86,7 +87,7 @@ class RootRouter extends RootStackRouter {
                   _settingsCubit.state.introEnabled ? const IntroRoute() : null,
             ),
             AutoRouteGuard.redirect(
-              (resolver) => _profileCubit.state.isNotAuthorized
+              (resolver) => _authCubit.state.isNotAuthenticated
                   ? const AuthLoginRoute()
                   : null,
             ),
@@ -114,11 +115,11 @@ class RootRouter extends RootStackRouter {
           page: AuthLoginRoute.page,
           guards: [
             AutoRouteGuard.redirect(
-              (resolver) => _profileCubit.state.isNotSuccess
-                  ? null
-                  : _profileCubit.state.profile.needEdit
+              (resolver) => _authCubit.state.isAuthenticated
+                  ? (_authCubit.state.currentAccount.needEdit
                       ? const ProfileEditRoute()
-                      : const ProfileMineRoute(),
+                      : const ProfileMineRoute())
+                  : null,
             ),
           ],
         ),
@@ -131,10 +132,9 @@ class RootRouter extends RootStackRouter {
           page: ProfileViewRoute.page,
           guards: [
             AutoRouteGuard.redirect(
-              (r) =>
-                  _profileCubit.checkIfIsMe(r.route.queryParams.getString('id'))
-                      ? const ProfileMineRoute()
-                      : null,
+              (r) => _authCubit.checkIfIsMe(r.route.queryParams.getString('id'))
+                  ? const ProfileMineRoute()
+                  : null,
             ),
           ],
         ),

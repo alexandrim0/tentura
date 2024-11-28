@@ -1,6 +1,5 @@
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-
-import '../../domain/entity/profile.dart';
 
 part 'profile_state.freezed.dart';
 
@@ -13,10 +12,6 @@ class ProfileState with _$ProfileState, StateFetchMixin {
   }) = _ProfileState;
 
   const ProfileState._();
-
-  bool get isAuthorized => status.isSuccess && profile.id.isNotEmpty;
-
-  bool get isNotAuthorized => !isAuthorized;
 
   ProfileState setLoading() => copyWith(status: FetchStatus.isLoading);
 

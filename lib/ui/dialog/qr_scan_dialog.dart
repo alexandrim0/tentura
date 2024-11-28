@@ -23,6 +23,16 @@ class _QRScanDialogState extends State<QRScanDialog> {
 
   var _hasResult = false;
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   if (kIsWeb) {
+  //     MobileScannerPlatform.instance.setBarcodeLibraryScriptUrl(
+  //       '/packages/zxing.min.js',
+  //     );
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) => Dialog.fullscreen(
         child: Scaffold(

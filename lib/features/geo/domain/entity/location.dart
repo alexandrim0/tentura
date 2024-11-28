@@ -1,4 +1,5 @@
-import 'coordinates.dart';
+import 'package:tentura/domain/entity/coordinates.dart';
+
 import 'place.dart';
 
 class Location {

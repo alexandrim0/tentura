@@ -2,8 +2,8 @@ sealed class AuthException implements Exception {
   const AuthException();
 }
 
-final class AuthExceptionUnknown extends AuthException {
-  const AuthExceptionUnknown();
+final class AuthUnknownException extends AuthException {
+  const AuthUnknownException();
 }
 
 class AuthSeedExistsException extends AuthException {
@@ -16,8 +16,4 @@ class AuthSeedIsWrongException extends AuthException {
 
 class AuthIdIsWrongException extends AuthException {
   const AuthIdIsWrongException();
-}
-
-class AuthIdNotFoundException extends AuthException {
-  const AuthIdNotFoundException();
 }

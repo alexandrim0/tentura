@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:cached_network_image/cached_network_image.dart'
-    if (dart.library.js_interop) 'cached_image_web.dart';
 
 class CachedImage extends StatelessWidget {
-  static Future<void> evictFromCache(String url) =>
-      kIsWeb ? Future.value() : CachedNetworkImage.evictFromCache(url);
+  static Future<void> evictFromCache(String url) => Future.value();
 
   const CachedImage({
     required this.imageUrl,
@@ -25,25 +21,12 @@ class CachedImage extends StatelessWidget {
   final BoxFit boxFit;
 
   @override
-  Widget build(BuildContext context) => kIsWeb
-      ? Image.network(
-          imageUrl,
-          fit: boxFit,
-          width: width,
-          height: height,
-          filterQuality: filterQuality,
-          errorBuilder: (context, url, error) {
-            if (kDebugMode) print(error);
-            return placeholder;
-          },
-        )
-      : CachedNetworkImage(
-          fit: boxFit,
-          width: width,
-          height: height,
-          imageUrl: imageUrl,
-          filterQuality: filterQuality,
-          placeholder: (context, url) => placeholder,
-          errorWidget: (context, url, error) => placeholder,
-        );
+  Widget build(BuildContext context) => Image.network(
+        imageUrl,
+        fit: boxFit,
+        width: width,
+        height: height,
+        filterQuality: filterQuality,
+        errorBuilder: (context, url, error) => placeholder,
+      );
 }

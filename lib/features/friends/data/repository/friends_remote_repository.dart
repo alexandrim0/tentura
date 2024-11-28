@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/data/model/user_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
-
-import 'package:tentura/features/profile/domain/entity/profile.dart';
-import 'package:tentura/features/profile/data/model/user_model.dart';
+import 'package:tentura/domain/entity/profile.dart';
 
 import '../gql/_g/friends_fetch.req.gql.dart';
 

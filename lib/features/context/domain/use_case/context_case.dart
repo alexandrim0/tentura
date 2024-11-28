@@ -5,7 +5,7 @@ import 'package:tentura/domain/entity/repository_event.dart';
 
 import 'package:tentura/features/auth/data/repository/auth_repository.dart';
 
-import '../../data/context_repository.dart';
+import '../../data/repository/context_repository.dart';
 import '../entity/context_entity.dart';
 
 @lazySingleton

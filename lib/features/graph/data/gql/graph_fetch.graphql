@@ -1,5 +1,5 @@
-# import '/features/beacon/data/gql/beacon_model.graphql'
-# import '/features/profile/data/gql/user_model.graphql'
+# import '/data/gql/beacon_model.graphql'
+# import '/data/gql/user_model.graphql'
 
 query GraphFetch(
     $focus: String!,

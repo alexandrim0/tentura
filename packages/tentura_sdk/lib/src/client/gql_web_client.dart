@@ -40,7 +40,12 @@ Future<Client> buildClient({
                   });
                 },
                 socketMaker: WebSocketMaker.url(
-                  () => Uri.parse(serverUrl).replace(scheme: 'wss').toString(),
+                  () => Uri.parse(serverUrl)
+                      .replace(
+                        port: 443,
+                        scheme: 'wss',
+                      )
+                      .toString(),
                 ),
               ),
             ),
