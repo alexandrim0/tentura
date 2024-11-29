@@ -28,13 +28,13 @@ dependencies:
   freezed_annotation: ^2.4.4
 
   # Platform related
-  drift: ^2.21.0
+  drift: ^2.22.0
   geocoding: ^3.0.0
-  drift_dev: ^2.21.2
+  drift_dev: ^2.22.0
   geolocator: ^13.0.2
   share_plus: ^10.1.2
   image_picker: ^1.1.2
-  drift_flutter: ^0.2.1
+  drift_flutter: ^0.2.2
   share_handler: ^0.0.22
   mobile_scanner: ^6.0.2
   flutter_secure_storage: ^9.2.2
