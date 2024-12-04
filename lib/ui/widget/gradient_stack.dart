@@ -61,19 +61,23 @@ class GradientStack extends StatelessWidget {
         fit: StackFit.passthrough,
         children: [
           // Gradient
-          Container(
-            height: height,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: Theme.of(context).colorScheme.surface,
-                  width: borderWidth ?? height / 3,
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: height,
+            ),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Theme.of(context).colorScheme.surface,
+                    width: borderWidth ?? height / 3,
+                  ),
                 ),
+                gradient: MediaQuery.of(context).platformBrightness ==
+                        Brightness.light
+                    ? _gradientLight
+                    : _gradientDark,
               ),
-              gradient:
-                  MediaQuery.of(context).platformBrightness == Brightness.light
-                      ? _gradientLight
-                      : _gradientDark,
             ),
           ),
           ...children,

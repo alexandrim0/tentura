@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' show Status;
 
 import 'package:tentura/consts.dart';
+import 'package:tentura/domain/enum.dart';
 
 import 'schema/schema_versions.dart';
 import 'tables/accounts.dart';

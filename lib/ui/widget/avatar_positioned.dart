@@ -12,19 +12,24 @@ class AvatarPositioned extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Positioned(
-        top: 100,
-        left: 50,
-        child: Container(
-          width: childSize,
-          height: childSize,
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 8,
-              color: Theme.of(context).colorScheme.surface,
-            ),
-            shape: BoxShape.circle,
+        top: childSize / 2,
+        left: childSize / 4,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxHeight: childSize,
+            maxWidth: childSize,
           ),
-          child: child,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: 8,
+                color: Theme.of(context).colorScheme.surface,
+              ),
+              shape: BoxShape.circle,
+            ),
+            position: DecorationPosition.foreground,
+            child: child,
+          ),
         ),
       );
 }

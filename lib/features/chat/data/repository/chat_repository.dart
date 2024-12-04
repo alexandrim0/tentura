@@ -38,7 +38,7 @@ class ChatRepository {
   Future<void> sendMessage(ChatMessage message) => _remoteApiService
       .request(
         GMessageCreateReq((b) => b.vars
-          ..object = message.object
+          ..object = message.sender
           ..message = message.content),
       )
       .firstWhere((e) => e.dataSource == DataSource.Link)

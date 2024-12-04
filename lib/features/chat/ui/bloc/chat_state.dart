@@ -1,6 +1,7 @@
-import 'package:flutter_chat_types/flutter_chat_types.dart';
-
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
+
+import '../../domain/entity/chat_message.dart';
 
 part 'chat_state.freezed.dart';
 
@@ -8,9 +9,9 @@ part 'chat_state.freezed.dart';
 class ChatState with _$ChatState, StateFetchMixin {
   const factory ChatState({
     required DateTime cursor,
-    required List<Message> messages,
-    @Default(User(id: '')) User me,
-    @Default(User(id: '')) User friend,
+    required List<ChatMessage> messages,
+    @Default(Profile()) Profile me,
+    @Default(Profile()) Profile friend,
     @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
   }) = _ChatState;
