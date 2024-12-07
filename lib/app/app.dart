@@ -56,21 +56,28 @@ class App extends StatelessWidget {
             ],
             reevaluateListenable: router.reevaluateListenable,
           ),
-          builder: (context, child) => kIsWeb &&
-                  MediaQuery.of(context).orientation == Orientation.landscape
-              ? ColoredBox(
-                  color: Theme.of(context).colorScheme.surfaceBright,
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: kWebConstraints,
-                      child: AspectRatio(
-                        aspectRatio: kWebAspectRatio,
-                        child: child,
+          builder: (context, child) {
+            final media = MediaQuery.of(context);
+            return MediaQuery(
+              data: media.copyWith(
+                textScaler: TextScaler.noScaling,
+              ),
+              child: kIsWeb && media.orientation == Orientation.landscape
+                  ? ColoredBox(
+                      color: Theme.of(context).colorScheme.surfaceBright,
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: kWebConstraints,
+                          child: AspectRatio(
+                            aspectRatio: kWebAspectRatio,
+                            child: child,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                )
-              : child ?? const SizedBox(),
+                    )
+                  : child ?? const SizedBox(),
+            );
+          },
         );
       },
     );

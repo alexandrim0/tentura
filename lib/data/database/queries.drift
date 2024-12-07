@@ -1,0 +1,13 @@
+import 'tables/_tables.dart';
+
+-- Query new messages counts
+newMessagesCounts(:object AS TEXT, :status AS INT):
+SELECT 
+  m.subject_id,
+  count(*)
+FROM 
+  messages m
+WHERE
+  m.object_id = :object AND m.status = :status
+GROUP BY
+  m.subject_id;
