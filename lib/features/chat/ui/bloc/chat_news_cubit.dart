@@ -22,7 +22,6 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
     this._chatRepository,
   ) : super(ChatNewsState(
           cursor: _zeroAge,
-          countNewTotal: 0,
           messages: {},
           myId: '',
         )) {
@@ -58,7 +57,6 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
       // User logged out
       emit(ChatNewsState(
         cursor: _zeroAge,
-        countNewTotal: 0,
         messages: {},
         myId: userId,
       ));
@@ -78,7 +76,6 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
       emit(state.copyWith(
         myId: userId,
         cursor: DateTime.timestamp(),
-        countNewTotal: _countNewTotal,
         status: FetchStatus.isSuccess,
         error: null,
       ));
@@ -98,22 +95,9 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
     }
     emit(ChatNewsState(
       cursor: DateTime.timestamp(),
-      countNewTotal: _countNewTotal,
       messages: state.messages,
       myId: state.myId,
     ));
-  }
-
-  int get _countNewTotal {
-    var count = 0;
-    for (final list in state.messages.values) {
-      for (final m in list) {
-        if (m.status == ChatMessageStatus.sent && m.reciever == state.myId) {
-          count++;
-        }
-      }
-    }
-    return count;
   }
 
   void _processMessage(ChatMessage message) {

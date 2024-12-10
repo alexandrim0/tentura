@@ -16,6 +16,12 @@ class AvatarImage extends StatelessWidget {
     super.key,
   });
 
+  const AvatarImage.small({
+    required this.userId,
+    super.key,
+  })  : boxFit = BoxFit.cover,
+        size = 40;
+
   final String userId;
   final BoxFit boxFit;
   final double size;

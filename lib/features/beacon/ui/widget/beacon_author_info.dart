@@ -25,38 +25,33 @@ class BeaconAuthorInfo extends StatelessWidget {
           // Avatar
           Padding(
             padding: const EdgeInsets.only(right: kSpacingSmall),
-            child: AvatarImage(
+            child: AvatarImage.small(
               userId: author.imageId,
-              size: 40,
             ),
           ),
 
-          // User displayName
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () => context.pushRoute(
-                  ProfileViewRoute(id: author.id),
-                ),
-                child: Text(
-                  author.title,
-                  style: textTheme.headlineMedium,
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-
           // An Eye
           Padding(
-            padding: const EdgeInsets.only(left: kSpacingSmall),
+            padding: kPaddingH,
             child: Icon(
               author.isSeeingMe
                   ? Icons.remove_red_eye
                   : Icons.remove_red_eye_outlined,
             ),
           ),
+
+          // User displayName
+          GestureDetector(
+            onTap: () => context.pushRoute(
+              ProfileViewRoute(id: author.id),
+            ),
+            child: Text(
+              author.title,
+              style: textTheme.headlineMedium,
+            ),
+          ),
+
+          const Spacer(),
         ],
       ),
     );

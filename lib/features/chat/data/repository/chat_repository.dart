@@ -29,7 +29,6 @@ class ChatRepository {
           .request(GMessageStreamReq((b) => b.vars.updated_at = fromMoment))
           .map((r) => r.dataOrThrow(label: _label).message_stream)
           .map((v) => v.map(toEntityFrom));
-  // .map((v) => v.map((e) => toEntityFrom(e as GMessageModel)));
 
   Future<void> sendMessage(ChatMessage message) => _remoteApiService
       .request(

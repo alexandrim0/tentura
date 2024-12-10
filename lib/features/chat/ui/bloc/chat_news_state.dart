@@ -9,13 +9,14 @@ class ChatNewsState with _$ChatNewsState, StateFetchMixin {
   const factory ChatNewsState({
     required String myId,
     required DateTime cursor,
-    required int countNewTotal,
     required Map<String, List<ChatMessage>> messages,
     @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
   }) = _ChatNewsState;
 
   const ChatNewsState._();
+
+  int get countNewTotal => messages.values.fold(0, (v, e) => v + e.length);
 
   ChatNewsState setLoading() => copyWith(
         status: FetchStatus.isLoading,
