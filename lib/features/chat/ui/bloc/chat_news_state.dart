@@ -9,6 +9,7 @@ class ChatNewsState with _$ChatNewsState, StateFetchMixin {
   const factory ChatNewsState({
     required String myId,
     required DateTime cursor,
+    required int countNewTotal,
     required Map<String, List<ChatMessage>> messages,
     @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,

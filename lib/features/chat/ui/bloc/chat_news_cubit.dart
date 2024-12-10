@@ -11,6 +11,7 @@ import '../../domain/entity/chat_message.dart';
 import 'chat_news_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
+export 'package:get_it/get_it.dart';
 
 export 'chat_news_state.dart';
 
@@ -21,6 +22,7 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
     this._chatRepository,
   ) : super(ChatNewsState(
           cursor: _zeroAge,
+          countNewTotal: 0,
           messages: {},
           myId: '',
         )) {
@@ -56,6 +58,7 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
       // User logged out
       emit(ChatNewsState(
         cursor: _zeroAge,
+        countNewTotal: 0,
         messages: {},
         myId: userId,
       ));
@@ -73,7 +76,9 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
         _processMessage(message);
       }
       emit(state.copyWith(
+        myId: userId,
         cursor: DateTime.timestamp(),
+        countNewTotal: _countNewTotal,
         status: FetchStatus.isSuccess,
         error: null,
       ));
@@ -93,15 +98,34 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
     }
     emit(ChatNewsState(
       cursor: DateTime.timestamp(),
+      countNewTotal: _countNewTotal,
       messages: state.messages,
       myId: state.myId,
     ));
   }
 
+  int get _countNewTotal {
+    var count = 0;
+    for (final list in state.messages.values) {
+      for (final m in list) {
+        if (m.status == ChatMessageStatus.sent && m.reciever == state.myId) {
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
   void _processMessage(ChatMessage message) {
     if (message.status == ChatMessageStatus.sent) {
       if (state.messages.containsKey(message.sender)) {
-        state.messages[message.sender]!.add(message);
+        final messagesOfSender = state.messages[message.sender]!;
+        final index = messagesOfSender.indexWhere((e) => e.id == message.id);
+        if (index < 0) {
+          messagesOfSender.add(message);
+        } else {
+          messagesOfSender[index] = message;
+        }
       } else {
         state.messages[message.sender] = [message];
       }
