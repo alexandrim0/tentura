@@ -5,10 +5,10 @@ import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_image.dart';
 
-import 'package:tentura/features/chat/ui/bloc/chat_news_cubit.dart';
+import '../bloc/chat_news_cubit.dart';
 
-class FriendListTile extends StatelessWidget {
-  const FriendListTile({
+class ChatPeerListTile extends StatelessWidget {
+  const ChatPeerListTile({
     required this.profile,
     super.key,
   });

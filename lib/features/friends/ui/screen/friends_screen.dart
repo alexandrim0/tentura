@@ -6,8 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
+import 'package:tentura/features/chat/ui/widget/chat_peer_list_tile.dart';
+
 import '../bloc/friends_cubit.dart';
-import '../widgets/friend_list_tile.dart';
 
 @RoutePage()
 class FriendsScreen extends StatelessWidget {
@@ -43,7 +44,7 @@ class FriendsScreen extends StatelessWidget {
                     itemCount: friends.length,
                     itemBuilder: (context, i) {
                       final profile = friends[i];
-                      return FriendListTile(
+                      return ChatPeerListTile(
                         key: ValueKey(profile),
                         profile: profile,
                       );
