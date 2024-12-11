@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:get_it/get_it.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
@@ -66,6 +65,9 @@ class ChatCubit extends Cubit<ChatState> {
       await _chatRepository.setMessageSeen(message.id);
     }
   }
+
+  // TBD
+  Future<void> onChatClear() async {}
 
   Future<void> _fetch() async {
     emit(state.setLoading());

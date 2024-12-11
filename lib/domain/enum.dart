@@ -1,1 +1,1 @@
-enum ChatMessageStatus { init, sending, sent, seen, error }
+enum ChatMessageStatus { init, sending, sent, seen, error, clear }

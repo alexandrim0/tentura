@@ -85,10 +85,6 @@ class _ChatListState extends State<ChatList> {
                     duration: const Duration(microseconds: 500),
                     offset: 1,
                   );
-                  // await _itemScrollController.scrollTo(
-                  //   duration: const Duration(microseconds: 500),
-                  //   index: chatCubit.state.messages.length,
-                  // );
                 },
               ),
             ),
