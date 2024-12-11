@@ -2,6 +2,7 @@ import 'dart:isolate';
 import 'package:ferry/ferry.dart' show Client, FetchPolicy, Link, OperationType;
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_http_link/gql_http_link.dart';
+import 'package:gql_dedupe_link/gql_dedupe_link.dart';
 import 'package:gql_websocket_link/gql_websocket_link.dart';
 
 import 'auth_link.dart';
@@ -22,6 +23,8 @@ Future<Client> buildClient(
   final tokenStream = receivePort.asBroadcastStream();
   return Client(
     link: Link.from([
+      DedupeLink(),
+
       //
       AuthLink(() async {
         sendPort.send(GetTokenRequest());
@@ -42,6 +45,8 @@ Future<Client> buildClient(
         //
         TransportWebSocketLink(
           TransportWsClientOptions(
+            shouldRetry: (_) => true,
+            log: params.isDebugMode ? print : null,
             connectionParams: () async {
               sendPort.send(GetTokenRequest());
               final token = await tokenStream
