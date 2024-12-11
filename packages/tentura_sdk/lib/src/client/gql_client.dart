@@ -1,5 +1,6 @@
 import 'dart:isolate';
-import 'package:ferry/ferry.dart' show Client, FetchPolicy, Link, OperationType;
+import 'package:ferry/ferry.dart'
+    show Cache, Client, FetchPolicy, Link, MemoryStore, OperationType;
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_http_link/gql_http_link.dart';
 import 'package:gql_dedupe_link/gql_dedupe_link.dart';
@@ -22,6 +23,16 @@ Future<Client> buildClient(
   sendPort!.send(InitMessage(receivePort.sendPort));
   final tokenStream = receivePort.asBroadcastStream();
   return Client(
+    cache: Cache(
+      store: MemoryStore(),
+    ),
+
+    //
+    defaultFetchPolicies: {
+      OperationType.query: FetchPolicy.NoCache,
+    },
+
+    //
     link: Link.from([
       DedupeLink(),
 
@@ -80,10 +91,5 @@ Future<Client> buildClient(
         ),
       ),
     ]),
-
-    //
-    defaultFetchPolicies: {
-      OperationType.query: FetchPolicy.NoCache,
-    },
   );
 }
