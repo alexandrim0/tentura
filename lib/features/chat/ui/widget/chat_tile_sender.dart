@@ -33,7 +33,7 @@ class ChatTileSender extends StatelessWidget {
               style: theme.textTheme.bodyLarge,
             ),
             Text(
-              timeFormatHm(message.createdAt),
+              timeFormatHm(message.createdAt.toLocal()),
               style: theme.textTheme.bodySmall,
             ),
           ],
