@@ -65,11 +65,11 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
     } else {
       // User logged in
       emit(state.setLoading());
-      await _chatRepository.syncMessagesFor(userId);
+      await _chatRepository.syncMessagesFor(userId: userId);
 
       var oldest = _zeroAge;
       for (final message
-          in await _chatRepository.getAllNewMessagesFor(userId)) {
+          in await _chatRepository.getAllNewMessagesFor(objectId: userId)) {
         if (message.updatedAt.isAfter(oldest)) oldest = message.updatedAt;
         _processMessage(message);
       }
@@ -80,7 +80,7 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
         error: null,
       ));
       _messagesUpdatesSubscription =
-          _chatRepository.watchUpdates(oldest.toUtc()).listen(
+          _chatRepository.watchUpdates(fromMoment: oldest.toUtc()).listen(
                 _onMessagesUpdate,
                 cancelOnError: false,
                 onError: (Object e) => emit(state.setError(e)),

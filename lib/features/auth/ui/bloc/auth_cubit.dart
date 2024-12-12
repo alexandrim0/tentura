@@ -171,7 +171,9 @@ class AuthCubit extends Cubit<AuthState> {
         final account = state.accounts[index];
 
         if (account.title == event.value.title &&
-            account.hasAvatar == event.value.hasAvatar) return;
+            account.hasAvatar == event.value.hasAvatar) {
+          return;
+        }
         try {
           state.accounts[index] = account.copyWith(
             title: event.value.title,

@@ -24,7 +24,9 @@ class ChatRepository {
 
   final RemoteApiService _remoteApiService;
 
-  Stream<Iterable<ChatMessage>> watchUpdates(DateTime fromMoment) =>
+  Stream<Iterable<ChatMessage>> watchUpdates({
+    required DateTime fromMoment,
+  }) =>
       _remoteApiService
           .request(GMessageStreamReq((b) => b.vars.updated_at = fromMoment))
           .map((r) => r.dataOrThrow(label: _label).message_stream)
@@ -39,20 +41,27 @@ class ChatRepository {
       .firstWhere((e) => e.dataSource == DataSource.Link)
       .then((r) => r.dataOrThrow(label: _label));
 
-  Future<void> setMessageSeen(String id) => _remoteApiService
-      .request(GMessageSetDeliveredReq(
-        (b) => b.vars.id = (GuuidBuilder()..value = id),
-      ))
-      .firstWhere((e) => e.dataSource == DataSource.Link)
-      .then((r) => r.dataOrThrow(label: _label).update_message_by_pk);
+  Future<void> setMessageSeen({
+    required String messageId,
+  }) =>
+      _remoteApiService
+          .request(GMessageSetDeliveredReq(
+            (b) => b.vars.id = (GuuidBuilder()..value = messageId),
+          ))
+          .firstWhere((e) => e.dataSource == DataSource.Link)
+          .then((r) => r.dataOrThrow(label: _label).update_message_by_pk);
 
   /// Fetch all messages from last updated and saves into local DB
-  Future<void> syncMessagesFor(String id) async {
+  Future<void> syncMessagesFor({
+    required String userId,
+  }) async {
     final table = _database.messages;
     final expr = table.updatedAt.max();
     final last = await (_database.selectOnly(table)
           ..addColumns([expr])
-          ..where(table.objectId.equals(id) | table.subjectId.equals(id)))
+          ..where(
+            table.objectId.equals(userId) | table.subjectId.equals(userId),
+          ))
         .map((r) => r.read(expr))
         .getSingleOrNull();
 
@@ -96,10 +105,13 @@ class ChatRepository {
           .then((v) => v.map(toEntityFrom));
 
   /// Get all unseen messages for user from local DB
-  Future<Iterable<ChatMessage>> getAllNewMessagesFor(String id) =>
+  Future<Iterable<ChatMessage>> getAllNewMessagesFor({
+    required String objectId,
+  }) =>
       _database.managers.messages
           .filter((f) =>
-              f.objectId.equals(id) & f.status.equals(ChatMessageStatus.sent))
+              f.objectId.equals(objectId) &
+              f.status.equals(ChatMessageStatus.sent))
           .get()
           .then((v) => v.map(toEntityFrom));
 

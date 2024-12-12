@@ -62,7 +62,7 @@ class ChatCubit extends Cubit<ChatState> {
 
   Future<void> onMessageShown(ChatMessage message) async {
     if (message.sender != state.me.id) {
-      await _chatRepository.setMessageSeen(message.id);
+      await _chatRepository.setMessageSeen(messageId: message.id);
     }
   }
 

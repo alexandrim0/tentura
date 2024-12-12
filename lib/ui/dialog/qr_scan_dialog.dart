@@ -95,7 +95,7 @@ class _ScannerOverlay extends CustomPainter {
     ..strokeWidth = 8;
 
   final _maskPaint = Paint()
-    ..color = Colors.deepPurple.withOpacity(0.5)
+    ..color = Colors.deepPurple.withValues(alpha: 0.5)
     ..style = PaintingStyle.fill
     ..blendMode = BlendMode.dstOut;
 

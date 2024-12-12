@@ -66,11 +66,15 @@ class GeoRepository {
     if (await Geolocator.isLocationServiceEnabled()) {
       var permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.whileInUse ||
-          permission == LocationPermission.always) return true;
+          permission == LocationPermission.always) {
+        return true;
+      }
 
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.whileInUse ||
-          permission == LocationPermission.always) return true;
+          permission == LocationPermission.always) {
+        return true;
+      }
     }
     return false;
   }
