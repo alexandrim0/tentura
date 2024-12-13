@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/theme.dart';
 
@@ -23,11 +23,7 @@ class App extends StatelessWidget {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    if (kIsWeb) {
-      MobileScannerPlatform.instance.setBarcodeLibraryScriptUrl(
-        '/packages/zxing.min.js',
-      );
-    }
+    QRScanDialog.init();
     await configureDependencies();
     FlutterNativeSplash.remove();
     runApp(const App());
@@ -57,6 +53,7 @@ class App extends StatelessWidget {
             reevaluateListenable: router.reevaluateListenable,
           ),
           builder: (context, child) {
+            if (child == null) return const SizedBox();
             final media = MediaQuery.of(context);
             return MediaQuery(
               data: media.copyWith(
@@ -75,7 +72,7 @@ class App extends StatelessWidget {
                         ),
                       ),
                     )
-                  : child ?? const SizedBox(),
+                  : child,
             );
           },
         );
