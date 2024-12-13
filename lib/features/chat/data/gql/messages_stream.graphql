@@ -1,4 +1,4 @@
-# import '/features/chat/data/gql/message_model.graphql'
+# import 'message_model.graphql'
 
 subscription MessageStream(
     $batch_size: Int = 1,

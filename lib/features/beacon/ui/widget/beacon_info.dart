@@ -81,8 +81,8 @@ class BeaconInfo extends StatelessWidget {
                   size: 18,
                 ),
                 Text(
-                  ' ${fYMD(beacon.dateRange?.start)}'
-                  ' - ${fYMD(beacon.dateRange?.end)}',
+                  ' ${dateFormatYMD(beacon.dateRange?.start)}'
+                  ' - ${dateFormatYMD(beacon.dateRange?.end)}',
                   maxLines: 1,
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis,

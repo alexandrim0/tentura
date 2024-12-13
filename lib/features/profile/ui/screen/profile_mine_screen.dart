@@ -52,6 +52,9 @@ class ProfileMineScreen extends StatelessWidget {
                     // More
                     const ProfileMineMenuButton(),
                   ],
+                  actionsIconTheme: const IconThemeData(
+                    color: Colors.black,
+                  ),
                   floating: true,
                   expandedHeight: GradientStack.defaultHeight,
                   flexibleSpace: FlexibleSpaceBar(

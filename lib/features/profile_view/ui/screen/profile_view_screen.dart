@@ -78,8 +78,13 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
                     ],
                   ),
                 ],
+                actionsIconTheme: const IconThemeData(
+                  color: Colors.black,
+                ),
                 floating: true,
-                leading: const DeepBackButton(),
+                leading: const DeepBackButton(
+                  color: Colors.black,
+                ),
                 expandedHeight: GradientStack.defaultHeight,
 
                 // Avatar

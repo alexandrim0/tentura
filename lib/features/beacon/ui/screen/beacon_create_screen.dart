@@ -216,7 +216,7 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
     );
     if (dateRange == null) return;
     _dateRangeController.text =
-        '${fYMD(dateRange.start)} - ${fYMD(dateRange.end)}';
+        '${dateFormatYMD(dateRange.start)} - ${dateFormatYMD(dateRange.end)}';
     setState(() => _dateRange = dateRange);
   }
 

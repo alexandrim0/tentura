@@ -20,8 +20,8 @@ abstract class RegisterModule {
           shareAcrossIsolates: true,
         ),
         web: DriftWebOptions(
-          sqlite3Wasm: Uri.parse('/packages/sqlite3.wasm'),
-          driftWorker: Uri.parse('/packages/drift_worker.js'),
+          sqlite3Wasm: Uri.parse('/assets/packages/sqlite3.wasm'),
+          driftWorker: Uri.parse('/assets/packages/drift_worker.js'),
         ),
       );
 }

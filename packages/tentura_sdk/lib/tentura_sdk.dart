@@ -1,4 +1,5 @@
-export 'package:ferry/ferry.dart' show DataSource, OperationResponse;
+export 'package:ferry/ferry.dart'
+    show DataSource, FetchPolicy, OperationResponse;
 export 'package:gql_exec/gql_exec.dart' show Context, HttpLinkHeaders;
 
 export 'src/consts.dart';

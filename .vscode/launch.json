@@ -10,7 +10,6 @@
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
-                "--enable-impeller",
                 "--flavor",
                 "prod",
                 "--dart-define",
@@ -36,7 +35,7 @@
             "name": "tentura-wasm (debug)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release",
+            "flutterMode": "debug",
             "toolArgs": [
                 "--wasm",
                 "--dart-define",
@@ -55,7 +54,6 @@
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
-                // "--enable-impeller",
                 "--flavor",
                 "stage",
                 "--dart-define",
@@ -68,7 +66,6 @@
             "type": "dart",
             "flutterMode": "profile",
             "toolArgs": [
-                // "--enable-impeller",
                 "--flavor",
                 "prod",
                 "--dart-define",
@@ -81,7 +78,6 @@
             "type": "dart",
             "flutterMode": "release",
             "toolArgs": [
-                // "--enable-impeller",
                 "--flavor",
                 "prod",
                 "--dart-define",

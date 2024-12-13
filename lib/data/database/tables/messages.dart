@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' show Status;
+
+import 'package:tentura/domain/enum.dart';
 
 @TableIndex(name: 'messages_object', columns: {#objectId})
 @TableIndex(name: 'messages_subject', columns: {#subjectId})
@@ -13,7 +14,7 @@ class Messages extends Table {
 
   TextColumn get content => text()();
 
-  IntColumn get status => intEnum<Status>()();
+  IntColumn get status => intEnum<ChatMessageStatus>()();
 
   DateTimeColumn get createdAt => dateTime()();
 

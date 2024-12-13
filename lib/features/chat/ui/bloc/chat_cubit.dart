@@ -1,6 +1,5 @@
-// import 'package:uuid/uuid.dart';
+import 'dart:async';
 import 'package:get_it/get_it.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
@@ -9,130 +8,99 @@ import '../../data/repository/chat_repository.dart';
 import '../../domain/entity/chat_message.dart';
 import 'chat_state.dart';
 
+export 'package:flutter_bloc/flutter_bloc.dart';
+
 export 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
   ChatCubit({
     required Profile me,
-    required String friendId,
+    required Profile friend,
+    required Stream<ChatMessage> updatesStream,
     ChatRepository? chatRepository,
-  })  : _chatRepository = chatRepository ?? GetIt.I<ChatRepository>(),
+  })  : _updatesStream = updatesStream,
+        _chatRepository = chatRepository ?? GetIt.I<ChatRepository>(),
         super(ChatState(
-          me: User(
-            id: me.id,
-            firstName: me.title,
-            imageUrl: me.imageId,
-          ),
-          friend: User(id: friendId),
-          cursor: DateTime.timestamp(),
-          status: FetchStatus.isLoading,
+          me: me,
           messages: [],
+          friend: friend,
+          cursor: DateTime.fromMillisecondsSinceEpoch(0),
         )) {
-    fetch();
+    _fetch();
   }
 
   final ChatRepository _chatRepository;
 
-  // late final _uuid = const Uuid();
+  final Stream<ChatMessage> _updatesStream;
 
-  late final _updates =
-      _chatRepository.watchUpdates(state.cursor).where(_filterMessages).listen(
-    (m) {
-      final message = _mapMessage(m);
-      final index = state.messages.indexWhere((e) => e.id == message.id);
-      if (index < 0) {
-        state.messages.insert(0, message);
-      } else {
-        state.messages[index] = message;
-      }
-      emit(state.copyWith(
-        cursor: m.updatedAt,
-        status: FetchStatus.isSuccess,
-        error: null,
-      ));
-    },
-    cancelOnError: false,
-    onError: (Object e) => emit(state.setError(e)),
-  );
+  late final _updatesSubscription = _updatesStream
+      .where(
+        (m) => m.reciever == state.friend.id || m.sender == state.friend.id,
+      )
+      .listen(
+        _onMessage,
+        cancelOnError: false,
+        onError: (Object e) => emit(state.setError(e)),
+      );
 
   @override
   Future<void> close() async {
-    await _updates.cancel();
+    await _updatesSubscription.cancel();
     return super.close();
   }
 
-  Future<void> fetch() async {
-    emit(state.setLoading());
-    try {
-      final fetchResult = await _chatRepository.fetch(state.friend.id);
-      emit(state.copyWith(
-        friend: User(
-          id: fetchResult.profile.id,
-          firstName: fetchResult.profile.title,
-          imageUrl: fetchResult.profile.imageId,
-        ),
-      ));
-      final messages = fetchResult.messages
-          .where(_filterMessages)
-          .map(_mapMessage)
-          .toList()
-        ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-      emit(ChatState(
-        me: state.me,
-        friend: state.friend,
-        messages: messages,
-        cursor: messages.isEmpty
-            ? DateTime.timestamp()
-            : DateTime.fromMillisecondsSinceEpoch(messages.last.updatedAt!),
-      ));
-      _updates.resume();
-    } catch (e) {
-      emit(state.setError(e));
-    }
-  }
-
-  Future<void> onSendPressed(PartialText partialText) async {
+  Future<void> onSendPressed(String text) async {
     try {
       await _chatRepository.sendMessage(emptyMessage.copyWith(
-        object: state.friend.id,
-        content: partialText.text,
+        reciever: state.friend.id,
+        content: text.trim(),
       ));
     } catch (e) {
       emit(state.setError(e));
     }
   }
 
-  Future<void> onMessageVisibilityChanged(
-    Message message,
-    bool isVisible,
-  ) async {
-    if (kDebugMode) print(message);
-    if (!isVisible) return;
-    if (message.status != Status.sent) return;
-    if (message.author.id == state.me.id) return;
+  Future<void> onMessageShown(ChatMessage message) async {
+    if (message.sender != state.me.id) {
+      await _chatRepository.setMessageSeen(messageId: message.id);
+    }
+  }
+
+  // TBD
+  Future<void> onChatClear() async {}
+
+  Future<void> _fetch() async {
+    emit(state.setLoading());
     try {
-      await _chatRepository.setMessageSeen(message.remoteId!);
+      final result = await _chatRepository.getChatMessagesFor(
+        subjectId: state.me.id,
+        objectId: state.friend.id,
+      );
+      final messages = result.toList()
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      emit(state.copyWith(
+        messages: messages,
+        status: FetchStatus.isSuccess,
+        cursor:
+            messages.isEmpty ? DateTime.timestamp() : messages.last.updatedAt,
+      ));
+      _updatesSubscription.resume();
     } catch (e) {
       emit(state.setError(e));
     }
   }
 
-  Future<void> onEndReached() async {
-    if (kDebugMode) print('End riched');
+  void _onMessage(ChatMessage message) {
+    final index = state.messages.indexWhere((e) => e.id == message.id);
+    if (index < 0) {
+      state.messages.insert(0, message);
+    } else {
+      state.messages[index] = message;
+    }
+    emit(state.copyWith(
+      cursor: message.updatedAt,
+      status: FetchStatus.isSuccess,
+      error: null,
+    ));
   }
-
-  bool _filterMessages(ChatMessage message) =>
-      message.subject == state.friend.id || message.object == state.friend.id;
-
-  TextMessage _mapMessage(ChatMessage message) => TextMessage(
-        id: message.id,
-        remoteId: message.id,
-        text: message.content,
-        showStatus: true,
-        type: MessageType.text,
-        createdAt: message.createdAt.millisecondsSinceEpoch,
-        updatedAt: message.updatedAt.millisecondsSinceEpoch,
-        status: message.delivered ? Status.seen : Status.sent,
-        author: message.subject == state.me.id ? state.me : state.friend,
-      );
 }

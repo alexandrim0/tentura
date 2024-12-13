@@ -5,6 +5,7 @@ import 'package:tentura/consts.dart';
 import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_image.dart';
+import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/gradient_stack.dart';
 import 'package:tentura/ui/widget/avatar_positioned.dart';
 
@@ -44,25 +45,33 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     final profile = _profileCubit.state.profile;
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
+      // Header
       appBar: AppBar(
         actions: [
           // Save Button
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: IconButton.outlined(
-              icon: const Icon(Icons.save),
-              onPressed: _onSavePressed,
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: IconButton.outlined(
+                icon: const Icon(
+                  Icons.save,
+                  color: Colors.black,
+                ),
+                onPressed: _onSavePressed,
+              ),
             ),
           ),
         ],
-        backgroundColor: Colors.transparent,
-      ),
-      extendBodyBehindAppBar: true,
-      resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [
-          // Header
-          GradientStack(
+        leading: const Align(
+          alignment: Alignment.topCenter,
+          child: DeepBackButton(
+            color: Colors.black,
+          ),
+        ),
+        toolbarHeight: GradientStack.defaultHeight,
+        flexibleSpace: FlexibleSpaceBar(
+          background: GradientStack(
             children: [
               // Avatar
               AvatarPositioned(
@@ -113,7 +122,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               ),
             ],
           ),
-
+        ),
+      ),
+      resizeToAvoidBottomInset: false,
+      body: Column(
+        children: [
           // Username
           Padding(
             padding: kPaddingAll,

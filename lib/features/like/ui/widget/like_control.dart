@@ -18,32 +18,34 @@ class LikeControl extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final likeCubit = GetIt.I<LikeCubit>();
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
-        color: theme.colorScheme.secondaryContainer,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(TenturaIcons.arrowUp),
-            onPressed: () => likeCubit.incrementLike(entity),
-          ),
-          BlocSelector<LikeCubit, LikeState, int>(
-            key: ValueKey(entity),
-            bloc: likeCubit,
-            selector: (state) => state.likes[entity.id] ?? entity.votes,
-            builder: (context, state) => Text(
-              state.toString(),
-              style: theme.textTheme.bodyMedium,
+    return RepaintBoundary(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(32),
+          color: theme.colorScheme.secondaryContainer,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(TenturaIcons.arrowUp),
+              onPressed: () => likeCubit.incrementLike(entity),
             ),
-          ),
-          IconButton(
-            icon: const Icon(TenturaIcons.arrowDown),
-            onPressed: () => likeCubit.decrementLike(entity),
-          ),
-        ],
+            BlocSelector<LikeCubit, LikeState, int>(
+              key: ValueKey(entity),
+              bloc: likeCubit,
+              selector: (state) => state.likes[entity.id] ?? entity.votes,
+              builder: (context, state) => Text(
+                state.toString(),
+                style: theme.textTheme.bodyMedium,
+              ),
+            ),
+            IconButton(
+              icon: const Icon(TenturaIcons.arrowDown),
+              onPressed: () => likeCubit.decrementLike(entity),
+            ),
+          ],
+        ),
       ),
     );
   }

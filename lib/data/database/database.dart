@@ -1,20 +1,20 @@
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' show Status;
 
 import 'package:tentura/consts.dart';
+import 'package:tentura/domain/enum.dart';
 
 import 'schema/schema_versions.dart';
-import 'tables/accounts.dart';
-import 'tables/friends.dart';
-import 'tables/messages.dart';
-import 'tables/settings.dart';
+import 'tables/_tables.dart';
 
 export 'package:drift/drift.dart';
 
 part 'database.g.dart';
 
 @DriftDatabase(
+  include: {
+    'queries.drift',
+  },
   tables: [
     Accounts,
     Friends,

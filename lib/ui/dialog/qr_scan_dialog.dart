@@ -6,6 +6,14 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../utils/screen_size.dart';
 
 class QRScanDialog extends StatefulWidget {
+  static void init() {
+    if (kIsWeb) {
+      MobileScannerPlatform.instance.setBarcodeLibraryScriptUrl(
+        '/assets/packages/zxing.min.js',
+      );
+    }
+  }
+
   static Future<String?> show(BuildContext context) => showDialog<String>(
         context: context,
         useSafeArea: false,
@@ -22,16 +30,6 @@ class _QRScanDialogState extends State<QRScanDialog> {
   late final _scanWindow = _getScanWindow();
 
   var _hasResult = false;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   if (kIsWeb) {
-  //     MobileScannerPlatform.instance.setBarcodeLibraryScriptUrl(
-  //       '/packages/zxing.min.js',
-  //     );
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) => Dialog.fullscreen(
@@ -95,7 +93,7 @@ class _ScannerOverlay extends CustomPainter {
     ..strokeWidth = 8;
 
   final _maskPaint = Paint()
-    ..color = Colors.deepPurple.withOpacity(0.5)
+    ..color = Colors.deepPurple.withValues(alpha: 0.5)
     ..style = PaintingStyle.fill
     ..blendMode = BlendMode.dstOut;
 

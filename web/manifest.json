@@ -19,5 +19,7 @@
             "sizes": "512x512",
             "type": "image/png"
         }
-    ]
+    ],
+    "manifest_version": 3,
+    "version": "0.9.6"
 }
