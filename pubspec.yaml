@@ -14,7 +14,7 @@ dependencies:
   nil: ^1.1.1
   uuid: ^4.4.2
   intl: ^0.20.1
-  get_it: ^8.0.2
+  get_it: ^8.0.3
   logger: ^2.5.0
   latlong2: ^0.9.1
   injectable: ^2.5.0
