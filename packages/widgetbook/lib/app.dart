@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
+import 'package:tentura/ui/theme.dart';
+
 import 'app.directories.g.dart';
 
 @App()
@@ -19,7 +21,21 @@ class WidgetbookApp extends StatelessWidget {
           ],
           initialDevice: Devices.ios.iPhone13ProMax,
         ),
+        MaterialThemeAddon(
+          themes: [
+            WidgetbookTheme(
+              name: 'Dark',
+              data: themeDark,
+            ),
+            WidgetbookTheme(
+              name: 'Light',
+              data: themeLight,
+            ),
+          ],
+        )
       ],
+      darkTheme: themeDark,
+      lightTheme: themeLight,
       directories: directories,
     );
   }

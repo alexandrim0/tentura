@@ -24,6 +24,7 @@ class BeaconImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final placeholder = Image.asset(
       'assets/images/image-placeholder.jpg',
+      package: kAssetPackage,
       height: height,
       width: width,
       fit: boxFit,

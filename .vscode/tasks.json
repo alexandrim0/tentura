@@ -20,6 +20,9 @@
 				"kind": "build",
 				"isDefault": false
 			},
+			"options": {
+				"cwd": "packages/client"
+    	},
 			"problemMatcher": [],
 			"label": "flutter: flutter build apk"
 		},
@@ -29,7 +32,6 @@
 			"args": [
 				"build",
 				"web",
-				"--release",
 				"--dart-define",
 				"APP_LINK_BASE=tentura.intersubjective.space",
 			],
@@ -37,8 +39,11 @@
 				"kind": "build",
 				"isDefault": false
 			},
+			"options": {
+				"cwd": "packages/client"
+    	},
 			"problemMatcher": [],
-			"label": "flutter: flutter build web"
+			"label": "flutter: flutter build web (js)"
 		},
 		{
 			"type": "flutter",
@@ -47,7 +52,30 @@
 				"build",
 				"web",
 				"--wasm",
-				"--release",
+				"--dart-define",
+				"APP_LINK_BASE=tentura.intersubjective.space"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"options": {
+				"cwd": "packages/client"
+    	},
+			"problemMatcher": [],
+			"label": "flutter: flutter build web (wasm)"
+		},
+		{
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"web",
+				"--wasm",
+				"--base-href",
+				"/widgetbook/",
+				"--pwa-strategy",
+				"none",
 				"--dart-define",
 				"APP_LINK_BASE=tentura.intersubjective.space"
 			],
@@ -55,8 +83,11 @@
 				"kind": "build",
 				"isDefault": false
 			},
+			"options": {
+				"cwd": "packages/widgetbook"
+    	},
 			"problemMatcher": [],
-			"label": "flutter: flutter build web (wasm)"
+			"label": "flutter: flutter build widgetbook"
 		}
 	]
 }

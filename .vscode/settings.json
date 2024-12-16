@@ -2,8 +2,8 @@
   "files.exclude": {
     "**/_g": true,
     "**/*.g.dart": true,
+    "**/*.gr.dart": true,
     "**/*.freezed.dart": true,
-    "lib/app/di/di.config.dart": true,
-    "lib/app/router/root_router.gr.dart": true,
+    "**/di.config.dart": true,
   }
 }

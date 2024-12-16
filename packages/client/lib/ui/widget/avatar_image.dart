@@ -30,6 +30,7 @@ class AvatarImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final placeholder = Image.asset(
       'assets/images/avatar-placeholder.jpg',
+      package: kAssetPackage,
       height: size,
       width: size,
       fit: boxFit,

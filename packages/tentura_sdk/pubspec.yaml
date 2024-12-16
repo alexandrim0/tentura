@@ -7,6 +7,8 @@ version: 0.0.2
 environment:
   sdk: '>=3.6.0 <4.0.0'
 
+resolution: workspace
+
 dependencies:
   http: ^1.2.2
   ferry: ^0.16.0

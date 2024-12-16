@@ -12,9 +12,9 @@ const kCommentsShown = 3;
 
 const kMaxLines = 3;
 
-const kAssetsPackage = 'assets';
-
 const kAppTitle = 'Tentura';
+
+const kAssetPackage = 'tentura';
 
 const kZeroNodeId = 'U000000000000';
 
