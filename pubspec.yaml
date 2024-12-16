@@ -19,7 +19,7 @@ dependencies:
   latlong2: ^0.9.1
   injectable: ^2.5.0
   auto_route: ^9.2.2
-  collection: ^1.18.0
+  collection: ^1.19.0
   built_value: ^8.9.2
   flutter_bloc: ^8.1.6
   synchronized: ^3.3.0

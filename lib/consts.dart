@@ -6,7 +6,7 @@ const kTitleMinLength = 3;
 
 const kTitleMaxLength = 32;
 
-const kDescriptionLength = 2048;
+const kDescriptionLength = 2_048;
 
 const kCommentsShown = 3;
 
@@ -32,7 +32,7 @@ const kOsmUrlTemplate = String.fromEnvironment(
 const kJwtExpiresIn = Duration(
   seconds: int.fromEnvironment(
     'JWT_EXPIRES_IN',
-    defaultValue: 3600,
+    defaultValue: 3_600,
   ),
 );
 
