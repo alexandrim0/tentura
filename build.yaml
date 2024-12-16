@@ -2,6 +2,10 @@ targets:
   $default:
     builders:
 
+      drift_dev:
+        options:
+          named_parameters: true
+
       auto_route_generator:auto_route_generator:
         generate_for:
           - lib/**_screen.dart
@@ -12,10 +16,9 @@ targets:
 
       freezed:
         options:
-          # This can significantly speed up code-generation.
-          format: true
-          copy_with: true
           equal: true
+          copy_with: true
+          format: false
           when: false
           map: false
 
@@ -23,12 +26,8 @@ targets:
         enabled: true
         options:
           schema: tentura|lib/data/gql/schema.graphql
-          # global_enum_fallbacks: true
           vars_create_factories: true
           output_dir: "_g"
-          # when_extensions:
-          #   when: true
-          #   maybeWhen: true
 
           type_overrides:
             timestamptz:
@@ -58,3 +57,15 @@ targets:
 
             - import: "package:tentura/data/gql/tstzrange_serializer.dart"
               name: TstzrangeSerializer
+
+      build_web_compilers:entrypoint:
+        generate_for:
+          - web/**.dart
+        options:
+          compiler: dart2js
+        dev_options:
+          dart2js_args:
+            - --no-minify
+        release_options:
+          dart2js_args:
+            - -O4

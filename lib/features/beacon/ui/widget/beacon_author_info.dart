@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_image.dart';
-
-import 'package:tentura/features/profile/domain/entity/profile.dart';
 
 class BeaconAuthorInfo extends StatelessWidget {
   const BeaconAuthorInfo({
@@ -26,26 +25,33 @@ class BeaconAuthorInfo extends StatelessWidget {
           // Avatar
           Padding(
             padding: const EdgeInsets.only(right: kSpacingSmall),
-            child: AvatarImage(
+            child: AvatarImage.small(
               userId: author.imageId,
-              size: 40,
             ),
           ),
-          // User displayName
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () => context.pushRoute(
-                  ProfileViewRoute(id: author.id),
-                ),
-                child: Text(
-                  author.title,
-                  style: textTheme.headlineMedium,
-                ),
-              ),
-            ],
+
+          // An Eye
+          Padding(
+            padding: kPaddingH,
+            child: Icon(
+              author.isSeeingMe
+                  ? Icons.remove_red_eye
+                  : Icons.remove_red_eye_outlined,
+            ),
           ),
+
+          // User displayName
+          GestureDetector(
+            onTap: () => context.pushRoute(
+              ProfileViewRoute(id: author.id),
+            ),
+            child: Text(
+              author.title,
+              style: textTheme.headlineMedium,
+            ),
+          ),
+
+          const Spacer(),
         ],
       ),
     );

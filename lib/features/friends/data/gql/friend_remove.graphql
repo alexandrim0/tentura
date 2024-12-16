@@ -1,0 +1,5 @@
+mutation FriendRemove($id: String!) {
+  delete_vote_user(where: {object: {_eq: $id}}) {
+    affected_rows
+  }
+}

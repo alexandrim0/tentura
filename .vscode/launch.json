@@ -10,7 +10,6 @@
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
-                // "--enable-impeller",
                 "--flavor",
                 "prod",
                 "--dart-define",
@@ -26,8 +25,27 @@
                 "--dart-define",
                 "APP_LINK_BASE=tentura.intersubjective.space",
             ],
-            "args": ["-d", "chrome", "--web-port", "8888",
-                "--web-browser-flag=--disable-web-security"
+            "args": [
+                "-d", "chrome",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
+            ]
+        },
+        {
+            "name": "tentura-wasm (debug)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+                "--wasm",
+                "--dart-define",
+                "APP_LINK_BASE=tentura.intersubjective.space",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--wasm",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
             ]
         },
         {
@@ -36,7 +54,6 @@
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
-                // "--enable-impeller",
                 "--flavor",
                 "stage",
                 "--dart-define",
@@ -44,12 +61,11 @@
             ],
         },
         {
-            "name": "tentura (profile mode)",
+            "name": "tentura (profile)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
             "toolArgs": [
-                // "--enable-impeller",
                 "--flavor",
                 "prod",
                 "--dart-define",
@@ -57,17 +73,48 @@
             ],
         },
         {
-            "name": "tentura (release mode)",
+            "name": "tentura (release)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
             "toolArgs": [
-                // "--enable-impeller",
                 "--flavor",
                 "prod",
                 "--dart-define",
                 "APP_LINK_BASE=tentura.intersubjective.space",
             ],
         },
-    ]
+        {
+            "name": "tentura-wasm (release)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "toolArgs": [
+                "--wasm",
+                "--dart-define",
+                "APP_LINK_BASE=tentura.intersubjective.space",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--wasm",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
+            ]
+        },
+        {
+            "name": "tentura (widgetbook)",
+            "request": "launch",
+            "program": "widgetbook/lib/main.dart",
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define",
+                "APP_LINK_BASE=tentura.intersubjective.space",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
+            ]
+        },
+  ]
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'package:ferry/ferry.dart';
+import 'package:ferry/ferry.dart' show OperationRequest, OperationResponse;
 
 import 'client/message.dart';
 import 'service/image_service.dart';
@@ -9,20 +9,22 @@ import 'service/token_service_native.dart'
 
 abstract class TenturaApiBase {
   TenturaApiBase({
-    required this.serverName,
+    required this.apiUrlBase,
     this.jwtExpiresIn = const Duration(minutes: 1),
     this.userAgent = 'Tentura client',
     this.storagePath = '',
-  })  : _imageService = ImageService(serverName: serverName),
+    this.isDebugMode = false,
+  })  : _imageService = ImageService(apiUrlBase: apiUrlBase),
         _tokenService = TokenService(
-          serverName: serverName,
+          apiUrlBase: apiUrlBase,
           jwtExpiresIn: jwtExpiresIn,
         );
 
+  final String apiUrlBase;
   final String userAgent;
-  final String serverName;
   final String storagePath;
   final Duration jwtExpiresIn;
+  final bool isDebugMode;
 
   final TokenService _tokenService;
   final ImageService _imageService;
@@ -78,8 +80,4 @@ abstract class TenturaApiBase {
             OperationRequest<TData, TVars>)?
         forward,
   ]);
-
-  Future<void> addRequestToRequestController<TData, TVars>(
-    OperationRequest<TData, TVars> request,
-  );
 }

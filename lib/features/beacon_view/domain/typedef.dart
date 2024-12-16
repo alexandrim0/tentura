@@ -1,5 +1,5 @@
-import 'package:tentura/features/beacon/domain/entity/beacon.dart';
-import 'package:tentura/features/comment/domain/entity/comment.dart';
+import 'package:tentura/domain/entity/beacon.dart';
+import 'package:tentura/domain/entity/comment.dart';
 
 typedef BeaconViewResult = ({Beacon beacon, Comment comment});
 

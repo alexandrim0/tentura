@@ -1,6 +1,6 @@
 {
-    "name": "tentura",
-    "short_name": "tentura",
+    "name": "Tentura",
+    "short_name": "Tentura",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#3A1E5C",
@@ -19,5 +19,7 @@
             "sizes": "512x512",
             "type": "image/png"
         }
-    ]
+    ],
+    "manifest_version": 3,
+    "version": "0.9.6"
 }

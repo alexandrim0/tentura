@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:auto_route/auto_route.dart';
-import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/widget/qr_code.dart';
 
 import '../bloc/auth_cubit.dart';
 
@@ -11,15 +10,18 @@ class ShowSeedDialog extends StatelessWidget {
   static Future<void> show(
     BuildContext context, {
     required String userId,
-  }) =>
-      showDialog(
+  }) async {
+    final seed = await GetIt.I<AuthCubit>().getSeedByAccountId(userId);
+    if (context.mounted) {
+      return showDialog(
         context: context,
-        useRootNavigator: false,
         builder: (context) => ShowSeedDialog(
-          seed: GetIt.I<AuthCubit>().getSeedByAccountId(userId),
+          seed: seed,
           userId: userId,
         ),
       );
+    }
+  }
 
   const ShowSeedDialog({
     required this.userId,
@@ -42,42 +44,34 @@ class ShowSeedDialog extends StatelessWidget {
 
       // Header
       title: Text(
-        userId,
+        seed,
         maxLines: 1,
         overflow: TextOverflow.clip,
         textAlign: TextAlign.center,
-        style: theme.textTheme.headlineLarge,
+        style: theme.textTheme.headlineMedium,
       ),
 
       // QRCode
-      content: PrettyQrView.data(
-        key: ValueKey(seed),
+      content: QrCode(
         data: seed,
-        decoration: PrettyQrDecoration(
-          shape: PrettyQrSmoothSymbol(
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
       ),
 
       // Buttons
       actions: [
-        Builder(
-          builder: (context) => TextButton(
-            child: const Text('Copy to clipboard'),
-            onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: seed));
-              if (context.mounted) {
-                showSnackBar(
-                  context,
-                  text: 'Seed copied to clipboard!',
-                );
-              }
-            },
-          ),
+        TextButton(
+          child: const Text('Copy to clipboard'),
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: seed));
+            if (context.mounted) {
+              showSnackBar(
+                context,
+                text: 'Seed copied to clipboard!',
+              );
+            }
+          },
         ),
         TextButton(
-          onPressed: context.maybePop,
+          onPressed: Navigator.of(context).pop,
           child: const Text('Close'),
         ),
       ],

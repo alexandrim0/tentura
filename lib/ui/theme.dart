@@ -1,39 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-const _primaryColor = Color(0xFF3A1E5C);
+const primaryColor = Color(0xFF3A1E5C);
 
-final colorSchemeLight = ColorScheme.fromSeed(
-  seedColor: _primaryColor,
-);
-
-final colorSchemeDark = ColorScheme.fromSeed(
-  seedColor: _primaryColor,
+final themeLight = _createAppTheme(ColorScheme.fromSeed(
+  seedColor: primaryColor,
+));
+final themeDark = _createAppTheme(ColorScheme.fromSeed(
   brightness: Brightness.dark,
-);
+  seedColor: primaryColor,
+));
 
-final themeLight = _createAppTheme(Brightness.light);
-final themeDark = _createAppTheme(Brightness.dark);
-
-ThemeData _createAppTheme(Brightness brightness) {
-  final isDarkMode = brightness == Brightness.dark;
-  final colorScheme = isDarkMode ? colorSchemeDark : colorSchemeLight;
-
-  final textTheme = ThemeData().textTheme;
-
-  return ThemeData().copyWith(
-    brightness: brightness,
+ThemeData _createAppTheme(ColorScheme colorScheme) {
+  return ThemeData(
     colorScheme: colorScheme,
+    brightness: colorScheme.brightness,
     canvasColor: colorScheme.surfaceTint,
     scaffoldBackgroundColor: colorScheme.surface,
     unselectedWidgetColor: colorScheme.onSurface,
+
     //Dialog
     dialogTheme: DialogTheme(
       backgroundColor: colorScheme.surfaceContainer,
     ),
+
     // Icon
     iconTheme: IconThemeData(
       color: colorScheme.onSurface,
     ),
+
     //Snack Bar
     snackBarTheme: SnackBarThemeData(
       backgroundColor: colorScheme.primary,
@@ -41,8 +36,9 @@ ThemeData _createAppTheme(Brightness brightness) {
         color: colorScheme.onPrimary,
       ),
     ),
+
     //Text
-    textTheme: textTheme
+    textTheme: GoogleFonts.robotoTextTheme()
         .copyWith(
           displayMedium: const TextStyle(
             fontSize: 45,
@@ -80,7 +76,6 @@ ThemeData _createAppTheme(Brightness brightness) {
         .apply(
           bodyColor: colorScheme.onSurface,
           displayColor: colorScheme.onSurface,
-          fontFamily: 'Roboto',
         ),
   );
 }

@@ -1,84 +1,158 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/data/database/database.dart';
 import 'package:tentura/data/service/local_secure_storage.dart';
+import 'package:tentura/data/service/remote_api_service.dart';
+import 'package:tentura/domain/entity/profile.dart';
 
-import '../../domain/entity/account.dart';
-import '../model/account_model.dart';
+import '../../domain/exception.dart';
 
 @singleton
 class AuthRepository {
-  static const _repositoryKey = 'Auth:';
-  static const _accountKey = '${_repositoryKey}Id:';
-  static const _accountIdAllKey = '${_repositoryKey}All:';
-  static const _currentAccountKey = '${_repositoryKey}currentAccountId';
+  AuthRepository(
+    this._database,
+    this._remoteApiService,
+    this._localSecureStorage,
+  );
 
-  AuthRepository(this._localStorage);
+  final Database _database;
 
-  final LocalSecureStorage _localStorage;
+  final RemoteApiService _remoteApiService;
+
+  final LocalSecureStorage _localSecureStorage;
 
   final _controller = StreamController<String>.broadcast();
 
-  String? _currentAccountId;
+  String _currentAccountId = '';
 
   @disposeMethod
   Future<void> dispose() => _controller.close();
 
   Stream<String> currentAccountChanges() async* {
-    yield await getCurrentAccountId();
+    yield _currentAccountId.isNotEmpty
+        ? _currentAccountId
+        : await getCurrentAccountId();
+
     yield* _controller.stream;
   }
 
-  Future<String> getCurrentAccountId() => _currentAccountId == null
-      ? _localStorage
+  Future<String> getSeedByAccountId(String id) async =>
+      await _localSecureStorage.read(_getAccountKey(id)) ?? '';
+
+  Future<String> getCurrentAccountId() async => _currentAccountId.isEmpty
+      ? _localSecureStorage
           .read(_currentAccountKey)
-          .then((v) => (_currentAccountId = v) ?? '')
-      : SynchronousFuture(_currentAccountId ?? '');
+          .then((v) => _currentAccountId = v ?? '')
+      : _currentAccountId;
 
-  Future<String?> setCurrentAccountId(String? id) async {
-    await _localStorage.write(_currentAccountKey, _currentAccountId = id);
-    _controller.add(_currentAccountId ?? '');
-    return _currentAccountId;
+  Future<List<Profile>> getAccountsAll() async => [
+        for (final account in await _database.managers.accounts.get())
+          Profile(
+            id: account.id,
+            title: account.title,
+            hasAvatar: account.hasAvatar,
+          ),
+      ];
+
+  Future<Profile?> getAccountById(String id) => _database.managers.accounts
+      .filter((f) => f.id.equals(id))
+      .getSingleOrNull()
+      .then(
+        (e) => e == null
+            ? null
+            : Profile(
+                id: e.id,
+                title: e.title,
+                hasAvatar: e.hasAvatar,
+              ),
+      );
+
+  Future<String> addAccount(String seed) async {
+    if (seed.isEmpty) throw const AuthSeedIsWrongException();
+
+    final id = await _remoteApiService.signIn(seed: seed);
+
+    if (id.isEmpty) throw const AuthIdIsWrongException();
+
+    await _addAccount(id, seed);
+
+    return id;
   }
 
-  Future<Account?> getAccountById(String id) => _localStorage
-      .read('$_accountKey$id')
-      .then((v) => switch (jsonDecode(v ?? 'null')) {
-            final Map<String, dynamic> j => AccountModel.fromJson(j).toEntity,
-            _ => null,
-          });
+  Future<String> signUp() async {
+    final (:id, :seed) = await _remoteApiService.signUp();
 
-  Future<Set<Account>> getAccountAll() async {
-    final result = <Account>{};
-    for (final id in await _getIdAll()) {
-      final account = await getAccountById(id);
-      if (account != null) result.add(account);
-    }
-    return result;
+    if (id.isEmpty) throw const AuthIdIsWrongException();
+
+    if (seed.isEmpty) throw const AuthSeedIsWrongException();
+
+    await _addAccount(id, seed);
+
+    await _setCurrentAccountId(id);
+
+    return id;
   }
 
-  Future<Account> addAccount(Account account) async {
-    await _setIdAll((await _getIdAll())..add(account.id));
-    await _localStorage.write(
-      '$_accountKey${account.id}',
-      jsonEncode(AccountModel.fromEntity(account).toJson()),
+  Future<void> signIn(
+    String id, {
+    bool isPremature = false,
+  }) async {
+    await _remoteApiService.signIn(
+      prematureUserId: isPremature ? id : null,
+      seed: await _localSecureStorage.read(_getAccountKey(id)) ?? '',
     );
-    return account;
+    await _setCurrentAccountId(id);
   }
 
-  Future<void> removeAccountById(String id) async {
-    await _setIdAll((await _getIdAll())..removeWhere((e) => e == id));
-    await _localStorage.write('$_accountKey$id', null);
+  Future<void> signOut() async {
+    await _remoteApiService.signOut();
+
+    await _setCurrentAccountId(null);
   }
 
-  Future<Set<String>> _getIdAll() => _localStorage.read(_accountIdAllKey).then(
-        (v) => (jsonDecode(v ?? '[]') as List).map((e) => e as String).toSet(),
-      );
+  /// Remove account only from local storage
+  Future<void> removeAccount(String id) async {
+    await _remoteApiService.signOut();
 
-  Future<void> _setIdAll(Set<String> idAll) => _localStorage.write(
-        _accountIdAllKey,
-        jsonEncode(idAll.toList()),
-      );
+    await _database.managers.accounts.filter((e) => e.id.equals(id)).delete();
+
+    await _localSecureStorage.delete(_getAccountKey(id));
+
+    if (await getCurrentAccountId() == id) {
+      await _setCurrentAccountId(null);
+    }
+  }
+
+  Future<void> updateAccount(Profile account) => _database.managers.accounts
+      .filter((f) => f.id.equals(account.id))
+      .update((o) => o(
+            title: Value(account.title),
+            hasAvatar: Value(account.hasAvatar),
+          ));
+
+  Future<void> _setCurrentAccountId(String? id) async {
+    await _localSecureStorage.write(
+      _currentAccountKey,
+      _currentAccountId = id ?? '',
+    );
+    _controller.add(_currentAccountId);
+  }
+
+  Future<void> _addAccount(String id, String seed) async {
+    await _localSecureStorage.write(
+      _getAccountKey(id),
+      seed,
+    );
+    await _database.managers.accounts.create(
+      (o) => o(id: id),
+      mode: InsertMode.insert,
+    );
+  }
+
+  static const _repositoryKey = 'Auth';
+
+  static const _currentAccountKey = '$_repositoryKey:currentAccountId';
+
+  static String _getAccountKey(String id) => '$_repositoryKey:Id:$id';
 }

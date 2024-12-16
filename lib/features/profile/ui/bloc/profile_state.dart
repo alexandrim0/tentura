@@ -1,6 +1,5 @@
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-
-import '../../domain/entity/profile.dart';
 
 part 'profile_state.freezed.dart';
 

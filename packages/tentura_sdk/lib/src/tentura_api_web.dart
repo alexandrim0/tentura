@@ -1,39 +1,27 @@
 import 'dart:async';
-import 'package:ferry/ferry.dart';
-import 'package:gql_http_link/gql_http_link.dart';
+import 'package:ferry/ferry.dart'
+    show Client, OperationRequest, OperationResponse;
 
 import 'consts.dart';
-import 'client/auth_link.dart';
 import 'tentura_api_base.dart';
+import 'client/gql_web_client.dart';
 
 class TenturaApi extends TenturaApiBase {
   TenturaApi({
-    required super.serverName,
+    required super.apiUrlBase,
     super.jwtExpiresIn,
-    super.userAgent,
     super.storagePath,
+    super.isDebugMode,
+    super.userAgent,
   });
 
   late final Client _gqlClient;
 
   @override
   Future<void> init() async {
-    _gqlClient = Client(
-      link: Link.concat(
-        AuthLink(() => getToken().then((v) => v.value)),
-        HttpLink(
-          Uri.https(
-            serverName,
-            pathGraphQLEndpoint,
-          ).toString(),
-          defaultHeaders: {
-            'accept': 'application/json',
-          },
-        ),
-      ),
-      defaultFetchPolicies: {
-        OperationType.query: FetchPolicy.NoCache,
-      },
+    _gqlClient = await buildClient(
+      serverUrl: apiUrlBase + pathGraphQLEndpoint,
+      getToken: getToken,
     );
   }
 
@@ -50,10 +38,4 @@ class TenturaApi extends TenturaApiBase {
         forward,
   ]) =>
       _gqlClient.request(request);
-
-  @override
-  Future<void> addRequestToRequestController<TData, TVars>(
-    OperationRequest<TData, TVars> request,
-  ) async =>
-      _gqlClient.requestController.add(request);
 }

@@ -1,7 +1,7 @@
 sealed class LikeException implements Exception {
   const LikeException([this.message]);
 
-  final String? message;
+  final Object? message;
 }
 
 final class LikeSetException extends LikeException {

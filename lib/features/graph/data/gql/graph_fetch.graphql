@@ -1,4 +1,5 @@
-# import '/features/beacon/data/gql/beacon_model.graphql'
+# import '/data/gql/beacon_model.graphql'
+# import '/data/gql/user_model.graphql'
 
 query GraphFetch(
     $focus: String!,
@@ -13,18 +14,16 @@ query GraphFetch(
       context: $context,
       positive_only: $positive_only
       },
-    order_by: {score: desc},
+    order_by: {dst_score: desc},
     offset: $offset,
     limit: $limit
   ) {
     src
     dst
-    score
+    src_score
+    dst_score
     user {
-      id
-      title
-      score
-      has_picture
+      ...UserModel
     }
   }
   beacon_by_pk(id: $focus) {

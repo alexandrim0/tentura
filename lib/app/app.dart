@@ -6,6 +6,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/theme.dart';
 
@@ -15,13 +16,14 @@ import 'package:tentura/features/settings/ui/bloc/settings_cubit.dart';
 import 'di/di.dart';
 
 class App extends StatelessWidget {
-  static Future<void> appRunner() async {
+  static Future<void> runner() async {
     FlutterNativeSplash.preserve(
       widgetsBinding: WidgetsFlutterBinding.ensureInitialized(),
     );
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    QRScanDialog.init();
     await configureDependencies();
     FlutterNativeSplash.remove();
     runApp(const App());
@@ -31,42 +33,50 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final getIt = GetIt.instance;
-    final router = getIt<RootRouter>();
     return BlocSelector<SettingsCubit, SettingsState, ThemeMode>(
-      bloc: getIt<SettingsCubit>(),
+      bloc: GetIt.I<SettingsCubit>(),
       selector: (state) => state.themeMode,
-      builder: (context, themeMode) => MaterialApp.router(
-        title: kAppTitle,
-        theme: themeLight,
-        darkTheme: themeDark,
-        themeMode: themeMode,
-        color: const Color(0xFF3A1E5C),
-        debugShowCheckedModeBanner: false,
-        routerConfig: router.config(
-          deepLinkBuilder: kDebugMode ? router.deepLinkBuilder : null,
-          deepLinkTransformer: router.deepLinkTransformer,
-          navigatorObservers: () => [
-            getIt<SentryNavigatorObserver>(),
-          ],
-          reevaluateListenable: router.reevaluateListenable,
-        ),
-        builder: (context, child) => kIsWeb &&
-                MediaQuery.of(context).orientation == Orientation.landscape
-            ? ColoredBox(
-                color: Theme.of(context).colorScheme.surfaceBright,
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: kWebConstraints,
-                    child: AspectRatio(
-                      aspectRatio: kWebAspectRatio,
-                      child: child,
-                    ),
-                  ),
-                ),
-              )
-            : child ?? const SizedBox(),
-      ),
+      builder: (context, themeMode) {
+        final router = GetIt.I<RootRouter>();
+        return MaterialApp.router(
+          title: kAppTitle,
+          theme: themeLight,
+          darkTheme: themeDark,
+          themeMode: themeMode,
+          debugShowCheckedModeBanner: false,
+          routerConfig: router.config(
+            deepLinkBuilder: router.deepLinkBuilder,
+            deepLinkTransformer: router.deepLinkTransformer,
+            navigatorObservers: () => [
+              GetIt.I<SentryNavigatorObserver>(),
+            ],
+            reevaluateListenable: router.reevaluateListenable,
+          ),
+          builder: (context, child) {
+            if (child == null) return const SizedBox();
+            final media = MediaQuery.of(context);
+            return MediaQuery(
+              data: media.copyWith(
+                textScaler: TextScaler.noScaling,
+              ),
+              child: kIsWeb && media.orientation == Orientation.landscape
+                  ? ColoredBox(
+                      color: Theme.of(context).colorScheme.surfaceBright,
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: kWebConstraints,
+                          child: AspectRatio(
+                            aspectRatio: kWebAspectRatio,
+                            child: child,
+                          ),
+                        ),
+                      ),
+                    )
+                  : child,
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -67,11 +67,11 @@ class _ConnectScreenState extends State<ConnectScreen> {
                 Padding(
                   padding: kPaddingV,
                   child: FilledButton(
-                    child: const Text('Scan QR'),
                     onPressed: () async {
                       final code = await QRScanDialog.show(context);
                       if (context.mounted) _goWithCode(code);
                     },
+                    child: const Text('Scan QR'),
                   ),
                 ),
               ],

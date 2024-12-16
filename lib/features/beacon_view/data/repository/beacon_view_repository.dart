@@ -1,9 +1,8 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/data/model/beacon_model.dart';
+import 'package:tentura/data/model/comment_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
-
-import 'package:tentura/features/beacon/data/model/beacon_model.dart';
-import 'package:tentura/features/comment/data/model/comment_model.dart';
 
 import '../../domain/exception.dart';
 import '../../domain/typedef.dart';

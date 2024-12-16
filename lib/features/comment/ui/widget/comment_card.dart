@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/domain/entity/comment.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 import 'package:tentura/ui/widget/show_more_text.dart';
 import 'package:tentura/ui/widget/avatar_image.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import 'package:tentura/features/like/domain/entity/likable_entity.dart';
 import 'package:tentura/features/like/ui/widget/like_control.dart';
-
-import '../../domain/entity/comment.dart';
 
 class CommentCard extends StatelessWidget {
   const CommentCard({
@@ -87,7 +85,7 @@ class CommentCard extends StatelessWidget {
               // Vote
               if (!isMine)
                 LikeControl(
-                  entity: LikableComment(comment),
+                  entity: comment,
                   key: ValueKey(comment),
                 ),
             ],

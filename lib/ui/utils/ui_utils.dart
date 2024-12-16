@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:image_picker/image_picker.dart';
 
 import 'package:tentura/consts.dart';
 
@@ -10,8 +10,13 @@ const kSpacingSmall = 8.0;
 const kSpacingMedium = 16.0;
 const kSpacingLarge = 24.0;
 
+const kPaddingAllS = EdgeInsets.all(kSpacingSmall);
+// TBD: rename to kPaddingAllM
 const kPaddingAll = EdgeInsets.all(kSpacingMedium);
+const kPaddingAllL = EdgeInsets.all(kSpacingLarge);
+// TBD: rename to kPaddingHM
 const kPaddingH = EdgeInsets.symmetric(horizontal: kSpacingMedium);
+// TBD: rename to kPaddingVM
 const kPaddingV = EdgeInsets.symmetric(vertical: kSpacingMedium);
 const kPaddingT = EdgeInsets.only(top: kSpacingMedium);
 
@@ -22,9 +27,14 @@ const kPaddingSmallV = EdgeInsets.symmetric(vertical: kSpacingSmall);
 const kWebConstraints = BoxConstraints(minWidth: 600);
 const kWebAspectRatio = 9 / 16;
 
-final _fYMD = DateFormat.yMd();
-String fYMD(DateTime? dateTime) =>
-    dateTime == null ? '' : _fYMD.format(dateTime);
+final _fmtYMd = DateFormat.yMd();
+final _fmtHm = DateFormat.Hm();
+
+String dateFormatYMD(DateTime? dateTime) =>
+    dateTime == null ? '' : _fmtYMd.format(dateTime);
+
+String timeFormatHm(DateTime? dateTime) =>
+    dateTime == null ? '' : _fmtHm.format(dateTime);
 
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
   BuildContext context, {
@@ -45,6 +55,13 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
     backgroundColor: isError
         ? theme.colorScheme.error
         : color ?? theme.snackBarTheme.backgroundColor,
+    action: kDebugMode
+        ? SnackBarAction(
+            label: 'print',
+            // ignore: avoid_print
+            onPressed: () => print(text),
+          )
+        : null,
     content: RichText(
       text: TextSpan(
         text: text,
@@ -69,37 +86,16 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBarError(
       text: state.error?.toString() ?? 'Unknown error!',
     );
 
-sealed class ScreenSize {
-  static ScreenSize get(Size size) => switch (size.height) {
-        < ScreenSmall.height => const ScreenSmall(),
-        < ScreenMedium.height => const ScreenMedium(),
-        < ScreenLarge.height => const ScreenLarge(),
-        _ => const ScreenBig(),
-      };
-
-  const ScreenSize();
-}
-
-class ScreenSmall extends ScreenSize {
-  static const height = 600;
-
-  const ScreenSmall();
-}
-
-class ScreenMedium extends ScreenSize {
-  static const height = 800;
-
-  const ScreenMedium();
-}
-
-class ScreenLarge extends ScreenSize {
-  static const height = 1200;
-
-  const ScreenLarge();
-}
-
-class ScreenBig extends ScreenSize {
-  static const height = 1600;
-
-  const ScreenBig();
+Future<({String name, Uint8List bytes})?> pickImage() async {
+  final xFile = await ImagePicker().pickImage(
+    source: ImageSource.gallery,
+    // TBD: resize and convert by package:image
+    maxWidth: 600,
+  );
+  return xFile == null
+      ? null
+      : (
+          name: xFile.name,
+          bytes: await xFile.readAsBytes(),
+        );
 }

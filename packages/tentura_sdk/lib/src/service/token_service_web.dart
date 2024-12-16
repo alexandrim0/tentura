@@ -7,7 +7,7 @@ import 'token_service_base.dart';
 /// Set KeyPair before fetchJWT
 class TokenService extends TokenServiceBase {
   TokenService({
-    required super.serverName,
+    required super.apiUrlBase,
     super.jwtExpiresIn = const Duration(minutes: 1),
   });
 

@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-
-import 'package:tentura/features/beacon/domain/entity/beacon.dart';
 
 import '../../domain/use_case/favorites_case.dart';
 import 'favorites_state.dart';
@@ -14,10 +13,7 @@ export 'favorites_state.dart';
 
 @lazySingleton
 class FavoritesCubit extends Cubit<FavoritesState> {
-  FavoritesCubit(this._favoritesCase)
-      : super(const FavoritesState(
-          status: FetchStatus.isLoading,
-        )) {
+  FavoritesCubit(this._favoritesCase) : super(const FavoritesState()) {
     _authChanges.resume();
     _favoritesChanges.resume();
   }
@@ -25,13 +21,13 @@ class FavoritesCubit extends Cubit<FavoritesState> {
   final FavoritesCase _favoritesCase;
 
   late final _authChanges = _favoritesCase.currentAccountChanges.listen(
-    (userId) {
+    (userId) async {
       emit(FavoritesState(
         beacons: [],
         userId: userId,
         status: FetchStatus.isLoading,
       ));
-      fetch();
+      if (userId.isNotEmpty) await fetch();
     },
     cancelOnError: false,
   );

@@ -15,6 +15,7 @@ export 'root_router.gr.dart';
 const pathRoot = '/';
 const pathConnect = '/connect';
 const pathBeaconView = '/beacon/view';
+const pathProfileChat = '/profile/chat';
 const pathProfileView = '/profile/view';
 const pathAppLinkView = '/shared/view';
 
@@ -28,11 +29,12 @@ class RootRouter extends RootStackRouter {
         _settingsCubit = settingsCubit;
 
   late final reevaluateListenable = _ReevaluateFromStreams([
-    _authCubit.stream.map((e) => e.currentAccountId),
     _settingsCubit.stream.map((e) => e.introEnabled),
+    _authCubit.stream.map((e) => e.currentAccount),
   ]);
 
   final AuthCubit _authCubit;
+
   final SettingsCubit _settingsCubit;
 
   @override
@@ -49,17 +51,6 @@ class RootRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
         // Home
         AutoRoute(
-          guards: [
-            AutoRouteGuard.redirect(
-              (resolver) =>
-                  _settingsCubit.state.introEnabled ? const IntroRoute() : null,
-            ),
-            AutoRouteGuard.redirect(
-              (resolver) => _authCubit.state.isAuthenticated
-                  ? null
-                  : const AuthLoginRoute(),
-            ),
-          ],
           initial: true,
           path: pathRoot,
           page: HomeRoute.page,
@@ -77,8 +68,12 @@ class RootRouter extends RootStackRouter {
               page: ConnectRoute.page,
             ),
             // Updates
+            // AutoRoute(
+            //   page: UpdatesRoute.page,
+            // ),
+            // Friends
             AutoRoute(
-              page: UpdatesRoute.page,
+              page: FriendsRoute.page,
             ),
             // Profile
             AutoRoute(
@@ -86,10 +81,24 @@ class RootRouter extends RootStackRouter {
               page: ProfileMineRoute.page,
             ),
           ],
+          guards: [
+            AutoRouteGuard.redirect(
+              (resolver) =>
+                  _settingsCubit.state.introEnabled ? const IntroRoute() : null,
+            ),
+            AutoRouteGuard.redirect(
+              (resolver) => _authCubit.state.isNotAuthenticated
+                  ? const AuthLoginRoute()
+                  : null,
+            ),
+          ],
         ),
 
         // Intro
         AutoRoute(
+          keepHistory: false,
+          maintainState: false,
+          page: IntroRoute.page,
           guards: [
             AutoRouteGuard.redirect(
               (resolver) => _settingsCubit.state.introEnabled
@@ -97,24 +106,30 @@ class RootRouter extends RootStackRouter {
                   : const AuthLoginRoute(),
             ),
           ],
-          page: IntroRoute.page,
         ),
 
         // Login
         AutoRoute(
+          keepHistory: false,
+          maintainState: false,
+          page: AuthLoginRoute.page,
           guards: [
             AutoRouteGuard.redirect(
-              (resolver) =>
-                  _authCubit.state.isAuthenticated ? const HomeRoute() : null,
+              (resolver) => _authCubit.state.isAuthenticated
+                  ? (_authCubit.state.currentAccount.needEdit
+                      ? const ProfileEditRoute()
+                      : const ProfileMineRoute())
+                  : null,
             ),
           ],
-          page: AuthLoginRoute.page,
         ),
 
-        // Profile
+        // Profile View
         AutoRoute(
-          page: ProfileViewRoute.page,
+          keepHistory: false,
+          maintainState: false,
           path: pathProfileView,
+          page: ProfileViewRoute.page,
           guards: [
             AutoRouteGuard.redirect(
               (r) => _authCubit.checkIfIsMe(r.route.queryParams.getString('id'))
@@ -123,27 +138,49 @@ class RootRouter extends RootStackRouter {
             ),
           ],
         ),
+
+        // Profile Edit
         AutoRoute(
+          keepHistory: false,
+          maintainState: false,
           page: ProfileEditRoute.page,
         ),
 
-        //Beacon
+        // Beacon Create
         AutoRoute(
+          keepHistory: false,
+          maintainState: false,
           page: BeaconCreateRoute.page,
         ),
+
+        // Beacon View
         AutoRoute(
-          page: BeaconViewRoute.page,
+          keepHistory: false,
+          maintainState: false,
           path: pathBeaconView,
+          page: BeaconViewRoute.page,
         ),
 
         // Rating
         AutoRoute(
+          keepHistory: false,
+          maintainState: false,
           page: RatingRoute.page,
         ),
 
         // Graph
         AutoRoute(
+          keepHistory: false,
+          maintainState: false,
           page: GraphRoute.page,
+        ),
+
+        // Chat
+        AutoRoute(
+          keepHistory: false,
+          maintainState: false,
+          path: pathProfileChat,
+          page: ChatRoute.page,
         ),
 
         // default
@@ -154,8 +191,7 @@ class RootRouter extends RootStackRouter {
       ];
 
   FutureOr<DeepLink> deepLinkBuilder(PlatformDeepLink deepLink) {
-    // ignore: avoid_print
-    print('DeepLinkBuilder: ${deepLink.uri}');
+    if (kDebugMode) print('DeepLinkBuilder: ${deepLink.uri}');
     return deepLink;
   }
 
