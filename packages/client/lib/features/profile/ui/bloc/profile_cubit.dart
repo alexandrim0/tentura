@@ -88,7 +88,6 @@ class ProfileCubit extends Cubit<ProfileState> {
       profile: Profile(id: id),
       status: FetchStatus.isLoading,
     ));
-    if (kDebugMode) print('Current User Id: $id');
     if (id.isNotEmpty) await fetch();
   }
 }

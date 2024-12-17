@@ -1,4 +1,6 @@
 import 'package:intl/intl.dart';
+import 'package:get_it/get_it.dart';
+import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -30,6 +32,8 @@ const kWebAspectRatio = 9 / 16;
 final _fmtYMd = DateFormat.yMd();
 final _fmtHm = DateFormat.Hm();
 
+final _logger = GetIt.I<Logger>();
+
 String dateFormatYMD(DateTime? dateTime) =>
     dateTime == null ? '' : _fmtYMd.format(dateTime);
 
@@ -47,7 +51,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
 }) {
   final theme = Theme.of(context);
   ScaffoldMessenger.of(context).clearSnackBars();
-  if (isError) if (kDebugMode) print(text);
+  if (isError) _logger.d(text);
   return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     behavior: isFloating ? SnackBarBehavior.floating : null,
     margin: isFloating ? const EdgeInsets.all(16) : null,
@@ -58,8 +62,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
     action: kDebugMode
         ? SnackBarAction(
             label: 'print',
-            // ignore: avoid_print
-            onPressed: () => print(text),
+            onPressed: () => _logger.d(text),
           )
         : null,
     content: RichText(

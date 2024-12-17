@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:logger/logger.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/data/database/database.dart';
@@ -11,10 +12,13 @@ import '../../domain/exception.dart';
 @singleton
 class AuthRepository {
   AuthRepository(
+    this._logger,
     this._database,
     this._remoteApiService,
     this._localSecureStorage,
   );
+
+  final Logger _logger;
 
   final Database _database;
 
@@ -137,6 +141,7 @@ class AuthRepository {
       _currentAccountId = id ?? '',
     );
     _controller.add(_currentAccountId);
+    _logger.i('Current User Id: $id');
   }
 
   Future<void> _addAccount(String id, String seed) async {

@@ -10,6 +10,8 @@ environment:
 resolution: workspace
 
 dependencies:
+  logger:
+
   http: ^1.2.2
   ferry: ^0.16.0
   gql_exec: ^1.0.0

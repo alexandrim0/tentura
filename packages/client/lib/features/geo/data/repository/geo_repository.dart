@@ -1,3 +1,4 @@
+import 'package:logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:geolocator/geolocator.dart';
@@ -10,7 +11,11 @@ import '../../domain/entity/place.dart';
 
 @singleton
 class GeoRepository {
+  GeoRepository(this._logger);
+
   final Map<Coordinates, Place?> cache = {};
+
+  final Logger _logger;
 
   Coordinates? _myCoords;
 
@@ -56,7 +61,7 @@ class GeoRepository {
           long: position.longitude,
         );
       } catch (e) {
-        if (kDebugMode) print(e);
+        _logger.e(e);
       }
     }
     return null;

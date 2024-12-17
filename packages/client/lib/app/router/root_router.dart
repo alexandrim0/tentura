@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:injectable/injectable.dart';
@@ -22,16 +23,18 @@ const pathAppLinkView = '/shared/view';
 @singleton
 @AutoRouterConfig()
 class RootRouter extends RootStackRouter {
-  RootRouter({
-    required AuthCubit authCubit,
-    required SettingsCubit settingsCubit,
-  })  : _authCubit = authCubit,
-        _settingsCubit = settingsCubit;
+  RootRouter(
+    this._logger,
+    this._authCubit,
+    this._settingsCubit,
+  );
 
   late final reevaluateListenable = _ReevaluateFromStreams([
     _settingsCubit.stream.map((e) => e.introEnabled),
     _authCubit.stream.map((e) => e.currentAccount),
   ]);
+
+  final Logger _logger;
 
   final AuthCubit _authCubit;
 
@@ -191,7 +194,7 @@ class RootRouter extends RootStackRouter {
       ];
 
   FutureOr<DeepLink> deepLinkBuilder(PlatformDeepLink deepLink) {
-    if (kDebugMode) print('DeepLinkBuilder: ${deepLink.uri}');
+    _logger.i('DeepLinkBuilder: ${deepLink.uri}');
     return deepLink;
   }
 
