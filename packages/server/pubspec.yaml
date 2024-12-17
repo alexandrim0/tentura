@@ -1,0 +1,27 @@
+name: tentura_server
+description: Tentura server API
+publish_to: none
+
+version: 0.0.1
+
+environment:
+  sdk: '>=3.6.0 <4.0.0'
+
+resolution: workspace
+
+dependencies:
+  logger:
+
+  jaspr: ^0.16.2
+  shelf_plus: ^1.10.0
+  dart_jsonwebtoken: ^2.14.2
+
+dev_dependencies:
+  build_runner:
+  very_good_analysis:
+
+  jaspr_builder: ^0.16.2
+  build_web_compilers: ^4.1.0
+
+jaspr:
+  mode: server

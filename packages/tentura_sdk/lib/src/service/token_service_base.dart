@@ -11,8 +11,6 @@ import '../jwt.dart';
 
 /// Set KeyPair before fetchJWT
 abstract class TokenServiceBase {
-  static const _jwtHeader = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.';
-
   TokenServiceBase({
     required this.apiUrlBase,
     this.jwtExpiresIn = const Duration(minutes: 1),
@@ -122,15 +120,16 @@ abstract class TokenServiceBase {
     final now = DateTime.timestamp().millisecondsSinceEpoch ~/ 1000;
     final body = base64UrlEncode(utf8.encode(jsonEncode({
       'pk': base64UrlEncode(keyPair!.publicKey.bytes).replaceAll('=', ''),
-      'iat': now,
       'exp': now + jwtExpiresIn.inSeconds,
-      // TBD: uuid for jwt invalidation on logout
+      'iat': now,
       'jti': '',
     }))).replaceAll('=', '');
     final signature = base64UrlEncode(sign(
       keyPair!.privateKey,
       Uint8List.fromList(utf8.encode(_jwtHeader + body)),
     )).replaceAll('=', '');
-    return '$_jwtHeader$body.$signature';
+    return '$_jwtHeader.$body.$signature';
   }
+
+  static const _jwtHeader = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9';
 }
