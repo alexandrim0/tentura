@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:tentura/consts.dart';
 
+import '../utils/asset_package.dart';
 import 'cached_image/cached_image.dart';
 
 class AvatarImage extends StatelessWidget {
@@ -30,7 +31,7 @@ class AvatarImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final placeholder = Image.asset(
       'assets/images/avatar-placeholder.jpg',
-      package: kAssetPackage,
+      package: AssetPackage.assetPackage,
       height: size,
       width: size,
       fit: boxFit,

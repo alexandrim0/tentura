@@ -13,6 +13,9 @@ class WidgetbookApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Widgetbook.material(
+      darkTheme: themeDark,
+      lightTheme: themeLight,
+      directories: directories,
       addons: [
         DeviceFrameAddon(
           devices: [
@@ -34,9 +37,6 @@ class WidgetbookApp extends StatelessWidget {
           ],
         )
       ],
-      darkTheme: themeDark,
-      lightTheme: themeLight,
-      directories: directories,
     );
   }
 }

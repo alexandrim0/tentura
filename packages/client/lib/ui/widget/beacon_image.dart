@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
 
+import '../utils/asset_package.dart';
 import 'cached_image/cached_image.dart';
 
 class BeaconImage extends StatelessWidget {
@@ -24,7 +25,7 @@ class BeaconImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final placeholder = Image.asset(
       'assets/images/image-placeholder.jpg',
-      package: kAssetPackage,
+      package: AssetPackage.assetPackage,
       height: height,
       width: width,
       fit: boxFit,
