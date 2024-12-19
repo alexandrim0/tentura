@@ -16,7 +16,7 @@ class FriendsCubit extends Cubit<FriendsState> {
   FriendsCubit(
     this._friendsCase,
     AuthRepository _authRepository,
-  ) : super(const FriendsState()) {
+  ) : super(const FriendsState(friends: {})) {
     _authChanges = _authRepository.currentAccountChanges().listen(
           _onAuthChanged,
           cancelOnError: false,
@@ -60,7 +60,7 @@ class FriendsCubit extends Cubit<FriendsState> {
   Future<void> removeFriend(Profile user) => _friendsCase.removeFriend(user);
 
   void _onAuthChanged(String userId) {
-    // ignore: prefer_const_constructors
+    // ignore: prefer_const_constructors //
     emit(FriendsState(friends: {}));
     if (userId.isNotEmpty) fetch();
   }

@@ -12,7 +12,7 @@ Future<Response> routeSharedView(Request request) async => Response.ok(
       headers: {'Content-Type': 'text/html'},
     );
 
-// ignore: unused_element
+// ignore: unused_element // example
 void _() {
   Router()
 

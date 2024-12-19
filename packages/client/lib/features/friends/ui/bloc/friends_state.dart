@@ -6,7 +6,7 @@ part 'friends_state.freezed.dart';
 @Freezed(makeCollectionsUnmodifiable: false)
 class FriendsState with _$FriendsState, StateFetchMixin {
   const factory FriendsState({
-    @Default({}) Map<String, Profile> friends,
+    required Map<String, Profile> friends,
     @Default(FetchStatus.isSuccess) FetchStatus status,
     Object? error,
   }) = _FriendsState;

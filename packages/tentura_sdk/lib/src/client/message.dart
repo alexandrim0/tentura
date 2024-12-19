@@ -18,7 +18,7 @@ sealed class ResponseMessage<T extends Object> extends Message {
 
   T get valueOrException {
     if (value != null) return value!;
-    // ignore: only_throw_errors
+    // ignore: only_throw_errors //
     throw switch (error) {
       final Error e => e,
       final Exception e => e,

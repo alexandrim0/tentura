@@ -15,4 +15,5 @@ linter:
     require_trailing_commas: false
     always_use_package_imports: false
     lines_longer_than_80_chars: false
+    avoid_catches_without_on_clauses: false
     avoid_positional_boolean_parameters: false

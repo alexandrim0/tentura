@@ -6,12 +6,15 @@ import 'package:logger/logger.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import 'di/di.dart';
+import 'jaspr_options.dart';
 import 'routes/_router.dart';
 
 Future<void> runApp() async {
   await configureDependencies();
 
-  Jaspr.initializeApp();
+  Jaspr.initializeApp(
+    options: defaultJasprOptions,
+  );
 
   final server = await shelfRun(
     routeHandler,

@@ -20,21 +20,21 @@ class AuthLoginScreen extends StatelessWidget {
       listenWhen: (p, c) => c.hasError,
       listener: (context, state) {
         switch (state.error) {
-          case AuthSeedExistsException:
+          case AuthSeedExistsException _:
             showSnackBar(
               context,
               isError: true,
               text: 'Seed already exists',
             );
 
-          case AuthSeedIsWrongException:
+          case AuthSeedIsWrongException _:
             showSnackBar(
               context,
               isError: true,
               text: 'There is no correct seed!',
             );
 
-          case AuthIdIsWrongException:
+          case AuthIdIsWrongException _:
             showSnackBar(
               context,
               isError: true,
