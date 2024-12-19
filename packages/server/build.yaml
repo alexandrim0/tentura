@@ -1,0 +1,10 @@
+targets:
+  $default:
+    builders:
+
+      drift_dev:
+        options:
+          named_parameters: true
+          sql:
+            dialects:
+              - postgres

@@ -1,13 +1,14 @@
+import 'package:get_it/get_it.dart';
+import 'package:logger/logger.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import '../utils/jwt.dart';
-import '../utils/logger.dart';
 
 Future<Map<String, Object>> routeUserRegister(Request request) async {
   try {
     checkJWT(request.headers);
   } catch (e) {
-    logger.e(e);
+    GetIt.I<Logger>().i(e);
   }
   return {};
 }
