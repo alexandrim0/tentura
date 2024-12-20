@@ -36,4 +36,5 @@ pubspec.lock
 
 # Misc
 temp/
+pgdata/
 compose.override.yaml

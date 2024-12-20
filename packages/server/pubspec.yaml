@@ -11,17 +11,14 @@ resolution: workspace
 
 dependencies:
   uuid:
-  drift:
   get_it:
   logger:
   sentry:
-  drift_dev:
   injectable:
 
   jaspr: ^0.16.2
   postgres: ^3.4.4
   shelf_plus: ^1.10.0
-  drift_postgres: ^1.3.0
   dart_jsonwebtoken: ^2.14.2
 
 dev_dependencies:
