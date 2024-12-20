@@ -14,11 +14,9 @@ workspace:
 
 dependencies:
   uuid: ^4.4.2
-  drift: ^2.22.1
   get_it: ^8.0.3
   logger: ^2.5.0
-  sentry: ^8.11.1
-  drift_dev: ^2.22.1
+  sentry: ^8.11.2
   injectable: ^2.5.0
   collection: ^1.19.0
   ed25519_edwards: ^0.3.1
