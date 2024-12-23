@@ -17,7 +17,6 @@ dependencies:
   injectable:
 
   jaspr: ^0.16.2
-  postgres: ^3.4.4
   shelf_plus: ^1.10.0
   dart_jsonwebtoken: ^2.14.2
 
