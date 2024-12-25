@@ -128,8 +128,8 @@ abstract class TokenServiceBase {
       keyPair!.privateKey,
       Uint8List.fromList(utf8.encode(_jwtHeader + body)),
     )).replaceAll('=', '');
-    return '$_jwtHeader.$body.$signature';
+    return '$_jwtHeader$body.$signature';
   }
 
-  static const _jwtHeader = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9';
+  static const _jwtHeader = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.';
 }
