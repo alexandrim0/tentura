@@ -35,6 +35,7 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
       listener: showSnackBarError,
       buildWhen: (p, c) => c.hasNoError,
       builder: (context, state) {
+        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
         final filter = state.searchFilter;
         final items = filter.isEmpty
             ? state.items
@@ -115,6 +116,7 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
             separatorBuilder: (context, i) => const Divider(),
             itemBuilder: (context, i) => RatingListTile(
               key: ValueKey(items[i]),
+              isDarkMode: isDarkMode,
               profile: items[i],
             ),
           ),

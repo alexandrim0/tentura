@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/avatar_image.dart';
+import 'package:tentura/ui/widget/avatar_rated.dart';
 
 import '../bloc/chat_news_cubit.dart';
 
@@ -24,11 +24,14 @@ class ChatPeerListTile extends StatelessWidget {
         onTap: () => context.pushRoute(
           ProfileViewRoute(id: profile.id),
         ),
-        child: AvatarImage.small(userId: profile.id),
+        child: AvatarRated(profile: profile),
       ),
 
       title: Row(
         children: [
+          // Title
+          Text(profile.title),
+
           // An Eye
           Padding(
             padding: kPaddingH,
@@ -38,9 +41,6 @@ class ChatPeerListTile extends StatelessWidget {
                   : Icons.remove_red_eye_outlined,
             ),
           ),
-
-          // Title
-          Text(profile.title),
         ],
       ),
 

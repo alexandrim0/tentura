@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 
 import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/profile.dart';
-import 'package:tentura/ui/widget/avatar_image.dart';
+import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/widget/avatar_rated.dart';
 
 class RatingListTile extends StatelessWidget {
   RatingListTile({
     required this.profile,
+    required this.isDarkMode,
     this.height = 40,
     this.ratio = 2.5,
     super.key,
   });
 
+  final bool isDarkMode;
   final double ratio;
   final double height;
   final Profile profile;
@@ -27,26 +30,21 @@ class RatingListTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: AvatarImage(
-                userId: profile.imageId,
-                size: height,
-              ),
+            AvatarRated(
+              profile: profile,
+              size: height,
             ),
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: kPaddingH,
               child: Text(profile.title),
             ),
             const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: CustomPaint(
-                size: _barbellSize,
-                painter: _CustomBarbellPainter(
-                  profile.score,
-                  profile.rScore,
-                ),
+            CustomPaint(
+              size: _barbellSize,
+              painter: _CustomBarbellPainter(
+                profile.score,
+                profile.rScore,
+                isDarkMode,
               ),
             ),
           ],
@@ -55,8 +53,13 @@ class RatingListTile extends StatelessWidget {
 }
 
 class _CustomBarbellPainter extends CustomPainter {
-  const _CustomBarbellPainter(this.leftWeight, this.rightWeight);
+  const _CustomBarbellPainter(
+    this.leftWeight,
+    this.rightWeight,
+    this.isDarkTheme,
+  );
 
+  final bool isDarkTheme;
   final double leftWeight;
   final double rightWeight;
 
@@ -98,7 +101,6 @@ class _CustomBarbellPainter extends CustomPainter {
   @override
   bool shouldRebuildSemantics(_CustomBarbellPainter oldDelegate) => false;
 
-  // TBD: normalization
   double _calcRadius(
     double minRadius,
     double maxRadius,
@@ -109,10 +111,17 @@ class _CustomBarbellPainter extends CustomPainter {
         (maxRadius - minRadius) * weight + minRadius,
       );
 
-  // TBD: normalization
-  Color _calcColor(double weight) => weight >= 0.9
-      ? Colors.amber[900]!
-      : weight < 0.1
-          ? Colors.amber[50]!
-          : Colors.amber[weight ~/ 0.1 * 100]!;
+  Color _calcColor(double weight) {
+    var index = 50;
+    if (weight > 0.75) {
+      index = 900;
+    } else if (weight > 0.5) {
+      index = 700;
+    } else if (weight > 0.25) {
+      index = 500;
+    } else if (weight > 0) {
+      index = 300;
+    }
+    return isDarkTheme ? Colors.amber[index]! : Colors.deepPurple[index]!;
+  }
 }

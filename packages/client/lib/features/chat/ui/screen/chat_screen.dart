@@ -3,7 +3,7 @@ import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/profile.dart';
-import 'package:tentura/ui/widget/avatar_image.dart';
+import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
@@ -42,13 +42,13 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
           leading: const DeepBackButton(),
           title: BlocSelector<ChatCubit, ChatState, Profile>(
             selector: (state) => state.friend,
-            builder: (context, state) => Row(
+            builder: (context, profile) => Row(
               children: [
-                AvatarImage.small(userId: state.imageId),
+                AvatarRated(profile: profile),
                 Padding(
                   padding: kPaddingH,
                   child: Text(
-                    state.title,
+                    profile.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

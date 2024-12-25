@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/avatar_image.dart';
+import 'package:tentura/ui/widget/avatar_rated.dart';
 
 class BeaconAuthorInfo extends StatelessWidget {
   const BeaconAuthorInfo({
@@ -25,19 +25,7 @@ class BeaconAuthorInfo extends StatelessWidget {
           // Avatar
           Padding(
             padding: const EdgeInsets.only(right: kSpacingSmall),
-            child: AvatarImage.small(
-              userId: author.imageId,
-            ),
-          ),
-
-          // An Eye
-          Padding(
-            padding: kPaddingH,
-            child: Icon(
-              author.isSeeingMe
-                  ? Icons.remove_red_eye
-                  : Icons.remove_red_eye_outlined,
-            ),
+            child: AvatarRated(profile: author),
           ),
 
           // User displayName
@@ -51,7 +39,15 @@ class BeaconAuthorInfo extends StatelessWidget {
             ),
           ),
 
-          const Spacer(),
+          // An Eye
+          Padding(
+            padding: kPaddingH,
+            child: Icon(
+              author.isSeeingMe
+                  ? Icons.remove_red_eye
+                  : Icons.remove_red_eye_outlined,
+            ),
+          ),
         ],
       ),
     );
