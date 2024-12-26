@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/widget/rating_indicator.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 
@@ -35,15 +36,24 @@ class BeaconTileControl extends StatelessWidget {
 
             // Favorite
             BeaconPinIconButton(
-              beacon: beacon,
               key: ValueKey(beacon.author),
+              beacon: beacon,
             ),
 
             const Spacer(),
+            // Rating bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: RatingIndicator(
+                key: ValueKey(beacon.score),
+                score: beacon.score,
+              ),
+            ),
+
             // Like\Dislike
             LikeControl(
-              entity: beacon,
               key: ValueKey(beacon),
+              entity: beacon,
             ),
           ],
         ),

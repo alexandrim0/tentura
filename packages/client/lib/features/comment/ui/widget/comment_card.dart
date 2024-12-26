@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/comment.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
+import 'package:tentura/ui/widget/rating_indicator.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 import 'package:tentura/ui/widget/show_more_text.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -78,6 +79,13 @@ class CommentCard extends StatelessWidget {
             children: [
               // Share
               ShareCodeIconButton.id(comment.id),
+
+              // Rating bar
+              if (!isMine)
+                RatingIndicator(
+                  key: ValueKey(comment.score),
+                  score: comment.score,
+                ),
 
               // Vote
               if (!isMine)

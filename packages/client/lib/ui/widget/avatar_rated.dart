@@ -53,8 +53,8 @@ class AvatarRated extends StatelessWidget {
         ? avatar
         : CustomPaint(
             painter: _RatingPainter(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              rating: profile.score,
+              color: Theme.of(context).colorScheme.primary,
+              score: profile.score,
             ),
             child: avatar,
           );
@@ -66,17 +66,15 @@ class AvatarRated extends StatelessWidget {
 
 class _RatingPainter extends CustomPainter {
   _RatingPainter({
-    required this.rating,
+    required this.score,
     required this.color,
   });
 
   final Color color;
-  final double rating;
+  final double score;
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (rating == 0) return;
-    const sector = 1 / 3;
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
     final paint = Paint()
       ..color = color
@@ -92,7 +90,7 @@ class _RatingPainter extends CustomPainter {
       paint,
     );
 
-    if (rating > sector) {
+    if (score > _sector) {
       canvas.drawArc(
         rect,
         _degreeToRadians(157.5),
@@ -101,7 +99,7 @@ class _RatingPainter extends CustomPainter {
         paint,
       );
     }
-    if (rating > sector * 2) {
+    if (score > _sector * 2) {
       canvas.drawArc(
         rect,
         _degreeToRadians(225),
@@ -114,6 +112,8 @@ class _RatingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+
+  static const _sector = 1 / 3;
 
   static double _degreeToRadians(double degree) => (pi / 180) * degree;
 }
