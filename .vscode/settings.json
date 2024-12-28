@@ -2,8 +2,19 @@
   "files.exclude": {
     "**/_g": true,
     "**/*.g.dart": true,
+    "**/*.gr.dart": true,
     "**/*.freezed.dart": true,
-    "lib/app/di/di.config.dart": true,
-    "lib/app/router/root_router.gr.dart": true,
-  }
+    "**/di.config.dart": true,
+  },
+  "Lua.runtime.version" : "LuaJIT",
+  "Lua.diagnostics.globals": [
+      "ngx"
+  ],
+  "Lua.workspace.library": [
+      "${3rd}/lfs/library",
+      "${3rd}/OpenResty/library"
+  ],
+  "Lua.diagnostics.disable": [
+      "return-type-mismatch"
+  ]
 }

@@ -7,15 +7,19 @@ version: 0.0.2
 environment:
   sdk: '>=3.6.0 <4.0.0'
 
+resolution: workspace
+
 dependencies:
+  logger:
+  ed25519_edwards:
+
   http: ^1.2.2
   ferry: ^0.16.0
   gql_exec: ^1.0.0
   gql_http_link: ^1.1.0
   gql_error_link: ^1.0.0
   gql_dedupe_link: ^2.0.3
-  ed25519_edwards: ^0.3.1
   gql_websocket_link: ^2.0.1
 
 dev_dependencies:
-  very_good_analysis: ^6.0.0
+  very_good_analysis:

@@ -7,6 +7,7 @@
         {
             "name": "tentura (debug)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
@@ -19,6 +20,7 @@
         {
             "name": "tentura-web (debug)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
@@ -34,6 +36,7 @@
         {
             "name": "tentura-wasm (debug)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
@@ -51,6 +54,7 @@
         {
             "name": "tentura-stage (debug)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
@@ -63,6 +67,7 @@
         {
             "name": "tentura (profile)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "profile",
             "toolArgs": [
@@ -75,6 +80,7 @@
         {
             "name": "tentura (release)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "release",
             "toolArgs": [
@@ -87,6 +93,7 @@
         {
             "name": "tentura-wasm (release)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "release",
             "toolArgs": [
@@ -104,7 +111,7 @@
         {
             "name": "tentura (widgetbook)",
             "request": "launch",
-            "program": "widgetbook/lib/main.dart",
+            "cwd": "packages/widgetbook",
             "type": "dart",
             "toolArgs": [
                 "--dart-define",

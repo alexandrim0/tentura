@@ -1,0 +1,8 @@
+dependency_overrides:
+  web_socket_channel: ^3.0.1
+
+  flutter_secure_storage_web:
+    git:
+      url: https://github.com/mogol/flutter_secure_storage.git
+      ref: develop
+      path: flutter_secure_storage_web
