@@ -103,7 +103,8 @@ local function init(pk, sk, exp)
     SK = sub(from_b64(sk:match(re)), -32) .. PK
     print(
         'jwt keys inited: ',
-        verify_jwt(false, from_json(sign_jwt('test') or '{}').access_token) ~= nil)
+        verify_jwt(false, from_json(sign_jwt('test') or '{}').access_token) ~= nil
+    )
 end
 
 

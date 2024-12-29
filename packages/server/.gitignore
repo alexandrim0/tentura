@@ -1,1 +1,2 @@
-lib/di/di.config.dart
+**.g.dart
+**.config.dart

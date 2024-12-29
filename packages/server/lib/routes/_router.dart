@@ -1,5 +1,6 @@
 import 'package:shelf_plus/shelf_plus.dart';
 
+import 'route_chat.dart';
 import 'route_shared_view.dart';
 import 'route_user_login.dart';
 import 'route_user_register.dart';
@@ -14,6 +15,10 @@ Handler routeHandler() {
     ..get(
       '/shared/view',
       routeSharedView,
+    )
+    ..get(
+      'chat',
+      routeChat,
     )
     ..post(
       '/api/user/login',

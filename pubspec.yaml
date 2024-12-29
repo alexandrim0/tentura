@@ -14,9 +14,11 @@ workspace:
 
 dependencies:
   uuid: ^4.4.2
+  faker: ^2.2.0
   get_it: ^8.0.3
   logger: ^2.5.0
   sentry: ^8.12.0
+  mockito: ^5.4.5
   injectable: ^2.5.0
   collection: ^1.19.0
   ed25519_edwards: ^0.3.1

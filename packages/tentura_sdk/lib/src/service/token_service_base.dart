@@ -122,7 +122,6 @@ abstract class TokenServiceBase {
       'pk': base64UrlEncode(keyPair!.publicKey.bytes).replaceAll('=', ''),
       'exp': now + jwtExpiresIn.inSeconds,
       'iat': now,
-      'jti': '',
     }))).replaceAll('=', '');
     final signature = base64UrlEncode(sign(
       keyPair!.privateKey,
