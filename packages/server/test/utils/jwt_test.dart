@@ -20,14 +20,14 @@ void main() {
 
           expect(
             extractAuthToken(
-              headers: {'Authorization': 'Bearer   $jwt  '},
+              headers: {kHeaderAuthorization: 'Bearer   $jwt  '},
             ),
             equals(jwt),
           );
 
           expect(
             () => extractAuthToken(
-              headers: {'Authorization': 'Bearer'},
+              headers: {kHeaderAuthorization: 'Bearer'},
             ),
             throwsA(isA<JWTInvalidException>()),
           );

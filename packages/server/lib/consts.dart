@@ -3,7 +3,7 @@ import 'dart:io' show Platform;
 // Make [environment] as mutable for testing purposes only!
 final environment = Map<String, String>.from(Platform.environment);
 
-final kSentryDsn = environment['SENTRY_DSN'];
+final kSentryDsn = environment['SENTRY_DSN'] ?? '';
 
 final kDebugMode = environment['IS_DEBUG_MODE'] == 'true';
 
@@ -34,3 +34,5 @@ MC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF
 final kJwtExpiresIn = Duration(
   seconds: int.parse(environment['JWT_EXPIRES_IN'] ?? '3600'),
 );
+
+const kHeaderAuthorization = 'Authorization';

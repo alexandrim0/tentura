@@ -20,12 +20,16 @@ Uint8List convertKey(String key) {
 String extractAuthToken({
   required Map<String, String> headers,
 }) {
-  final authHeader = headers['Authorization'];
+  final authHeader = headers[kHeaderAuthorization];
   if (authHeader == null || authHeader.length <= _bearerPrefixLength) {
     throw JWTInvalidException('Wrong Authorization header');
   }
 
-  final token = headers['Authorization']?.substring(_bearerPrefixLength).trim();
+  final token = headers[kHeaderAuthorization]
+      ?.substring(
+        _bearerPrefixLength,
+      )
+      .trim();
   if (token == null || token.isEmpty) {
     throw JWTInvalidException('Wrong Authorization header');
   }

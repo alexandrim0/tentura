@@ -23,5 +23,8 @@ abstract class RegisterModule {
           port: kPgPort,
           host: kPgHost,
         ),
+        settings: const ConnectionSettings(
+          sslMode: SslMode.disable,
+        ),
       );
 }

@@ -17,7 +17,7 @@ Handler routeHandler() {
       routeSharedView,
     )
     ..get(
-      'chat',
+      '/chat',
       routeChat,
     )
     ..post(

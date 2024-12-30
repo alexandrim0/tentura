@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:shelf_plus/shelf_plus.dart';
@@ -20,10 +21,10 @@ Future<Response> routeUserLogin(Request request) async {
         .getSingle();
 
     return Response.ok(
-      issueJwt(subject: user.id),
+      jsonEncode(issueJwt(subject: user.id)),
     );
   } catch (e) {
-    GetIt.I<Logger>().i(e);
+    GetIt.I<Logger>().e(e);
 
     return Response.unauthorized(e);
   }
