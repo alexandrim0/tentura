@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:sentry/sentry.dart';
 
-import 'app.dart';
-import 'consts.dart';
+import 'package:tentura_server/app.dart';
+import 'package:tentura_server/consts.dart';
 
 Future<void> main() async {
   await Sentry.init(

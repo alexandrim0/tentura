@@ -1,9 +1,9 @@
 import 'package:shelf_plus/shelf_plus.dart';
 
-import 'route_chat.dart';
-import 'route_shared_view.dart';
-import 'route_user_login.dart';
-import 'route_user_register.dart';
+import 'controllers/chat_controller.dart';
+import 'controllers/shared_view_controller.dart';
+import 'controllers/user_login_controller.dart';
+import 'controllers/user_register_controller.dart';
 
 Handler routeHandler() {
   final router = Router().plus
@@ -14,19 +14,19 @@ Handler routeHandler() {
     )
     ..get(
       '/shared/view',
-      routeSharedView,
+      sharedViewController,
     )
     ..get(
       '/chat',
-      routeChat,
+      chatController,
     )
     ..post(
       '/api/user/login',
-      routeUserLogin,
+      userLoginController,
     )
     ..post(
       '/api/user/register',
-      routeUserRegister,
+      userRegisterController,
     );
 
   return router.call;

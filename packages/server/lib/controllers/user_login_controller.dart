@@ -6,7 +6,7 @@ import 'package:shelf_plus/shelf_plus.dart';
 import '../data/database/database.dart';
 import '../utils/jwt.dart';
 
-Future<Response> routeUserLogin(Request request) async {
+Future<Response> userLoginController(Request request) async {
   try {
     final jwt = verifyAuthRequest(
       token: extractAuthToken(

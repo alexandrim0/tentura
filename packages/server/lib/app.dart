@@ -5,7 +5,7 @@ import 'package:logger/logger.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import 'di/di.dart';
-import 'routes/_router.dart';
+import 'route_handler.dart';
 
 Future<void> runApp() async {
   await configureDependencies();

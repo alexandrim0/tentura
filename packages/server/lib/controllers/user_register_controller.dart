@@ -7,7 +7,7 @@ import '../data/database/database.dart';
 import '../utils/id.dart';
 import '../utils/jwt.dart';
 
-Future<Response> routeUserRegister(Request request) async {
+Future<Response> userRegisterController(Request request) async {
   try {
     final jwt = verifyAuthRequest(
       token: extractAuthToken(

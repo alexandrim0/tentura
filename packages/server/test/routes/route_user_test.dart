@@ -4,8 +4,8 @@ import 'package:shelf_plus/shelf_plus.dart';
 
 import 'package:tentura_server/di/di.dart';
 import 'package:tentura_server/consts.dart';
-import 'package:tentura_server/routes/route_user_login.dart';
-import 'package:tentura_server/routes/route_user_register.dart';
+import 'package:tentura_server/controllers/user_login_controller.dart';
+import 'package:tentura_server/controllers/user_register_controller.dart';
 
 import '../logger.dart';
 import 'user_utils.dart';
@@ -24,7 +24,7 @@ Future<void> main() async {
   test(
     'routeUserRegister',
     () async {
-      final response = await routeUserRegister(Request(
+      final response = await userRegisterController(Request(
         'POST',
         Uri.http(
           'localhost',
@@ -44,7 +44,7 @@ Future<void> main() async {
   test(
     'routeUserLogin',
     () async {
-      final response = await routeUserLogin(Request(
+      final response = await userLoginController(Request(
         'POST',
         Uri.http(
           'localhost',
