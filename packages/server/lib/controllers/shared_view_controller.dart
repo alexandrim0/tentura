@@ -1,6 +1,6 @@
 import 'package:jaspr/server.dart';
 
-import '../components/shared_view_component.dart';
+import '../view/components/shared_view_component.dart';
 
 Future<Response> sharedViewController(Request request) async => Response.ok(
       await renderComponent(

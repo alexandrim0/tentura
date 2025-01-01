@@ -13,6 +13,7 @@ part 'database.g.dart';
     User,
   ],
 )
+@Environment.prod
 @singleton
 final class Database extends _$Database {
   Database(super.e);

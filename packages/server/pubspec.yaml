@@ -27,7 +27,6 @@ dependencies:
   dart_jsonwebtoken: ^2.14.2
 
 dev_dependencies:
-  drift_dev:
   build_runner:
   json_serializable:
   very_good_analysis:

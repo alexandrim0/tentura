@@ -5,12 +5,13 @@ import 'package:injectable/injectable.dart';
 import '../jaspr_options.dart';
 import 'di.config.dart';
 
-@InjectableInit(
-  preferRelativeImports: false,
-)
-Future<void> configureDependencies() async {
+@InjectableInit()
+Future<void> configureDependencies(String environment) async {
   Jaspr.initializeApp(
     options: defaultJasprOptions,
   );
-  GetIt.I.init();
+  GetIt.I.init(
+    environment: environment,
+    // environmentFilter: NoEnvOrContainsAny({environment}),
+  );
 }

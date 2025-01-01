@@ -1,11 +1,13 @@
+import 'package:get_it/get_it.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import 'controllers/chat_controller.dart';
 import 'controllers/shared_view_controller.dart';
-import 'controllers/user_login_controller.dart';
-import 'controllers/user_register_controller.dart';
+import 'controllers/user/user_login_controller.dart';
+import 'controllers/user/user_register_controller.dart';
 
 Handler routeHandler() {
+  final di = GetIt.I;
   final router = Router().plus
     ..use(logRequests())
     ..get(
@@ -22,11 +24,11 @@ Handler routeHandler() {
     )
     ..post(
       '/api/user/login',
-      userLoginController,
+      di<UserLoginController>().handler,
     )
     ..post(
       '/api/user/register',
-      userRegisterController,
+      di<UserRegisterController>().handler,
     );
 
   return router.call;
