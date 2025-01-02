@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
-import '../../utils/jwt.dart';
+import 'package:tentura_server/utils/jwt.dart';
+
 import 'user_controller.dart';
 
 @Singleton(

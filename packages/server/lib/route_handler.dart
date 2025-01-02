@@ -1,8 +1,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
-import 'controllers/chat_controller.dart';
-import 'controllers/shared_view_controller.dart';
+import 'controllers/chat/chat_controller.dart';
+import 'controllers/shared/shared_view_controller.dart';
 import 'controllers/user/user_login_controller.dart';
 import 'controllers/user/user_register_controller.dart';
 
