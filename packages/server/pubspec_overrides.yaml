@@ -1,0 +1,7 @@
+dependency_overrides:
+
+  jaspr:
+    git:
+      url: https://github.com/alexandrim0/jaspr.git
+      ref: dark_theme
+      path: packages/jaspr
