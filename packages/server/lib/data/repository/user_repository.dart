@@ -1,7 +1,9 @@
 import 'package:injectable/injectable.dart';
+import 'package:stormberry/stormberry.dart';
+
+import 'package:tentura_server/data/database/tables/user.dart';
 
 import '../../utils/id.dart';
-import '../database/database.dart';
 
 @Singleton(
   env: [
@@ -14,22 +16,31 @@ class UserRepository {
 
   final Database _database;
 
-  Future<UserData> createUser({
+  Future<UserView> createUser({
     required String publicKey,
     String? userId,
-  }) =>
-      _database.managers.user.createReturning(
-        (o) => o(
-          id: userId ?? generateId(),
-          publicKey: publicKey,
-        ),
-        mode: InsertMode.insert,
-      );
+  }) async {
+    userId ??= generateId();
+    final now = DateTime.timestamp();
+    await _database.users.insertOne(UserInsertRequest(
+      publicKey: publicKey,
+      id: userId,
+      title: '',
+      description: '',
+      hasPicture: false,
+      createdAt: now,
+      updatedAt: now,
+    ));
+    return (await _database.users.queryUser(userId))!;
+  }
 
-  Future<UserData?> getUserByPublicKey({
+  Future<UserView?> getUserByPublicKey({
     required String publicKey,
-  }) =>
-      _database.managers.user
-          .filter((f) => f.publicKey.equals(publicKey))
-          .getSingleOrNull();
+  }) async {
+    final users = await _database.users.queryUsers(QueryParams(
+      where: 'public_key=@pk',
+      values: {'pk': publicKey},
+    ));
+    return users.firstOrNull;
+  }
 }

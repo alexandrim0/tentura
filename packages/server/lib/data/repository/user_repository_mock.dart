@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
-import 'package:drift_postgres/drift_postgres.dart';
+
+import 'package:tentura_server/data/database/tables/user.dart' show UserView;
 
 import '../../utils/id.dart';
-import '../database/database.dart';
 import 'user_repository.dart';
 
 @Singleton(
@@ -13,12 +13,12 @@ import 'user_repository.dart';
 )
 class UserRepositoryMock implements UserRepository {
   @override
-  Future<UserData> createUser({
+  Future<UserView> createUser({
     required String publicKey,
     String? userId,
   }) async {
-    final timestamp = PgDateTime(DateTime.timestamp());
-    return _storage[publicKey] = UserData(
+    final timestamp = DateTime.timestamp();
+    return _storage[publicKey] = UserView(
       id: userId ?? generateId(),
       publicKey: publicKey,
       createdAt: timestamp,
@@ -30,11 +30,11 @@ class UserRepositoryMock implements UserRepository {
   }
 
   @override
-  Future<UserData?> getUserByPublicKey({
+  Future<UserView?> getUserByPublicKey({
     required String publicKey,
   }) async {
     return _storage[publicKey];
   }
 
-  static final _storage = <String, UserData>{};
+  static final _storage = <String, UserView>{};
 }

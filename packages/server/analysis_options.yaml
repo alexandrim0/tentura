@@ -4,6 +4,7 @@ analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/*.gr.dart"
+    - "**/*.schema.dart"
     - "lib/jaspr_options.dart"
 
 linter:

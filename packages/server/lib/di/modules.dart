@@ -1,10 +1,6 @@
-// ignore_for_file: avoid_redundant_argument_values //
-
-import 'package:drift/drift.dart';
 import 'package:logger/logger.dart';
-import 'package:postgres/postgres.dart';
 import 'package:injectable/injectable.dart';
-import 'package:drift_postgres/drift_postgres.dart';
+import 'package:stormberry/stormberry.dart';
 
 import '../consts.dart';
 
@@ -14,17 +10,12 @@ abstract class RegisterModule {
   Logger get logger => Logger();
 
   @singleton
-  QueryExecutor get database => PgDatabase(
-        enableMigrations: false,
-        endpoint: Endpoint(
-          username: kPgUsername,
-          password: kPgPassword,
-          database: kPgDatabase,
-          port: kPgPort,
-          host: kPgHost,
-        ),
-        settings: const ConnectionSettings(
-          sslMode: SslMode.disable,
-        ),
+  Database get database => Database(
+        username: kPgUsername,
+        password: kPgPassword,
+        database: kPgDatabase,
+        port: kPgPort,
+        host: kPgHost,
+        useSSL: false,
       );
 }

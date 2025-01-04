@@ -10,20 +10,21 @@ environment:
 resolution: workspace
 
 dependencies:
+  meta:
   uuid:
-  drift:
   faker:
   get_it:
   logger:
   sentry:
   mockito:
-  drift_dev:
+  latlong2:
   injectable:
 
   jaspr: ^0.16.3
-  postgres: ^3.4.8
+  # build_runner (stormberry) fails after 3.4.4
+  postgres: 3.4.4
   shelf_plus: ^1.10.0
-  drift_postgres: ^1.3.0
+  stormberry: ^0.14.0
   dart_jsonwebtoken: ^2.14.2
 
 dev_dependencies:

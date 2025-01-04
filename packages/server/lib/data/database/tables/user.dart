@@ -1,23 +1,30 @@
-import 'package:drift/drift.dart';
-import 'package:drift_postgres/drift_postgres.dart';
+import 'package:stormberry/stormberry.dart';
 
-class User extends Table {
-  TextColumn get id => text()();
+part 'user.schema.dart';
 
-  TextColumn get publicKey => text().unique()();
+@Model(
+  tableName: 'user',
+  indexes: [
+    TableIndex(
+      name: 'user_public_key_key',
+      columns: ['public_key'],
+      unique: true,
+    ),
+  ],
+)
+abstract class User {
+  @PrimaryKey()
+  String get id;
 
-  TextColumn get title => text().withDefault(const Constant(''))();
+  String get title;
 
-  TextColumn get description => text().withDefault(const Constant(''))();
+  String get description;
 
-  BoolColumn get hasPicture => boolean().withDefault(const Constant(false))();
+  String get publicKey;
 
-  TimestampColumn get createdAt =>
-      customType(PgTypes.timestampWithTimezone).withDefault(now())();
+  DateTime get createdAt;
 
-  TimestampColumn get updatedAt =>
-      customType(PgTypes.timestampWithTimezone).withDefault(now())();
+  DateTime get updatedAt;
 
-  @override
-  Set<Column> get primaryKey => {id};
+  bool get hasPicture;
 }

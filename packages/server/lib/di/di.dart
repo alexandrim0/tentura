@@ -12,6 +12,5 @@ Future<void> configureDependencies(String environment) async {
   );
   GetIt.I.init(
     environment: environment,
-    // environmentFilter: NoEnvOrContainsAny({environment}),
   );
 }
