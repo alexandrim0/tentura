@@ -5,6 +5,12 @@ final environment = Map<String, String>.from(Platform.environment);
 
 final kSentryDsn = environment['SENTRY_DSN'] ?? '';
 
+final kServerName =
+    environment['SERVER_NAME'] ?? 'tentura.intersubjective.space';
+// final kServerName = environment['SERVER_NAME'] ?? '';
+
+final kIsHttps = environment['IS_HTTPS'] == 'true';
+
 final kDebugMode = environment['IS_DEBUG_MODE'] == 'true';
 
 // Database connection settings
