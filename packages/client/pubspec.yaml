@@ -11,23 +11,23 @@ environment:
 resolution: workspace
 
 dependencies:
-  flutter:
-    sdk: flutter
+  intl:
   uuid:
   get_it:
   logger:
+  flutter:
+    sdk: flutter
   latlong2:
   collection:
   injectable:
+  freezed_annotation:
 
-  intl: ^0.20.1
   auto_route: ^9.2.2
   built_value: ^8.9.3
   flutter_bloc: ^8.1.6
   synchronized: ^3.3.0
   sentry_flutter: ^8.12.0
   json_annotation: ^4.9.0
-  freezed_annotation: ^2.4.4
 
   # Platform related
   drift: ^2.23.0
@@ -61,6 +61,7 @@ dependencies:
   tentura_sdk:
 
 dev_dependencies:
+  freezed:
   build_runner:
   flutter_test:
     sdk: flutter
@@ -68,7 +69,6 @@ dev_dependencies:
   very_good_analysis:
   injectable_generator:
 
-  freezed: ^2.5.7
   ferry_generator: ^0.12.0
   auto_route_generator: ^9.0.0
   flutter_launcher_icons: ^0.14.2

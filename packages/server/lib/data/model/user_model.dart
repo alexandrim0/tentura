@@ -1,6 +1,17 @@
 import 'package:stormberry/stormberry.dart';
 
-part 'user.schema.dart';
+import 'package:tentura_server/domain/entity/user_entity.dart';
+
+part 'user_model.schema.dart';
+
+extension type const UserModel(UserView i) implements UserView {
+  UserEntity get asEntity => UserEntity(
+        id: id,
+        title: title,
+        description: description,
+        hasPicture: hasPicture,
+      );
+}
 
 @Model(
   tableName: 'user',

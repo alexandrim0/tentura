@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura_server/data/database/tables/user.dart' show UserView;
+import 'package:tentura_server/domain/entity/user_entity.dart';
+import 'package:tentura_server/utils/id.dart';
 
-import '../../utils/id.dart';
 import 'user_repository.dart';
 
 @Singleton(
@@ -13,28 +13,22 @@ import 'user_repository.dart';
 )
 class UserRepositoryMock implements UserRepository {
   @override
-  Future<UserView> createUser({
+  Future<UserEntity> createUser({
     required String publicKey,
     String? userId,
-  }) async {
-    final timestamp = DateTime.timestamp();
-    return _storage[publicKey] = UserView(
-      id: userId ?? generateId(),
-      publicKey: publicKey,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-      hasPicture: false,
-      description: '',
-      title: '',
-    );
-  }
+  }) async =>
+      _storageByPublicKey[publicKey] = UserEntity(
+        id: userId ?? generateId(),
+      );
 
   @override
-  Future<UserView?> getUserByPublicKey({
-    required String publicKey,
-  }) async {
-    return _storage[publicKey];
-  }
+  Future<UserEntity> getUserById(String id) async =>
+      _storageByPublicKey.values.where((e) => e.id == id).firstOrNull ??
+      (throw const UserNotFoundException());
 
-  static final _storage = <String, UserView>{};
+  @override
+  Future<UserEntity> getUserByPublicKey(String publicKey) async =>
+      _storageByPublicKey[publicKey] ?? (throw const UserNotFoundException());
+
+  static final _storageByPublicKey = <String, UserEntity>{};
 }

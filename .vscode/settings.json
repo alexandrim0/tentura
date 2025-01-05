@@ -3,18 +3,19 @@
     "**/_g": true,
     "**/*.g.dart": true,
     "**/*.gr.dart": true,
+    "**/*.schema.dart": true,
     "**/*.freezed.dart": true,
     "**/di.config.dart": true,
   },
   "Lua.runtime.version" : "LuaJIT",
   "Lua.diagnostics.globals": [
-      "ngx"
+      "ngx",
   ],
   "Lua.workspace.library": [
       "${3rd}/lfs/library",
-      "${3rd}/OpenResty/library"
+      "${3rd}/OpenResty/library",
   ],
   "Lua.diagnostics.disable": [
-      "return-type-mismatch"
+      "return-type-mismatch",
   ]
 }

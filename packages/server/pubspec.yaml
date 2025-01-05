@@ -19,6 +19,7 @@ dependencies:
   mockito:
   latlong2:
   injectable:
+  freezed_annotation:
 
   jaspr: ^0.16.3
   # build_runner (stormberry) fails after 3.4.4
@@ -28,6 +29,7 @@ dependencies:
   dart_jsonwebtoken: ^2.14.2
 
 dev_dependencies:
+  freezed:
   build_runner:
   json_serializable:
   very_good_analysis:

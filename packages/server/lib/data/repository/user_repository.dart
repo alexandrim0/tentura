@@ -1,9 +1,9 @@
 import 'package:injectable/injectable.dart';
 import 'package:stormberry/stormberry.dart';
 
-import 'package:tentura_server/data/database/tables/user.dart';
-
-import '../../utils/id.dart';
+import 'package:tentura_server/data/model/user_model.dart';
+import 'package:tentura_server/domain/entity/user_entity.dart';
+import 'package:tentura_server/utils/id.dart';
 
 @Singleton(
   env: [
@@ -16,7 +16,7 @@ class UserRepository {
 
   final Database _database;
 
-  Future<UserView> createUser({
+  Future<UserEntity> createUser({
     required String publicKey,
     String? userId,
   }) async {
@@ -31,16 +31,32 @@ class UserRepository {
       createdAt: now,
       updatedAt: now,
     ));
-    return (await _database.users.queryUser(userId))!;
+    return getUserById(userId);
   }
 
-  Future<UserView?> getUserByPublicKey({
-    required String publicKey,
-  }) async {
+  Future<UserEntity> getUserById(String id) async =>
+      switch (await _database.users.queryUser(id)) {
+        final UserModel m => m.asEntity,
+        null => throw const UserNotFoundException(),
+      };
+
+  Future<UserEntity> getUserByPublicKey(String publicKey) async {
     final users = await _database.users.queryUsers(QueryParams(
       where: 'public_key=@pk',
       values: {'pk': publicKey},
     ));
-    return users.firstOrNull;
+    if (users.isEmpty) {
+      throw const UserNotFoundException();
+    }
+    return (users.first as UserModel).asEntity;
   }
+}
+
+class UserNotFoundException implements Exception {
+  const UserNotFoundException([this.message]);
+
+  final String? message;
+
+  @override
+  String toString() => 'UserNotFoundException: [$message]';
 }
