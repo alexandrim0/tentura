@@ -2,14 +2,17 @@ import 'package:meta/meta.dart';
 
 @immutable
 class DateTimeRange {
-  const DateTimeRange(
+  const DateTimeRange({
     this.start,
     this.end,
-  );
+  }) : assert(
+          start != null || end != null,
+          'At least one parameter should be not null',
+        );
 
-  final DateTime start;
+  final DateTime? start;
 
-  final DateTime end;
+  final DateTime? end;
 
   @override
   bool operator ==(Object other) {

@@ -17,16 +17,16 @@ class DateTimeRangeConverter extends sb.TypeConverter<DateTimeRange> {
 
   @override
   DateTimeRange decode(dynamic value) {
-    if (value is DateTimeRange) {
+    if (value is sb.DateTimeRange) {
       return DateTimeRange(
-        value.start,
-        value.end,
+        start: value.lower,
+        end: value.upper,
       );
     } else {
       final m = RegExp(r'\["(.+)","(.+)"\]').firstMatch(value.toString());
       return DateTimeRange(
-        DateTime.parse(m!.group(1)!),
-        DateTime.parse(m.group(2)!),
+        start: DateTime.parse(m!.group(1)!),
+        end: DateTime.parse(m.group(2)!),
       );
     }
   }
