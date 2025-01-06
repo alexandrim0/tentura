@@ -1,2 +1,4 @@
+temp/
 **.g.dart
 **.config.dart
+**.freezed.dart
