@@ -1,9 +1,8 @@
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/data/repository/beacon_repository.dart';
-import 'package:tentura_server/domain/entity/beacon_entity.dart';
-import 'package:tentura_server/domain/entity/user_entity.dart';
-import 'package:tentura_server/utils/id.dart';
+
+export 'package:tentura_server/domain/entity/beacon_entity.dart';
 
 @Singleton(
   as: BeaconRepository,
@@ -13,21 +12,8 @@ import 'package:tentura_server/utils/id.dart';
 )
 class BeaconRepositoryMock implements BeaconRepository {
   @override
-  Future<BeaconEntity> createBeacon({
-    required String userId,
-    String? beaconId,
-  }) async {
-    beaconId ??= generateId(prefix: 'B');
-    final now = DateTime.timestamp();
-    return _storageById[beaconId] = BeaconEntity(
-      id: beaconId,
-      createdAt: now,
-      updatedAt: now,
-      author: UserEntity(
-        id: userId,
-      ),
-    );
-  }
+  Future<BeaconEntity> createBeacon(BeaconEntity beacon) async =>
+      _storageById[beacon.id] = beacon;
 
   @override
   Future<BeaconEntity> getBeaconById(String beaconId) async =>

@@ -1,27 +1,22 @@
 import 'package:test/test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shelf_plus/shelf_plus.dart';
-import 'package:injectable/injectable.dart' show Environment;
 
-import 'package:tentura_server/di/di.dart';
 import 'package:tentura_server/consts.dart';
+import 'package:tentura_server/utils/id.dart';
+import 'package:tentura_server/utils/jwt.dart';
 import 'package:tentura_server/controllers/user/user_login_controller.dart';
 import 'package:tentura_server/controllers/user/user_register_controller.dart';
 
-import '../_utils/user_utils.dart';
+import '../di.dart';
+import '../consts.dart';
 import '../logger.dart';
 
 Future<void> main() async {
-  const isIntegrationTest = bool.fromEnvironment(
-    'IS_INTEGRATION',
-  );
-
-  final authRequestToken = issueAuthRequestToken();
+  final authRequestToken = _issueAuthRequestToken();
 
   setUp(() async {
-    await configureDependencies(
-      isIntegrationTest ? Environment.dev : Environment.test,
-    );
+    await configureDependencies();
   });
 
   tearDown(() async {
@@ -72,3 +67,10 @@ Future<void> main() async {
     },
   );
 }
+
+String _issueAuthRequestToken([String? userId]) => issueJwt(
+      subject: userId ?? generateId(),
+      payload: {
+        'pk': publicKey,
+      },
+    )['access_token']! as String;

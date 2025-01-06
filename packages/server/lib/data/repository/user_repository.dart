@@ -3,7 +3,8 @@ import 'package:stormberry/stormberry.dart';
 
 import 'package:tentura_server/data/model/user_model.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
-import 'package:tentura_server/utils/id.dart';
+
+export 'package:tentura_server/domain/entity/user_entity.dart';
 
 @Singleton(
   env: [
@@ -18,20 +19,19 @@ class UserRepository {
 
   Future<UserEntity> createUser({
     required String publicKey,
-    String? userId,
+    required UserEntity user,
   }) async {
-    userId ??= generateId();
     final now = DateTime.timestamp();
     await _database.users.insertOne(UserInsertRequest(
       publicKey: publicKey,
-      id: userId,
-      title: '',
-      description: '',
-      hasPicture: false,
+      id: user.id,
+      title: user.title,
+      description: user.description,
+      hasPicture: user.hasPicture,
       createdAt: now,
       updatedAt: now,
     ));
-    return getUserById(userId);
+    return getUserById(user.id);
   }
 
   Future<UserEntity> getUserById(String id) async =>

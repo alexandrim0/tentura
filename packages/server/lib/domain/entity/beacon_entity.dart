@@ -10,16 +10,16 @@ part 'beacon_entity.freezed.dart';
 class BeaconEntity with _$BeaconEntity {
   const factory BeaconEntity({
     required String id,
+    required String title,
     required UserEntity author,
     required DateTime createdAt,
     required DateTime updatedAt,
-    @Default('') String title,
-    @Default('') String context,
     @Default('') String description,
     @Default(false) bool hasPicture,
     @Default(false) bool isEnabled,
     DateTimeRange? timerange,
     LatLng? coordinates,
+    String? context,
   }) = _BeaconEntity;
 
   const BeaconEntity._();

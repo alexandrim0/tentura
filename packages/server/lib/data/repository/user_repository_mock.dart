@@ -1,7 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura_server/domain/entity/user_entity.dart';
-import 'package:tentura_server/utils/id.dart';
+export 'package:tentura_server/domain/entity/user_entity.dart';
 
 import 'user_repository.dart';
 
@@ -15,11 +14,9 @@ class UserRepositoryMock implements UserRepository {
   @override
   Future<UserEntity> createUser({
     required String publicKey,
-    String? userId,
+    required UserEntity user,
   }) async =>
-      _storageByPublicKey[publicKey] = UserEntity(
-        id: userId ?? generateId(),
-      );
+      _storageByPublicKey[publicKey] = user;
 
   @override
   Future<UserEntity> getUserById(String id) async =>

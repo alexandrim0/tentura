@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
+import 'package:tentura_server/domain/entity/user_entity.dart';
+import 'package:tentura_server/utils/id.dart';
 import 'package:tentura_server/utils/jwt.dart';
 
 import 'user_controller.dart';
@@ -25,6 +27,9 @@ final class UserRegisterController extends UserController {
       );
       final user = await userRepository.createUser(
         publicKey: (jwt.payload as Map)['pk'] as String,
+        user: UserEntity(
+          id: generateId(),
+        ),
       );
 
       return Response.ok(
