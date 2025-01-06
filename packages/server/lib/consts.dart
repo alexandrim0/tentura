@@ -1,13 +1,21 @@
 import 'dart:io' show Platform;
 
+const kHeaderAuthorization = 'Authorization';
+
+const kAvatarPlaceholderPath = '/static/img/avatar-placeholder.jpg';
+
+const kBeaconPlaceholderPath = '/static/img/image-placeholder.jpg';
+
 // Make [environment] as mutable for testing purposes only!
 final environment = Map<String, String>.from(Platform.environment);
 
 final kSentryDsn = environment['SENTRY_DSN'] ?? '';
 
-final kServerName =
-    environment['SERVER_NAME'] ?? 'tentura.intersubjective.space';
-// final kServerName = environment['SERVER_NAME'] ?? '';
+final kServerName = environment['SERVER_NAME'] ??
+    const String.fromEnvironment(
+      'APP_LINK_BASE',
+      defaultValue: 'tentura.intersubjective.space',
+    );
 
 final kIsHttps = environment['IS_HTTPS'] == 'true';
 
@@ -40,5 +48,3 @@ MC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF
 final kJwtExpiresIn = Duration(
   seconds: int.parse(environment['JWT_EXPIRES_IN'] ?? '3600'),
 );
-
-const kHeaderAuthorization = 'Authorization';

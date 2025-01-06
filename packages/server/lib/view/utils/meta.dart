@@ -1,8 +1,8 @@
 import 'package:tentura_server/consts.dart';
 
 const metaCommon = {
-  'iewport':
-      'width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1 user-scalable=no',
+  'iewport': 'width=device-width, initial-scale=1, '
+      'minimum-scale=1,maximum-scale=1 user-scalable=no',
   'referrer': 'origin-when-cross-origin',
   'robots': 'noindex',
   'og:type': 'website',
@@ -18,9 +18,9 @@ Map<String, String> buildMetaOpenGraph({
 }) {
   serverName ??= kServerName;
   return {
-    'og:title': 'title',
-    'og:description': 'description',
+    'og:title': title,
+    'og:description': description,
     'og:url': 'https://$serverName/shared/view?id=$id',
-    'og:image': 'https://$serverName/$imagePath.jpg',
+    'og:image': 'https://$serverName/$imagePath',
   };
 }

@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:latlong2/latlong.dart';
 
+import 'package:tentura_server/consts.dart';
+
 import 'date_time_range.dart';
 import 'user_entity.dart';
 
@@ -24,5 +26,6 @@ class BeaconEntity with _$BeaconEntity {
 
   const BeaconEntity._();
 
-  String get imagePath => '';
+  String get imagePath =>
+      hasPicture ? '/images/${author.id}/$id.jpg' : kBeaconPlaceholderPath;
 }

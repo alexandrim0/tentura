@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'package:tentura_server/consts.dart';
+
 part 'user_entity.freezed.dart';
 
 @freezed
@@ -13,5 +15,6 @@ class UserEntity with _$UserEntity {
 
   const UserEntity._();
 
-  String get imagePath => '';
+  String get imagePath =>
+      hasPicture ? '/images/$id/avatar.jpg' : kAvatarPlaceholderPath;
 }

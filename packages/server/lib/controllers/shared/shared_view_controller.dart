@@ -1,39 +1,43 @@
-// ignore_for_file: prefer_const_declarations //
-
+import 'package:get_it/get_it.dart';
 import 'package:jaspr/server.dart';
-import 'package:tentura_server/view/styles/_styles.dart';
 
-import 'package:tentura_server/view/utils/header.dart';
+import 'package:tentura_server/data/repository/beacon_repository.dart';
+import 'package:tentura_server/data/repository/comment_repository.dart';
+import 'package:tentura_server/data/repository/user_repository.dart';
 import 'package:tentura_server/view/components/shared_view_component.dart';
+import 'package:tentura_server/view/styles/shared_view_styles.dart';
+import 'package:tentura_server/view/utils/header.dart';
 import 'package:tentura_server/view/utils/meta.dart';
 
 Future<Response> sharedViewController(Request request) async {
-  late final String ogId;
+  final ogId = request.requestedUri.queryParameters['id'];
+
   late final String ogTitle;
   late final String ogDescription;
   late final String ogImagePath;
   late final Object model;
-  switch (request.requestedUri.queryParameters['id']) {
-    case final String userId when userId.startsWith('U'):
-      model = _user;
-      ogId = userId;
-      ogTitle = _user.title;
-      ogDescription = _user.description;
-      ogImagePath = _user.imagePath;
 
-    case final String beaconId when beaconId.startsWith('B'):
-      model = _beacon;
-      ogId = beaconId;
-      ogTitle = _beacon.title;
-      ogDescription = _beacon.description;
-      ogImagePath = _beacon.imagePath;
+  switch (ogId?[0]) {
+    case 'U':
+      final user = await GetIt.I<UserRepository>().getUserById(ogId!);
+      model = user;
+      ogTitle = user.title;
+      ogDescription = user.description;
+      ogImagePath = user.imagePath;
 
-    case final String commentId when commentId.startsWith('C'):
-      model = _comment;
-      ogId = commentId;
-      ogTitle = _beacon.title;
-      ogDescription = _comment.content;
-      ogImagePath = _beacon.imagePath;
+    case 'B':
+      final beacon = await GetIt.I<BeaconRepository>().getBeaconById(ogId!);
+      model = beacon;
+      ogTitle = beacon.title;
+      ogDescription = beacon.description;
+      ogImagePath = beacon.imagePath;
+
+    case 'C':
+      final comment = await GetIt.I<CommentRepository>().getCommentById(ogId!);
+      model = comment;
+      ogTitle = comment.beacon.title;
+      ogDescription = comment.content;
+      ogImagePath = comment.beacon.imagePath;
 
     default:
       return Response.badRequest();
@@ -57,32 +61,8 @@ Future<Response> sharedViewController(Request request) async {
         styles: defaultStyles,
       ),
     ),
-    headers: {'Content-Type': 'text/html'},
+    headers: {
+      'Content-Type': 'text/html',
+    },
   );
 }
-
-final _user = (
-  id: '',
-  title: 'Пендальф Серый',
-  description:
-      'Начальники никогда не опаздывают, Фёдор Сумкин, и рано они тоже не приходят, они приходят строго тогда, когда считают нужным!',
-  imagePath: 'static/img/avatar-placeholder',
-);
-final _beacon = (
-  id: '',
-  title: 'Клерки',
-  description:
-      'Ты когда-нибудь замечал, что все цены заканчиваются на девятку? Черт, это пугает.',
-  place: '',
-  time: '',
-  author: _user,
-  imagePath: 'static/img/image-placeholder',
-);
-
-final _comment = (
-  id: '',
-  content: 'Зачем тебе пистолет? Дави их интеллектом!',
-  beacon: _beacon,
-  commentor: _user,
-  imagePath: '',
-);
