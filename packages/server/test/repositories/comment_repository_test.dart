@@ -1,3 +1,4 @@
+import 'package:tentura_server/data/repository/comment_repository.dart';
 import 'package:test/test.dart';
 import 'package:faker/faker.dart';
 import 'package:get_it/get_it.dart';
@@ -22,7 +23,7 @@ Future<void> main() async {
   });
 
   test(
-    'createBeacon',
+    'createComment',
     () async {
       final now = DateTime.timestamp();
       final user = await GetIt.I<UserRepository>().createUser(
@@ -42,15 +43,22 @@ Future<void> main() async {
         updatedAt: now,
         author: user,
       ));
+      final comment =
+          await GetIt.I<CommentRepository>().createComment(CommentEntity(
+        id: generateId(prefix: 'C'),
+        author: user,
+        beacon: beacon,
+        createdAt: now,
+        content: faker.lorem.sentences(faker.randomGenerator.integer(5)).join(),
+      ));
       logger.i([
-        beacon.id,
-        beacon.title,
-        beacon.description,
+        comment.id,
+        comment.content,
       ].join(' | '));
 
       expect(
-        await GetIt.I<BeaconRepository>().getBeaconById(beacon.id),
-        beacon,
+        await GetIt.I<CommentRepository>().getCommentById(comment.id),
+        comment,
       );
     },
   );
