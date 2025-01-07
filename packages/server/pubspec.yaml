@@ -36,7 +36,9 @@ dev_dependencies:
   injectable_generator:
 
   test: ^1.25.8
-  jaspr_builder: ^0.16.3
+  # use this version until PR is not merged
+  jaspr_builder: 0.16.3
+  # jaspr_builder: ^0.16.3
   build_web_compilers: ^4.1.0
 
 jaspr:

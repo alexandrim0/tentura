@@ -92,6 +92,32 @@ services:
     logging:
       driver: journald
 
+  tentura-service:
+    hostname: tentura-service
+    container_name: tentura-service
+    image: vbulavintsev/tentura-service
+    restart: unless-stopped
+    read_only: true
+    depends_on:
+      - postgres
+    init: true
+    networks:
+      - backend
+    environment:
+      - SENTRY_DSN
+      - SERVER_NAME
+      - IMAGE_SERVER
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      - POSTGRES_DBNAME
+      - POSTGRES_USERNAME
+    secrets:
+      - postgres_password
+      - jwt_private_pem
+      - jwt_public_pem
+    logging:
+      driver: journald
+
 volumes:
   openresty-cert:
 

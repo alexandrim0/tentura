@@ -2,6 +2,7 @@ services:
   openresty:
     restart: no
     build: ./openresty
+    image: vbulavintsev/openresty-tentura:v0.0.10
     volumes:
       - ./openresty/static:/srv/static:ro
       - ./openresty/conf/app.conf:/etc/nginx/app.conf:ro
@@ -26,7 +27,10 @@ services:
 
   hasura:
     restart: no
-    image: hasura/graphql-engine
+    networks:
+      - proxy
+    ports:
+      - 8080:8080/tcp
     environment:
       - "HASURA_GRAPHQL_DEV_MODE=true"
       - "HASURA_GRAPHQL_LOG_LEVEL=debug"
@@ -36,10 +40,32 @@ services:
 
   postgres:
     restart: no
+    image: vbulavintsev/postgres-tentura:v0.3.24
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - proxy
+    ports:
+      - 5432:5432/tcp
 
   meritrank-service:
     restart: no
+    image: vbulavintsev/meritrank-service:v0.2.32
+    networks:
+      - proxy
+    ports:
+      - 10234:10234/tcp
+
+  tentura-service:
+    restart: no
+    image: vbulavintsev/tentura-service:v0.0.1
+    networks:
+      - proxy
+    ports:
+      - 2080:2080/tcp
     environment:
-      - MERITRANK_NUM_WALK
-      - MERITRANK_TOP_NODES_LIMIT
-      - MERITRANK_SERVICE_THREADS
+      - SERVER_NAME
+      - IMAGE_SERVER
+
+volumes:
+  pg_data:

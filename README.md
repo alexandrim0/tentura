@@ -1,7 +1,7 @@
 ## Installation
 
 1. Set secrets described in `compose.yaml` in `.env` file
-2. If need, copy `compose.override.example.yaml` to `compose.override.yaml` and modify
+2. If need, copy `compose.override.yaml` from `examples` and modify it
 3. Run containers (docker compose up -d)
 4. `chown nobody:nogroup /etc/nginx/cert`(acme.autossl cert storage)
 5. apply SQL commands in `hasura/schema.sql` to Postgres (Hasura schema and MeritRank-related triggers)
