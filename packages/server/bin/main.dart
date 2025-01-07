@@ -4,7 +4,7 @@ import 'package:sentry/sentry.dart';
 import 'package:tentura_server/app.dart';
 import 'package:tentura_server/consts.dart';
 
-Future<void> main() async {
+Future<void> main(List<String> args) async {
   await Sentry.init(
     (options) => options
       ..dsn = kSentryDsn

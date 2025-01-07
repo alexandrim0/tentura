@@ -21,7 +21,9 @@ final defaultStyles = [
     '--comment-bg': kThemeLightCommentbg.value,
   }),
   css.media(
-    const MediaQuery.all(prefersColorScheme: ColorScheme.dark),
+    const MediaQuery.all(
+      prefersColorScheme: ColorScheme.dark,
+    ),
     [
       css(':root').raw({
         '--background-color-purple': kThemeDarkPurple.value,
@@ -35,56 +37,95 @@ final defaultStyles = [
   ),
   css('html, body')
       .box(
-          width: 100.percent,
-          minHeight: 100.vh,
-          margin: EdgeInsets.zero,
-          padding: EdgeInsets.zero)
+        width: 100.percent,
+        minHeight: 100.vh,
+        margin: EdgeInsets.zero,
+        padding: EdgeInsets.zero,
+      )
       .text(
-          fontFamily: FontFamilies.sansSerif,
-          color: const Color.variable('--font-main')),
-  css('p').box(margin: EdgeInsets.unset),
-  css('h1')
-      .box(margin: EdgeInsets.unset)
-      .text(fontSize: 20.px, fontWeight: FontWeight.normal),
-  css('.secondary-text')
-      .text(fontSize: 12.px, color: const Color.hex('#78839C')),
-  css('.card', [
-    css('&')
-        .flexbox(direction: FlexDirection.column)
-        .raw({'flex-grow': '1'})
-        .box(minHeight: const Unit.vh(100))
-        .background(color: const Color.variable('--card-bg')),
-    css('&-container').box(
-      padding: const EdgeInsets.only(
-        left: Unit.pixels(16),
-        right: Unit.pixels(16),
-        bottom: Unit.pixels(24),
-        top: Unit.pixels(24),
+        fontFamily: FontFamilies.sansSerif,
+        color: const Color.variable('--font-main'),
       ),
-    ),
-  ]),
-  css('.card-avatar', [
-    css('&__image')
-        .box(
-            margin: const EdgeInsets.only(left: Unit.pixels(-2)),
-            radius: const BorderRadius.circular(Unit.percent(50)),
-            border: const Border.all(
-              BorderSide.solid(
-                  color: Color.variable('--card-bg'), width: Unit.pixels(4)),
-            ))
-        .raw({'object-fit': 'cover'}),
-    css('&__text').text(color: const Color.variable('--avatar-name')),
-  ]),
+  css('p').box(
+    margin: EdgeInsets.unset,
+  ),
+  css('h1')
+      .box(
+        margin: EdgeInsets.unset,
+      )
+      .text(
+        fontSize: 20.px,
+        fontWeight: FontWeight.normal,
+      ),
+  css('.secondary-text').text(
+    fontSize: 12.px,
+    color: const Color.hex('#78839C'),
+  ),
+  css(
+    '.card',
+    [
+      css('&')
+          .flexbox(
+            direction: FlexDirection.column,
+          )
+          .raw({
+            'flex-grow': '1',
+          })
+          .box(
+            minHeight: const Unit.vh(100),
+          )
+          .background(
+            color: const Color.variable('--card-bg'),
+          ),
+      css('&-container').box(
+        padding: const EdgeInsets.only(
+          left: Unit.pixels(16),
+          right: Unit.pixels(16),
+          bottom: Unit.pixels(24),
+          top: Unit.pixels(24),
+        ),
+      ),
+    ],
+  ),
+  css(
+    '.card-avatar',
+    [
+      css('&__image')
+          .box(
+        margin: const EdgeInsets.only(
+          left: Unit.pixels(-2),
+        ),
+        radius: const BorderRadius.circular(Unit.percent(50)),
+        border: const Border.all(
+          BorderSide.solid(
+            color: Color.variable('--card-bg'),
+            width: Unit.pixels(4),
+          ),
+        ),
+      )
+          .raw({
+        'object-fit': 'cover',
+      }),
+      css('&__text').text(
+        color: const Color.variable('--avatar-name'),
+      ),
+    ],
+  ),
+
   // large screens
   css.media(
-    MediaQuery.screen(minWidth: 480.px),
+    MediaQuery.screen(
+      minWidth: 480.px,
+    ),
     [
       css('body')
           .flexbox(
             alignItems: AlignItems.center,
             justifyContent: JustifyContent.center,
           )
-          .background(color: const Color.variable('--background-color-purple')),
+          .background(
+            color: const Color.variable('--background-color-purple'),
+          ),
       css('.card').box(
         minHeight: Unit.auto,
         maxWidth: const Unit.pixels(360),

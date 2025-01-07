@@ -1,21 +1,20 @@
 import 'package:jaspr/server.dart';
 
-import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
 import 'package:tentura_server/domain/entity/comment_entity.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
 
 class SharedViewComponent extends StatelessComponent {
   const SharedViewComponent({
-    required this.model,
+    required this.entity,
   });
 
-  final Object model;
+  final Object entity;
 
   @override
   Iterable<Component> build(BuildContext context) sync* {
     yield div(
-      switch (model) {
+      switch (entity) {
         final UserEntity user => _buildUserContent(user),
         final BeaconEntity beacon => _buildBeaconContent(beacon),
         final CommentEntity comment => [
@@ -41,7 +40,9 @@ class SharedViewComponent extends StatelessComponent {
             ),
             if (user.description.isNotEmpty)
               p(
-                [text(user.description)],
+                [
+                  text(user.description),
+                ],
                 styles: const Styles.box(
                   margin: EdgeInsets.only(
                     top: Unit.pixels(24),
@@ -55,8 +56,7 @@ class SharedViewComponent extends StatelessComponent {
 
   List<Component> _buildAvatarContent(UserEntity user) => [
         img(
-          src: 'http${kIsHttps ? 's' : ''}://'
-              '$kServerName/${user.imagePath}.jpg',
+          src: user.imageUrl,
           classes: 'card-avatar__image',
           styles: const Styles.box(
             width: Unit.pixels(80),
@@ -77,8 +77,7 @@ class SharedViewComponent extends StatelessComponent {
 
   List<Component> _buildBeaconContent(BeaconEntity beacon) => [
         img(
-          src: 'http${kIsHttps ? 's' : ''}://'
-              '$kServerName/${beacon.imagePath}.jpg',
+          src: beacon.imageUrl,
           styles: const Styles.box(
             width: Unit.percent(100),
           ),
@@ -155,8 +154,7 @@ class SharedViewComponent extends StatelessComponent {
         div(
           [
             img(
-              src: 'http${kIsHttps ? 's' : ''}://'
-                  '$kServerName/${comment.author.imagePath}.jpg',
+              src: comment.author.imageUrl,
               classes: 'card-avatar__image',
               styles: const Styles.box(
                 width: Unit.pixels(60),

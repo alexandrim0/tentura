@@ -15,6 +15,7 @@ class UserEntity with _$UserEntity {
 
   const UserEntity._();
 
-  String get imagePath =>
-      hasPicture ? '/images/$id/avatar.jpg' : kAvatarPlaceholderPath;
+  String get imageUrl => hasPicture
+      ? '$kImageServer/images/$id/avatar.jpg'
+      : kImageServer + kAvatarPlaceholderPath;
 }

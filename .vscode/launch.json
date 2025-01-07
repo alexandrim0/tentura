@@ -123,5 +123,17 @@
                 "--web-browser-flag=--disable-web-security",
             ]
         },
+        {
+            "console": "debugConsole",
+            "cwd": "packages/server",
+            "name": "tentura-server",
+            "program":"bin/main.dart",
+            "request": "launch",
+            "type": "dart",
+            "env": {
+                "SERVER_NAME": "https://tentura.intersubjective.space",
+                "IMAGE_SERVER": "https://tentura.intersubjective.space",
+            },
+        },
   ]
 }

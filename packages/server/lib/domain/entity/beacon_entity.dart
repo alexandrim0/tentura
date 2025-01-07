@@ -26,6 +26,7 @@ class BeaconEntity with _$BeaconEntity {
 
   const BeaconEntity._();
 
-  String get imagePath =>
-      hasPicture ? '/images/${author.id}/$id.jpg' : kBeaconPlaceholderPath;
+  String get imageUrl => hasPicture
+      ? '$kImageServer/images/${author.id}/$id.jpg'
+      : kImageServer + kBeaconPlaceholderPath;
 }

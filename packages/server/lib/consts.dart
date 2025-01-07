@@ -9,17 +9,15 @@ const kBeaconPlaceholderPath = '/static/img/image-placeholder.jpg';
 // Make [environment] as mutable for testing purposes only!
 final environment = Map<String, String>.from(Platform.environment);
 
+final kDebugMode = environment['IS_DEBUG_MODE'] == 'true';
+
 final kSentryDsn = environment['SENTRY_DSN'] ?? '';
 
-final kServerName = environment['SERVER_NAME'] ??
-    const String.fromEnvironment(
-      'APP_LINK_BASE',
-      defaultValue: 'tentura.intersubjective.space',
-    );
+/// First part of FQDN: `https://image.server.name`
+final kServerName = environment['SERVER_NAME'] ?? '';
 
-final kIsHttps = environment['IS_HTTPS'] == 'true';
-
-final kDebugMode = environment['IS_DEBUG_MODE'] == 'true';
+/// First part of FQDN: `https://api.server.name`
+final kImageServer = environment['IMAGE_SERVER'] ?? '';
 
 // Database connection settings
 final kPgHost = environment['POSTGRES_HOST'] ?? 'postgres';
