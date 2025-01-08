@@ -1,19 +1,25 @@
 FROM dart:stable AS build
 
-WORKDIR /tmp
+# WORKDIR /app
 
-COPY ./ ./
+# COPY pubspec* ./
 
-RUN dart pub get && dart compile exe -o /tmp/tentura-service bin/main.dart
+# RUN dart pub get
+
+# COPY ./ ./
+
+# RUN dart pub get --offline
+
+# RUN dart compile exe bin/main.dart -o bin/server
 
 FROM scratch
 
 COPY --from=build /runtime/ /
 
-COPY --from=build /usr/lib/ /usr/lib/
+# COPY --from=build /app/bin/server /
 
-COPY --from=build /tmp/tentura-service /tentura-service
+COPY ./bin/server /
 
 EXPOSE 2080/tcp
 
-CMD [ "/tentura-service" ]
+CMD [ "/server" ]

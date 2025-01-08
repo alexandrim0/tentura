@@ -3,6 +3,7 @@ import 'package:stormberry/stormberry.dart';
 
 import 'package:tentura_server/data/model/beacon_model.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
+import 'package:tentura_server/domain/exception.dart';
 
 export 'package:tentura_server/domain/entity/beacon_entity.dart';
 
@@ -35,18 +36,9 @@ class BeaconRepository {
     return getBeaconById(beacon.id);
   }
 
-  Future<BeaconEntity> getBeaconById(String beaconId) async =>
-      switch (await _database.beacons.queryBeacon(beaconId)) {
+  Future<BeaconEntity> getBeaconById(String id) async =>
+      switch (await _database.beacons.queryBeacon(id)) {
         final BeaconModel m => m.asEntity,
-        null => throw const BeaconNotFoundException(),
+        null => throw IdNotFoundException(id),
       };
-}
-
-class BeaconNotFoundException implements Exception {
-  const BeaconNotFoundException([this.message]);
-
-  final String? message;
-
-  @override
-  String toString() => 'BeaconNotFoundException: [$message]';
 }

@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:tentura_server/domain/exception.dart';
 
 import 'comment_repository.dart';
 
@@ -16,8 +17,8 @@ class CommentRepositoryMock implements CommentRepository {
       _storageById[comment.id] = comment;
 
   @override
-  Future<CommentEntity> getCommentById(String commentId) async =>
-      _storageById[commentId] ?? (throw const CommentNotFoundException());
+  Future<CommentEntity> getCommentById(String id) async =>
+      _storageById[id] ?? (throw IdNotFoundException(id));
 
   static final _storageById = <String, CommentEntity>{};
 }

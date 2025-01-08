@@ -1,3 +1,5 @@
+# resolution:
+
 dependency_overrides:
 
   # use this version until PR is not merged
@@ -6,5 +8,3 @@ dependency_overrides:
       url: https://github.com/alexandrim0/jaspr.git
       ref: dark_theme
       path: packages/jaspr
-
-resolution:

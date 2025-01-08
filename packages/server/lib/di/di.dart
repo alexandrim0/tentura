@@ -9,6 +9,7 @@ import 'di.config.dart';
 Future<void> configureDependencies(String environment) async {
   Jaspr.initializeApp(
     options: defaultJasprOptions,
+    useIsolates: false,
   );
   GetIt.I.init(
     environment: environment,

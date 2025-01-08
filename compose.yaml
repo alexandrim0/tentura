@@ -97,13 +97,13 @@ services:
     container_name: tentura-service
     image: vbulavintsev/tentura-service
     restart: unless-stopped
-    read_only: true
     depends_on:
       - postgres
     init: true
     networks:
       - backend
     environment:
+      - DEBUG_MODE
       - SENTRY_DSN
       - SERVER_NAME
       - IMAGE_SERVER
@@ -111,6 +111,7 @@ services:
       - POSTGRES_PORT
       - POSTGRES_DBNAME
       - POSTGRES_USERNAME
+      - POSTGRES_PASSWORD
     secrets:
       - postgres_password
       - jwt_private_pem

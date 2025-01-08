@@ -64,8 +64,8 @@ services:
     ports:
       - 2080:2080/tcp
     environment:
-      - SERVER_NAME
-      - IMAGE_SERVER
+      - "SERVER_NAME=https://tentura.intersubjective.space"
+      - "IMAGE_SERVER=https://tentura.intersubjective.space"
 
 volumes:
   pg_data:

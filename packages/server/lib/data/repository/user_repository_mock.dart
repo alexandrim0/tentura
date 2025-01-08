@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:tentura_server/domain/exception.dart';
 
 export 'package:tentura_server/domain/entity/user_entity.dart';
 
@@ -21,11 +22,11 @@ class UserRepositoryMock implements UserRepository {
   @override
   Future<UserEntity> getUserById(String id) async =>
       _storageByPublicKey.values.where((e) => e.id == id).firstOrNull ??
-      (throw const UserNotFoundException());
+      (throw IdNotFoundException(id));
 
   @override
   Future<UserEntity> getUserByPublicKey(String publicKey) async =>
-      _storageByPublicKey[publicKey] ?? (throw const UserNotFoundException());
+      _storageByPublicKey[publicKey] ?? (throw IdNotFoundException(publicKey));
 
   static final _storageByPublicKey = <String, UserEntity>{};
 }

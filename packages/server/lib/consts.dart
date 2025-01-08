@@ -9,7 +9,7 @@ const kBeaconPlaceholderPath = '/static/img/image-placeholder.jpg';
 // Make [environment] as mutable for testing purposes only!
 final environment = Map<String, String>.from(Platform.environment);
 
-final kDebugMode = environment['IS_DEBUG_MODE'] == 'true';
+final kDebugMode = environment['DEBUG_MODE'] == 'true';
 
 final kSentryDsn = environment['SENTRY_DSN'] ?? '';
 

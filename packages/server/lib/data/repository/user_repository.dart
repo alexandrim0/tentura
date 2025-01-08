@@ -3,6 +3,7 @@ import 'package:stormberry/stormberry.dart';
 
 import 'package:tentura_server/data/model/user_model.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
+import 'package:tentura_server/domain/exception.dart';
 
 export 'package:tentura_server/domain/entity/user_entity.dart';
 
@@ -37,7 +38,7 @@ class UserRepository {
   Future<UserEntity> getUserById(String id) async =>
       switch (await _database.users.queryUser(id)) {
         final UserModel m => m.asEntity,
-        null => throw const UserNotFoundException(),
+        null => throw IdNotFoundException(id),
       };
 
   Future<UserEntity> getUserByPublicKey(String publicKey) async {
@@ -46,17 +47,8 @@ class UserRepository {
       values: {'pk': publicKey},
     ));
     if (users.isEmpty) {
-      throw const UserNotFoundException();
+      throw IdNotFoundException(publicKey);
     }
     return (users.first as UserModel).asEntity;
   }
-}
-
-class UserNotFoundException implements Exception {
-  const UserNotFoundException([this.message]);
-
-  final String? message;
-
-  @override
-  String toString() => 'UserNotFoundException: [$message]';
 }

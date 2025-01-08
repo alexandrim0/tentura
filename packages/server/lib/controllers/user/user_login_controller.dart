@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
-import 'package:tentura_server/data/repository/user_repository.dart';
+import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/utils/jwt.dart';
 
 import 'user_controller.dart';
@@ -30,7 +30,7 @@ final class UserLoginController extends UserController {
       return Response.ok(
         jsonEncode(issueJwt(subject: user.id)),
       );
-    } on UserNotFoundException catch (e) {
+    } on IdNotFoundException catch (e) {
       logger.e(e);
 
       return Response.badRequest(

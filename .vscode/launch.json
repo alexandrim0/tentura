@@ -131,6 +131,7 @@
             "request": "launch",
             "type": "dart",
             "env": {
+                "DEBUG_MODE": "true",
                 "SERVER_NAME": "https://tentura.intersubjective.space",
                 "IMAGE_SERVER": "https://tentura.intersubjective.space",
             },

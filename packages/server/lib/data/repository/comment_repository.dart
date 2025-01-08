@@ -3,6 +3,7 @@ import 'package:stormberry/stormberry.dart';
 
 import 'package:tentura_server/data/model/comment_model.dart';
 import 'package:tentura_server/domain/entity/comment_entity.dart';
+import 'package:tentura_server/domain/exception.dart';
 
 export 'package:tentura_server/domain/entity/comment_entity.dart';
 
@@ -28,18 +29,9 @@ class CommentRepository {
     return getCommentById(comment.id);
   }
 
-  Future<CommentEntity> getCommentById(String commentId) async =>
-      switch (await _database.comments.queryComment(commentId)) {
+  Future<CommentEntity> getCommentById(String id) async =>
+      switch (await _database.comments.queryComment(id)) {
         final CommentModel m => m.asEntity,
-        null => throw const CommentNotFoundException(),
+        null => throw IdNotFoundException(id),
       };
-}
-
-class CommentNotFoundException implements Exception {
-  const CommentNotFoundException([this.message]);
-
-  final String? message;
-
-  @override
-  String toString() => 'CommentNotFoundException: [$message]';
 }

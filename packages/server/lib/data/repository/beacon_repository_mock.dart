@@ -1,5 +1,7 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura_server/domain/exception.dart';
+
 import 'beacon_repository.dart';
 
 export 'package:tentura_server/domain/entity/beacon_entity.dart';
@@ -16,8 +18,8 @@ class BeaconRepositoryMock implements BeaconRepository {
       _storageById[beacon.id] = beacon;
 
   @override
-  Future<BeaconEntity> getBeaconById(String beaconId) async =>
-      _storageById[beaconId] ?? (throw const BeaconNotFoundException());
+  Future<BeaconEntity> getBeaconById(String id) async =>
+      _storageById[id] ?? (throw IdNotFoundException(id));
 
   static final _storageById = <String, BeaconEntity>{};
 }

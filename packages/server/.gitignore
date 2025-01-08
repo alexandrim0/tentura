@@ -1,4 +1,5 @@
 temp/
+bin/server
 **.g.dart
 **.config.dart
 **.schema.dart
