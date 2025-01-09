@@ -132,8 +132,23 @@
             "type": "dart",
             "env": {
                 "DEBUG_MODE": "true",
+                "LISTEN_PORT": "2082",
                 "SERVER_NAME": "https://tentura.intersubjective.space",
                 "IMAGE_SERVER": "https://tentura.intersubjective.space",
+            },
+        },
+        {
+            "console": "debugConsole",
+            "cwd": "packages/server",
+            "name": "tentura-server (test)",
+            "program":"bin/test.dart",
+            "request": "launch",
+            "type": "dart",
+            "env": {
+                "DEBUG_MODE": "true",
+                "LISTEN_PORT": "2082",
+                "SERVER_NAME": "https://tentura-stage.intersubjective.space",
+                "IMAGE_SERVER": "https://tentura-stage.intersubjective.space",
             },
         },
   ]

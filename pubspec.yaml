@@ -22,6 +22,7 @@ dependencies:
   sentry: ^8.12.0
   mockito: ^5.4.5
   latlong2: ^0.9.1
+  faker_dart: ^0.2.2
   injectable: ^2.5.0
   collection: ^1.19.0
   ed25519_edwards: ^0.3.1

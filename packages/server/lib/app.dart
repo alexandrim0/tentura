@@ -10,22 +10,21 @@ import 'di/di.dart';
 import 'di/modules.dart';
 import 'route_handler.dart';
 
-Future<void> runApp() async {
-  const port = int.fromEnvironment(
-    'PORT',
-    defaultValue: 2080,
-  );
-
-  await configureDependencies(Environment.prod);
+Future<void> runApp({
+  Future<void> Function()? beforeStart,
+  String? env,
+}) async {
+  await configureDependencies(env ?? Environment.prod);
 
   final logger = GetIt.I<Logger>();
   await logger.init;
+  await beforeStart?.call();
 
   final server = await shelfRun(
     routeHandler,
     defaultShared: true,
-    defaultBindPort: port,
-    defaultBindAddress: '0.0.0.0',
+    defaultBindPort: kListenPort,
+    defaultBindAddress: kBindAddress,
     defaultEnableHotReload: kDebugMode,
     onStarted: (address, port) => logger.w(
       'Start serving at ${DateTime.timestamp()} on http://$address:$port',

@@ -15,12 +15,12 @@ Handler routeHandler() {
       () => 'I`m fine!',
     )
     ..get(
-      '/shared/view',
-      sharedViewController,
-    )
-    ..get(
       '/chat',
       chatController,
+    )
+    ..get(
+      '/shared/view',
+      sharedViewController,
     )
     ..post(
       '/api/user/login',

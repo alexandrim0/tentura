@@ -13,6 +13,10 @@ final kDebugMode = environment['DEBUG_MODE'] == 'true';
 
 final kSentryDsn = environment['SENTRY_DSN'] ?? '';
 
+final kBindAddress = environment['BIND_ADDRESS'] ?? '0.0.0.0';
+
+final kListenPort = int.parse(environment['LISTEN_PORT'] ?? '2080');
+
 /// First part of FQDN: `https://image.server.name`
 final kServerName = environment['SERVER_NAME'] ?? '';
 

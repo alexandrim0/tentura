@@ -1,7 +1,5 @@
 # resolution:
-
 dependency_overrides:
-
   # use this version until PR is not merged
   jaspr:
     git:
