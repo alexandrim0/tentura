@@ -6,14 +6,14 @@ import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/comment_repository.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
-import 'package:tentura_server/view/components/shared_view_component.dart';
+import 'package:tentura_server/view/shared_view/shared_view_document.dart';
 
 Future<Response> sharedViewController(Request request) async {
   final ogId = request.requestedUri.queryParameters['id'];
   try {
     return Response.ok(
       await renderComponent(
-        SharedViewComponent(
+        SharedViewDocument(
           entity: switch (ogId?[0]) {
             'U' => await GetIt.I<UserRepository>().getUserById(ogId!),
             'B' => await GetIt.I<BeaconRepository>().getBeaconById(ogId!),

@@ -1,4 +1,4 @@
-import 'package:jaspr/jaspr.dart';
+import 'package:jaspr/server.dart';
 
 const kThemeLightPurple = Color.hex('#ECF0FC');
 const kThemeLightFontMain = Color.hex('#1D1B1E');
