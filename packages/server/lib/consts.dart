@@ -1,5 +1,11 @@
 import 'dart:io' show Platform;
 
+const kAppTitle = 'Tentura';
+
+const kContentTypeHtml = 'text/html';
+
+const kHeaderContentType = 'Content-Type';
+
 const kHeaderAuthorization = 'Authorization';
 
 const kAvatarPlaceholderPath = '/static/img/avatar-placeholder.jpg';

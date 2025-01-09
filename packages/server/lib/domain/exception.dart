@@ -4,5 +4,14 @@ class IdNotFoundException implements Exception {
   final String? message;
 
   @override
-  String toString() => 'IdNotFoundException: [$message]';
+  String toString() => 'Id not found: [$message]';
+}
+
+class WrongIdException implements Exception {
+  const WrongIdException([this.message]);
+
+  final String? message;
+
+  @override
+  String toString() => 'Wrong Id: [$message]';
 }

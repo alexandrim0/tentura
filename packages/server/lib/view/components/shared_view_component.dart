@@ -1,8 +1,10 @@
 import 'package:jaspr/server.dart';
 
+import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
 import 'package:tentura_server/domain/entity/comment_entity.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
+import 'package:tentura_server/view/styles/shared_view_styles.dart';
 
 class SharedViewComponent extends StatelessComponent {
   const SharedViewComponent({
@@ -13,25 +15,67 @@ class SharedViewComponent extends StatelessComponent {
 
   @override
   Iterable<Component> build(BuildContext context) sync* {
-    yield div(
-      switch (entity) {
-        final UserEntity user => _buildUserContent(user),
-        final BeaconEntity beacon => _buildBeaconContent(beacon),
-        final CommentEntity comment => [
-            ..._buildBeaconContent(comment.beacon),
-            ..._buildCommentContainer(comment)
-          ],
-        _ => throw Exception('Unsupported'),
-      },
-      classes: 'card',
-      styles: const Styles.box(
-        width: Unit.percent(100),
-        overflow: Overflow.hidden,
-      ),
-    );
+    yield switch (entity) {
+      // User
+      final UserEntity user => _buildDocument(
+          body: _buildUserContainer(user),
+          meta: _buildMeta(
+            id: user.id,
+            title: user.title,
+            description: user.description,
+            imagePath: user.imageUrl,
+          ),
+        ),
+
+      // Beacon
+      final BeaconEntity beacon => _buildDocument(
+          body: _buildBeaconContainer(beacon),
+          meta: _buildMeta(
+            id: beacon.id,
+            title: beacon.title,
+            description: beacon.description,
+            imagePath: beacon.imageUrl,
+          ),
+        ),
+
+      // Comment
+      final CommentEntity comment => _buildDocument(
+            body: [
+              ..._buildBeaconContainer(comment.beacon),
+              ..._buildCommentContainer(comment)
+            ],
+            meta: _buildMeta(
+              id: comment.id,
+              title: comment.beacon.title,
+              description: comment.content,
+              imagePath: comment.beacon.imageUrl,
+            )),
+
+      // Unsupported
+      _ => throw Exception('Unsupported'),
+    };
   }
 
-  List<Component> _buildUserContent(UserEntity user) => [
+  Document _buildDocument({
+    required List<Component> body,
+    Map<String, String>? meta,
+  }) =>
+      Document(
+        title: kAppTitle,
+        head: _headerLogo,
+        meta: meta,
+        body: div(
+          body,
+          classes: 'card',
+          styles: const Styles.box(
+            width: Unit.percent(100),
+            overflow: Overflow.hidden,
+          ),
+        ),
+        styles: defaultStyles,
+      );
+
+  List<Component> _buildUserContainer(UserEntity user) => [
         div(
           [
             div(
@@ -75,7 +119,7 @@ class SharedViewComponent extends StatelessComponent {
         ),
       ];
 
-  List<Component> _buildBeaconContent(BeaconEntity beacon) => [
+  List<Component> _buildBeaconContainer(BeaconEntity beacon) => [
         img(
           src: beacon.imageUrl,
           styles: const Styles.box(
@@ -221,4 +265,54 @@ class SharedViewComponent extends StatelessComponent {
           ),
         ),
       ];
+
+  static Map<String, String> _buildMeta({
+    required String id,
+    required String title,
+    required String description,
+    required String imagePath,
+  }) =>
+      {
+        'viewport': 'width=device-width, initial-scale=1, '
+            'minimum-scale=1,maximum-scale=1 user-scalable=no',
+        'referrer': 'origin-when-cross-origin',
+        'robots': 'noindex',
+        'og:type': 'website',
+        'og:site_name': 'Tentura',
+        'og:title': title,
+        'og:description': description,
+        'og:url': '$kServerName/shared/view?id=$id',
+        'og:image': imagePath,
+      };
+
+  static final _headerLogo = [
+    link(
+      href: '/static/logo/web_24dp.png',
+      rel: 'shortcut icon',
+    ),
+    link(
+      href: '/static/logo/web_32dp.png',
+      rel: 'shortcut icon',
+    ),
+    link(
+      href: '/static/logo/web_36dp.png',
+      rel: 'shortcut icon',
+    ),
+    link(
+      href: '/static/logo/web_48dp.png',
+      rel: 'shortcut icon',
+    ),
+    link(
+      href: '/static/logo/web_64dp.png',
+      rel: 'shortcut icon',
+    ),
+    link(
+      href: '/static/logo/web_96dp.png',
+      rel: 'shortcut icon',
+    ),
+    link(
+      href: '/static/logo/web_512dp.png',
+      rel: 'shortcut icon',
+    ),
+  ];
 }
