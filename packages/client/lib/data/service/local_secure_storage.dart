@@ -23,7 +23,6 @@ class LocalSecureStorage {
 
   static const _secureStorage = FlutterSecureStorage(
     aOptions: AndroidOptions(
-      encryptedSharedPreferences: true,
       storageCipherAlgorithm: StorageCipherAlgorithm.AES_GCM_NoPadding,
       keyCipherAlgorithm:
           KeyCipherAlgorithm.RSA_ECB_OAEPwithSHA_256andMGF1Padding,

@@ -44,7 +44,10 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
             selector: (state) => state.friend,
             builder: (context, profile) => Row(
               children: [
-                AvatarRated(profile: profile),
+                AvatarRated(
+                  profile: profile,
+                  size: 32,
+                ),
                 Padding(
                   padding: kPaddingH,
                   child: Text(
