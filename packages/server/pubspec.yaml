@@ -1,0 +1,44 @@
+name: tentura_server
+description: Tentura server API
+publish_to: none
+
+version: 0.0.1
+
+environment:
+  sdk: '>=3.6.0 <4.0.0'
+
+resolution: workspace
+
+dependencies:
+  meta:
+  uuid:
+  faker:
+  get_it:
+  logger:
+  sentry:
+  mockito:
+  latlong2:
+  injectable:
+  freezed_annotation:
+
+  jaspr: ^0.16.3
+  # build_runner (stormberry) fails after 3.4.4
+  postgres: 3.4.4
+  shelf_plus: ^1.10.0
+  stormberry: ^0.14.0
+  dart_jsonwebtoken: ^2.14.2
+
+dev_dependencies:
+  freezed:
+  build_runner:
+  json_serializable:
+  very_good_analysis:
+  injectable_generator:
+
+  test: ^1.25.8
+  # use this version until PR is not merged
+  jaspr_builder: ^0.16.3
+  build_web_compilers: ^4.1.0
+
+jaspr:
+  mode: server

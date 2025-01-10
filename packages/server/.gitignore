@@ -1,0 +1,6 @@
+temp/
+bin/server
+**.g.dart
+**.config.dart
+**.schema.dart
+**.freezed.dart

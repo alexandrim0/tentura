@@ -1,0 +1,710 @@
+_type: export
+__export_format: 4
+__export_date: 2024-12-22T17:31:45.421Z
+__export_source: insomnia.desktop.app:v10.3.0
+resources:
+  - _id: req_33284cd7325b4a77af60615fb68e3cc7
+    parentId: fld_2ecb9577cf1c4677aa2ef97af1a80ce5
+    modified: 1734887158863
+    created: 1734886045388
+    url: "{{ _.apiGql }}"
+    name: _fragments
+    description: ""
+    method: POST
+    body:
+      mimeType: application/graphql
+      text: '{"query":"fragment UserModel on user
+        {\n  id\n  title\n  description\n  has_picture\n  my_vote\n  scores
+        {\n    src_score\n    dst_score\n  }\n}\n\nfragment BeaconModel on
+        beacon
+        {\n  id\n  title\n  description\n  created_at\n  updated_at\n  is_pinned\n  context\n  enabled\n  timerange\n  has_picture\n  comments_count\n  my_vote\n  long\n  lat\n  author
+        {\n    ...UserModel\n  }\n  scores
+        {\n    src_score\n    dst_score\n  }\n}\n\nfragment CommentModel on
+        comment
+        {\n  id\n  beacon_id\n  created_at\n  content\n  my_vote\n  author
+        {\n    ...UserModel\n  }\n  scores
+        {\n    src_score\n    dst_score\n  }\n}\n\nfragment MessageModel on
+        message
+        {\n  id\n  subject\n  object\n  message\n  delivered\n  created_at\n  updated_at\n}\n"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_498242e426d24af9a1039fe1da4ab76a
+      - id: pair_aed5e847b6f444b39e80abad13cf3ba8
+        name: x-hasura-admin-secret
+        value: "{{ _.hHasuraAdminSecret }}"
+        description: ""
+        disabled: false
+      - id: pair_2c013194531d49d8abc0e75a1fabb3c3
+        name: x-hasura-user-id
+        value: "{{ _.hHasuraUserId }}"
+        description: ""
+        disabled: false
+      - id: pair_6c6c1cb4f6d24275b4ce5ec54f9beabd
+        name: x-hasura-role
+        value: user
+        description: ""
+        disabled: false
+      - id: pair_b15d1da0162e4ba4a9bd9109b5a9dd92
+        name: x-hasura-query-context
+        value: ""
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1734886045388
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_2ecb9577cf1c4677aa2ef97af1a80ce5
+    parentId: wrk_5bb1bdadc54b4189a787a9e3ad2a4370
+    modified: 1734886038020
+    created: 1734886038020
+    name: Hasura
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1734886038020
+    environmentType: kv
+    _type: request_group
+  - _id: wrk_5bb1bdadc54b4189a787a9e3ad2a4370
+    parentId: null
+    modified: 1734885441979
+    created: 1734885441979
+    name: Tentura
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: req_04064f2e3e204e568edf93fd6b04ee78
+    parentId: fld_2ecb9577cf1c4677aa2ef97af1a80ce5
+    modified: 1734886550502
+    created: 1734886534452
+    url: "{{ _.apiGql }}"
+    name: _reset
+    description: ""
+    method: POST
+    body:
+      mimeType: application/graphql
+      text: '{"query":"query MeritrankReset {\n  mr_reset
+        {\n    is_ok\n    message\n  }\n}\n","operationName":"MeritrankReset"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_498242e426d24af9a1039fe1da4ab76a
+      - id: pair_aed5e847b6f444b39e80abad13cf3ba8
+        name: x-hasura-admin-secret
+        value: "{{ _.hHasuraAdminSecret }}"
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1734886018632
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_ca3e29dbcc844283987aa51e28fdf718
+    parentId: fld_2ecb9577cf1c4677aa2ef97af1a80ce5
+    modified: 1734886571102
+    created: 1734886565397
+    url: "{{ _.apiGql }}"
+    name: _init
+    description: ""
+    method: POST
+    body:
+      mimeType: application/graphql
+      text: '{"query":"query MeritrankInit {\n  mr_init
+        {\n    is_ok\n    message\n  }\n}\n","operationName":"MeritrankInit"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_498242e426d24af9a1039fe1da4ab76a
+      - id: pair_aed5e847b6f444b39e80abad13cf3ba8
+        name: x-hasura-admin-secret
+        value: "{{ _.hHasuraAdminSecret }}"
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1734886005254
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_b2be7a65b94c4cdc81a01ba65d0ec950
+    parentId: fld_2ecb9577cf1c4677aa2ef97af1a80ce5
+    modified: 1734886595149
+    created: 1734886592004
+    url: "{{ _.apiGql }}"
+    name: _calc
+    description: ""
+    method: POST
+    body:
+      mimeType: application/graphql
+      text: '{"query":"query MeritrankCalculate {\n  mr_calculate
+        {\n    is_ok\n    message\n  }\n}\n","operationName":"MeritrankCalculate"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_498242e426d24af9a1039fe1da4ab76a
+      - id: pair_aed5e847b6f444b39e80abad13cf3ba8
+        name: x-hasura-admin-secret
+        value: "{{ _.hHasuraAdminSecret }}"
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1734885998565
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_66308328c32740d09e8a1cb9a8f586f9
+    parentId: fld_993ed2fecd4d49e3a77bd5101a0716bd
+    modified: 1734888053897
+    created: 1734887968337
+    url: "{{ _.apiGql }}"
+    name: MyFieldFetch
+    description: ""
+    method: POST
+    body:
+      mimeType: application/graphql
+      text: '{"query":"fragment UserModel on user
+        {\n\tid\n\ttitle\n\tdescription\n\thas_picture\n\tmy_vote\n\tscores
+        {\n\t\tsrc_score\n\t\tdst_score\n\t}\n}\n\nfragment BeaconModel on
+        beacon
+        {\n\tid\n\ttitle\n\tdescription\n\tcreated_at\n\tupdated_at\n\tis_pinned\n\tcontext\n\tenabled\n\ttimerange\n\thas_picture\n\tcomments_count\n\tmy_vote\n\tlong\n\tlat\n\tauthor
+        {\n\t\t...UserModel\n\t}\n\tscores
+        {\n\t\tsrc_score\n\t\tdst_score\n\t}\n}\n\nquery MyFieldFetch($context:
+        String = \"\") {\n\tmy_field(\n\t\targs: { context: $context
+        }\n\t\twhere: { beacon: { enabled: { _eq: true } } }\n\t\torder_by: {
+        dst_score: desc }\n\t) {\n\t\tbeacon
+        {\n\t\t\t...BeaconModel\n\t\t}\n\t\tdst_score\n\t\tsrc_score\n\t}\n}\n","operationName":"MyFieldFetch"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_498242e426d24af9a1039fe1da4ab76a
+      - id: pair_aed5e847b6f444b39e80abad13cf3ba8
+        name: x-hasura-admin-secret
+        value: "{{ _.hHasuraAdminSecret }}"
+        description: ""
+        disabled: false
+      - id: pair_2c013194531d49d8abc0e75a1fabb3c3
+        name: x-hasura-user-id
+        value: "{{ _.hHasuraUserId }}"
+        description: ""
+        disabled: false
+      - id: pair_6c6c1cb4f6d24275b4ce5ec54f9beabd
+        name: x-hasura-role
+        value: user
+        description: ""
+        disabled: false
+      - id: pair_b15d1da0162e4ba4a9bd9109b5a9dd92
+        name: x-hasura-query-context
+        value: ""
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1734887972628
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_993ed2fecd4d49e3a77bd5101a0716bd
+    parentId: fld_2ecb9577cf1c4677aa2ef97af1a80ce5
+    modified: 1734887953852
+    created: 1734887948037
+    name: My Field
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1734885998540
+    environmentType: kv
+    _type: request_group
+  - _id: req_89da23e8d7c8443cbdcdc40b5d88dad2
+    parentId: fld_993ed2fecd4d49e3a77bd5101a0716bd
+    modified: 1734888128285
+    created: 1734888101820
+    url: "{{ _.apiGql }}"
+    name: MyFieldFetch (Fatum)
+    description: ""
+    method: POST
+    body:
+      mimeType: application/graphql
+      text: '{"query":"fragment UserModel on user
+        {\n\tid\n\ttitle\n\tdescription\n\thas_picture\n\tmy_vote\n\tscores
+        {\n\t\tsrc_score\n\t\tdst_score\n\t}\n}\n\nfragment BeaconModel on
+        beacon
+        {\n\tid\n\ttitle\n\tdescription\n\tcreated_at\n\tupdated_at\n\tis_pinned\n\tcontext\n\tenabled\n\ttimerange\n\thas_picture\n\tcomments_count\n\tmy_vote\n\tlong\n\tlat\n\tauthor
+        {\n\t\t...UserModel\n\t}\n\tscores
+        {\n\t\tsrc_score\n\t\tdst_score\n\t}\n}\n\nquery MyFieldFetch($context:
+        String = \"\") {\n\tmy_field(\n\t\targs: { context: $context
+        }\n\t\twhere: { beacon: { enabled: { _eq: true } } }\n\t\torder_by: {
+        dst_score: desc }\n\t) {\n\t\tbeacon
+        {\n\t\t\t...BeaconModel\n\t\t}\n\t\tdst_score\n\t\tsrc_score\n\t}\n}\n","operationName":"MyFieldFetch","variables":"{\n\t\"context\":
+        \"Fatum\"\n}"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_498242e426d24af9a1039fe1da4ab76a
+      - id: pair_aed5e847b6f444b39e80abad13cf3ba8
+        name: x-hasura-admin-secret
+        value: "{{ _.hHasuraAdminSecret }}"
+        description: ""
+        disabled: false
+      - id: pair_2c013194531d49d8abc0e75a1fabb3c3
+        name: x-hasura-user-id
+        value: "{{ _.hHasuraUserId }}"
+        description: ""
+        disabled: false
+      - id: pair_6c6c1cb4f6d24275b4ce5ec54f9beabd
+        name: x-hasura-role
+        value: user
+        description: ""
+        disabled: false
+      - id: pair_b15d1da0162e4ba4a9bd9109b5a9dd92
+        name: x-hasura-query-context
+        value: Fatum
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1734887776822.5
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_6b0938769a65407eb3bc0616501d426f
+    parentId: fld_55fbcaa9827a45bbacf52b9972ca81d1
+    modified: 1734887730055
+    created: 1734887574667
+    url: "{{ _.apiGql }}"
+    name: GraphFetch
+    description: ""
+    method: POST
+    body:
+      mimeType: application/graphql
+      text: '{"query":"fragment UserModel on user
+        {\n\tid\n\ttitle\n\tdescription\n\thas_picture\n\tmy_vote\n\tscores
+        {\n\t\tsrc_score\n\t\tdst_score\n\t}\n}\n\nfragment BeaconModel on
+        beacon
+        {\n\tid\n\ttitle\n\tdescription\n\tcreated_at\n\tupdated_at\n\tis_pinned\n\tcontext\n\tenabled\n\ttimerange\n\thas_picture\n\tcomments_count\n\tmy_vote\n\tlong\n\tlat\n\tauthor
+        {\n\t\t...UserModel\n\t}\n\tscores
+        {\n\t\tsrc_score\n\t\tdst_score\n\t}\n}\n\nquery GraphFetch(\n\t$focus:
+        String = \"\"\n\t$context: String = \"\"\n\t$positive_only: Boolean =
+        true\n\t$offset: Int = 0\n\t$limit: Int = 5\n) {\n\tgraph(\n\t\targs:
+        {\n\t\t\tfocus: $focus,\n\t\t\tcontext: $context,\n\t\t\tpositive_only:
+        $positive_only\n\t\t}\n\t\torder_by: { src_score: desc }\n\t\toffset:
+        $offset\n\t\tlimit: $limit\n\t)
+        {\n\t\tsrc\n\t\tdst\n\t\tsrc_score\n\t\tdst_score\n\t\tuser
+        {\n\t\t\t...UserModel\n\t\t}\n\t}\n\tbeacon_by_pk(id: $focus)
+        {\n\t\t...BeaconModel\n\t}\n}\n","operationName":"GraphFetch","variables":"{\n\t\"context\":
+        \"\",\n\t\"focus\": \"Ud5b22ebf52f2\"\n}"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_498242e426d24af9a1039fe1da4ab76a
+      - id: pair_aed5e847b6f444b39e80abad13cf3ba8
+        name: x-hasura-admin-secret
+        value: "{{ _.hHasuraAdminSecret }}"
+        description: ""
+        disabled: false
+      - id: pair_2c013194531d49d8abc0e75a1fabb3c3
+        name: x-hasura-user-id
+        value: "{{ _.hHasuraUserId }}"
+        description: ""
+        disabled: false
+      - id: pair_6c6c1cb4f6d24275b4ce5ec54f9beabd
+        name: x-hasura-role
+        value: user
+        description: ""
+        disabled: false
+      - id: pair_b15d1da0162e4ba4a9bd9109b5a9dd92
+        name: x-hasura-query-context
+        value: ""
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1734887581017
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_55fbcaa9827a45bbacf52b9972ca81d1
+    parentId: fld_2ecb9577cf1c4677aa2ef97af1a80ce5
+    modified: 1734887514708
+    created: 1734887506571
+    name: Graph
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1734885998515
+    environmentType: kv
+    _type: request_group
+  - _id: req_55fe943463b847828ec078727e65641c
+    parentId: fld_55fbcaa9827a45bbacf52b9972ca81d1
+    modified: 1734887827947
+    created: 1734887816138
+    url: "{{ _.apiGql }}"
+    name: GraphFetch (Fatum)
+    description: ""
+    method: POST
+    body:
+      mimeType: application/graphql
+      text: '{"query":"fragment UserModel on user
+        {\n\tid\n\ttitle\n\tdescription\n\thas_picture\n\tmy_vote\n\tscores
+        {\n\t\tsrc_score\n\t\tdst_score\n\t}\n}\n\nfragment BeaconModel on
+        beacon
+        {\n\tid\n\ttitle\n\tdescription\n\tcreated_at\n\tupdated_at\n\tis_pinned\n\tcontext\n\tenabled\n\ttimerange\n\thas_picture\n\tcomments_count\n\tmy_vote\n\tlong\n\tlat\n\tauthor
+        {\n\t\t...UserModel\n\t}\n\tscores
+        {\n\t\tsrc_score\n\t\tdst_score\n\t}\n}\n\nquery GraphFetch(\n\t$focus:
+        String = \"\"\n\t$context: String = \"\"\n\t$positive_only: Boolean =
+        true\n\t$offset: Int = 0\n\t$limit: Int = 5\n) {\n\tgraph(\n\t\targs:
+        {\n\t\t\tfocus: $focus,\n\t\t\tcontext: $context,\n\t\t\tpositive_only:
+        $positive_only\n\t\t}\n\t\torder_by: { src_score: desc }\n\t\toffset:
+        $offset\n\t\tlimit: $limit\n\t)
+        {\n\t\tsrc\n\t\tdst\n\t\tsrc_score\n\t\tdst_score\n\t\tuser
+        {\n\t\t\t...UserModel\n\t\t}\n\t}\n\tbeacon_by_pk(id: $focus)
+        {\n\t\t...BeaconModel\n\t}\n}\n","operationName":"GraphFetch","variables":"{\n\t\"context\":
+        \"Fatum\",\n\t\"focus\": \"Ud5b22ebf52f2\"\n}"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_498242e426d24af9a1039fe1da4ab76a
+      - id: pair_aed5e847b6f444b39e80abad13cf3ba8
+        name: x-hasura-admin-secret
+        value: "{{ _.hHasuraAdminSecret }}"
+        description: ""
+        disabled: false
+      - id: pair_2c013194531d49d8abc0e75a1fabb3c3
+        name: x-hasura-user-id
+        value: "{{ _.hHasuraUserId }}"
+        description: ""
+        disabled: false
+      - id: pair_6c6c1cb4f6d24275b4ce5ec54f9beabd
+        name: x-hasura-role
+        value: user
+        description: ""
+        disabled: false
+      - id: pair_b15d1da0162e4ba4a9bd9109b5a9dd92
+        name: x-hasura-query-context
+        value: Fatum
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1734887401179.5
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_b16da22117f94a6db501e9c33012c8b3
+    parentId: fld_9f2f9020ed6949c79657ab0c859d8fe8
+    modified: 1734887221424
+    created: 1734886671341
+    url: "{{ _.apiGql }}"
+    name: RatingFetch
+    description: ""
+    method: POST
+    body:
+      mimeType: application/graphql
+      text: '{"query":"fragment UserModel on user
+        {\n  id\n  title\n  description\n  has_picture\n  my_vote\n  scores
+        {\n    src_score\n    dst_score\n  }\n}\n\nquery RatingFetch($context:
+        String = \"\") {\n  rating(args: {context: $context})
+        {\n    src_score\n    dst_score\n    user
+        {\n      ...UserModel\n    }\n  }\n}\n","operationName":"RatingFetch","variables":"{\"context\":
+        \"\"}"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_498242e426d24af9a1039fe1da4ab76a
+      - id: pair_aed5e847b6f444b39e80abad13cf3ba8
+        name: x-hasura-admin-secret
+        value: "{{ _.hHasuraAdminSecret }}"
+        description: ""
+        disabled: false
+      - id: pair_2c013194531d49d8abc0e75a1fabb3c3
+        name: x-hasura-user-id
+        value: Ub01f4ad1b03f
+        description: ""
+        disabled: false
+      - id: pair_6c6c1cb4f6d24275b4ce5ec54f9beabd
+        name: x-hasura-role
+        value: user
+        description: ""
+        disabled: false
+      - id: pair_f7c2bcd950ce47a68fb395fab4c57e7b
+        name: x-hasura-query-context
+        value: ""
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1734887221342
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_9f2f9020ed6949c79657ab0c859d8fe8
+    parentId: fld_2ecb9577cf1c4677aa2ef97af1a80ce5
+    modified: 1734887226447
+    created: 1734887205517
+    name: Rating
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1734885998465
+    environmentType: kv
+    _type: request_group
+  - _id: req_ee8c955377944a949f3a49b1d40bcb54
+    parentId: fld_9f2f9020ed6949c79657ab0c859d8fe8
+    modified: 1734887311952
+    created: 1734887295197
+    url: "{{ _.apiGql }}"
+    name: RatingFetch (Fatum)
+    description: ""
+    method: POST
+    body:
+      mimeType: application/graphql
+      text: '{"query":"fragment UserModel on user
+        {\n  id\n  title\n  description\n  has_picture\n  my_vote\n  scores
+        {\n    src_score\n    dst_score\n  }\n}\n\nquery RatingFetch($context:
+        String = \"\") {\n  rating(args: {context: $context})
+        {\n    src_score\n    dst_score\n    user
+        {\n      ...UserModel\n    }\n  }\n}\n","operationName":"RatingFetch","variables":"{\n\t\"context\":
+        \"Fatum\"\n}"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_498242e426d24af9a1039fe1da4ab76a
+      - id: pair_aed5e847b6f444b39e80abad13cf3ba8
+        name: x-hasura-admin-secret
+        value: "{{ _.hHasuraAdminSecret }}"
+        description: ""
+        disabled: false
+      - id: pair_2c013194531d49d8abc0e75a1fabb3c3
+        name: x-hasura-user-id
+        value: Ub01f4ad1b03f
+        description: ""
+        disabled: false
+      - id: pair_6c6c1cb4f6d24275b4ce5ec54f9beabd
+        name: x-hasura-role
+        value: user
+        description: ""
+        disabled: false
+      - id: pair_f7c2bcd950ce47a68fb395fab4c57e7b
+        name: x-hasura-query-context
+        value: Fatum
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1734886633365
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_244eb3c220424dc78e3d3186d93c449e
+    parentId: fld_284f30f65827497fbc8abe469e3cca49
+    modified: 1734888568224
+    created: 1734885991876
+    url: "{{ _.baseUrl }}/shared/view"
+    name: Link to user
+    description: ""
+    method: GET
+    body: {}
+    parameters:
+      - id: pair_82f73ba5679540f9be681592e60c0845
+        name: id
+        value: Ub01f4ad1b03f
+        description: ""
+        disabled: false
+    headers:
+      - id: pair_52b18d62238f4b5e9ea1ed142ef33ac2
+        name: ""
+        value: ""
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1734888212000
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_284f30f65827497fbc8abe469e3cca49
+    parentId: wrk_5bb1bdadc54b4189a787a9e3ad2a4370
+    modified: 1734888207755
+    created: 1734888199595
+    name: Preview
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1734885991776
+    environmentType: kv
+    _type: request_group
+  - _id: req_091a4025436945978ec563452f0a0074
+    parentId: fld_284f30f65827497fbc8abe469e3cca49
+    modified: 1734888530012
+    created: 1734888530012
+    url: "{{ _.baseUrl }}/shared/view"
+    name: Link to beacon
+    description: ""
+    method: GET
+    body: {}
+    parameters:
+      - id: pair_82f73ba5679540f9be681592e60c0845
+        name: id
+        value: B7fbe3633b4b0
+        description: ""
+        disabled: false
+    headers:
+      - id: pair_52b18d62238f4b5e9ea1ed142ef33ac2
+        name: ""
+        value: ""
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1734888092314
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_2bbfa61a4cd506602ccabd00dc5eb9821ddb5e35
+    parentId: wrk_5bb1bdadc54b4189a787a9e3ad2a4370
+    modified: 1734887086685
+    created: 1734885441982
+    name: Base Environment
+    data:
+      hHasuraAdminSecret: ""
+      hHasuraUserId: ""
+      hHasuraRole: user
+      baseUrl: https://tentura.intersubjective.space
+      apiGql: "{{ _.baseUrl }}/api/v1/graphql"
+    dataPropertyOrder: null
+    color: null
+    isPrivate: false
+    metaSortKey: 1734885441982
+    environmentType: kv
+    kvPairData:
+      - id: envPair_5be5dc349466478ba42b11a11e45f1b8
+        name: hHasuraAdminSecret
+        value: ""
+        type: str
+        enabled: true
+      - id: envPair_543ce22612ff43a59d269c97393fac87
+        name: hHasuraUserId
+        value: ""
+        type: str
+        enabled: true
+      - id: envPair_567b8873338d47bb9a84fba586ec3f5f
+        name: hHasuraRole
+        value: user
+        type: str
+        enabled: true
+      - id: envPair_38d2d516f57d4a11943793c707530526
+        name: baseUrl
+        value: https://tentura.intersubjective.space
+        type: str
+        enabled: true
+      - id: envPair_269f75b55fe5412d8edbfedc8a2cf2ad
+        name: apiGql
+        value: "{{ _.baseUrl }}/api/v1/graphql"
+        type: str
+        enabled: true
+    _type: environment
+  - _id: jar_2bbfa61a4cd506602ccabd00dc5eb9821ddb5e35
+    parentId: wrk_5bb1bdadc54b4189a787a9e3ad2a4370
+    modified: 1734885441990
+    created: 1734885441990
+    name: Default Jar
+    cookies: []
+    _type: cookie_jar
+  - _id: env_45c6a71c074d4528a73850dec91fdfe9
+    parentId: env_2bbfa61a4cd506602ccabd00dc5eb9821ddb5e35
+    modified: 1734887080039
+    created: 1734885520536
+    name: Prod
+    data:
+      hHasuraAdminSecret: password
+      hHasuraUserId: Ub01f4ad1b03f
+    dataPropertyOrder: null
+    color: null
+    isPrivate: false
+    metaSortKey: 1734885520536
+    environmentType: kv
+    kvPairData:
+      - id: envPair_5708a0cef17545e9a8e34e7eb9de5c2d
+        name: hHasuraAdminSecret
+        value: password
+        type: str
+        enabled: true
+      - id: envPair_bfb7225cd952432292f6fda3f8f77f03
+        name: hHasuraUserId
+        value: Ub01f4ad1b03f
+        type: str
+        enabled: true
+    _type: environment

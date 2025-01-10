@@ -7,6 +7,7 @@
         {
             "name": "tentura (debug)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
@@ -19,6 +20,7 @@
         {
             "name": "tentura-web (debug)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
@@ -34,6 +36,7 @@
         {
             "name": "tentura-wasm (debug)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
@@ -51,6 +54,7 @@
         {
             "name": "tentura-stage (debug)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
@@ -63,6 +67,7 @@
         {
             "name": "tentura (profile)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "profile",
             "toolArgs": [
@@ -75,6 +80,7 @@
         {
             "name": "tentura (release)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "release",
             "toolArgs": [
@@ -87,6 +93,7 @@
         {
             "name": "tentura-wasm (release)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "release",
             "toolArgs": [
@@ -104,7 +111,7 @@
         {
             "name": "tentura (widgetbook)",
             "request": "launch",
-            "program": "widgetbook/lib/main.dart",
+            "cwd": "packages/widgetbook",
             "type": "dart",
             "toolArgs": [
                 "--dart-define",
@@ -115,6 +122,34 @@
                 "--web-port", "8888",
                 "--web-browser-flag=--disable-web-security",
             ]
+        },
+        {
+            "console": "debugConsole",
+            "cwd": "packages/server",
+            "name": "tentura-server",
+            "program":"bin/main.dart",
+            "request": "launch",
+            "type": "dart",
+            "env": {
+                "DEBUG_MODE": "true",
+                "LISTEN_PORT": "2082",
+                "SERVER_NAME": "https://tentura.intersubjective.space",
+                "IMAGE_SERVER": "https://tentura.intersubjective.space",
+            },
+        },
+        {
+            "console": "debugConsole",
+            "cwd": "packages/server",
+            "name": "tentura-server (test)",
+            "program":"bin/test.dart",
+            "request": "launch",
+            "type": "dart",
+            "env": {
+                "DEBUG_MODE": "true",
+                "LISTEN_PORT": "2082",
+                "SERVER_NAME": "https://tentura-stage.intersubjective.space",
+                "IMAGE_SERVER": "https://tentura-stage.intersubjective.space",
+            },
         },
   ]
 }

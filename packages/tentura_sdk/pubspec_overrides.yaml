@@ -1,0 +1,4 @@
+dependency_overrides:
+  adaptive_number:
+    git:
+      url: https://github.com/alexandrim0/adaptive_number_dart.git

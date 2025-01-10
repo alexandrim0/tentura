@@ -1,19 +1,23 @@
-# Tentura
+## Installation
 
-Social network based on MeritRank
+1. Set secrets described in `compose.yaml` in `.env` file
+2. If need, copy `compose.override.yaml` from `examples` and modify it
+3. Run containers (docker compose up -d)
+4. `chown nobody:nogroup /etc/nginx/cert`(acme.autossl cert storage)
+5. apply SQL commands in `hasura/schema.sql` to Postgres (Hasura schema and MeritRank-related triggers)
+6. upload `hasura/metadata.json` in Hasura console
 
-## How to build
 
-Tentura uses GraphQL codegen. So, before building the project as usual,
-        run the codegenerator:
+## Development
 
-```bash
-dart run build_runner build -d
+1. Run `./openresty/scripts/create_cert_and_keys.sh`
+2. Build images (docker build --no-cache -t vbulavintsev/openresty-tentura:vX.Y.Z .)
 
-```
 
-To make database scheme diff run:
+## Backup and restore data
 
-```
-dart run drift_dev schema dump lib/data/database/database.dart drift_schemas/
-```
+backup schema and data:
+`docker exec -t postgres pg_dump --inserts -U postgres --schema public > dump_all.sql`
+
+restore:
+`cat dump_all.sql | docker exec -i postgres psql -U postgres`
