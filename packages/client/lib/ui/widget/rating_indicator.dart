@@ -10,10 +10,11 @@ class RatingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return CustomPaint(
       painter: _RatingPainter(
-        activeColor: Theme.of(context).colorScheme.primary,
-        passiveColor: Theme.of(context).colorScheme.surfaceBright,
+        activeColor: colorScheme.primary,
+        passiveColor: colorScheme.surfaceBright,
         score: score,
       ),
       size: const Size.square(24),
@@ -69,5 +70,5 @@ class _RatingPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 
-  static const _sector = 1 / 3;
+  static const _sector = 100 / 4;
 }

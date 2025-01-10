@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
+import 'package:tentura/ui/utils/ui_utils.dart';
 
 import '../utils/asset_package.dart';
 import 'cached_image/cached_image.dart';
@@ -37,7 +38,7 @@ class AvatarRated extends StatelessWidget {
       fit: boxFit,
     );
     final avatar = Padding(
-      padding: const EdgeInsets.all(6),
+      padding: kPaddingAllS,
       child: ClipOval(
         child: profile.hasAvatar
             ? CachedImage(
@@ -113,7 +114,7 @@ class _RatingPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 
-  static const _sector = 1 / 3;
+  static const _sector = 100 / 4;
 
   static double _degreeToRadians(double degree) => (pi / 180) * degree;
 }

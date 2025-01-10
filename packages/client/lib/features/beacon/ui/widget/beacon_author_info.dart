@@ -24,7 +24,7 @@ class BeaconAuthorInfo extends StatelessWidget {
         children: [
           // Avatar
           Padding(
-            padding: const EdgeInsets.only(right: kSpacingSmall),
+            padding: kPaddingAllS,
             child: AvatarRated(profile: author),
           ),
 
