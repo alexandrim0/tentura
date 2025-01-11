@@ -1,5 +1,5 @@
 {
-  "resource_version": 393,
+  "resource_version": 417,
   "metadata": {
     "version": 3,
     "sources": [
@@ -118,7 +118,6 @@
                 "role": "user",
                 "permission": {
                   "columns": [
-                    "comments_count",
                     "context",
                     "created_at",
                     "description",
@@ -1125,7 +1124,7 @@
         ],
         "configuration": {
           "connection_info": {
-            "database_url": "postgres://postgres:password@postgres:5432/postgres",
+            "database_url": "postgres://postgres:cd32ddbbKyLE9caakp331@postgres:5432/postgres",
             "isolation_level": "read-committed",
             "use_prepared_statements": false
           }
