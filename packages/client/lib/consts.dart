@@ -14,8 +14,6 @@ const kMaxLines = 3;
 
 const kAppTitle = 'Tentura';
 
-const kZeroNodeId = 'U000000000000';
-
 const kSettingsThemeMode = 'themeMode';
 
 const kSettingsIsIntroEnabledKey = 'isIntroEnabled';
