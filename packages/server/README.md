@@ -1,5 +1,6 @@
 ## Build server
 
+  `dart run build_runner build -d`
   `dart compile exe bin/main.dart -o bin/server`
 
 ## Build docker image
