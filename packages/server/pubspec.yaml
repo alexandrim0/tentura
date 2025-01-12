@@ -21,7 +21,7 @@ dependencies:
   injectable:
   freezed_annotation:
 
-  jaspr: ^0.16.3
+  jaspr: ^0.17.0
   # build_runner (stormberry) fails after 3.4.4
   postgres: 3.4.4
   shelf_plus: ^1.10.0
@@ -36,8 +36,7 @@ dev_dependencies:
   injectable_generator:
 
   test: ^1.25.8
-  # use this version until PR is not merged
-  jaspr_builder: ^0.16.3
+  jaspr_builder: ^0.17.0
   build_web_compilers: ^4.1.0
 
 jaspr:
