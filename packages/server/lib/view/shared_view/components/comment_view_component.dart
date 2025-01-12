@@ -1,6 +1,7 @@
 import 'package:jaspr/server.dart';
 
 import 'package:tentura_server/domain/entity/comment_entity.dart';
+import 'package:tentura_server/view/shared_view/styles/shared_view_styles.dart';
 
 class CommentViewComponent extends StatelessComponent {
   const CommentViewComponent({
@@ -47,7 +48,7 @@ class CommentViewComponent extends StatelessComponent {
                       ),
                       Styles.box(
                         margin: EdgeInsets.only(
-                          bottom: Unit.pixels(12),
+                          bottom: kEdgeInsetsSXS,
                         ),
                       )
                     ],
@@ -61,8 +62,8 @@ class CommentViewComponent extends StatelessComponent {
               ],
               styles: const Styles.box(
                 margin: EdgeInsets.only(
-                  left: Unit.pixels(16),
-                  top: Unit.pixels(4),
+                  left: kEdgeInsetsM,
+                  top: kEdgeInsetsXS,
                 ),
               ),
             ),
@@ -79,10 +80,10 @@ class CommentViewComponent extends StatelessComponent {
               ),
               Styles.box(
                 padding: EdgeInsets.only(
-                  left: Unit.pixels(16),
-                  right: Unit.pixels(16),
-                  bottom: Unit.pixels(24),
-                  top: Unit.pixels(8),
+                  left: kEdgeInsetsM,
+                  right: kEdgeInsetsM,
+                  bottom: kEdgeInsetsMS,
+                  top: kEdgeInsetsSXS,
                 ),
               ),
               Styles.background(

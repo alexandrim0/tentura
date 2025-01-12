@@ -1,6 +1,7 @@
 import 'package:jaspr/server.dart';
 
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
+import 'package:tentura_server/view/shared_view/styles/shared_view_styles.dart';
 
 import 'avatar_component.dart';
 
@@ -38,7 +39,7 @@ class BeaconViewComponent extends StatelessComponent {
               ],
               styles: const Styles.box(
                 margin: EdgeInsets.only(
-                  top: Unit.pixels(24),
+                  top: kEdgeInsetsMS,
                 ),
               ),
             ),
@@ -49,7 +50,7 @@ class BeaconViewComponent extends StatelessComponent {
                 ],
                 styles: const Styles.box(
                   margin: EdgeInsets.only(
-                    top: Unit.pixels(16),
+                    top: kEdgeInsetsMS,
                   ),
                 ),
               ),
@@ -59,10 +60,10 @@ class BeaconViewComponent extends StatelessComponent {
                   text(beacon.coordinates.toString()),
                 ],
                 classes: 'secondary-text',
-                styles: const Styles.box(
+                styles: Styles.box(
                   margin: EdgeInsets.only(
-                    top: Unit.pixels(16),
-                    bottom: Unit.pixels(8),
+                    top: kEdgeInsetsSXS,
+                    bottom: beacon.timerange != null ? kEdgeInsetsS : Unit.zero,
                   ),
                 ),
               ),
@@ -72,6 +73,12 @@ class BeaconViewComponent extends StatelessComponent {
                   text(beacon.timerange.toString()),
                 ],
                 classes: 'secondary-text',
+                styles: Styles.box(
+                  margin: EdgeInsets.only(
+                    top:
+                        beacon.coordinates != null ? Unit.zero : kEdgeInsetsSXS,
+                  ),
+                ),
               ),
           ],
           classes: 'card-container',
