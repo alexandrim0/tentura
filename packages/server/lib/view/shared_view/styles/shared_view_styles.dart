@@ -11,6 +11,12 @@ const kThemeDarkFontMain = Color.hex('#F6FDFE');
 const kThemeDarkBoxShadow = Color.hex('#1F1D37');
 const kThemeDarkCommentBg = Color.hex('#3c4055');
 
+const kEdgeInsetsXS = Unit.pixels(4);
+const kEdgeInsetsS = Unit.pixels(8);
+const kEdgeInsetsSXS = Unit.pixels(12);
+const kEdgeInsetsM = Unit.pixels(16);
+const kEdgeInsetsMS = Unit.pixels(24);
+
 final defaultStyles = [
   css(':root').raw({
     '--background-color-purple': kThemeLightPurple.value,
@@ -79,10 +85,10 @@ final defaultStyles = [
           ),
       css('&-container').box(
         padding: const EdgeInsets.only(
-          left: Unit.pixels(16),
-          right: Unit.pixels(16),
-          bottom: Unit.pixels(24),
-          top: Unit.pixels(24),
+          left: kEdgeInsetsM,
+          right: kEdgeInsetsM,
+          bottom: kEdgeInsetsMS,
+          top: kEdgeInsetsMS,
         ),
       ),
     ],
