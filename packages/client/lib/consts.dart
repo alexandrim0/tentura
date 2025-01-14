@@ -8,6 +8,8 @@ const kTitleMaxLength = 32;
 
 const kDescriptionLength = 2_048;
 
+const kRatingSector = 100 / 4;
+
 const kCommentsShown = 3;
 
 const kMaxLines = 3;

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:tentura/consts.dart';
+
 class RatingIndicator extends StatelessWidget {
   const RatingIndicator({
     required this.score,
@@ -53,22 +55,20 @@ class _RatingPainter extends CustomPainter {
       ..drawLine(
         const Offset(4, 4),
         const Offset(20, 4),
-        score > _sector * 2 ? activePaint : passivePaint,
+        score > kRatingSector * 3 ? activePaint : passivePaint,
       )
       ..drawLine(
         const Offset(4, 12),
         const Offset(20, 12),
-        score > _sector ? activePaint : passivePaint,
+        score > kRatingSector * 2 ? activePaint : passivePaint,
       )
       ..drawLine(
         const Offset(4, 20),
         const Offset(20, 20),
-        score > 0 ? activePaint : passivePaint,
+        score > kRatingSector ? activePaint : passivePaint,
       );
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-
-  static const _sector = 100 / 4;
 }
