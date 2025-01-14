@@ -1,8 +1,6 @@
-# resolution:
 dependency_overrides:
-  # use this version until PR is not merged
-  jaspr:
+  stormberry:
     git:
-      url: https://github.com/alexandrim0/jaspr.git
-      ref: dark_theme
-      path: packages/jaspr
+      url: https://github.com/alexandrim0/stormberry.git
+      ref: upgrade_postgres
+

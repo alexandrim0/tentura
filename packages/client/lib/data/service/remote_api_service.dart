@@ -17,7 +17,7 @@ class RemoteApiService extends TenturaApi {
 
   RemoteApiService({
     super.storagePath = '',
-    super.userAgent = kAppTitle,
+    super.userAgent = kUserAgent,
     super.isDebugMode = kDebugMode,
     super.apiUrlBase = kAppLinkBase,
     super.jwtExpiresIn = kJwtExpiresIn,

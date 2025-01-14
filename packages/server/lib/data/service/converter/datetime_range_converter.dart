@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:stormberry/stormberry.dart' as sb;
 
 import 'package:tentura_server/domain/entity/date_time_range.dart';
@@ -17,17 +18,24 @@ class DateTimeRangeConverter extends sb.TypeConverter<DateTimeRange> {
 
   @override
   DateTimeRange decode(dynamic value) {
-    if (value is sb.DateTimeRange) {
-      return DateTimeRange(
-        start: value.lower,
-        end: value.upper,
-      );
-    } else {
-      final m = RegExp(r'\["(.+)","(.+)"\]').firstMatch(value.toString());
-      return DateTimeRange(
-        start: DateTime.parse(m!.group(1)!),
-        end: DateTime.parse(m.group(2)!),
-      );
+    switch (value) {
+      case final String value:
+        final json = jsonDecode(value) as List;
+        return DateTimeRange(
+          start: DateTime.parse(json.first as String),
+          end: DateTime.parse(json.last as String),
+        );
+
+      case final sb.DateTimeRange value:
+        return DateTimeRange(
+          start: value.lower,
+          end: value.upper,
+        );
+
+      default:
+        throw const FormatException(
+          'Wrong DateTimeRange value to decode!',
+        );
     }
   }
 }

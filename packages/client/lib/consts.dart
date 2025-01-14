@@ -8,13 +8,13 @@ const kTitleMaxLength = 32;
 
 const kDescriptionLength = 2_048;
 
+const kRatingSector = 100 / 4;
+
 const kCommentsShown = 3;
 
 const kMaxLines = 3;
 
-const kAppTitle = 'Tentura';
-
-const kZeroNodeId = 'U000000000000';
+const kUserAgent = 'Tentura';
 
 const kSettingsThemeMode = 'themeMode';
 

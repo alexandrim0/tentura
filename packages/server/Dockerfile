@@ -1,24 +1,24 @@
 FROM dart:stable AS build
 
-# WORKDIR /app
+WORKDIR /app
 
-# COPY pubspec* ./
+COPY *.yaml ./
 
-# RUN dart pub get
+RUN echo "resolution:" >> pubspec_overrides.yaml && dart pub get
 
-# COPY ./ ./
+COPY ./bin ./bin
 
-# RUN dart pub get --offline
+COPY ./lib ./lib
 
-# RUN dart compile exe bin/main.dart -o bin/server
+RUN dart run build_runner build -d
+
+RUN dart compile exe bin/main.dart -o bin/server
 
 FROM scratch
 
 COPY --from=build /runtime/ /
 
-# COPY --from=build /app/bin/server /
-
-COPY ./bin/server /
+COPY --from=build /app/bin/server /
 
 EXPOSE 2080/tcp
 

@@ -66,7 +66,7 @@ class SharedViewDocument extends StatelessComponent {
 
   Document _buildDocument({
     required List<Component> body,
-    Map<String, String>? meta,
+    required Map<String, String> meta,
   }) =>
       Document(
         title: kAppTitle,

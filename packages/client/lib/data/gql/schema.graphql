@@ -55,7 +55,6 @@ type beacon {
     """filter the rows returned"""
     where: comment_bool_exp
   ): [comment!]!
-  comments_count: Int!
   context: String
   created_at: timestamptz!
   description: String!
@@ -139,7 +138,6 @@ input beacon_aggregate_order_by {
 order by avg() on columns of table "beacon"
 """
 input beacon_avg_order_by {
-  comments_count: order_by
   lat: order_by
   long: order_by
 }
@@ -154,7 +152,6 @@ input beacon_bool_exp {
   author: user_bool_exp
   beacon_pinneds: beacon_pinned_bool_exp
   comments: comment_bool_exp
-  comments_count: Int_comparison_exp
   context: String_comparison_exp
   created_at: timestamptz_comparison_exp
   description: String_comparison_exp
@@ -203,7 +200,6 @@ input beacon_insert_input {
 order by max() on columns of table "beacon"
 """
 input beacon_max_order_by {
-  comments_count: order_by
   context: order_by
   created_at: order_by
   description: order_by
@@ -219,7 +215,6 @@ input beacon_max_order_by {
 order by min() on columns of table "beacon"
 """
 input beacon_min_order_by {
-  comments_count: order_by
   context: order_by
   created_at: order_by
   description: order_by
@@ -266,7 +261,6 @@ input beacon_order_by {
   author: user_order_by
   beacon_pinneds_aggregate: beacon_pinned_aggregate_order_by
   comments_aggregate: comment_aggregate_order_by
-  comments_count: order_by
   context: order_by
   created_at: order_by
   description: order_by
@@ -438,9 +432,6 @@ select columns of table "beacon"
 """
 enum beacon_select_column {
   """column name"""
-  comments_count
-
-  """column name"""
   context
 
   """column name"""
@@ -488,7 +479,6 @@ input beacon_set_input {
 order by stddev() on columns of table "beacon"
 """
 input beacon_stddev_order_by {
-  comments_count: order_by
   lat: order_by
   long: order_by
 }
@@ -497,7 +487,6 @@ input beacon_stddev_order_by {
 order by stddev_pop() on columns of table "beacon"
 """
 input beacon_stddev_pop_order_by {
-  comments_count: order_by
   lat: order_by
   long: order_by
 }
@@ -506,7 +495,6 @@ input beacon_stddev_pop_order_by {
 order by stddev_samp() on columns of table "beacon"
 """
 input beacon_stddev_samp_order_by {
-  comments_count: order_by
   lat: order_by
   long: order_by
 }
@@ -524,7 +512,6 @@ input beacon_stream_cursor_input {
 
 """Initial value of the column from where the streaming should start"""
 input beacon_stream_cursor_value_input {
-  comments_count: Int
   context: String
   created_at: timestamptz
   description: String
@@ -543,7 +530,6 @@ input beacon_stream_cursor_value_input {
 order by sum() on columns of table "beacon"
 """
 input beacon_sum_order_by {
-  comments_count: order_by
   lat: order_by
   long: order_by
 }
@@ -568,7 +554,6 @@ input beacon_updates {
 order by var_pop() on columns of table "beacon"
 """
 input beacon_var_pop_order_by {
-  comments_count: order_by
   lat: order_by
   long: order_by
 }
@@ -577,7 +562,6 @@ input beacon_var_pop_order_by {
 order by var_samp() on columns of table "beacon"
 """
 input beacon_var_samp_order_by {
-  comments_count: order_by
   lat: order_by
   long: order_by
 }
@@ -586,7 +570,6 @@ input beacon_var_samp_order_by {
 order by variance() on columns of table "beacon"
 """
 input beacon_variance_order_by {
-  comments_count: order_by
   lat: order_by
   long: order_by
 }

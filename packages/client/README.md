@@ -8,6 +8,8 @@ Tentura uses GraphQL codegen. So, before building the project as usual,
         run the codegenerator:
 
 ```bash
+flutter gen-l10n
+
 dart run build_runner build -d
 
 ```

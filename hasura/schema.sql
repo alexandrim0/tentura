@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 16.4
--- Dumped by pg_dump version 16.4
+-- Dumped from database version 16.6
+-- Dumped by pg_dump version 16.6
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -50,7 +50,6 @@ CREATE TABLE public.beacon (
     timerange tstzrange,
     enabled boolean DEFAULT true NOT NULL,
     has_picture boolean DEFAULT false NOT NULL,
-    comments_count integer DEFAULT 0 NOT NULL,
     lat double precision,
     long double precision,
     context text,
@@ -120,8 +119,8 @@ CREATE FUNCTION public.beacon_get_scores(beacon_row public.beacon, hasura_sessio
 SELECT
   src,
   dst,
-  score_of_src AS src_score,
-  score_of_dst AS dst_score
+  score_cluster_of_src AS src_score,
+  score_cluster_of_dst AS dst_score
 FROM mr_node_score(
   hasura_session ->> 'x-hasura-user-id',
   beacon_row.id,
@@ -172,8 +171,8 @@ CREATE FUNCTION public.comment_get_scores(comment_row public.comment, hasura_ses
 SELECT
   src,
   dst,
-  score_of_src AS src_score,
-  score_of_dst AS dst_score
+  score_cluster_of_src AS src_score,
+  score_cluster_of_dst AS dst_score
 FROM mr_node_score(
     hasura_session ->> 'x-hasura-user-id',
     comment_row.id,
@@ -218,13 +217,13 @@ CREATE FUNCTION public.graph(focus text, context text, positive_only boolean, ha
 SELECT
   src,
   dst,
-  score_of_src AS src_score,
-  score_of_dst AS dst_score
+  score_cluster_of_ego AS src_score,
+  score_cluster_of_dst AS dst_score
 FROM
   mr_graph(
     hasura_session ->> 'x-hasura-user-id',
     focus,
-    context,
+    COALESCE(context,hasura_session ->> 'x-hasura-query-context'),
     positive_only,
     0,
     100
@@ -266,15 +265,6 @@ DECLARE
   _count integer := 0;
   _total integer := 0;
 BEGIN
-  -- Edge from User to Zero
-  SELECT count(*) INTO STRICT _count FROM (
-    SELECT mr_put_edge(edges.src, edges.dst, 1, '') FROM (
-      SELECT "user".id AS src,
-        'U000000000000' AS dst
-      FROM "user" WHERE ("user".id <> 'U000000000000'::text)
-    ) AS edges);
-  _total := _count;
-
   -- Edge from User to User (votes)
   SELECT count(*) INTO STRICT _count FROM (
     SELECT mr_put_edge(edges.src, edges.dst, edges.amount, '') FROM (
@@ -370,13 +360,13 @@ CREATE FUNCTION public.my_field(context text, hasura_session json) RETURNS SETOF
 SELECT
   src,
   dst,
-  score_of_src AS src_score,
-  score_of_dst AS dst_score
+  score_cluster_of_src AS src_score,
+  score_cluster_of_dst AS dst_score
 FROM
   mr_scores(
     hasura_session ->> 'x-hasura-user-id',
     true,
-    context,
+    COALESCE(context,hasura_session ->> 'x-hasura-query-context'),
     'B',
     null,
     null,
@@ -455,25 +445,6 @@ $$;
 
 ALTER FUNCTION public.notify_meritrank_context_mutation() OWNER TO postgres;
 
---
--- Name: notify_meritrank_user_mutation(); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.notify_meritrank_user_mutation() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-    IF (TG_OP = 'INSERT') THEN
-        PERFORM mr_put_edge(NEW.id, 'U000000000000', 1::double precision, ''::text);
-    ELSIF (TG_OP = 'DELETE') THEN
-        PERFORM mr_delete_edge(OLD.id, 'U000000000000', ''::text);
-    END IF;
-  RETURN NEW;
-END;
-$$;
-
-
-ALTER FUNCTION public.notify_meritrank_user_mutation() OWNER TO postgres;
 
 --
 -- Name: notify_meritrank_vote_beacon_mutation(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -553,9 +524,12 @@ CREATE FUNCTION public.rating(context text, hasura_session json) RETURNS SETOF p
 SELECT
     src,
     dst,
-    score_of_src AS src_score,
-    score_of_dst AS dst_score
-FROM mr_mutual_scores(hasura_session->>'x-hasura-user-id', context);
+    score_cluster_of_src AS src_score,
+    score_cluster_of_dst AS dst_score
+FROM mr_mutual_scores(
+    hasura_session->>'x-hasura-user-id',
+    COALESCE(context,hasura_session ->> 'x-hasura-query-context')
+);
 $$;
 
 
@@ -665,8 +639,8 @@ CREATE FUNCTION public.user_get_scores(user_row public."user", hasura_session js
 SELECT
   src,
   dst,
-  score_of_src AS src_score,
-  score_of_dst AS dst_score
+  score_cluster_of_src AS src_score,
+  score_cluster_of_dst AS dst_score
 FROM mr_node_score(
     hasura_session ->> 'x-hasura-user-id',
     user_row.id,
@@ -776,12 +750,6 @@ CREATE TABLE public.vote_user (
 
 
 ALTER TABLE public.vote_user OWNER TO postgres;
-
---
--- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-INSERT INTO public."user" VALUES ('U000000000000', '2023-12-20 23:37:34.043065+00', '2024-07-23 22:35:05.950428+00', 'Tentura', 'Kind a black hole', true, 'nologin');
 
 --
 -- Name: beacon_pinned beacon_pinned_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -925,13 +893,6 @@ CREATE TRIGGER notify_meritrank_comment_mutation AFTER INSERT OR DELETE ON publi
 --
 
 CREATE TRIGGER notify_meritrank_context_mutation AFTER INSERT ON public.user_context FOR EACH ROW EXECUTE FUNCTION public.notify_meritrank_context_mutation();
-
-
---
--- Name: user notify_meritrank_user_mutation; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER notify_meritrank_user_mutation AFTER INSERT OR DELETE ON public."user" FOR EACH ROW EXECUTE FUNCTION public.notify_meritrank_user_mutation();
 
 
 --
