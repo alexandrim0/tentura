@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-import 'package:tentura/consts.dart';
 import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/i10n/app_localizations.dart';
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/theme.dart';
@@ -39,11 +39,12 @@ class App extends StatelessWidget {
       builder: (context, themeMode) {
         final router = GetIt.I<RootRouter>();
         return MaterialApp.router(
-          title: kAppTitle,
+          title: 'Tentura',
           theme: themeLight,
           darkTheme: themeDark,
           themeMode: themeMode,
           debugShowCheckedModeBanner: false,
+          onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
           routerConfig: router.config(
             deepLinkBuilder: router.deepLinkBuilder,
             deepLinkTransformer: router.deepLinkTransformer,
@@ -52,6 +53,8 @@ class App extends StatelessWidget {
             ],
             reevaluateListenable: router.reevaluateListenable,
           ),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           builder: (context, child) {
             if (child == null) return const SizedBox();
             final media = MediaQuery.of(context);

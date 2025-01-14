@@ -14,7 +14,7 @@ const kCommentsShown = 3;
 
 const kMaxLines = 3;
 
-const kAppTitle = 'Tentura';
+const kUserAgent = 'Tentura';
 
 const kSettingsThemeMode = 'themeMode';
 

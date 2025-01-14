@@ -95,7 +95,7 @@ class _ChooseLocationDialogState extends State<ChooseLocationDialog> {
             children: [
               TileLayer(
                 urlTemplate: kOsmUrlTemplate,
-                userAgentPackageName: kAppTitle,
+                userAgentPackageName: kUserAgent,
                 tileProvider: CancellableNetworkTileProvider(
                   silenceExceptions: true,
                 ),

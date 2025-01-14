@@ -7,6 +7,7 @@ part 'settings_state.freezed.dart';
 @freezed
 class SettingsState with _$SettingsState, StateFetchMixin {
   const factory SettingsState({
+    @Default('en') String locale,
     @Default(true) bool introEnabled,
     @Default(ThemeMode.system) ThemeMode themeMode,
     @Default(FetchStatus.isSuccess) FetchStatus status,
