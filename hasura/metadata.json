@@ -1124,7 +1124,7 @@
         ],
         "configuration": {
           "connection_info": {
-            "database_url": "postgres://postgres:cd32ddbbKyLE9caakp331@postgres:5432/postgres",
+            "database_url": "postgres://postgres:password@postgres:5432/postgres",
             "isolation_level": "read-committed",
             "use_prepared_statements": false
           }
