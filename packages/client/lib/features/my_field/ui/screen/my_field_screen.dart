@@ -60,19 +60,22 @@ class MyFieldScreen extends StatelessWidget implements AutoRouteWrapper {
                       child: CircularProgressIndicator.adaptive(),
                     );
                   }
-                  return ListView.separated(
-                    itemCount: state.beacons.length,
-                    separatorBuilder: (_, __) => const Divider(),
-                    itemBuilder: (context, i) {
-                      final beacon = state.beacons[i];
-                      return Padding(
-                        padding: kPaddingV,
-                        child: BeaconTile(
-                          beacon: beacon,
-                          key: ValueKey(beacon),
-                        ),
-                      );
-                    },
+                  return RefreshIndicator.adaptive(
+                    onRefresh: context.read<MyFieldCubit>().fetch,
+                    child: ListView.separated(
+                      itemCount: state.beacons.length,
+                      separatorBuilder: (_, __) => const Divider(),
+                      itemBuilder: (context, i) {
+                        final beacon = state.beacons[i];
+                        return Padding(
+                          padding: kPaddingV,
+                          child: BeaconTile(
+                            beacon: beacon,
+                            key: ValueKey(beacon),
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
               ),
