@@ -47,7 +47,7 @@ class HomeScreen extends StatelessWidget {
                 label: 'Favorites',
               ),
               NavigationDestination(
-                icon: Icon(Icons.cable),
+                icon: Icon(TenturaIcons.affiliation),
                 label: 'Connect',
               ),
               // NavigationDestination(

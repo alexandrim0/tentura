@@ -129,8 +129,6 @@ class RootRouter extends RootStackRouter {
 
         // Profile View
         AutoRoute(
-          keepHistory: false,
-          maintainState: false,
           path: pathProfileView,
           page: ProfileViewRoute.page,
           guards: [
@@ -158,30 +156,22 @@ class RootRouter extends RootStackRouter {
 
         // Beacon View
         AutoRoute(
-          keepHistory: false,
-          maintainState: false,
           path: pathBeaconView,
           page: BeaconViewRoute.page,
         ),
 
         // Rating
         AutoRoute(
-          keepHistory: false,
-          maintainState: false,
           page: RatingRoute.page,
         ),
 
         // Graph
         AutoRoute(
-          keepHistory: false,
-          maintainState: false,
           page: GraphRoute.page,
         ),
 
         // Chat
         AutoRoute(
-          keepHistory: false,
-          maintainState: false,
           path: pathProfileChat,
           page: ChatRoute.page,
         ),

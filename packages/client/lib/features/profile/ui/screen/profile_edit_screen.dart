@@ -52,7 +52,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: const EdgeInsets.only(right: 16),
+              padding: kPaddingAll,
               child: IconButton.outlined(
                 icon: const Icon(
                   Icons.save,
@@ -65,8 +65,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
         ],
         leading: const Align(
           alignment: Alignment.topCenter,
-          child: DeepBackButton(
-            color: Colors.black,
+          child: Padding(
+            padding: kPaddingAll,
+            child: DeepBackButton(
+              color: Colors.black,
+            ),
           ),
         ),
         toolbarHeight: GradientStack.defaultHeight,

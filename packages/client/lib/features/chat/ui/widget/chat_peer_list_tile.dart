@@ -4,6 +4,7 @@ import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
+import 'package:tentura/ui/widget/tentura_icons.dart';
 
 import '../bloc/chat_news_cubit.dart';
 
@@ -37,8 +38,8 @@ class ChatPeerListTile extends StatelessWidget {
             padding: kPaddingH,
             child: Icon(
               profile.isSeeingMe
-                  ? Icons.remove_red_eye
-                  : Icons.remove_red_eye_outlined,
+                  ? TenturaIcons.eyeOpen
+                  : TenturaIcons.eyeClosed,
             ),
           ),
         ],

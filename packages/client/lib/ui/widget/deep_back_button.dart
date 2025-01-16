@@ -18,7 +18,7 @@ class DeepBackButton extends StatelessWidget {
   Widget build(BuildContext context) => BackButton(
         color: color,
         onPressed: () async {
-          if (await context.maybePop()) return;
+          if (await context.router.maybePopTop()) return;
           if (context.mounted) await context.navigateTo(backRoute);
         },
       );
