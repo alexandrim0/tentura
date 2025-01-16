@@ -4,6 +4,7 @@ import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
+import 'package:tentura/ui/widget/tentura_icons.dart';
 
 class BeaconAuthorInfo extends StatelessWidget {
   const BeaconAuthorInfo({
@@ -43,9 +44,7 @@ class BeaconAuthorInfo extends StatelessWidget {
           Padding(
             padding: kPaddingH,
             child: Icon(
-              author.isSeeingMe
-                  ? Icons.remove_red_eye
-                  : Icons.remove_red_eye_outlined,
+              author.isSeeingMe ? TenturaIcons.eyeOpen : TenturaIcons.eyeClosed,
             ),
           ),
         ],

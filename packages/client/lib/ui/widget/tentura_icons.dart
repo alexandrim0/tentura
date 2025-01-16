@@ -87,8 +87,12 @@ class TenturaIcons {
     0xe914,
     fontFamily: _fontFamily,
   );
-  static const preview = IconData(
+  static const eyeOpen = IconData(
     0xe915,
+    fontFamily: _fontFamily,
+  );
+  static const eyeClosed = IconData(
+    0xe916,
     fontFamily: _fontFamily,
   );
 
