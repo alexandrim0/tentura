@@ -1,4 +1,4 @@
-cd ../conf
+cd ../conf/pem
 
 # DH params for nginx
 if test -f dhparam.pem; then

@@ -31,7 +31,7 @@ class UserRepositoryMock implements UserRepository {
   /// Mock data for tests and dev mode
   static final storageByPublicKey = <String, UserEntity>{
     // Thorin Oakenshield
-    'U286f94380611': const UserEntity(
+    'iqjH7nwdD1CBa-XgaW90yY443ghL8RC0Za-hKv-aeGg': const UserEntity(
       id: 'U286f94380611',
       title: 'Thorin Oakenshield',
       description: 'Son of Thrain, son of Thror, King under the Mountain',
@@ -39,7 +39,7 @@ class UserRepositoryMock implements UserRepository {
     ),
 
     // Dain Ironfoot
-    'U8ebde6fbfd3f': const UserEntity(
+    '60qBqhlXQzNOvlgK9h1FdxzpZX18EcC2A-6vqr_ABu8': const UserEntity(
       id: 'U8ebde6fbfd3f',
       title: 'Dain Ironfoot',
       description: '''
@@ -48,7 +48,7 @@ CEO of Ironfoot Industries and the Lord of the Iron Hills. Veteran in resource e
     ),
 
     // Gandalf
-    'U2becfc64c13b': const UserEntity(
+    'DpywC3XZqDJFLyey0w11Ms1dX2I1RWgEl5Ps-tONuo8': const UserEntity(
       id: 'U2becfc64c13b',
       title: 'Gandalf the Gray',
       description: '''
@@ -57,13 +57,19 @@ Experienced business angel and startup mentor with a knack for turning risky ven
     ),
 
     // User without picture
-    'U4d9267c70eab': const UserEntity(
+    '0E_W6fNl_e9zk-YtRWlHTNVQnTBkxK2csCtfkdxeCVc': const UserEntity(
       id: 'U4d9267c70eab',
       title: 'The Anonymous of Dol Guldur',
       description: '''
 Let's save the nature and cultural traditions of Middle-earth! 
 
 Activist, publicist, concerned neighbor and representative of one of the largest communities in Middle-earth.''',
+    ),
+
+    // User for auth test
+    '1UMBnxgxeRBL4037219_35CPvRbPmsP2QU1RURytihw': const UserEntity(
+      id: 'U3ea0a229ad85',
+      title: 'Pussy Cat',
     ),
   };
 }

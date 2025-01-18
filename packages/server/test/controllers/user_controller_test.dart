@@ -66,6 +66,31 @@ Future<void> main() async {
       expect(responseBody, isNotEmpty);
     },
   );
+
+  test(
+    'routeUserLogin, with static request',
+    () async {
+      const authRequestToken =
+          'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJwayI6IjFVTUJueGd4ZVJCTDQwMzcyMTlfMzVDUHZSYlBtc1AyUVUxUlVSeXRpaHciLCJleHAiOjE3MzcyMTU2MTcsImlhdCI6MTczNzIxMjAxN30.A4rU-BoK-mtswY1aSCeWpldHlySGok_DR_sUDAHvOeemQPvDQ6mYCuFG1bb5A-fP7dYGdvyh0-wnIkLDQdgFCg';
+
+      final response = await GetIt.I<UserLoginController>().handler(
+        Request(
+          'POST',
+          Uri.http(
+            'localhost',
+            '/api/user/login',
+          ),
+          headers: {
+            kHeaderAuthorization: 'Bearer $authRequestToken',
+          },
+        ),
+      );
+      final responseBody = await response.readAsString();
+      logger.i(responseBody);
+
+      expect(responseBody, isNotEmpty);
+    },
+  );
 }
 
 String _issueAuthRequestToken([String? userId]) => issueJwt(

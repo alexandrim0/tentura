@@ -1,25 +1,13 @@
 services:
   openresty:
     restart: no
-    build: ./openresty
-    image: vbulavintsev/openresty-tentura:v0.0.10
+    image: vbulavintsev/openresty-tentura:v0.0.12
     volumes:
-      - ./openresty/static:/srv/static:ro
-      - ./openresty/conf/app.conf:/etc/nginx/app.conf:ro
-      - ./openresty/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./openresty/conf:/etc/nginx:ro
       - ./openresty/app:/usr/local/openresty/site/lualib/app:ro
-      - ../tentura/build/web:/usr/local/openresty/nginx/html:ro
       - ./openresty/test:/usr/local/openresty/site/lualib/test:ro
+      - ../tentura/build/web:/usr/local/openresty/nginx/html:ro
     environment:
-      - RESOLVER
-      - ACME_EMAIL
-      - JWT_EXPIRES_IN
-      - CERT_CACHE_SIZE
-      - HASURA_KEEPALIVE
-      - WORKER_CONNECTIONS
-      - LUA_SOCKET_POOL_SIZE
-      - CLIENT_MAX_BODY_SIZE
-      - CLIENT_BODY_BUFFER_SIZE
       - "WORKERS=2"
       - "LUA_CODE_CACHE=off"
       - "TEST_LOCATION=test"
@@ -36,7 +24,7 @@ services:
       - "HASURA_GRAPHQL_LOG_LEVEL=debug"
       - "HASURA_GRAPHQL_ENABLE_CONSOLE=true"
       - "HASURA_GRAPHQL_ENABLE_METADATA_QUERY_LOGGING=true"
-      - "HASURA_GRAPHQL_CORS_DOMAIN=https://tentura.intersubjective.space, http://localhost:8888"
+      - "HASURA_GRAPHQL_CORS_DOMAIN=https://dev.tentura.io,http://localhost:8888"
 
   postgres:
     restart: no
@@ -50,22 +38,22 @@ services:
 
   meritrank-service:
     restart: no
-    image: vbulavintsev/meritrank-service:v0.2.32
+    image: vbulavintsev/meritrank-service:v0.2.35
     networks:
       - proxy
     ports:
       - 10234:10234/tcp
 
-  tentura-service:
+  tentura:
     restart: no
-    image: vbulavintsev/tentura-service:v0.0.1
+    image: vbulavintsev/tentura-service:v0.0.5
     networks:
       - proxy
     ports:
       - 2080:2080/tcp
     environment:
-      - "SERVER_NAME=https://tentura.intersubjective.space"
-      - "IMAGE_SERVER=https://tentura.intersubjective.space"
+      - "SERVER_NAME=https://dev.tentura.io"
+      - "IMAGE_SERVER=https://dev.tentura.io"
 
 volumes:
   pg_data:

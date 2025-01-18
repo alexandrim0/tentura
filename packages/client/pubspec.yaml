@@ -74,7 +74,7 @@ dev_dependencies:
 
   ferry_generator: ^0.12.0
   auto_route_generator: ^9.0.0
-  flutter_launcher_icons: ^0.14.2
+  flutter_launcher_icons: ^0.14.3
 
 flutter:
   uses-material-design: true

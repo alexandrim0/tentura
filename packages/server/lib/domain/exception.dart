@@ -15,3 +15,12 @@ class WrongIdException implements Exception {
   @override
   String toString() => 'Wrong Id: [$message]';
 }
+
+class WrongPEMKeyException implements Exception {
+  const WrongPEMKeyException([this.message]);
+
+  final String? message;
+
+  @override
+  String toString() => 'Wrong PEM keys: [$message]';
+}

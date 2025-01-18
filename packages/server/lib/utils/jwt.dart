@@ -1,17 +1,37 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:get_it/get_it.dart';
+import 'package:logger/logger.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+
+import 'package:tentura_server/domain/exception.dart';
 
 import '../consts.dart';
 
 export 'package:dart_jsonwebtoken/src/exceptions.dart';
 
 ///
+/// Parse key from PEM
+///
+String parseKeyFromPEM(String key) => key
+    .replaceAll(r'\n', '\n')
+    .replaceAll(RegExp('-(.*)-'), '')
+    .replaceAll('\n', '');
+
+///
 /// Extract and convert a key from .pem
 ///
 Uint8List convertKey(String key) {
-  final bytes = base64Decode(key.split('\n')[1]);
-  return bytes.sublist(bytes.length - 32);
+  try {
+    final bytes = base64Decode(parseKeyFromPEM(key));
+    return bytes.sublist(bytes.length - 32);
+  } catch (e) {
+    GetIt.I<Logger>().f(
+      'Wrong PEM file format!',
+      error: e,
+    );
+    throw WrongPEMKeyException(e.toString());
+  }
 }
 
 ///
@@ -49,9 +69,13 @@ JWT verifyAuthRequest({
     throw JWTInvalidException('Wrong JWT algo!');
   }
 
+  final authRequestToken = base64.normalize(
+    (jwtDecoded.payload as Map)['pk'] as String,
+  );
+
   return JWT.verify(
     token,
-    EdDSAPublicKey(base64Decode((jwtDecoded.payload as Map)['pk'] as String)),
+    EdDSAPublicKey(base64Decode(authRequestToken)),
   );
 }
 

@@ -124,7 +124,7 @@ SELECT
 FROM mr_node_score(
   hasura_session ->> 'x-hasura-user-id',
   beacon_row.id,
-  COALESCE(hasura_session ->> 'x-hasura-query-context', beacon_row.context)
+  hasura_session ->> 'x-hasura-query-context'
 );
 $$;
 
@@ -176,36 +176,13 @@ SELECT
 FROM mr_node_score(
     hasura_session ->> 'x-hasura-user-id',
     comment_row.id,
-    COALESCE(
-        hasura_session ->> 'x-hasura-query-context',
-        (SELECT context FROM (SELECT context FROM beacon WHERE beacon.id = comment_row.beacon_id))
-    )
+    hasura_session ->> 'x-hasura-query-context'
+    
 );
 $$;
 
 
 ALTER FUNCTION public.comment_get_scores(comment_row public.comment, hasura_session json) OWNER TO postgres;
-
---
--- Name: decrement_beacon_comments_count(); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.decrement_beacon_comments_count() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-
-BEGIN
-
-    UPDATE beacon SET comments_count = comments_count - 1 WHERE id = NEW.beacon_id;
-
-    RETURN NEW;
-
-END;
-
-$$;
-
-
-ALTER FUNCTION public.decrement_beacon_comments_count() OWNER TO postgres;
 
 --
 -- Name: graph(text, text, boolean, json); Type: FUNCTION; Schema: public; Owner: postgres
@@ -232,27 +209,6 @@ $$;
 
 
 ALTER FUNCTION public.graph(focus text, context text, positive_only boolean, hasura_session json) OWNER TO postgres;
-
---
--- Name: increment_beacon_comments_count(); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.increment_beacon_comments_count() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-
-BEGIN
-
-    UPDATE beacon SET comments_count = comments_count + 1 WHERE id = NEW.beacon_id;
-
-    RETURN NEW;
-
-END;
-
-$$;
-
-
-ALTER FUNCTION public.increment_beacon_comments_count() OWNER TO postgres;
 
 --
 -- Name: meritrank_init(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -444,7 +400,6 @@ $$;
 
 
 ALTER FUNCTION public.notify_meritrank_context_mutation() OWNER TO postgres;
-
 
 --
 -- Name: notify_meritrank_vote_beacon_mutation(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -858,20 +813,6 @@ CREATE INDEX message_by_object ON public.message USING btree (object);
 --
 
 CREATE INDEX message_by_subject ON public.message USING btree (subject);
-
-
---
--- Name: comment decrement_beacon_comments_count; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER decrement_beacon_comments_count AFTER DELETE ON public.comment FOR EACH ROW EXECUTE FUNCTION public.decrement_beacon_comments_count();
-
-
---
--- Name: comment increment_beacon_comments_count; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER increment_beacon_comments_count AFTER INSERT ON public.comment FOR EACH ROW EXECUTE FUNCTION public.increment_beacon_comments_count();
 
 
 --

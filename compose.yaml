@@ -8,6 +8,7 @@ services:
     restart: unless-stopped
     depends_on:
        - hasura
+       - tentura
     volumes:
       - /tmp
       - ./images:/srv/images
@@ -25,12 +26,10 @@ services:
       - JWT_PUBLIC_PEM
       - JWT_PRIVATE_PEM
       - HASURA_KEEPALIVE
-      - HASURA_GRAPHQL_ADMIN_SECRET
-      - 'HASURA_URL=http://hasura:8080/v1/graphql'
+      - TENTURA_KEEPALIVE
     secrets:
       - jwt_public_pem
       - jwt_private_pem
-      - hasura_graphql_admin_secret
     logging:
       driver: journald
 
@@ -65,22 +64,22 @@ services:
     image: vbulavintsev/postgres-tentura
     restart: unless-stopped
     depends_on:
-      - meritrank-service
+      - meritrank
     volumes:
       - ./pg_data:/var/lib/postgresql/data
     networks:
       - backend
     environment:
       - POSTGRES_PASSWORD
-      - 'MERITRANK_SERVICE_URL=tcp://meritrank-service:10234'
+      - 'MERITRANK_SERVICE_URL=tcp://meritrank:10234'
     secrets:
       - postgres_password
     logging:
       driver: journald
 
-  meritrank-service:
-    hostname: meritrank-service
-    container_name: meritrank-service
+  meritrank:
+    hostname: meritrank
+    container_name: meritrank
     image: vbulavintsev/meritrank-service
     restart: unless-stopped
     read_only: true
@@ -92,9 +91,9 @@ services:
     logging:
       driver: journald
 
-  tentura-service:
-    hostname: tentura-service
-    container_name: tentura-service
+  tentura:
+    hostname: tentura
+    container_name: tentura
     image: vbulavintsev/tentura-service
     restart: unless-stopped
     depends_on:
@@ -112,6 +111,8 @@ services:
       - POSTGRES_DBNAME
       - POSTGRES_USERNAME
       - POSTGRES_PASSWORD
+      - JWT_PRIVATE_PEM
+      - JWT_PUBLIC_PEM
     secrets:
       - postgres_password
       - jwt_private_pem

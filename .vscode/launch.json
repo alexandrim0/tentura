@@ -14,7 +14,7 @@
                 "--flavor",
                 "prod",
                 "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+                "APP_LINK_BASE=dev.tentura.io",
             ],
         },
         {
@@ -25,7 +25,7 @@
             "flutterMode": "debug",
             "toolArgs": [
                 "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+                "APP_LINK_BASE=dev.tentura.io",
             ],
             "args": [
                 "-d", "chrome",
@@ -42,7 +42,7 @@
             "toolArgs": [
                 "--wasm",
                 "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+                "APP_LINK_BASE=dev.tentura.io",
             ],
             "args": [
                 "-d", "chrome",
@@ -61,7 +61,7 @@
                 "--flavor",
                 "stage",
                 "--dart-define",
-                "APP_LINK_BASE=tentura-stage.intersubjective.space",
+                "APP_LINK_BASE=stage.tentura.io",
             ],
         },
         {
@@ -74,7 +74,7 @@
                 "--flavor",
                 "prod",
                 "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+                "APP_LINK_BASE=dev.tentura.io",
             ],
         },
         {
@@ -87,7 +87,7 @@
                 "--flavor",
                 "prod",
                 "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+                "APP_LINK_BASE=dev.tentura.io",
             ],
         },
         {
@@ -99,7 +99,7 @@
             "toolArgs": [
                 "--wasm",
                 "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+                "APP_LINK_BASE=dev.tentura.io",
             ],
             "args": [
                 "-d", "chrome",
@@ -115,7 +115,7 @@
             "type": "dart",
             "toolArgs": [
                 "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+                "APP_LINK_BASE=dev.tentura.io",
             ],
             "args": [
                 "-d", "chrome",
@@ -133,8 +133,8 @@
             "env": {
                 "DEBUG_MODE": "true",
                 "LISTEN_PORT": "2082",
-                "SERVER_NAME": "https://tentura.intersubjective.space",
-                "IMAGE_SERVER": "https://tentura.intersubjective.space",
+                "SERVER_NAME": "https://dev.tentura.io",
+                "IMAGE_SERVER": "https://dev.tentura.io",
             },
         },
         {
@@ -147,8 +147,8 @@
             "env": {
                 "DEBUG_MODE": "true",
                 "LISTEN_PORT": "2082",
-                "SERVER_NAME": "https://tentura-stage.intersubjective.space",
-                "IMAGE_SERVER": "https://tentura-stage.intersubjective.space",
+                "SERVER_NAME": "https://stage.tentura.io",
+                "IMAGE_SERVER": "https://stage.tentura.io",
             },
         },
   ]

@@ -4,11 +4,11 @@ import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
 import 'package:tentura_server/domain/entity/comment_entity.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
-import 'package:tentura_server/view/shared_view/styles/shared_view_styles.dart';
 
 import 'components/beacon_view_component.dart';
 import 'components/comment_view_component.dart';
 import 'components/user_view_component.dart';
+import 'styles/shared_view_styles.dart';
 
 class SharedViewDocument extends StatelessComponent {
   const SharedViewDocument({
@@ -91,7 +91,7 @@ class SharedViewDocument extends StatelessComponent {
   }) =>
       {
         'viewport': 'width=device-width, initial-scale=1, '
-            'minimum-scale=1,maximum-scale=1 user-scalable=no',
+            'minimum-scale=1, maximum-scale=1 user-scalable=no',
         'referrer': 'origin-when-cross-origin',
         'robots': 'noindex',
         'og:type': 'website',
@@ -104,31 +104,31 @@ class SharedViewDocument extends StatelessComponent {
 
   static final _headerLogo = [
     link(
-      href: '$kServerName/static/logo/web_24dp.png',
+      href: '$kServerName$kIconPath/web_24dp.png',
       rel: 'shortcut icon',
     ),
     link(
-      href: '$kServerName/static/logo/web_32dp.png',
+      href: '$kServerName$kIconPath/web_32dp.png',
       rel: 'shortcut icon',
     ),
     link(
-      href: '$kServerName/static/logo/web_36dp.png',
+      href: '$kServerName$kIconPath/web_36dp.png',
       rel: 'shortcut icon',
     ),
     link(
-      href: '$kServerName/static/logo/web_48dp.png',
+      href: '$kServerName$kIconPath/web_48dp.png',
       rel: 'shortcut icon',
     ),
     link(
-      href: '$kServerName/static/logo/web_64dp.png',
+      href: '$kServerName$kIconPath/web_64dp.png',
       rel: 'shortcut icon',
     ),
     link(
-      href: '$kServerName/static/logo/web_96dp.png',
+      href: '$kServerName$kIconPath/web_96dp.png',
       rel: 'shortcut icon',
     ),
     link(
-      href: '$kServerName/static/logo/web_512dp.png',
+      href: '$kServerName$kIconPath/web_512dp.png',
       rel: 'shortcut icon',
     ),
   ];

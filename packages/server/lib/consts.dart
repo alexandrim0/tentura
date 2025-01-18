@@ -8,9 +8,13 @@ const kHeaderContentType = 'Content-Type';
 
 const kHeaderAuthorization = 'Authorization';
 
-const kAvatarPlaceholderPath = '/static/img/avatar-placeholder.jpg';
+const kIconPath = '/icons';
 
-const kBeaconPlaceholderPath = '/static/img/image-placeholder.jpg';
+const kAssetImagesPath = '/assets/assets/images';
+
+const kAvatarPlaceholderPath = '$kAssetImagesPath/avatar-placeholder.jpg';
+
+const kBeaconPlaceholderPath = '$kAssetImagesPath/image-placeholder.jpg';
 
 // Make [environment] as mutable for testing purposes only!
 final environment = Map<String, String>.from(Platform.environment);

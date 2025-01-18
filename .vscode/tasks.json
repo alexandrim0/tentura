@@ -14,7 +14,7 @@
 				"--split-per-abi",
 				"--no-tree-shake-icons",
 				"--dart-define",
-				"APP_LINK_BASE=tentura.intersubjective.space"
+				"APP_LINK_BASE=dev.tentura.io"
 			],
 			"group": {
 				"kind": "build",
@@ -33,7 +33,7 @@
 				"build",
 				"web",
 				"--dart-define",
-				"APP_LINK_BASE=tentura.intersubjective.space",
+				"APP_LINK_BASE=dev.tentura.io",
 			],
 			"group": {
 				"kind": "build",
@@ -53,7 +53,7 @@
 				"web",
 				"--wasm",
 				"--dart-define",
-				"APP_LINK_BASE=tentura.intersubjective.space"
+				"APP_LINK_BASE=dev.tentura.io"
 			],
 			"group": {
 				"kind": "build",
@@ -77,7 +77,7 @@
 				"--pwa-strategy",
 				"none",
 				"--dart-define",
-				"APP_LINK_BASE=tentura.intersubjective.space"
+				"APP_LINK_BASE=dev.tentura.io"
 			],
 			"group": {
 				"kind": "build",

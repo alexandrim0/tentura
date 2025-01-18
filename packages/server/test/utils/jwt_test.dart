@@ -10,6 +10,70 @@ import '../logger.dart';
 
 void main() {
   group(
+    'Read keys from PEM',
+    () {
+      const validPublicKey =
+          'MCowBQYDK2VwAyEA2CmIb3Ho2eb6m8WIog6KiyzCY05sbyX04PiGlH5baDw=';
+      const validPrivateKey =
+          'MC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF';
+      const envPublicKey =
+          r'-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA2CmIb3Ho2eb6m8WIog6KiyzCY05sbyX04PiGlH5baDw=\n-----END PUBLIC KEY-----';
+      const envPrivateKey =
+          r'-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF\n-----END PRIVATE KEY-----';
+
+      test(
+        'Read Public key from PEM',
+        () {
+          expect(
+            parseKeyFromPEM(kJwtPublicKey),
+            validPublicKey,
+          );
+
+          expect(
+            parseKeyFromPEM(envPublicKey),
+            validPublicKey,
+          );
+
+          expect(
+            convertKey(parseKeyFromPEM(kJwtPublicKey)),
+            isList,
+          );
+
+          expect(
+            convertKey(parseKeyFromPEM(envPublicKey)),
+            isList,
+          );
+        },
+      );
+
+      test(
+        'Read Private key from const',
+        () {
+          expect(
+            parseKeyFromPEM(kJwtPrivateKey),
+            validPrivateKey,
+          );
+
+          expect(
+            parseKeyFromPEM(envPrivateKey),
+            validPrivateKey,
+          );
+
+          expect(
+            convertKey(parseKeyFromPEM(kJwtPrivateKey)),
+            isList,
+          );
+
+          expect(
+            convertKey(parseKeyFromPEM(envPrivateKey)),
+            isList,
+          );
+        },
+      );
+    },
+  );
+
+  group(
     'Test of JWT utils',
     () {
       test(

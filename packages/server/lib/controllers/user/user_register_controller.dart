@@ -31,13 +31,14 @@ final class UserRegisterController extends UserController {
           id: generateId(),
         ),
       );
-
       return Response.ok(
         jsonEncode(issueJwt(subject: user.id)),
       );
     } catch (e) {
-      logger.e(e);
-
+      logger.e(
+        e.toString(),
+        error: e,
+      );
       return Response.unauthorized(e);
     }
   }

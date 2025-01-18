@@ -9,6 +9,7 @@ import 'consts.dart';
 import 'di/di.dart';
 import 'di/modules.dart';
 import 'route_handler.dart';
+import 'utils/jwt.dart';
 
 Future<void> runApp({
   Future<void> Function()? beforeStart,
@@ -26,10 +27,14 @@ Future<void> runApp({
     defaultBindPort: kListenPort,
     defaultBindAddress: kBindAddress,
     defaultEnableHotReload: kDebugMode,
-    onStarted: (address, port) => logger.w(
-      'Start serving at ${DateTime.timestamp()} on http://$address:$port',
-      time: DateTime.timestamp(),
-    ),
+    onStarted: (address, port) {
+      logger
+        ..w(
+          'Start serving at ${DateTime.timestamp()} on http://$address:$port',
+          time: DateTime.timestamp(),
+        )
+        ..w(parseKeyFromPEM(kJwtPublicKey));
+    },
     onStartFailed: (e) async {
       logger.e(
         'Failed to start:',

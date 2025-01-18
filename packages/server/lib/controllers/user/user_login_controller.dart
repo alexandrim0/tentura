@@ -31,15 +31,19 @@ final class UserLoginController extends UserController {
         jsonEncode(issueJwt(subject: user.id)),
       );
     } on IdNotFoundException catch (e) {
-      logger.e(e);
-
+      logger.e(
+        e.toString(),
+        error: e,
+      );
       return Response.badRequest(
         body: 'User not found',
       );
     } catch (e) {
-      logger.e(e);
-
-      return Response.unauthorized(e);
+      logger.e(
+        e.toString(),
+        error: e,
+      );
+      return Response.unauthorized(e.toString());
     }
   }
 }
