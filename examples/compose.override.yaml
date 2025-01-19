@@ -5,12 +5,10 @@ services:
     volumes:
       - ./openresty/conf:/etc/nginx:ro
       - ./openresty/app:/usr/local/openresty/site/lualib/app:ro
-      - ./openresty/test:/usr/local/openresty/site/lualib/test:ro
       - ../tentura/build/web:/usr/local/openresty/nginx/html:ro
     environment:
       - "WORKERS=2"
       - "LUA_CODE_CACHE=off"
-      - "TEST_LOCATION=test"
       - "ERROR_LOG_LEVEL=debug"
 
   hasura:
@@ -24,7 +22,7 @@ services:
       - "HASURA_GRAPHQL_LOG_LEVEL=debug"
       - "HASURA_GRAPHQL_ENABLE_CONSOLE=true"
       - "HASURA_GRAPHQL_ENABLE_METADATA_QUERY_LOGGING=true"
-      - "HASURA_GRAPHQL_CORS_DOMAIN=https://dev.tentura.io,http://localhost:8888"
+      - "HASURA_GRAPHQL_CORS_DOMAIN=https://${SERVER_NAME},http://localhost:8888"
 
   postgres:
     restart: no
@@ -52,8 +50,8 @@ services:
     ports:
       - 2080:2080/tcp
     environment:
-      - "SERVER_NAME=https://dev.tentura.io"
-      - "IMAGE_SERVER=https://dev.tentura.io"
+      - "SERVER_NAME=https://${SERVER_NAME}"
+      - "IMAGE_SERVER=https://${SERVER_NAME}"
 
 volumes:
   pg_data:

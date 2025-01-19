@@ -23,13 +23,21 @@ services:
       - proxy
       - backend
     environment:
+      - WORKERS
+      - RESOLVER
+      - ACME_EMAIL
+      - SERVER_NAME
       - JWT_PUBLIC_PEM
-      - JWT_PRIVATE_PEM
+      - JWT_EXPIRES_IN
+      - ERROR_LOG_LEVEL
+      - CONTENT_EXPIRES
       - HASURA_KEEPALIVE
       - TENTURA_KEEPALIVE
-    secrets:
-      - jwt_public_pem
-      - jwt_private_pem
+      - WORKER_CONNECTIONS
+      - CLIENT_MAX_BODY_SIZE
+      - CLIENT_BODY_BUFFER_SIZE
+      - LUA_SOCKET_POOL_SIZE
+      - LUA_CODE_CACHE
     logging:
       driver: journald
 
@@ -52,9 +60,6 @@ services:
       - 'HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres'
       - 'HASURA_GRAPHQL_JWT_SECRET={"type":"Ed25519", "key":"${JWT_PUBLIC_PEM}", "claims_map": {"x-hasura-allowed-roles": ["user", "admin"], "x-hasura-default-role": "user", "x-hasura-user-id": {"path": "$$.sub"}}}'
       - 'HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=streaming_subscriptions,remove_empty_subscription_responses'
-    secrets:
-      - jwt_public_pem
-      - hasura_graphql_admin_secret
     logging:
       driver: journald
 
@@ -72,8 +77,6 @@ services:
     environment:
       - POSTGRES_PASSWORD
       - 'MERITRANK_SERVICE_URL=tcp://meritrank:10234'
-    secrets:
-      - postgres_password
     logging:
       driver: journald
 
@@ -113,10 +116,6 @@ services:
       - POSTGRES_PASSWORD
       - JWT_PRIVATE_PEM
       - JWT_PUBLIC_PEM
-    secrets:
-      - postgres_password
-      - jwt_private_pem
-      - jwt_public_pem
     logging:
       driver: journald
 
@@ -127,14 +126,3 @@ networks:
   proxy:
   backend:
     internal: true
-
-secrets:
-  jwt_public_pem:
-    environment: 'JWT_PUBLIC_PEM'
-  jwt_private_pem:
-    environment: 'JWT_PRIVATE_PEM'
-  postgres_password:
-    environment: 'POSTGRES_PASSWORD'
-  hasura_graphql_admin_secret:
-    environment: 'HASURA_GRAPHQL_ADMIN_SECRET'
-  
