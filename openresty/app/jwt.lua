@@ -2,7 +2,6 @@ local JWT_HEADER = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.'
 local JWT_BODY_START_AT = #JWT_HEADER + 1
 local JWT_SIGNATURE_LENGTH = 86
 local JWT_MIN_LENGTH = JWT_BODY_START_AT + JWT_SIGNATURE_LENGTH
-local JWT_EXPIRES_IN = 3600
 local PK
 
 local ngx = ngx
@@ -67,11 +66,7 @@ end
 ---@param pk string
 ---@param exp string
 ---@return nil
-local function init(pk, exp)
-    local expire = tonumber(exp)
-    if expire then
-        JWT_EXPIRES_IN = math.floor(expire)
-    end
+local function init(pk)
     PK = sub(from_b64(pk:match'\n(.+)\n'), -32)
 end
 

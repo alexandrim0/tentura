@@ -23,6 +23,7 @@ services:
       - "HASURA_GRAPHQL_ENABLE_CONSOLE=true"
       - "HASURA_GRAPHQL_ENABLE_METADATA_QUERY_LOGGING=true"
       - "HASURA_GRAPHQL_CORS_DOMAIN=https://${SERVER_NAME},http://localhost:8888"
+      - "HASURA_GRAPHQL_ADMIN_SECRET=password"
 
   postgres:
     restart: no
