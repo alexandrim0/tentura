@@ -26,7 +26,7 @@ class GraphRepository {
           .request(GGraphFetchReq(
             (b) => b
               ..context = const Context().withEntry(HttpLinkHeaders(headers: {
-                headerQueryContext: context,
+                kHeaderQueryContext: context,
               }))
               ..vars.focus = focus
               ..vars.limit = limit

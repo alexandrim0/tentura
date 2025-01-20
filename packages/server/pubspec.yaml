@@ -19,13 +19,14 @@ dependencies:
   mockito:
   latlong2:
   injectable:
+  tentura_root:
+  dart_jsonwebtoken:
   freezed_annotation:
 
   jaspr: ^0.17.0
   postgres: ^3.4.8
   shelf_plus: ^1.10.0
   stormberry: ^0.15.0
-  dart_jsonwebtoken: ^2.14.2
 
 dev_dependencies:
   freezed:

@@ -1,18 +1,9 @@
-const kIdLength = 13;
+export 'package:tentura_root/consts.dart';
 
-const kCodeLength = 7;
-
-const kTitleMinLength = 3;
-
-const kTitleMaxLength = 32;
-
-const kDescriptionLength = 2_048;
-
-const kRatingSector = 100 / 4;
-
-const kCommentsShown = 3;
 
 const kMaxLines = 3;
+
+const kCommentsShown = 3;
 
 const kUserAgent = 'Tentura';
 

@@ -22,6 +22,8 @@ dependencies:
   latlong2:
   collection:
   injectable:
+  tentura_sdk:
+  tentura_root:
   freezed_annotation:
 
   auto_route: ^9.3.0
@@ -59,9 +61,6 @@ dependencies:
   force_directed_graphview: ^0.6.2
   scrollable_positioned_list: ^0.3.8
   flutter_map_cancellable_tile_provider: ^3.0.0
-
-  # Local
-  tentura_sdk:
 
 dev_dependencies:
   freezed:

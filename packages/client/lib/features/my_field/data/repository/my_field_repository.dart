@@ -17,7 +17,7 @@ class MyFieldRepository {
   Future<Iterable<Beacon>> fetch({required String context}) => _remoteApiService
       .request(GMyFieldFetchReq((r) => r
         ..context = const Context().withEntry(HttpLinkHeaders(headers: {
-          headerQueryContext: context,
+          kHeaderQueryContext: context,
         }))
         ..vars.context = context))
       .firstWhere((e) => e.dataSource == DataSource.Link)

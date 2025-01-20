@@ -1,7 +1,7 @@
 name: tentura_root
 publish_to: none
 
-version: 0.0.1
+version: 0.0.2
 
 environment:
   sdk: '>=3.6.1 <4.0.0'
@@ -20,12 +20,12 @@ dependencies:
   get_it: ^8.0.3
   logger: ^2.5.0
   sentry: ^8.12.0
-  mockito: ^5.4.5
   latlong2: ^0.9.1
   faker_dart: ^0.2.2
   injectable: ^2.5.0
   collection: ^1.19.0
   ed25519_edwards: ^0.3.1
+  dart_jsonwebtoken: ^2.15.0
   freezed_annotation: ^2.4.4
 
 dev_dependencies:

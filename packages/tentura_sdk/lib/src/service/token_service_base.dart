@@ -61,7 +61,7 @@ abstract class TokenServiceBase {
     _jwt = jwtEmpty;
     _tokenLocked = true;
     try {
-      _jwt = await _fetchJWT(pathLogin);
+      _jwt = await _fetchJWT(kPathLogin);
     } finally {
       _tokenLocked = false;
     }
@@ -73,7 +73,7 @@ abstract class TokenServiceBase {
     _jwt = jwtEmpty;
     _tokenLocked = true;
     try {
-      _jwt = await _fetchJWT(pathRegister);
+      _jwt = await _fetchJWT(kPathRegister);
     } finally {
       _tokenLocked = false;
     }

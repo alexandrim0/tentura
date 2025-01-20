@@ -1,12 +1,8 @@
 import 'dart:io' show Platform;
 
+export 'package:tentura_root/consts.dart';
+
 const kAppTitle = 'Tentura';
-
-const kContentTypeHtml = 'text/html';
-
-const kHeaderContentType = 'Content-Type';
-
-const kHeaderAuthorization = 'Authorization';
 
 const kIconPath = '/icons';
 
