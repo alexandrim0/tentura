@@ -15,6 +15,7 @@ const kRatingSector = 100 / 4;
 const kPathLogin = '/api/user/login';
 const kPathRegister = '/api/user/register';
 const kPathGraphQLEndpoint = '/api/v1/graphql';
+const kPathAppLinkView = '/shared/view';
 
 const kContentTypeHtml = 'text/html';
 

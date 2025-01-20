@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/consts.dart';
+
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 import 'package:tentura/features/settings/ui/bloc/settings_cubit.dart';
 
@@ -13,12 +15,11 @@ export 'package:auto_route/auto_route.dart';
 
 export 'root_router.gr.dart';
 
-const pathRoot = '/';
-const pathConnect = '/connect';
-const pathBeaconView = '/beacon/view';
-const pathProfileChat = '/profile/chat';
-const pathProfileView = '/profile/view';
-const pathAppLinkView = '/shared/view';
+const kPathRoot = '/';
+const kPathConnect = '/connect';
+const kPathBeaconView = '/beacon/view';
+const kPathProfileChat = '/profile/chat';
+const kPathProfileView = '/profile/view';
 
 @singleton
 @AutoRouterConfig()
@@ -55,7 +56,7 @@ class RootRouter extends RootStackRouter {
         // Home
         AutoRoute(
           initial: true,
-          path: pathRoot,
+          path: kPathRoot,
           page: HomeRoute.page,
           children: [
             // Field
@@ -70,10 +71,6 @@ class RootRouter extends RootStackRouter {
             AutoRoute(
               page: ConnectRoute.page,
             ),
-            // Updates
-            // AutoRoute(
-            //   page: UpdatesRoute.page,
-            // ),
             // Friends
             AutoRoute(
               page: FriendsRoute.page,
@@ -129,7 +126,7 @@ class RootRouter extends RootStackRouter {
 
         // Profile View
         AutoRoute(
-          path: pathProfileView,
+          path: kPathProfileView,
           page: ProfileViewRoute.page,
           guards: [
             AutoRouteGuard.redirect(
@@ -156,7 +153,7 @@ class RootRouter extends RootStackRouter {
 
         // Beacon View
         AutoRoute(
-          path: pathBeaconView,
+          path: kPathBeaconView,
           page: BeaconViewRoute.page,
         ),
 
@@ -172,14 +169,14 @@ class RootRouter extends RootStackRouter {
 
         // Chat
         AutoRoute(
-          path: pathProfileChat,
+          path: kPathProfileChat,
           page: ChatRoute.page,
         ),
 
         // default
         RedirectRoute(
           path: '*',
-          redirectTo: pathRoot,
+          redirectTo: kPathRoot,
         ),
       ];
 
@@ -189,13 +186,13 @@ class RootRouter extends RootStackRouter {
   }
 
   Future<Uri> deepLinkTransformer(Uri uri) =>
-      SynchronousFuture(uri.path == pathAppLinkView
+      SynchronousFuture(uri.path == kPathAppLinkView
           ? uri.replace(
               path: switch (uri.queryParameters['id']) {
-                final String id when id.startsWith('U') => pathProfileView,
-                final String id when id.startsWith('B') => pathBeaconView,
-                final String id when id.startsWith('C') => pathBeaconView,
-                _ => pathConnect,
+                final String id when id.startsWith('U') => kPathProfileView,
+                final String id when id.startsWith('B') => kPathBeaconView,
+                final String id when id.startsWith('C') => kPathBeaconView,
+                _ => kPathConnect,
               },
             )
           : uri);
