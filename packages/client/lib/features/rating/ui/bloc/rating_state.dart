@@ -1,26 +1,20 @@
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
+export 'package:tentura/ui/bloc/state_base.dart';
+
 part 'rating_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class RatingState with _$RatingState, StateFetchMixin {
+class RatingState extends StateBase with _$RatingState {
   const factory RatingState({
-    @Default([]) List<Profile> items,
     @Default('') String context,
+    @Default([]) List<Profile> items,
     @Default('') String searchFilter,
     @Default(false) bool isSortedByAsc,
     @Default(false) bool isSortedByEgo,
-    @Default(FetchStatus.isSuccess) FetchStatus status,
-    Object? error,
+    @Default(StateIsSuccess()) StateStatus status,
   }) = _RatingState;
 
   const RatingState._();
-
-  RatingState setLoading() => copyWith(status: FetchStatus.isLoading);
-
-  RatingState setError(Object error) => copyWith(
-        status: FetchStatus.isFailure,
-        error: error,
-      );
 }

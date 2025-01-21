@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:get_it/get_it.dart';
 
-import 'package:tentura/ui/bloc/state_base.dart';
-
 import '../../data/repository/rating_repository.dart';
 import 'rating_state.dart';
 
@@ -21,19 +19,26 @@ class RatingCubit extends Cubit<RatingState> {
 
   final RatingRepository _repository;
 
+  void navigateTo(String path) => emit(state.copyWith(
+        status: StateIsNavigating(path),
+      ));
+
   Future<void> fetch([String contextName = '']) async {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: const StateIsLoading(),
+    ));
     try {
       emit(state.copyWith(
-        error: null,
         context: contextName,
-        status: FetchStatus.isSuccess,
+        status: const StateIsSuccess(),
         items: (await _repository.fetch(context: contextName))
             .toList(growable: false),
       ));
       _sort();
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 

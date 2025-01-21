@@ -89,6 +89,17 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBarError(
       text: state.error?.toString() ?? 'Unknown error!',
     );
 
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
+    showSnackBarErrorState(
+  BuildContext context,
+  Object error,
+) =>
+        showSnackBar(
+          context,
+          isError: true,
+          text: error.toString(),
+        );
+
 Future<({String name, Uint8List bytes})?> pickImage() async {
   final xFile = await ImagePicker().pickImage(
     source: ImageSource.gallery,

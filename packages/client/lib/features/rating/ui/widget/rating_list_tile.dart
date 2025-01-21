@@ -6,6 +6,8 @@ import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 
+import '../bloc/rating_cubit.dart';
+
 class RatingListTile extends StatelessWidget {
   RatingListTile({
     required this.profile,
@@ -25,9 +27,9 @@ class RatingListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onTap: () => context.pushRoute(
-          ProfileViewRoute(id: profile.id),
-        ),
+        onTap: () => context.read<RatingCubit>().navigateTo(
+              '$kPathProfileView?id=${profile.id}',
+            ),
         child: Row(
           children: [
             AvatarRated(

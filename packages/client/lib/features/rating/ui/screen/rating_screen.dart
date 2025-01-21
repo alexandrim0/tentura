@@ -16,13 +16,31 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
         providers: [
-          BlocProvider(create: (_) => RatingCubit()),
-          BlocProvider(create: (_) => ContextCubit()),
+          BlocProvider(
+            create: (_) => RatingCubit(),
+          ),
+          BlocProvider(
+            create: (_) => ContextCubit(),
+          ),
         ],
-        child: BlocListener<ContextCubit, ContextState>(
-          listenWhen: (p, c) => p.selected != c.selected,
-          listener: (context, state) =>
-              context.read<RatingCubit>().fetch(state.selected),
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<ContextCubit, ContextState>(
+              listenWhen: (p, c) => p.selected != c.selected,
+              listener: (context, state) =>
+                  context.read<RatingCubit>().fetch(state.selected),
+            ),
+            BlocListener<RatingCubit, RatingState>(
+              listener: (context, state) => switch (state.status) {
+                final StateIsNavigating s => context.navigateNamedTo(s.path),
+                final StateHasError s => showSnackBarErrorState(
+                    context,
+                    s.error,
+                  ),
+                _ => null,
+              },
+            ),
+          ],
           child: this,
         ),
       );
@@ -30,10 +48,8 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<RatingCubit>();
-    return BlocConsumer<RatingCubit, RatingState>(
-      listenWhen: (p, c) => c.hasError,
-      listener: showSnackBarError,
-      buildWhen: (p, c) => c.hasNoError,
+    return BlocBuilder<RatingCubit, RatingState>(
+      buildWhen: (p, c) => c.isSuccess,
       builder: (context, state) {
         final isDarkMode = Theme.of(context).brightness == Brightness.dark;
         final filter = state.searchFilter;
