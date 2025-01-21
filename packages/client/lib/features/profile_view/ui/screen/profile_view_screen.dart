@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/ui/bloc/state_base.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_image.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
@@ -26,17 +27,23 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
         create: (_) => ProfileViewCubit(id: id),
-        child: this,
+        child: BlocListener<ProfileViewCubit, ProfileViewState>(
+          listener: (context, state) => switch (state.status) {
+            final StateIsNavigating s => context.navigateNamedTo(s.path),
+            final StateHasError s => showSnackBarErrorState(
+                context,
+                s.error,
+              ),
+            _ => null,
+          },
+          child: this,
+        ),
       );
 
   @override
   Widget build(BuildContext context) {
-    final profileViewCubit = context.read<ProfileViewCubit>();
-    return BlocConsumer<ProfileViewCubit, ProfileViewState>(
-      bloc: profileViewCubit,
-      listenWhen: (p, c) => c.hasError,
-      listener: showSnackBarError,
-      buildWhen: (p, c) => c.hasNoError,
+    return BlocBuilder<ProfileViewCubit, ProfileViewState>(
+      buildWhen: (p, c) => c.isSuccess || c.isLoading,
       builder: (context, state) {
         if (state.isLoading) {
           return const Center(
@@ -46,6 +53,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
         final profile = state.profile;
         final beacons = state.beacons;
         final textTheme = Theme.of(context).textTheme;
+        final profileViewCubit = context.read<ProfileViewCubit>();
         return Scaffold(
           body: CustomScrollView(
             slivers: [
@@ -55,8 +63,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
                   // Graph View
                   IconButton(
                     icon: const Icon(TenturaIcons.graph),
-                    onPressed: () =>
-                        context.pushRoute(GraphRoute(focus: profile.id)),
+                    onPressed: () => profileViewCubit.showGraph(profile.id),
                   ),
 
                   // Share

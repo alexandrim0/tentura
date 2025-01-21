@@ -27,12 +27,12 @@ class RatingCubit extends Cubit<RatingState> {
 
   Future<void> fetch([String contextName = '']) async {
     emit(state.copyWith(
-      status: const StateIsLoading(),
+      status: StateStatus.isLoading,
     ));
     try {
       emit(state.copyWith(
         context: contextName,
-        status: const StateIsSuccess(),
+        status: StateStatus.isSuccess,
         items: (await _repository.fetch(context: contextName)).toList(),
       ));
       _sort();

@@ -16,6 +16,8 @@ export 'package:auto_route/auto_route.dart';
 export 'root_router.gr.dart';
 
 const kPathRoot = '/';
+const kPathGraph = '/graph';
+const kPathRating = '/rating';
 const kPathConnect = '/connect';
 const kPathBeaconView = '/beacon/view';
 const kPathProfileChat = '/profile/chat';
@@ -159,11 +161,13 @@ class RootRouter extends RootStackRouter {
 
         // Rating
         AutoRoute(
+          path: kPathRating,
           page: RatingRoute.page,
         ),
 
         // Graph
         AutoRoute(
+          path: kPathGraph,
           page: GraphRoute.page,
         ),
 

@@ -46,6 +46,10 @@ abstract class StateBase {
 }
 
 sealed class StateStatus {
+  static const isSuccess = StateIsSuccess();
+
+  static const isLoading = StateIsLoading();
+
   const StateStatus();
 }
 

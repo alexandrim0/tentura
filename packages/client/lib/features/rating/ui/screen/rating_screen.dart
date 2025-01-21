@@ -49,8 +49,13 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
   Widget build(BuildContext context) {
     final cubit = context.read<RatingCubit>();
     return BlocBuilder<RatingCubit, RatingState>(
-      buildWhen: (p, c) => c.isSuccess,
+      buildWhen: (p, c) => c.isSuccess || c.isLoading,
       builder: (context, state) {
+        if (state.isLoading) {
+          return const Center(
+            child: CircularProgressIndicator.adaptive(),
+          );
+        }
         final isDarkMode = Theme.of(context).brightness == Brightness.dark;
         final filter = state.searchFilter;
         final items = filter.isEmpty

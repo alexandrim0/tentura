@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 
+import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
@@ -26,8 +27,14 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
   final FriendsCase _friendsCase;
   final ProfileViewCase _profileViewCase;
 
+  void showGraph(String focus) => emit(state.copyWith(
+        status: StateIsNavigating('$kPathGraph?focus=$focus'),
+      ));
+
   Future<void> fetchProfile([int limit = 3]) async {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       final (:profile, :beacons) =
           await _profileViewCase.fetchProfileWithBeaconsByUserId(
@@ -38,15 +45,19 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
         profile: profile,
         beacons: beacons.toList(),
         hasReachedMax: beacons.length < limit,
-        status: FetchStatus.isSuccess,
+        status: StateStatus.isSuccess,
       ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
   Future<void> fetchBeacons() async {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       final beacons =
           await _profileViewCase.fetchBeaconsByUserId(state.profile.id);
@@ -54,10 +65,12 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
         hasReachedMax: true,
         profile: state.profile,
         beacons: beacons.toList(),
-        status: FetchStatus.isSuccess,
+        status: StateStatus.isSuccess,
       ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
@@ -65,26 +78,34 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
       state.hasNotReachedMax ? fetchBeacons() : fetchProfile();
 
   Future<void> addFriend() async {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       emit(state.copyWith(
-        status: FetchStatus.isSuccess,
         profile: await _friendsCase.addFriend(state.profile),
+        status: StateStatus.isSuccess,
       ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
   Future<void> removeFriend() async {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       emit(state.copyWith(
-        status: FetchStatus.isSuccess,
         profile: await _friendsCase.removeFriend(state.profile),
+        status: StateStatus.isSuccess,
       ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 }
