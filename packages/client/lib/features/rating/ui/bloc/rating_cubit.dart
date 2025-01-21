@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:get_it/get_it.dart';
 
+import 'package:tentura/app/router/root_router.dart';
+
 import '../../data/repository/rating_repository.dart';
 import 'rating_state.dart';
 
@@ -19,8 +21,8 @@ class RatingCubit extends Cubit<RatingState> {
 
   final RatingRepository _repository;
 
-  void navigateTo(String path) => emit(state.copyWith(
-        status: StateIsNavigating(path),
+  void showProfile(String id) => emit(state.copyWith(
+        status: StateIsNavigating('$kPathProfileView?id=$id'),
       ));
 
   Future<void> fetch([String contextName = '']) async {
@@ -31,8 +33,7 @@ class RatingCubit extends Cubit<RatingState> {
       emit(state.copyWith(
         context: contextName,
         status: const StateIsSuccess(),
-        items: (await _repository.fetch(context: contextName))
-            .toList(growable: false),
+        items: (await _repository.fetch(context: contextName)).toList(),
       ));
       _sort();
     } catch (e) {

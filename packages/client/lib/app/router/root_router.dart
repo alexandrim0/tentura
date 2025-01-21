@@ -127,7 +127,6 @@ class RootRouter extends RootStackRouter {
         // Profile View
         AutoRoute(
           path: kPathProfileView,
-          fullscreenDialog: true,
           page: ProfileViewRoute.page,
           guards: [
             AutoRouteGuard.redirect(
@@ -142,7 +141,6 @@ class RootRouter extends RootStackRouter {
         AutoRoute(
           keepHistory: false,
           maintainState: false,
-          fullscreenDialog: true,
           page: ProfileEditRoute.page,
         ),
 
@@ -150,33 +148,28 @@ class RootRouter extends RootStackRouter {
         AutoRoute(
           keepHistory: false,
           maintainState: false,
-          fullscreenDialog: true,
           page: BeaconCreateRoute.page,
         ),
 
         // Beacon View
         AutoRoute(
           path: kPathBeaconView,
-          fullscreenDialog: true,
           page: BeaconViewRoute.page,
         ),
 
         // Rating
         AutoRoute(
-          fullscreenDialog: true,
           page: RatingRoute.page,
         ),
 
         // Graph
         AutoRoute(
-          fullscreenDialog: true,
           page: GraphRoute.page,
         ),
 
         // Chat
         AutoRoute(
           path: kPathProfileChat,
-          fullscreenDialog: true,
           page: ChatRoute.page,
         ),
 
