@@ -2,11 +2,11 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 0.11.2
+version: 0.11.3
 
 environment:
   sdk: '>=3.6.1 <4.0.0'
-  flutter: ^3.27.2
+  flutter: ^3.27.3
 
 resolution: workspace
 
@@ -35,9 +35,9 @@ dependencies:
   intl_translation: ^0.20.1
 
   # Platform related
-  drift: ^2.23.1
+  drift: ^2.24.0
   geocoding: ^3.0.0
-  drift_dev: ^2.23.1
+  drift_dev: ^2.24.0
   geolocator: ^13.0.2
   share_plus: ^10.1.4
   image_picker: ^1.1.2
@@ -63,10 +63,10 @@ dependencies:
   flutter_map_cancellable_tile_provider: ^3.0.0
 
 dev_dependencies:
-  freezed:
-  build_runner:
   flutter_test:
     sdk: flutter
+  freezed:
+  build_runner:
   json_serializable:
   very_good_analysis:
   injectable_generator:
