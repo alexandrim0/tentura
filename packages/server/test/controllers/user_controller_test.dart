@@ -9,7 +9,6 @@ import 'package:tentura_server/controllers/user/user_login_controller.dart';
 import 'package:tentura_server/controllers/user/user_register_controller.dart';
 
 import '../di.dart';
-import '../consts.dart';
 import '../logger.dart';
 
 Future<void> main() async {

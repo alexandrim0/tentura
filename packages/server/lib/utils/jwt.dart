@@ -1,38 +1,15 @@
 import 'dart:convert';
-import 'dart:typed_data';
-import 'package:get_it/get_it.dart';
-import 'package:logger/logger.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-
-import 'package:tentura_server/domain/exception.dart';
 
 import '../consts.dart';
 
-export 'package:dart_jsonwebtoken/src/exceptions.dart';
+final publicKey = EdDSAPublicKey.fromPEM(
+  kJwtPublicKey.replaceAll(r'\n', '\n'),
+);
 
-///
-/// Parse key from PEM
-///
-String parseKeyFromPEM(String key) => key
-    .replaceAll(r'\n', '\n')
-    .replaceAll(RegExp('-(.*)-'), '')
-    .replaceAll('\n', '');
-
-///
-/// Extract and convert a key from .pem
-///
-Uint8List convertKey(String key) {
-  try {
-    final bytes = base64Decode(parseKeyFromPEM(key));
-    return bytes.sublist(bytes.length - 32);
-  } catch (e) {
-    GetIt.I<Logger>().f(
-      'Wrong PEM file format!',
-      error: e,
-    );
-    throw WrongPEMKeyException(e.toString());
-  }
-}
+final privateKey = EdDSAPrivateKey.fromPEM(
+  kJwtPrivateKey.replaceAll(r'\n', '\n'),
+);
 
 ///
 /// Returns bearer token extracted from Request headers
@@ -87,7 +64,7 @@ JWT verifyJwt({
 }) =>
     JWT.verify(
       token,
-      _publicKey,
+      publicKey,
     );
 
 ///
@@ -105,18 +82,10 @@ Map<String, Object> issueJwt({
         payload,
         subject: subject,
       ).sign(
-        _privateKey,
+        privateKey,
         algorithm: JWTAlgorithm.EdDSA,
         expiresIn: kJwtExpiresIn,
       ),
     };
 
 const _bearerPrefixLength = 'Bearer '.length;
-
-final _publicKeyBytes = convertKey(kJwtPublicKey);
-
-final _publicKey = EdDSAPublicKey(_publicKeyBytes);
-
-final _privateKey = EdDSAPrivateKey(
-  convertKey(kJwtPrivateKey) + _publicKeyBytes,
-);

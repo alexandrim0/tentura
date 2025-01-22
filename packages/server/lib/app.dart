@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:injectable/injectable.dart';
@@ -33,7 +34,7 @@ Future<void> runApp({
           'Start serving at ${DateTime.timestamp()} on http://$address:$port',
           time: DateTime.timestamp(),
         )
-        ..w(parseKeyFromPEM(kJwtPublicKey));
+        ..w(base64UrlEncode(publicKey.key.bytes));
     },
     onStartFailed: (e) async {
       logger.e(

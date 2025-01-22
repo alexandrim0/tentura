@@ -2,7 +2,7 @@ name: tentura_server
 description: Tentura server API
 publish_to: none
 
-version: 0.0.5
+version: 0.0.6
 
 environment:
   sdk: '>=3.6.1 <4.0.0'
@@ -16,7 +16,6 @@ dependencies:
   get_it:
   logger:
   sentry:
-  mockito:
   latlong2:
   injectable:
   tentura_root:

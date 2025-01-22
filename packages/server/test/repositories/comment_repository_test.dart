@@ -1,14 +1,15 @@
-import 'package:tentura_server/data/repository/comment_repository.dart';
+import 'dart:convert';
 import 'package:test/test.dart';
 import 'package:faker/faker.dart';
 import 'package:get_it/get_it.dart';
 
+import 'package:tentura_server/data/repository/comment_repository.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
 import 'package:tentura_server/utils/id.dart';
+import 'package:tentura_server/utils/jwt.dart';
 
 import '../di.dart';
-import '../consts.dart';
 import '../logger.dart';
 
 Future<void> main() async {
@@ -27,7 +28,7 @@ Future<void> main() async {
     () async {
       final now = DateTime.timestamp();
       final user = await GetIt.I<UserRepository>().createUser(
-        publicKey: publicKey,
+        publicKey: base64UrlEncode(publicKey.key.bytes).replaceAll('=', ''),
         user: UserEntity(
           id: generateId(),
           title: 'Test User',

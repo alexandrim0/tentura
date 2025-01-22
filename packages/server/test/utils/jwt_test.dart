@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:test/test.dart';
 import 'package:faker/faker.dart';
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/utils/id.dart';
@@ -12,61 +13,36 @@ void main() {
   group(
     'Read keys from PEM',
     () {
-      const validPublicKey =
-          'MCowBQYDK2VwAyEA2CmIb3Ho2eb6m8WIog6KiyzCY05sbyX04PiGlH5baDw=';
-      const validPrivateKey =
-          'MC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF';
       const envPublicKey =
           r'-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA2CmIb3Ho2eb6m8WIog6KiyzCY05sbyX04PiGlH5baDw=\n-----END PUBLIC KEY-----';
       const envPrivateKey =
           r'-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF\n-----END PRIVATE KEY-----';
 
       test(
-        'Read Public key from PEM',
+        'Read PEM',
         () {
           expect(
-            parseKeyFromPEM(kJwtPublicKey),
-            validPublicKey,
+            EdDSAPublicKey.fromPEM(kJwtPublicKey).key.bytes,
+            isNotEmpty,
           );
 
           expect(
-            parseKeyFromPEM(envPublicKey),
-            validPublicKey,
+            EdDSAPrivateKey.fromPEM(kJwtPrivateKey).key.bytes,
+            isNotEmpty,
           );
 
           expect(
-            convertKey(parseKeyFromPEM(kJwtPublicKey)),
-            isList,
+            EdDSAPublicKey.fromPEM(envPublicKey.replaceAll(r'\n', '\n'))
+                .key
+                .bytes,
+            isNotEmpty,
           );
 
           expect(
-            convertKey(parseKeyFromPEM(envPublicKey)),
-            isList,
-          );
-        },
-      );
-
-      test(
-        'Read Private key from const',
-        () {
-          expect(
-            parseKeyFromPEM(kJwtPrivateKey),
-            validPrivateKey,
-          );
-
-          expect(
-            parseKeyFromPEM(envPrivateKey),
-            validPrivateKey,
-          );
-
-          expect(
-            convertKey(parseKeyFromPEM(kJwtPrivateKey)),
-            isList,
-          );
-
-          expect(
-            convertKey(parseKeyFromPEM(envPrivateKey)),
-            isList,
+            EdDSAPrivateKey.fromPEM(envPrivateKey.replaceAll(r'\n', '\n'))
+                .key
+                .bytes,
+            isNotEmpty,
           );
         },
       );
@@ -102,11 +78,11 @@ void main() {
         'issueJwt / verifyAuthRequest',
         () {
           final userId = generateId();
-          final publicKey = base64UrlEncode(convertKey(kJwtPublicKey));
+          final pk = base64UrlEncode(publicKey.key.bytes);
           final authRequestToken = issueJwt(
             subject: userId,
             payload: {
-              'pk': publicKey,
+              'pk': pk,
             },
           )['access_token']! as String;
 
@@ -115,7 +91,7 @@ void main() {
 
           expect(
             (jwt.payload as Map)['pk'],
-            equals(publicKey),
+            equals(pk),
           );
 
           expect(
