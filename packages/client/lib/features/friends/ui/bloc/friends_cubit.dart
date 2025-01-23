@@ -11,6 +11,7 @@ import 'friends_state.dart';
 
 export 'friends_state.dart';
 
+/// Global Cubit
 @singleton
 class FriendsCubit extends Cubit<FriendsState> {
   FriendsCubit(

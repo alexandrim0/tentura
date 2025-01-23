@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
 
-import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 

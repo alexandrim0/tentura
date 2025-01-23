@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/domain/enum.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
@@ -15,6 +16,7 @@ export 'package:get_it/get_it.dart';
 
 export 'chat_news_state.dart';
 
+/// Global Cubit
 @singleton
 class ChatNewsCubit extends Cubit<ChatNewsState> {
   ChatNewsCubit(
@@ -37,12 +39,22 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
   late final _authChanges = _authRepository.currentAccountChanges().listen(
         _onAuthChanges,
         cancelOnError: false,
-        onError: (Object e) => emit(state.setError(e)),
+        onError: (Object e) => emit(state.copyWith(
+          status: StateHasError(e),
+        )),
       );
 
   StreamSubscription<Iterable<ChatMessage>>? _messagesUpdatesSubscription;
 
   Stream<ChatMessage> get updates => _messagesUpdatesController.stream;
+
+  void showProfile(String id) => emit(state.copyWith(
+        status: StateIsNavigating('$kPathProfileView?id=$id'),
+      ));
+
+  void showChatWith(String id) => emit(state.copyWith(
+        status: StateIsNavigating('$kPathProfileChat?id=$id'),
+      ));
 
   @override
   Future<void> close() async {
@@ -64,7 +76,9 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
       _messagesUpdatesSubscription = null;
     } else {
       // User logged in
-      emit(state.setLoading());
+      emit(state.copyWith(
+        status: StateStatus.isLoading,
+      ));
       await _chatRepository.syncMessagesFor(userId: userId);
 
       var oldest = _zeroAge;
@@ -76,14 +90,15 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
       emit(state.copyWith(
         myId: userId,
         cursor: DateTime.timestamp(),
-        status: FetchStatus.isSuccess,
-        error: null,
+        status: StateStatus.isSuccess,
       ));
       _messagesUpdatesSubscription =
           _chatRepository.watchUpdates(fromMoment: oldest.toUtc()).listen(
                 _onMessagesUpdate,
                 cancelOnError: false,
-                onError: (Object e) => emit(state.setError(e)),
+                onError: (Object e) => emit(state.copyWith(
+                  status: StateHasError(e),
+                )),
               );
     }
   }

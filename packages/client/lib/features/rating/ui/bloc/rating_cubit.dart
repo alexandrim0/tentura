@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:get_it/get_it.dart';
 
-import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/consts.dart';
 
 import '../../data/repository/rating_repository.dart';
 import 'rating_state.dart';

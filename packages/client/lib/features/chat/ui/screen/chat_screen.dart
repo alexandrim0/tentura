@@ -6,7 +6,6 @@ import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
-import 'package:tentura/ui/bloc/state_base.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
@@ -33,7 +32,10 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
           friend: GetIt.I<FriendsCubit>().state.friends[id]!,
           updatesStream: GetIt.I<ChatNewsCubit>().updates,
         ),
-        child: this,
+        child: BlocListener<ChatCubit, ChatState>(
+          listener: commonScreenBlocListener,
+          child: this,
+        ),
       );
 
   @override
@@ -82,18 +84,14 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
           ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(4),
-            child: BlocSelector<ChatCubit, ChatState, FetchStatus>(
-              selector: (state) => state.status,
-              builder: (context, status) => status.isLoading
+            child: BlocSelector<ChatCubit, ChatState, bool>(
+              selector: (state) => state.isLoading,
+              builder: (context, isLoading) => isLoading
                   ? const LinearPiActive()
                   : const SizedBox(height: 4),
             ),
           ),
         ),
-        body: BlocListener<ChatCubit, ChatState>(
-          listener: showSnackBarError,
-          listenWhen: (p, c) => c.hasError,
-          child: const ChatList(),
-        ),
+        body: const ChatList(),
       );
 }

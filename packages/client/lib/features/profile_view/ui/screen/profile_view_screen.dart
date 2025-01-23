@@ -28,14 +28,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) => BlocProvider(
         create: (_) => ProfileViewCubit(id: id),
         child: BlocListener<ProfileViewCubit, ProfileViewState>(
-          listener: (context, state) => switch (state.status) {
-            final StateIsNavigating s => context.navigateNamedTo(s.path),
-            final StateHasError s => showSnackBarErrorState(
-                context,
-                s.error,
-              ),
-            _ => null,
-          },
+          listener: commonScreenBlocListener,
           child: this,
         ),
       );

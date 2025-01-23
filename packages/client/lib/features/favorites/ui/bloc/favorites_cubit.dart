@@ -11,6 +11,7 @@ export 'package:flutter_bloc/flutter_bloc.dart';
 
 export 'favorites_state.dart';
 
+/// Global Cubit
 @lazySingleton
 class FavoritesCubit extends Cubit<FavoritesState> {
   FavoritesCubit(this._favoritesCase) : super(const FavoritesState()) {

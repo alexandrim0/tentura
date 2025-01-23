@@ -40,7 +40,9 @@ class ChatCubit extends Cubit<ChatState> {
       .listen(
         _onMessage,
         cancelOnError: false,
-        onError: (Object e) => emit(state.setError(e)),
+        onError: (Object e) => emit(state.copyWith(
+          status: StateHasError(e),
+        )),
       );
 
   @override
@@ -56,7 +58,9 @@ class ChatCubit extends Cubit<ChatState> {
         content: text.trim(),
       ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
@@ -70,7 +74,9 @@ class ChatCubit extends Cubit<ChatState> {
   Future<void> onChatClear() async {}
 
   Future<void> _fetch() async {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       final result = await _chatRepository.getChatMessagesFor(
         subjectId: state.me.id,
@@ -80,13 +86,15 @@ class ChatCubit extends Cubit<ChatState> {
         ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
       emit(state.copyWith(
         messages: messages,
-        status: FetchStatus.isSuccess,
+        status: StateStatus.isSuccess,
         cursor:
             messages.isEmpty ? DateTime.timestamp() : messages.last.updatedAt,
       ));
       _updatesSubscription.resume();
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
@@ -99,8 +107,7 @@ class ChatCubit extends Cubit<ChatState> {
     }
     emit(state.copyWith(
       cursor: message.updatedAt,
-      status: FetchStatus.isSuccess,
-      error: null,
+      status: StateStatus.isSuccess,
     ));
   }
 }

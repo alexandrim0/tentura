@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -10,11 +9,9 @@ class BeaconMineList extends StatelessWidget {
   const BeaconMineList({super.key});
 
   @override
-  Widget build(BuildContext context) => BlocConsumer<BeaconCubit, BeaconState>(
+  Widget build(BuildContext context) => BlocBuilder<BeaconCubit, BeaconState>(
         bloc: GetIt.I<BeaconCubit>(),
-        listenWhen: (p, c) => c.hasError,
-        listener: showSnackBarError,
-        buildWhen: (p, c) => c.hasNoError,
+        buildWhen: (p, c) => c.isSuccess,
         builder: (context, state) => state.beacons.isEmpty
             ? SliverToBoxAdapter(
                 child: Padding(

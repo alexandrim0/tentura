@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/beacon_image.dart';
@@ -12,17 +11,21 @@ import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
 import 'package:tentura/features/geo/ui/widget/place_name_text.dart';
 import 'package:tentura/features/geo/ui/dialog/choose_location_dialog.dart';
 
+import '../bloc/beacon_cubit.dart';
+
 class BeaconInfo extends StatelessWidget {
   const BeaconInfo({
     required this.beacon,
-    this.isTitleLarge = false,
+    required this.isShowBeaconEnabled,
     this.isShowMoreEnabled = true,
+    this.isTitleLarge = false,
     super.key,
   });
 
   final Beacon beacon;
   final bool isTitleLarge;
   final bool isShowMoreEnabled;
+  final bool isShowBeaconEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +34,9 @@ class BeaconInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         GestureDetector(
-          onTap: context.routeData.name == BeaconViewRoute.name
-              ? null
-              : () => context.pushRoute(BeaconViewRoute(id: beacon.id)),
+          onTap: isShowBeaconEnabled
+              ? () => GetIt.I<BeaconCubit>().showBeacon(beacon.id)
+              : null,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

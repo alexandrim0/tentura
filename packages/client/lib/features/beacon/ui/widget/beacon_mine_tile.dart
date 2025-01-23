@@ -18,10 +18,15 @@ class BeaconMineTile extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BeaconInfo(beacon: beacon),
+          BeaconInfo(
+            beacon: beacon,
+            isShowBeaconEnabled: true,
+          ),
           Padding(
             padding: kPaddingSmallV,
-            child: BeaconMineControl(beacon: beacon),
+            child: BeaconMineControl(
+              beacon: beacon,
+            ),
           ),
         ],
       );

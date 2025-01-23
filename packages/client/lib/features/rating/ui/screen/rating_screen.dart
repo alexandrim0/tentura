@@ -30,15 +30,8 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
               listener: (context, state) =>
                   context.read<RatingCubit>().fetch(state.selected),
             ),
-            BlocListener<RatingCubit, RatingState>(
-              listener: (context, state) => switch (state.status) {
-                final StateIsNavigating s => context.navigateNamedTo(s.path),
-                final StateHasError s => showSnackBarErrorState(
-                    context,
-                    s.error,
-                  ),
-                _ => null,
-              },
+            const BlocListener<RatingCubit, RatingState>(
+              listener: commonScreenBlocListener,
             ),
           ],
           child: this,

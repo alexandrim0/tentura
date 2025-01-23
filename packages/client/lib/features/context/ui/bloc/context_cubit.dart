@@ -15,6 +15,7 @@ export 'package:get_it/get_it.dart';
 
 export 'context_state.dart';
 
+/// Global Cubit
 @lazySingleton
 class ContextCubit extends Cubit<ContextState> {
   ContextCubit({

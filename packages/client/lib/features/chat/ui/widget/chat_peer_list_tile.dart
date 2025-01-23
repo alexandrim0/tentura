@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
@@ -19,12 +18,11 @@ class ChatPeerListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final chatNewsCubit = GetIt.I<ChatNewsCubit>();
     return ListTile(
       // Avatar
       leading: GestureDetector(
-        onTap: () => context.pushRoute(
-          ProfileViewRoute(id: profile.id),
-        ),
+        onTap: () => chatNewsCubit.showProfile(profile.id),
         child: AvatarRated(profile: profile),
       ),
 
@@ -47,7 +45,7 @@ class ChatPeerListTile extends StatelessWidget {
 
       // New messages indicator
       trailing: BlocSelector<ChatNewsCubit, ChatNewsState, int>(
-        bloc: GetIt.I<ChatNewsCubit>(),
+        bloc: chatNewsCubit,
         selector: (state) => state.messages[profile.id]?.length ?? 0,
         builder: (context, newMessagesCount) => Badge.count(
           count: newMessagesCount,
@@ -57,9 +55,7 @@ class ChatPeerListTile extends StatelessWidget {
         ),
       ),
 
-      onTap: () => context.pushRoute(
-        ChatRoute(id: profile.id),
-      ),
+      onTap: () => chatNewsCubit.showChatWith(profile.id),
     );
   }
 }

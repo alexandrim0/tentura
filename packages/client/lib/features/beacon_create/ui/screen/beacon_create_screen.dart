@@ -8,11 +8,11 @@ import 'package:tentura/domain/entity/coordinates.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
 
-import 'package:tentura/features/geo/ui/dialog/choose_location_dialog.dart';
-import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
+import 'package:tentura/features/beacon/ui/bloc/beacon_cubit.dart';
 import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
+import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
+import 'package:tentura/features/geo/ui/dialog/choose_location_dialog.dart';
 
-import '../bloc/beacon_cubit.dart';
 import '../dialog/beacon_publish_dialog.dart';
 
 @RoutePage()

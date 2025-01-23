@@ -7,11 +7,11 @@ import 'package:tentura/ui/widget/linear_pi_active.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import 'package:tentura/features/beacon/ui/widget/beacon_info.dart';
-import 'package:tentura/features/beacon/ui/widget/beacon_author_info.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_mine_control.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_tile_control.dart';
 import 'package:tentura/features/comment/ui/widget/comment_card.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
+import 'package:tentura/features/profile/ui/widget/author_info.dart';
 
 import '../bloc/beacon_view_cubit.dart';
 import '../widget/new_comment_input.dart';
@@ -31,7 +31,10 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
           myProfile: GetIt.I<ProfileCubit>().state.profile,
           id: id,
         ),
-        child: this,
+        child: BlocListener<BeaconViewCubit, BeaconViewState>(
+          listener: commonScreenBlocListener,
+          child: this,
+        ),
       );
 
   @override
@@ -42,26 +45,23 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
         leading: const DeepBackButton(),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4),
-          child: BlocSelector<BeaconViewCubit, BeaconViewState, FetchStatus>(
-            selector: (state) => state.status,
-            builder: (context, status) => status.isLoading
-                ? const LinearPiActive()
-                : const SizedBox(height: 4),
+          child: BlocSelector<BeaconViewCubit, BeaconViewState, bool>(
+            selector: (state) => state.isLoading,
+            builder: (context, isLoading) =>
+                isLoading ? const LinearPiActive() : const SizedBox(height: 4),
           ),
         ),
       ),
       bottomSheet: const NewCommentInput(),
-      body: BlocConsumer<BeaconViewCubit, BeaconViewState>(
-        listener: showSnackBarError,
-        listenWhen: (p, c) => c.hasError,
-        buildWhen: (p, c) => c.status.isSuccess,
+      body: BlocBuilder<BeaconViewCubit, BeaconViewState>(
+        buildWhen: (p, c) => c.isSuccess,
         builder: (context, state) {
           final beacon = state.beacon;
           return ListView(
             padding: kPaddingH + const EdgeInsets.only(bottom: 80),
             children: [
               // User row (Avatar and Name)
-              BeaconAuthorInfo(
+              AuthorInfo(
                 author: beacon.author,
                 key: ValueKey(beacon.author),
               ),
@@ -72,6 +72,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
                 beacon: beacon,
                 isTitleLarge: true,
                 isShowMoreEnabled: false,
+                isShowBeaconEnabled: false,
               ),
 
               // Buttons Row

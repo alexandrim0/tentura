@@ -61,6 +61,12 @@ class StateIsLoading extends StateStatus {
   const StateIsLoading();
 }
 
+class StateIsMessaging extends StateStatus {
+  const StateIsMessaging(this.message);
+
+  final String? message;
+}
+
 class StateIsNavigating extends StateStatus {
   const StateIsNavigating(this.path);
 

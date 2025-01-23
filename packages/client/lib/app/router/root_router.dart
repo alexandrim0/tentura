@@ -15,14 +15,6 @@ export 'package:auto_route/auto_route.dart';
 
 export 'root_router.gr.dart';
 
-const kPathRoot = '/';
-const kPathGraph = '/graph';
-const kPathRating = '/rating';
-const kPathConnect = '/connect';
-const kPathBeaconView = '/beacon/view';
-const kPathProfileChat = '/profile/chat';
-const kPathProfileView = '/profile/view';
-
 @singleton
 @AutoRouterConfig()
 class RootRouter extends RootStackRouter {
@@ -80,7 +72,7 @@ class RootRouter extends RootStackRouter {
             // Profile
             AutoRoute(
               initial: true,
-              page: ProfileMineRoute.page,
+              page: ProfileRoute.page,
             ),
           ],
           guards: [
@@ -120,7 +112,7 @@ class RootRouter extends RootStackRouter {
               (resolver) => _authCubit.state.isAuthenticated
                   ? (_authCubit.state.currentAccount.needEdit
                       ? const ProfileEditRoute()
-                      : const ProfileMineRoute())
+                      : const ProfileRoute())
                   : null,
             ),
           ],
@@ -133,7 +125,7 @@ class RootRouter extends RootStackRouter {
           guards: [
             AutoRouteGuard.redirect(
               (r) => _authCubit.checkIfIsMe(r.route.queryParams.getString('id'))
-                  ? const ProfileMineRoute()
+                  ? const ProfileRoute()
                   : null,
             ),
           ],
@@ -143,13 +135,15 @@ class RootRouter extends RootStackRouter {
         AutoRoute(
           keepHistory: false,
           maintainState: false,
+          path: kPathProfileEdit,
           page: ProfileEditRoute.page,
         ),
 
-        // Beacon Create
+        // Beacon Create New
         AutoRoute(
           keepHistory: false,
           maintainState: false,
+          path: kPathBeaconNew,
           page: BeaconCreateRoute.page,
         ),
 

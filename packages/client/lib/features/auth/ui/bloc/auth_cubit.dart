@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 
 import 'package:tentura/features/profile/data/repository/profile_repository.dart';
+import 'package:tentura/ui/bloc/state_base.dart';
 
 import '../../data/repository/auth_repository.dart';
 import 'auth_state.dart';
@@ -15,6 +16,7 @@ export 'package:get_it/get_it.dart';
 
 export 'auth_state.dart';
 
+/// Global Cubit
 @singleton
 class AuthCubit extends Cubit<AuthState> {
   @FactoryMethod(preResolve: true)
@@ -86,7 +88,9 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> addAccount(String? seed) async {
     if (seed == null) return;
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       final accountId = await _authRepository.addAccount(seed);
       final account = await _profileRepository.fetch(accountId);
@@ -98,12 +102,16 @@ class AuthCubit extends Cubit<AuthState> {
         updatedAt: DateTime.timestamp(),
       ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
   Future<void> signUp() async {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       emit(AuthState(
         accounts: state.accounts
@@ -114,32 +122,44 @@ class AuthCubit extends Cubit<AuthState> {
         updatedAt: DateTime.timestamp(),
       ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
   Future<void> signIn(String id) async {
     if (state.currentAccountId == id) return;
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       await _authRepository.signIn(id);
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
   Future<void> signOut() async {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       await _authRepository.signOut();
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
   /// Remove account from local storage
   Future<void> removeAccount(String id) async {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       await _authRepository.removeAccount(id);
       emit(AuthState(
@@ -147,7 +167,17 @@ class AuthCubit extends Cubit<AuthState> {
         updatedAt: DateTime.timestamp(),
       ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
+    }
+  }
+
+  Future<void> getSeedFromClipboard() async {
+    if (await Clipboard.hasStrings()) {
+      await addAccount(
+        (await Clipboard.getData(Clipboard.kTextPlain))?.text,
+      );
     }
   }
 
@@ -186,7 +216,9 @@ class AuthCubit extends Cubit<AuthState> {
           ));
           await _authRepository.updateAccount(account);
         } catch (e) {
-          emit(state.setError(e));
+          emit(state.copyWith(
+            status: StateHasError(e),
+          ));
         }
 
       case RepositoryEventCreate<Profile>():

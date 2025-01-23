@@ -10,6 +10,7 @@ export 'package:flutter_bloc/flutter_bloc.dart';
 
 export 'like_state.dart';
 
+/// Global Cubit
 @lazySingleton
 class LikeCubit extends Cubit<LikeState> {
   LikeCubit(this._likeCase)

@@ -1,53 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import '../../domain/exception.dart';
 import '../bloc/auth_cubit.dart';
 import '../widget/account_list_tile.dart';
 
 @RoutePage()
-class AuthLoginScreen extends StatelessWidget {
+class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
   const AuthLoginScreen({super.key});
 
   @override
+  Widget wrappedRoute(BuildContext context) =>
+      BlocListener<AuthCubit, AuthState>(
+        bloc: GetIt.I<AuthCubit>(),
+        listener: commonScreenBlocListener,
+      );
+
+  @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthState>(
-      bloc: GetIt.I<AuthCubit>(),
-      listenWhen: (p, c) => c.hasError,
-      listener: (context, state) {
-        switch (state.error) {
-          case AuthSeedExistsException _:
-            showSnackBar(
-              context,
-              isError: true,
-              text: 'Seed already exists',
-            );
-
-          case AuthSeedIsWrongException _:
-            showSnackBar(
-              context,
-              isError: true,
-              text: 'There is no correct seed!',
-            );
-
-          case AuthIdIsWrongException _:
-            showSnackBar(
-              context,
-              isError: true,
-              text: 'Account ID is wrong!',
-            );
-
-          default:
-            showSnackBarError(context, state);
-        }
-      },
-      buildWhen: (p, c) => c.hasNoError,
+    final authCubit = GetIt.I<AuthCubit>();
+    return BlocBuilder<AuthCubit, AuthState>(
+      bloc: authCubit,
+      buildWhen: (p, c) => c.isSuccess,
       builder: (context, state) {
-        final authCubit = GetIt.I<AuthCubit>();
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
@@ -90,7 +67,7 @@ class AuthLoginScreen extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: () async =>
                         authCubit.addAccount(await QRScanDialog.show(context)),
-                    child: const Text('Recover by QR'),
+                    child: const Text('Recover from QR'),
                   ),
                 ),
 
@@ -98,14 +75,8 @@ class AuthLoginScreen extends StatelessWidget {
                 Padding(
                   padding: kPaddingH,
                   child: OutlinedButton(
-                    child: const Text('Recover by seed'),
-                    onPressed: () async {
-                      if (await Clipboard.hasStrings() && context.mounted) {
-                        await authCubit.addAccount(
-                          (await Clipboard.getData(Clipboard.kTextPlain))?.text,
-                        );
-                      }
-                    },
+                    onPressed: authCubit.getSeedFromClipboard,
+                    child: const Text('Recover from clipboard'),
                   ),
                 ),
                 const Spacer(),

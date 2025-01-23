@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:intl/intl.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
@@ -54,17 +55,11 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
   if (isError) _logger.d(text);
   return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     behavior: isFloating ? SnackBarBehavior.floating : null,
-    margin: isFloating ? const EdgeInsets.all(16) : null,
+    margin: isFloating ? kPaddingAll : null,
     duration: duration,
     backgroundColor: isError
         ? theme.colorScheme.error
         : color ?? theme.snackBarTheme.backgroundColor,
-    action: kDebugMode
-        ? SnackBarAction(
-            label: 'print',
-            onPressed: () => _logger.d(text),
-          )
-        : null,
     content: RichText(
       text: TextSpan(
         text: text,
@@ -79,6 +74,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
   ));
 }
 
+@Deprecated('Use commonScreenBlocListener instead')
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBarError(
   BuildContext context,
   StateFetchMixin state,
@@ -89,16 +85,22 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBarError(
       text: state.error?.toString() ?? 'Unknown error!',
     );
 
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
-    showSnackBarErrorState(
-  BuildContext context,
-  Object error,
-) =>
-        showSnackBar(
+void commonScreenBlocListener(BuildContext context, StateBase state) =>
+    switch (state.status) {
+      final StateIsNavigating s => kIsWeb
+          ? context.navigateNamedTo(s.path)
+          : context.router.pushNamed(s.path),
+      final StateIsMessaging s => showSnackBar(
+          context,
+          text: s.message,
+        ),
+      final StateHasError s => showSnackBar(
           context,
           isError: true,
-          text: error.toString(),
-        );
+          text: s.error.toString(),
+        ),
+      _ => null,
+    };
 
 Future<({String name, Uint8List bytes})?> pickImage() async {
   final xFile = await ImagePicker().pickImage(

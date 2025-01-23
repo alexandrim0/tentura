@@ -9,6 +9,7 @@ export 'package:flutter_bloc/flutter_bloc.dart';
 
 export 'settings_state.dart';
 
+/// Global Cubit
 @singleton
 class SettingsCubit extends Cubit<SettingsState> {
   @FactoryMethod(preResolve: true)

@@ -10,10 +10,10 @@ import '../gql/_g/beacon_fetch_by_comment_id.req.gql.dart';
 import '../gql/_g/beacon_fetch_by_id_with_comments.req.gql.dart';
 
 @lazySingleton
-class BeaconViewRemoteRepository {
+class BeaconViewRepository {
   static const _label = 'BeaconView';
 
-  BeaconViewRemoteRepository(this._remoteApiService);
+  BeaconViewRepository(this._remoteApiService);
 
   final RemoteApiService _remoteApiService;
 

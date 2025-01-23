@@ -4,33 +4,28 @@ import 'package:flutter/services.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/qr_code.dart';
 
-import '../bloc/auth_cubit.dart';
-
 class ShowSeedDialog extends StatelessWidget {
   static Future<void> show(
     BuildContext context, {
-    required String userId,
-  }) async {
-    final seed = await GetIt.I<AuthCubit>().getSeedByAccountId(userId);
-    if (context.mounted) {
-      return showDialog(
+    required String accountId,
+    required String seed,
+  }) =>
+      showDialog(
         context: context,
         builder: (context) => ShowSeedDialog(
+          accountId: accountId,
           seed: seed,
-          userId: userId,
         ),
       );
-    }
-  }
 
   const ShowSeedDialog({
-    required this.userId,
+    required this.accountId,
     required this.seed,
     super.key,
   });
 
+  final String accountId;
   final String seed;
-  final String userId;
 
   @override
   Widget build(BuildContext context) {

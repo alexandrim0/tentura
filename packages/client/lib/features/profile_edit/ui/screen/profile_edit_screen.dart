@@ -9,7 +9,7 @@ import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/gradient_stack.dart';
 import 'package:tentura/ui/widget/avatar_positioned.dart';
 
-import '../bloc/profile_cubit.dart';
+import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 
 @RoutePage()
 class ProfileEditScreen extends StatefulWidget {
@@ -213,7 +213,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
       ));
       if (mounted) {
         if (await context.maybePop()) return;
-        if (mounted) await context.pushRoute(const ProfileMineRoute());
+        if (mounted) await context.pushRoute(const ProfileRoute());
       }
     } catch (e) {
       if (mounted) {

@@ -11,6 +11,16 @@ const kSettingsThemeMode = 'themeMode';
 
 const kSettingsIsIntroEnabledKey = 'isIntroEnabled';
 
+const kPathRoot = '/';
+const kPathGraph = '/graph';
+const kPathRating = '/rating';
+const kPathConnect = '/connect';
+const kPathBeaconNew = '/beacon/new';
+const kPathBeaconView = '/beacon/view';
+const kPathProfileChat = '/profile/chat';
+const kPathProfileEdit = '/profile/edit';
+const kPathProfileView = '/profile/view';
+
 const kAppLinkBase = 'https://${const String.fromEnvironment('APP_LINK_BASE')}';
 
 const kOsmUrlTemplate = String.fromEnvironment(

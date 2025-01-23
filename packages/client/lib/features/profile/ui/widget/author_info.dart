@@ -6,8 +6,8 @@ import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
 
-class BeaconAuthorInfo extends StatelessWidget {
-  const BeaconAuthorInfo({
+class AuthorInfo extends StatelessWidget {
+  const AuthorInfo({
     required this.author,
     super.key,
   });
