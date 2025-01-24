@@ -87,9 +87,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBarError(
 
 void commonScreenBlocListener(BuildContext context, StateBase state) =>
     switch (state.status) {
-      final StateIsNavigating s => kIsWeb
-          ? context.navigateNamedTo(s.path)
-          : context.router.pushNamed(s.path),
+      final StateIsNavigating s => context.navigateNamedTo(s.path),
       final StateIsMessaging s => showSnackBar(
           context,
           text: s.message,

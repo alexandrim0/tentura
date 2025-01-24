@@ -44,7 +44,7 @@ class BeaconTileControl extends StatelessWidget {
             const Spacer(),
             // Rating bar
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: kPaddingH,
               child: RatingIndicator(
                 key: ValueKey(beacon.score),
                 score: beacon.score,

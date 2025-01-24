@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:tentura/ui/bloc/state_base.dart';
 import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -9,6 +8,7 @@ import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_info.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_mine_control.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_tile_control.dart';
+import 'package:tentura/features/comment/ui/bloc/comment_cubit.dart';
 import 'package:tentura/features/comment/ui/widget/comment_card.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 import 'package:tentura/features/profile/ui/widget/author_info.dart';
@@ -26,13 +26,27 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
   final String id;
 
   @override
-  Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => BeaconViewCubit(
-          myProfile: GetIt.I<ProfileCubit>().state.profile,
-          id: id,
-        ),
-        child: BlocListener<BeaconViewCubit, BeaconViewState>(
-          listener: commonScreenBlocListener,
+  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => BeaconViewCubit(
+              myProfile: GetIt.I<ProfileCubit>().state.profile,
+              id: id,
+            ),
+          ),
+          BlocProvider(
+            create: (_) => CommentCubit(),
+          ),
+        ],
+        child: MultiBlocListener(
+          listeners: const [
+            BlocListener<CommentCubit, CommentState>(
+              listener: commonScreenBlocListener,
+            ),
+            BlocListener<BeaconViewCubit, BeaconViewState>(
+              listener: commonScreenBlocListener,
+            ),
+          ],
           child: this,
         ),
       );

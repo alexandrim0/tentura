@@ -43,6 +43,10 @@ class ProfileCubit extends Cubit<ProfileState> {
         status: const StateIsNavigating(kPathProfileEdit),
       ));
 
+  void showProfile(String id) => emit(state.copyWith(
+        status: StateIsNavigating('$kPathProfileView?id=$id'),
+      ));
+
   void showRating() => emit(state.copyWith(
         status: const StateIsNavigating(kPathRating),
       ));

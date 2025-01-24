@@ -149,15 +149,8 @@ class BeaconInfo extends StatelessWidget {
                         color: theme.colorScheme.primary,
                       ),
                     ),
-                    onPressed: () async {
-                      await GetIt.I<ContextCubit>().add(beacon.context);
-                      if (context.mounted) {
-                        showSnackBar(
-                          context,
-                          text: 'Topic ${beacon.context} has been added.',
-                        );
-                      }
-                    },
+                    onPressed: () async =>
+                        GetIt.I<ContextCubit>().add(beacon.context),
                   ),
               ],
             ),

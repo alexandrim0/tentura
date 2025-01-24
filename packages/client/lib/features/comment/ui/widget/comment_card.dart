@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/comment.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/rating_indicator.dart';
@@ -9,6 +8,8 @@ import 'package:tentura/ui/widget/show_more_text.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import 'package:tentura/features/like/ui/widget/like_control.dart';
+
+import '../bloc/comment_cubit.dart';
 
 class CommentCard extends StatelessWidget {
   const CommentCard({
@@ -35,7 +36,7 @@ class CommentCard extends StatelessWidget {
               // Avatar
               GestureDetector(
                 onTap: () =>
-                    context.pushRoute(ProfileViewRoute(id: comment.author.id)),
+                    context.read<CommentCubit>().showProfile(comment.author.id),
                 child: Padding(
                   padding: const EdgeInsets.only(right: kSpacingMedium),
                   child: AvatarRated(profile: comment.author),
@@ -46,13 +47,9 @@ class CommentCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Title
-                    GestureDetector(
-                      onTap: () => context
-                          .pushRoute(ProfileViewRoute(id: comment.author.id)),
-                      child: Text(
-                        isMine ? 'Me' : comment.author.title,
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
+                    Text(
+                      isMine ? 'Me' : comment.author.title,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
 
                     // Body
@@ -75,24 +72,28 @@ class CommentCard extends StatelessWidget {
           key: const Key('CommentButtons'),
           padding: kPaddingSmallV,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Share
               ShareCodeIconButton.id(comment.id),
 
+              const Spacer(),
+
               // Rating bar
-              if (!isMine)
-                RatingIndicator(
-                  key: ValueKey(comment.score),
-                  score: comment.score,
+              if (!isMine) ...[
+                Padding(
+                  padding: kPaddingH,
+                  child: RatingIndicator(
+                    key: ValueKey(comment.score),
+                    score: comment.score,
+                  ),
                 ),
 
-              // Vote
-              if (!isMine)
+                // Vote
                 LikeControl(
                   entity: comment,
                   key: ValueKey(comment),
                 ),
+              ],
             ],
           ),
         ),
