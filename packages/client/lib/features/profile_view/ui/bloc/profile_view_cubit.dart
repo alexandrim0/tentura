@@ -4,9 +4,10 @@ import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import 'package:tentura/features/friends/domain/use_case/friends_case.dart';
+import 'package:tentura/features/beacon/data/repository/beacon_repository.dart';
+import 'package:tentura/features/like/data/repository/like_remote_repository.dart';
+import 'package:tentura/features/profile_view/data/repository/profile_view_repository.dart';
 
-import '../../domain/use_case/profile_view_case.dart';
 import 'profile_view_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,16 +17,25 @@ export 'profile_view_state.dart';
 class ProfileViewCubit extends Cubit<ProfileViewState> {
   ProfileViewCubit({
     required String id,
-    FriendsCase? friendsCase,
-    ProfileViewCase? profileViewCase,
-  })  : _friendsCase = friendsCase ?? GetIt.I<FriendsCase>(),
-        _profileViewCase = profileViewCase ?? GetIt.I<ProfileViewCase>(),
-        super(ProfileViewState(profile: Profile(id: id))) {
+    BeaconRepository? beaconRepository,
+    LikeRemoteRepository? likeRemoteRepository,
+    ProfileViewRepository? profileViewRepository,
+  })  : _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
+        _likeRemoteRepository =
+            likeRemoteRepository ?? GetIt.I<LikeRemoteRepository>(),
+        _profileViewRepository =
+            profileViewRepository ?? GetIt.I<ProfileViewRepository>(),
+        super(ProfileViewState(
+          profile: Profile(id: id),
+        )) {
     fetchProfile();
   }
 
-  final FriendsCase _friendsCase;
-  final ProfileViewCase _profileViewCase;
+  final BeaconRepository _beaconRepository;
+
+  final LikeRemoteRepository _likeRemoteRepository;
+
+  final ProfileViewRepository _profileViewRepository;
 
   void showGraph(String focus) => emit(state.copyWith(
         status: StateIsNavigating('$kPathGraph?focus=$focus'),
@@ -36,8 +46,7 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
       status: StateStatus.isLoading,
     ));
     try {
-      final (:profile, :beacons) =
-          await _profileViewCase.fetchProfileWithBeaconsByUserId(
+      final (:profile, :beacons) = await _profileViewRepository.fetchByUserId(
         state.profile.id,
         limit: limit,
       );
@@ -60,7 +69,7 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
     ));
     try {
       final beacons =
-          await _profileViewCase.fetchBeaconsByUserId(state.profile.id);
+          await _beaconRepository.fetchBeaconsByUserId(state.profile.id);
       emit(state.copyWith(
         hasReachedMax: true,
         profile: state.profile,
@@ -83,7 +92,10 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
     ));
     try {
       emit(state.copyWith(
-        profile: await _friendsCase.addFriend(state.profile),
+        profile: await _likeRemoteRepository.setLike(
+          state.profile,
+          amount: 1,
+        ),
         status: StateStatus.isSuccess,
       ));
     } catch (e) {
@@ -99,7 +111,10 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
     ));
     try {
       emit(state.copyWith(
-        profile: await _friendsCase.removeFriend(state.profile),
+        profile: await _likeRemoteRepository.setLike(
+          state.profile,
+          amount: 0,
+        ),
         status: StateStatus.isSuccess,
       ));
     } catch (e) {

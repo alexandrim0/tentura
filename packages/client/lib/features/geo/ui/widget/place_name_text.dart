@@ -1,7 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 
-import '../../domain/use_case/geo_case.dart';
+import 'package:tentura/domain/entity/coordinates.dart';
+
+import '../../data/repository/geo_repository.dart';
+import '../../domain/entity/place.dart';
 
 class PlaceNameText extends StatelessWidget {
   const PlaceNameText({
@@ -15,11 +18,11 @@ class PlaceNameText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final geoCase = GetIt.I<GeoCase>();
-    final place = geoCase.getCached(coords);
+    final geoRepository = GetIt.I<GeoRepository>();
+    final place = geoRepository.cache[coords];
     return place == null
         ? FutureBuilder(
-            future: geoCase.getLocationByCoords(coords),
+            future: geoRepository.getLocationByCoords(coords),
             builder: (context, snapshot) => _buildText(snapshot.data?.place),
           )
         : _buildText(place);

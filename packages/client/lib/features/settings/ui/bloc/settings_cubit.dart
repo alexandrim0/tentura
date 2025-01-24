@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/repository/settings_repository.dart';
 import 'settings_state.dart';
@@ -48,7 +47,9 @@ class SettingsCubit extends Cubit<SettingsState> {
         themeMode: themeMode,
       ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
@@ -59,7 +60,9 @@ class SettingsCubit extends Cubit<SettingsState> {
         introEnabled: isEnabled,
       ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 }

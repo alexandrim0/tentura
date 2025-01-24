@@ -125,7 +125,7 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
 
           // Rating List
           body: ListView.separated(
-            padding: kPaddingH,
+            padding: kPaddingH + kPaddingT,
             itemCount: items.length,
             separatorBuilder: (context, i) => const Divider(),
             itemBuilder: (context, i) => RatingListTile(

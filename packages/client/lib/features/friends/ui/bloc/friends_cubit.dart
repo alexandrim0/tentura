@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
 
 import 'package:tentura/features/auth/data/repository/auth_repository.dart';
+import 'package:tentura/features/friends/data/repository/friends_remote_repository.dart';
+import 'package:tentura/features/like/data/repository/like_remote_repository.dart';
 
-import '../../domain/use_case/friends_case.dart';
 import 'friends_state.dart';
 
 export 'friends_state.dart';
@@ -15,20 +15,26 @@ export 'friends_state.dart';
 @singleton
 class FriendsCubit extends Cubit<FriendsState> {
   FriendsCubit(
-    this._friendsCase,
+    this._likeRemoteRepository,
+    this._friendsRemoteRepository,
     AuthRepository _authRepository,
   ) : super(const FriendsState(friends: {})) {
     _authChanges = _authRepository.currentAccountChanges().listen(
           _onAuthChanged,
           cancelOnError: false,
         );
-    _friendsChanges = _friendsCase.friendsChanges.listen(
-      _onFriendsChanged,
-      cancelOnError: false,
-    );
+    _friendsChanges = _likeRemoteRepository.changes
+        .where((e) => e.value is Profile)
+        .map((e) => e.value as Profile)
+        .listen(
+          _onFriendsChanged,
+          cancelOnError: false,
+        );
   }
 
-  final FriendsCase _friendsCase;
+  final LikeRemoteRepository _likeRemoteRepository;
+
+  final FriendsRemoteRepository _friendsRemoteRepository;
 
   late final StreamSubscription<String> _authChanges;
 
@@ -43,22 +49,28 @@ class FriendsCubit extends Cubit<FriendsState> {
   }
 
   Future<void> fetch() async {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
-      final friends = await _friendsCase.fetch();
+      final friends = await _friendsRemoteRepository.fetch();
       emit(FriendsState(
         friends: {
           for (final e in friends) e.id: e,
         },
       ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
-  Future<void> addFriend(Profile user) => _friendsCase.addFriend(user);
+  Future<void> addFriend(Profile user) =>
+      _likeRemoteRepository.setLike(user, amount: 1);
 
-  Future<void> removeFriend(Profile user) => _friendsCase.removeFriend(user);
+  Future<void> removeFriend(Profile user) =>
+      _likeRemoteRepository.setLike(user, amount: 0);
 
   void _onAuthChanged(String userId) {
     // ignore: prefer_const_constructors //
@@ -67,12 +79,16 @@ class FriendsCubit extends Cubit<FriendsState> {
   }
 
   void _onFriendsChanged(Profile profile) {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     if (profile.isFriend) {
       state.friends[profile.id] = profile;
     } else {
       state.friends.remove(profile.id);
     }
-    emit(FriendsState(friends: state.friends));
+    emit(FriendsState(
+      friends: state.friends,
+    ));
   }
 }

@@ -1,9 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import 'package:tentura/features/chat/ui/widget/chat_peer_list_tile.dart';
@@ -18,11 +16,9 @@ class FriendsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final friendsCubit = GetIt.I<FriendsCubit>();
     return SafeArea(
-      child: BlocConsumer<FriendsCubit, FriendsState>(
+      child: BlocBuilder<FriendsCubit, FriendsState>(
         bloc: friendsCubit,
-        listenWhen: (p, c) => c.hasError,
-        listener: showSnackBarError,
-        buildWhen: (p, c) => c.hasNoError,
+        buildWhen: (p, c) => c.isSuccess,
         builder: (context, state) {
           late final friends = state.friends.values.toList();
           return RefreshIndicator.adaptive(

@@ -1,23 +1,17 @@
 import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
+export 'package:tentura/ui/bloc/state_base.dart';
+
 part 'my_field_state.freezed.dart';
 
-@freezed
-class MyFieldState with _$MyFieldState, StateFetchMixin {
+@Freezed(makeCollectionsUnmodifiable: false)
+class MyFieldState extends StateBase with _$MyFieldState {
   const factory MyFieldState({
     @Default('') String context,
     @Default([]) List<Beacon> beacons,
-    @Default(FetchStatus.isSuccess) FetchStatus status,
-    Object? error,
+    @Default(StateIsSuccess()) StateStatus status,
   }) = _MyFieldState;
 
   const MyFieldState._();
-
-  MyFieldState setLoading() => copyWith(status: FetchStatus.isLoading);
-
-  MyFieldState setError(Object error) => copyWith(
-        status: FetchStatus.isFailure,
-        error: error,
-      );
 }

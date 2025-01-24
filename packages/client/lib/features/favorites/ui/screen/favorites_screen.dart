@@ -17,11 +17,9 @@ class FavoritesScreen extends StatelessWidget {
     final favoritesCubit = GetIt.I<FavoritesCubit>();
     return SafeArea(
       minimum: kPaddingH,
-      child: BlocConsumer<FavoritesCubit, FavoritesState>(
+      child: BlocBuilder<FavoritesCubit, FavoritesState>(
         bloc: favoritesCubit,
-        listenWhen: (p, c) => c.hasError,
-        listener: showSnackBarError,
-        buildWhen: (p, c) => c.hasNoError,
+        buildWhen: (p, c) => c.isSuccess,
         builder: (context, state) {
           return state.isLoading
               // Loading state

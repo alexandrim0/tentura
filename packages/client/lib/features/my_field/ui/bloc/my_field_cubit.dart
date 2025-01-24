@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:get_it/get_it.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/repository/my_field_repository.dart';
 import 'my_field_state.dart';
@@ -21,7 +20,9 @@ class MyFieldCubit extends Cubit<MyFieldState> {
   final MyFieldRepository _repository;
 
   Future<void> fetch([String? contextName]) async {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       final beacons = await _repository.fetch(
         context: contextName ?? state.context,
@@ -31,7 +32,9 @@ class MyFieldCubit extends Cubit<MyFieldState> {
         beacons: beacons.toList(),
       ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 }

@@ -1,8 +1,8 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:intl/intl.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:tentura/consts.dart';
@@ -73,17 +73,6 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
     ),
   ));
 }
-
-@Deprecated('Use commonScreenBlocListener instead')
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBarError(
-  BuildContext context,
-  StateFetchMixin state,
-) =>
-    showSnackBar(
-      context,
-      isError: true,
-      text: state.error?.toString() ?? 'Unknown error!',
-    );
 
 void commonScreenBlocListener(BuildContext context, StateBase state) =>
     switch (state.status) {

@@ -31,10 +31,18 @@ class MyFieldScreen extends StatelessWidget implements AutoRouteWrapper {
               ),
             ),
           ],
-          child: BlocListener<ContextCubit, ContextState>(
-            listenWhen: (p, c) => p.selected != c.selected,
-            listener: (context, state) =>
-                context.read<MyFieldCubit>().fetch(state.selected),
+          child: MultiBlocListener(
+            listeners: [
+              BlocListener<ContextCubit, ContextState>(
+                listenWhen: (p, c) => p.selected != c.selected,
+                listener: (context, state) =>
+                    context.read<MyFieldCubit>().fetch(state.selected),
+                child: this,
+              ),
+              const BlocListener<MyFieldCubit, MyFieldState>(
+                listener: commonScreenBlocListener,
+              ),
+            ],
             child: this,
           ),
         ),
@@ -46,14 +54,14 @@ class MyFieldScreen extends StatelessWidget implements AutoRouteWrapper {
         child: Column(
           children: [
             // Context selector
-            const ContextDropDown(key: Key('MyFieldContextSelector')),
+            const ContextDropDown(
+              key: Key('MyFieldContextSelector'),
+            ),
 
             // Beacons list
             Expanded(
-              child: BlocConsumer<MyFieldCubit, MyFieldState>(
-                listenWhen: (p, c) => c.hasError,
-                listener: showSnackBarError,
-                buildWhen: (p, c) => c.hasNoError,
+              child: BlocBuilder<MyFieldCubit, MyFieldState>(
+                buildWhen: (p, c) => c.isSuccess,
                 builder: (context, state) {
                   if (state.isLoading) {
                     return const Center(

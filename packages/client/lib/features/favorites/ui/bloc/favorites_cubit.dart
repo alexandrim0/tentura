@@ -2,9 +2,10 @@ import 'dart:async';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/domain/entity/beacon.dart';
-import 'package:tentura/ui/bloc/state_base.dart';
 
-import '../../domain/use_case/favorites_case.dart';
+import 'package:tentura/features/auth/data/repository/auth_repository.dart';
+import 'package:tentura/features/favorites/data/repository/favorites_remote_repository.dart';
+
 import 'favorites_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,36 +15,41 @@ export 'favorites_state.dart';
 /// Global Cubit
 @lazySingleton
 class FavoritesCubit extends Cubit<FavoritesState> {
-  FavoritesCubit(this._favoritesCase) : super(const FavoritesState()) {
+  FavoritesCubit(
+    this._authRepository,
+    this._favoritesRemoteRepository,
+  ) : super(const FavoritesState()) {
     _authChanges.resume();
     _favoritesChanges.resume();
   }
 
-  final FavoritesCase _favoritesCase;
+  final AuthRepository _authRepository;
 
-  late final _authChanges = _favoritesCase.currentAccountChanges.listen(
+  final FavoritesRemoteRepository _favoritesRemoteRepository;
+
+  late final _authChanges = _authRepository.currentAccountChanges().listen(
     (userId) async {
       emit(FavoritesState(
         beacons: [],
         userId: userId,
-        status: FetchStatus.isLoading,
+        status: StateStatus.isLoading,
       ));
       if (userId.isNotEmpty) await fetch();
     },
     cancelOnError: false,
   );
 
-  late final _favoritesChanges = _favoritesCase.favoritesChanges.listen(
+  late final _favoritesChanges = _favoritesRemoteRepository.changes.listen(
     (beacon) => emit(state.copyWith(
       beacons: beacon.isPinned
           ? [beacon, ...state.beacons]
           : state.beacons.where((e) => e.id != beacon.id).toList(),
-      status: FetchStatus.isSuccess,
+      status: StateStatus.isSuccess,
     )),
     cancelOnError: false,
   );
 
-  Stream<Beacon> get favoritesChanges => _favoritesCase.favoritesChanges;
+  Stream<Beacon> get favoritesChanges => _favoritesRemoteRepository.changes;
 
   @override
   @disposeMethod
@@ -54,33 +60,41 @@ class FavoritesCubit extends Cubit<FavoritesState> {
   }
 
   Future<void> fetch() async {
-    emit(state.setLoading());
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       emit(state.copyWith(
-        beacons: List.from(await _favoritesCase.fetch()),
-        status: FetchStatus.isSuccess,
+        beacons: List.from(await _favoritesRemoteRepository.fetch()),
+        status: StateStatus.isSuccess,
       ));
     } catch (e) {
-      emit(state.setError(e.toString()));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
   Future<void> pin(Beacon beacon) async {
     try {
-      await _favoritesCase.pin(beacon);
+      await _favoritesRemoteRepository.pin(beacon);
     } catch (e) {
-      emit(state.setError(e.toString()));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 
   Future<void> unpin(Beacon beacon) async {
     try {
-      await _favoritesCase.unpin(
+      await _favoritesRemoteRepository.unpin(
         beacon: beacon,
         userId: state.userId,
       );
     } catch (e) {
-      emit(state.setError(e.toString()));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 }

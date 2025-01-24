@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/ui/utils/ui_utils.dart';
-
 import '../../domain/entity/context_selection.dart';
 import '../bloc/context_cubit.dart';
 import '../dialog/context_add_dialog.dart';
@@ -14,7 +12,7 @@ class ContextDropDown extends StatelessWidget {
   Widget build(BuildContext context) {
     final contextCubit = context.read<ContextCubit>();
     final colorScheme = Theme.of(context).colorScheme;
-    return BlocConsumer<ContextCubit, ContextState>(
+    return BlocBuilder<ContextCubit, ContextState>(
       builder: (context, state) => DefaultTextStyle.merge(
         style: TextStyle(
           color: colorScheme.onSurface,
@@ -46,7 +44,9 @@ class ContextDropDown extends StatelessWidget {
                             context,
                             contextName: e,
                           );
-                          if (needDelete ?? false) await contextCubit.delete(e);
+                          if (needDelete ?? false) {
+                            await contextCubit.delete(e);
+                          }
                         },
                       ),
                   ],
@@ -55,11 +55,7 @@ class ContextDropDown extends StatelessWidget {
           ],
           onChanged: (value) => switch (value) {
             final ContextSelectionAdd _ => ContextAddDialog.show(context).then(
-                (contextName) async {
-                  if (contextName != null) {
-                    await contextCubit.add(contextName);
-                  }
-                },
+                (c) async => contextCubit.add(c),
               ),
             final ContextSelectionAll _ => contextCubit.select(''),
             final ContextSelectionValue c => contextCubit.select(c.name),
@@ -71,8 +67,6 @@ class ContextDropDown extends StatelessWidget {
           },
         ),
       ),
-      listenWhen: (p, c) => c.hasError,
-      listener: showSnackBarError,
     );
   }
 }

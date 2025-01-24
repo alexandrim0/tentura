@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:logger/logger.dart';
-import 'package:flutter/foundation.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:injectable/injectable.dart';
 
