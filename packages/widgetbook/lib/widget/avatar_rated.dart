@@ -7,8 +7,9 @@ import 'package:tentura/ui/widget/avatar_rated.dart';
 @UseCase(
   name: 'Default',
   type: AvatarRated,
+  path: '[widget]/avatar',
 )
-Widget colorsDrawerUseCase(BuildContext context) {
+Widget avatarRatedUseCase(BuildContext context) {
   return const Center(
     child: Column(
       spacing: 16,
@@ -18,13 +19,13 @@ Widget colorsDrawerUseCase(BuildContext context) {
           profile: Profile(),
         ),
         AvatarRated(
-          profile: Profile(score: 0.2),
+          profile: Profile(score: 25),
         ),
         AvatarRated(
-          profile: Profile(score: 0.6),
+          profile: Profile(score: 75),
         ),
         AvatarRated(
-          profile: Profile(score: 1),
+          profile: Profile(score: 100),
         ),
       ],
     ),

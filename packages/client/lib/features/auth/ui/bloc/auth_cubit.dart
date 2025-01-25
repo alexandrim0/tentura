@@ -4,9 +4,9 @@ import 'package:injectable/injectable.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
+import 'package:tentura/ui/bloc/state_base.dart';
 
 import 'package:tentura/features/profile/data/repository/profile_repository.dart';
-import 'package:tentura/ui/bloc/state_base.dart';
 
 import '../../data/repository/auth_repository.dart';
 import 'auth_state.dart';
