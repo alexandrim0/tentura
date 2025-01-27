@@ -24,6 +24,7 @@ dependencies:
   faker_dart: ^0.2.2
   injectable: ^2.5.0
   collection: ^1.19.0
+  google_fonts: ^6.2.1
   ed25519_edwards: ^0.3.1
   dart_jsonwebtoken: ^2.16.0
   freezed_annotation: ^2.4.4

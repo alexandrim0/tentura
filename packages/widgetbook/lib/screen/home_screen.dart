@@ -12,10 +12,11 @@ import 'package:tentura/features/friends/ui/bloc/friends_cubit.dart';
 import 'package:tentura/features/friends/ui/screen/friends_screen.dart';
 import 'package:tentura/features/home/ui/widget/friends_navbar_item.dart';
 import 'package:tentura/features/home/ui/widget/profile_navbar_item.dart';
-import 'package:tentura/features/like/ui/bloc/like_cubit.dart';
 import 'package:tentura/features/my_field/ui/bloc/my_field_cubit.dart';
 import 'package:tentura/features/my_field/ui/screen/my_field_screen.dart';
 import 'package:tentura/features/profile/ui/screen/profile_screen.dart';
+import 'package:tentura/features/beacon/ui/bloc/beacon_cubit.dart';
+import 'package:tentura/features/like/ui/bloc/like_cubit.dart';
 
 @UseCase(
   name: 'Default',
@@ -24,6 +25,9 @@ import 'package:tentura/features/profile/ui/screen/profile_screen.dart';
 )
 Widget defaultHomeUseCase(BuildContext context) => MultiBlocProvider(
       providers: [
+        BlocProvider.value(
+          value: GetIt.I<BeaconCubit>(),
+        ),
         BlocProvider.value(
           value: GetIt.I<ChatNewsCubit>(),
         ),
