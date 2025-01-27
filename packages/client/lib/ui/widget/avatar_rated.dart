@@ -6,7 +6,6 @@ import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import '../utils/asset_package.dart';
 import 'cached_image/cached_image.dart';
 
 class AvatarRated extends StatelessWidget {
@@ -32,7 +31,8 @@ class AvatarRated extends StatelessWidget {
   Widget build(BuildContext context) {
     final placeholder = Image.asset(
       'assets/images/avatar-placeholder.jpg',
-      package: AssetPackage.assetPackage,
+      // ignore: avoid_redundant_argument_values // set from env
+      package: kAssetPackage,
       height: size,
       width: size,
       fit: boxFit,

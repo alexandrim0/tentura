@@ -28,6 +28,8 @@ const kOsmUrlTemplate = String.fromEnvironment(
   defaultValue: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
 );
 
+const kAssetPackage = bool.fromEnvironment('IS_IMPORTED') ? 'tentura' : null;
+
 const kJwtExpiresIn = Duration(
   seconds: int.fromEnvironment(
     'JWT_EXPIRES_IN',

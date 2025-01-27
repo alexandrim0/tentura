@@ -116,6 +116,8 @@
             "toolArgs": [
                 "--dart-define",
                 "APP_LINK_BASE=dev.tentura.io",
+                "--dart-define",
+                "IS_IMPORTED=true",
             ],
             "args": [
                 "-d", "chrome",
