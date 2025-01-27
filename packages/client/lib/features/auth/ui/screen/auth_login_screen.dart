@@ -16,6 +16,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
       BlocListener<AuthCubit, AuthState>(
         bloc: GetIt.I<AuthCubit>(),
         listener: commonScreenBlocListener,
+        child: this,
       );
 
   @override
