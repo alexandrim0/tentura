@@ -104,31 +104,31 @@ class SharedViewDocument extends StatelessComponent {
 
   static final _headerLogo = [
     link(
-      href: '$kServerName$kIconPath/web_24dp.png',
+      href: '$kServerName$kPathIcons/web_24dp.png',
       rel: 'shortcut icon',
     ),
     link(
-      href: '$kServerName$kIconPath/web_32dp.png',
+      href: '$kServerName$kPathIcons/web_32dp.png',
       rel: 'shortcut icon',
     ),
     link(
-      href: '$kServerName$kIconPath/web_36dp.png',
+      href: '$kServerName$kPathIcons/web_36dp.png',
       rel: 'shortcut icon',
     ),
     link(
-      href: '$kServerName$kIconPath/web_48dp.png',
+      href: '$kServerName$kPathIcons/web_48dp.png',
       rel: 'shortcut icon',
     ),
     link(
-      href: '$kServerName$kIconPath/web_64dp.png',
+      href: '$kServerName$kPathIcons/web_64dp.png',
       rel: 'shortcut icon',
     ),
     link(
-      href: '$kServerName$kIconPath/web_96dp.png',
+      href: '$kServerName$kPathIcons/web_96dp.png',
       rel: 'shortcut icon',
     ),
     link(
-      href: '$kServerName$kIconPath/web_512dp.png',
+      href: '$kServerName$kPathIcons/web_512dp.png',
       rel: 'shortcut icon',
     ),
   ];

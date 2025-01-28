@@ -12,7 +12,7 @@ class TenturaApi extends TenturaApiBase {
   TenturaApi({
     required super.apiUrlBase,
     super.jwtExpiresIn = const Duration(minutes: 1),
-    super.userAgent = 'Tentura client',
+    super.userAgent = kAppTitle,
     super.storagePath = '',
     super.isDebugMode = false,
   });

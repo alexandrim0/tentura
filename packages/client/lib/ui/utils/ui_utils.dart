@@ -44,11 +44,13 @@ String timeFormatHm(DateTime? dateTime) =>
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
   BuildContext context, {
   String? text,
-  List<TextSpan>? textSpans,
-  Duration duration = kSnackBarDuration,
-  bool isFloating = false,
-  bool isError = false,
   Color? color,
+  bool isError = false,
+  bool isFloating = false,
+  List<TextSpan>? textSpans,
+  Duration duration = const Duration(
+    seconds: kSnackBarDuration,
+  ),
 }) {
   final theme = Theme.of(context);
   ScaffoldMessenger.of(context).clearSnackBars();

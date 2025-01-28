@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura/consts.dart';
 import 'package:tentura_sdk/tentura_sdk.dart';
 
 export 'package:tentura_sdk/tentura_sdk.dart';
@@ -19,8 +18,10 @@ class RemoteApiService extends TenturaApi {
     super.storagePath = '',
     super.userAgent = kUserAgent,
     super.isDebugMode = kDebugMode,
-    super.apiUrlBase = kAppLinkBase,
-    super.jwtExpiresIn = kJwtExpiresIn,
+    super.apiUrlBase = kServerName,
+    super.jwtExpiresIn = const Duration(
+      seconds: kJwtExpiresIn,
+    ),
   });
 
   @disposeMethod

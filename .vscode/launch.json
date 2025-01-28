@@ -14,7 +14,9 @@
                 "--flavor",
                 "prod",
                 "--dart-define",
-                "APP_LINK_BASE=dev.tentura.io",
+                "SERVER_NAME=https://dev.tentura.io",
+                "--dart-define",
+                "IMAGE_SERVER=https://dev.tentura.io",
             ],
         },
         {
@@ -25,7 +27,9 @@
             "flutterMode": "debug",
             "toolArgs": [
                 "--dart-define",
-                "APP_LINK_BASE=dev.tentura.io",
+                "SERVER_NAME=https://dev.tentura.io",
+                "--dart-define",
+                "IMAGE_SERVER=https://dev.tentura.io",
             ],
             "args": [
                 "-d", "chrome",
@@ -42,7 +46,9 @@
             "toolArgs": [
                 "--wasm",
                 "--dart-define",
-                "APP_LINK_BASE=dev.tentura.io",
+                "SERVER_NAME=https://dev.tentura.io",
+                "--dart-define",
+                "IMAGE_SERVER=https://dev.tentura.io",
             ],
             "args": [
                 "-d", "chrome",
@@ -61,7 +67,9 @@
                 "--flavor",
                 "stage",
                 "--dart-define",
-                "APP_LINK_BASE=stage.tentura.io",
+                "SERVER_NAME=https://stage.tentura.io",
+                "--dart-define",
+                "IMAGE_SERVER=https://stage.tentura.io",
             ],
         },
         {
@@ -74,7 +82,9 @@
                 "--flavor",
                 "prod",
                 "--dart-define",
-                "APP_LINK_BASE=dev.tentura.io",
+                "SERVER_NAME=https://dev.tentura.io",
+                "--dart-define",
+                "IMAGE_SERVER=https://dev.tentura.io",
             ],
         },
         {
@@ -87,7 +97,9 @@
                 "--flavor",
                 "prod",
                 "--dart-define",
-                "APP_LINK_BASE=dev.tentura.io",
+                "SERVER_NAME=https://dev.tentura.io",
+                "--dart-define",
+                "IMAGE_SERVER=https://dev.tentura.io",
             ],
         },
         {
@@ -99,7 +111,9 @@
             "toolArgs": [
                 "--wasm",
                 "--dart-define",
-                "APP_LINK_BASE=dev.tentura.io",
+                "SERVER_NAME=https://dev.tentura.io",
+                "--dart-define",
+                "IMAGE_SERVER=https://dev.tentura.io",
             ],
             "args": [
                 "-d", "chrome",
@@ -115,9 +129,11 @@
             "type": "dart",
             "toolArgs": [
                 "--dart-define",
-                "APP_LINK_BASE=dev.tentura.io",
-                "--dart-define",
                 "IS_IMPORTED=true",
+                "--dart-define",
+                "SERVER_NAME=https://dev.tentura.io",
+                "--dart-define",
+                "IMAGE_SERVER=https://dev.tentura.io",
             ],
             "args": [
                 "-d", "chrome",

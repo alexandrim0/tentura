@@ -59,16 +59,16 @@ void main() {
           logger.i('[$jwt]');
 
           expect(
-            extractAuthToken(
-              headers: {kHeaderAuthorization: 'Bearer   $jwt  '},
-            ),
+            extractAuthTokenFromHeaders({
+              kHeaderAuthorization: 'Bearer   $jwt  ',
+            }),
             equals(jwt),
           );
 
           expect(
-            () => extractAuthToken(
-              headers: {kHeaderAuthorization: 'Bearer'},
-            ),
+            () => extractAuthTokenFromHeaders({
+              kHeaderAuthorization: 'Bearer',
+            }),
             throwsA(isA<JWTInvalidException>()),
           );
         },

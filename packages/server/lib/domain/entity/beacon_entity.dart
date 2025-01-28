@@ -28,5 +28,5 @@ class BeaconEntity with _$BeaconEntity {
 
   String get imageUrl => hasPicture
       ? '$kImageServer/images/${author.id}/$id.jpg'
-      : kImageServer + kBeaconPlaceholderPath;
+      : kImageServer + kBeaconPlaceholderUrl;
 }

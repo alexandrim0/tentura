@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
-import '../consts.dart';
+import 'package:tentura_server/consts.dart';
 
 final publicKey = EdDSAPublicKey.fromPEM(
   kJwtPublicKey.replaceAll(r'\n', '\n'),
@@ -14,9 +14,7 @@ final privateKey = EdDSAPrivateKey.fromPEM(
 ///
 /// Returns bearer token extracted from Request headers
 ///
-String extractAuthToken({
-  required Map<String, String> headers,
-}) {
+String extractAuthTokenFromHeaders(Map<String, String> headers) {
   final authHeader = headers[kHeaderAuthorization];
   if (authHeader == null || authHeader.length <= _bearerPrefixLength) {
     throw JWTInvalidException('Wrong Authorization header');
@@ -44,6 +42,13 @@ JWT verifyAuthRequest({
 
   if (jwtDecoded.header?['alg'] != 'EdDSA') {
     throw JWTInvalidException('Wrong JWT algo!');
+  }
+
+  final exp = (jwtDecoded.payload as Map)['exp'];
+  final expiresIn = exp is int ? exp * 1000 : 0;
+
+  if (expiresIn <= 0 || expiresIn > kAuthJwtExpiresIn) {
+    throw JWTInvalidException('Wrong JWT exp value!');
   }
 
   final authRequestToken = base64.normalize(
@@ -77,14 +82,14 @@ Map<String, Object> issueJwt({
     {
       'subject': subject,
       'token_type': 'bearer',
-      'expires_in': kJwtExpiresIn.inSeconds,
+      'expires_in': kJwtExpiresIn,
       'access_token': JWT(
         payload,
         subject: subject,
       ).sign(
         privateKey,
         algorithm: JWTAlgorithm.EdDSA,
-        expiresIn: kJwtExpiresIn,
+        expiresIn: const Duration(seconds: kJwtExpiresIn),
       ),
     };
 

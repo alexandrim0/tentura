@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:ferry/ferry.dart' show OperationRequest, OperationResponse;
 
+import 'consts.dart';
 import 'client/message.dart';
 import 'service/image_service.dart';
 import 'service/token_service_native.dart'
@@ -9,7 +10,7 @@ import 'service/token_service_native.dart'
 
 abstract class TenturaApiBase {
   TenturaApiBase({
-    required this.apiUrlBase,
+    this.apiUrlBase = kServerName,
     this.jwtExpiresIn = const Duration(minutes: 1),
     this.userAgent = 'Tentura client',
     this.storagePath = '',

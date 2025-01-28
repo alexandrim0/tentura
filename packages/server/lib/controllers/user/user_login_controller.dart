@@ -20,9 +20,7 @@ final class UserLoginController extends UserController {
   Future<Response> handler(Request request) async {
     try {
       final jwt = verifyAuthRequest(
-        token: extractAuthToken(
-          headers: request.headers,
-        ),
+        token: extractAuthTokenFromHeaders(request.headers),
       );
       final user = await userRepository
           .getUserByPublicKey((jwt.payload as Map)['pk'] as String);

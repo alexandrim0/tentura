@@ -23,7 +23,7 @@ class BeaconImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final placeholder = Image.asset(
-      'assets/images/image-placeholder.jpg',
+      'images/placeholder/beacon.jpg',
       // ignore: avoid_redundant_argument_values // set from env
       package: kAssetPackage,
       height: height,
@@ -33,7 +33,7 @@ class BeaconImage extends StatelessWidget {
     return beaconId.isEmpty || authorId.isEmpty
         ? placeholder
         : CachedImage(
-            imageUrl: '$kAppLinkBase/images/$authorId/$beaconId.jpg',
+            imageUrl: '$kImageServer/$kImagesPath/$authorId/$beaconId.jpg',
             placeholder: placeholder,
             boxFit: boxFit,
             height: height,

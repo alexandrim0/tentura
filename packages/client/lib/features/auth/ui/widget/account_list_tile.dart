@@ -33,7 +33,7 @@ class AccountListTile extends StatelessWidget {
               onTap: () => ShareCodeDialog.show(
                 context,
                 header: account.id,
-                link: Uri.parse(kAppLinkBase).replace(
+                link: Uri.parse(kServerName).replace(
                   path: kPathAppLinkView,
                   queryParameters: {
                     'id': account.id,

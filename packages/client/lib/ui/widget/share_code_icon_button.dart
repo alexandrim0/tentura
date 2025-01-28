@@ -16,7 +16,7 @@ class ShareCodeIconButton extends StatelessWidget {
       : this(
           key: key,
           header: id,
-          link: Uri.parse(kAppLinkBase).replace(
+          link: Uri.parse(kServerName).replace(
             queryParameters: {'id': id},
             path: kPathAppLinkView,
           ),

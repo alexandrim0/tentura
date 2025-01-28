@@ -17,5 +17,5 @@ class UserEntity with _$UserEntity {
 
   String get imageUrl => hasPicture
       ? '$kImageServer/images/$id/avatar.jpg'
-      : kImageServer + kAvatarPlaceholderPath;
+      : kImageServer + kAvatarPlaceholderUrl;
 }

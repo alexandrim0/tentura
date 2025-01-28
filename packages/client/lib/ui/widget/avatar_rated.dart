@@ -30,7 +30,7 @@ class AvatarRated extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final placeholder = Image.asset(
-      'assets/images/avatar-placeholder.jpg',
+      'images/placeholder/avatar.jpg',
       // ignore: avoid_redundant_argument_values // set from env
       package: kAssetPackage,
       height: size,
@@ -62,7 +62,7 @@ class AvatarRated extends StatelessWidget {
   }
 
   static String _getAvatarUrl(String userId) =>
-      '$kAppLinkBase/images/$userId/avatar.jpg';
+      '$kImageServer/$kImagesPath/$userId/avatar.jpg';
 }
 
 class _RatingPainter extends CustomPainter {

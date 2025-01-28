@@ -10,7 +10,9 @@
 				"web",
 				"--wasm",
 				"--dart-define",
-				"APP_LINK_BASE=dev.tentura.io"
+				"SERVER_NAME=https://dev.tentura.io",
+				"--dart-define",
+				"IMAGE_SERVER=https://dev.tentura.io",
 			],
 			"group": {
 				"kind": "build",
@@ -18,7 +20,7 @@
 			},
 			"options": {
 				"cwd": "packages/client"
-    	},
+			},
 		},
 		{
 			"label": "flutter: build apk (prod)",
@@ -34,31 +36,16 @@
 				"--split-per-abi",
 				"--no-tree-shake-icons",
 				"--dart-define",
-				"APP_LINK_BASE=dev.tentura.io"
-			],
-			"group": {
-				"kind": "build",
-			},
-			"options": {
-				"cwd": "packages/client"
-    	},
-		},
-		{
-			"label": "flutter: build web (js)",
-			"type": "flutter",
-			"command": "flutter",
-			"args": [
-				"build",
-				"web",
+				"SERVER_NAME=https://dev.tentura.io",
 				"--dart-define",
-				"APP_LINK_BASE=dev.tentura.io",
+				"IMAGE_SERVER=https://dev.tentura.io",
 			],
 			"group": {
 				"kind": "build",
 			},
 			"options": {
 				"cwd": "packages/client"
-    	},
+			},
 		},
 		{
 			"label": "flutter: build widgetbook",
@@ -73,16 +60,18 @@
 				"--pwa-strategy",
 				"none",
 				"--dart-define",
-				"APP_LINK_BASE=dev.tentura.io",
-				"--dart-define",
 				"IS_IMPORTED=true",
-],
+				"--dart-define",
+				"SERVER_NAME=https://dev.tentura.io",
+				"--dart-define",
+				"IMAGE_SERVER=https://dev.tentura.io",
+			],
 			"group": {
 				"kind": "build",
 			},
 			"options": {
 				"cwd": "packages/widgetbook"
-    	},
+			},
 		},
 		{
 			"label": "flutter: build web (wasm, stage)",
@@ -93,14 +82,16 @@
 				"web",
 				"--wasm",
 				"--dart-define",
-				"APP_LINK_BASE=stage.tentura.io"
+				"SERVER_NAME=https://dev.tentura.io",
+				"--dart-define",
+				"IMAGE_SERVER=https://dev.tentura.io",
 			],
 			"group": {
 				"kind": "build",
 			},
 			"options": {
 				"cwd": "packages/client"
-    	},
+			},
 		},
 	],
 }
