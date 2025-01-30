@@ -44,13 +44,6 @@ JWT verifyAuthRequest({
     throw JWTInvalidException('Wrong JWT algo!');
   }
 
-  final exp = (jwtDecoded.payload as Map)['exp'];
-  final expiresIn = exp is int ? exp * 1000 : 0;
-
-  if (expiresIn <= 0 || expiresIn > kAuthJwtExpiresIn) {
-    throw JWTInvalidException('Wrong JWT exp value!');
-  }
-
   final authRequestToken = base64.normalize(
     (jwtDecoded.payload as Map)['pk'] as String,
   );

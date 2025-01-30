@@ -4,16 +4,16 @@ import 'package:shelf_plus/shelf_plus.dart';
 
 import 'package:tentura_server/di/di.dart';
 import 'package:tentura_server/consts.dart';
-import 'package:tentura_server/utils/id.dart';
 import 'package:tentura_server/utils/jwt.dart';
 import 'package:tentura_server/domain/enum.dart';
 import 'package:tentura_server/api/controllers/user/user_login_controller.dart';
 import 'package:tentura_server/api/controllers/user/user_register_controller.dart';
 
 import '../consts.dart';
+import '../utils/jwt_test.dart';
 
 Future<void> main() async {
-  final authRequestToken = _issueAuthRequestToken();
+  final authRequestToken = issueAuthRequestToken(publicKey);
 
   setUp(() {
     configureDependencies(
@@ -95,9 +95,9 @@ Future<void> main() async {
   );
 }
 
-String _issueAuthRequestToken([String? userId]) => issueJwt(
-      subject: userId ?? generateId(),
-      payload: {
-        'pk': publicKey,
-      },
-    )['access_token']! as String;
+// String issueAuthRequestToken([String? userId]) => issueJwt(
+//       subject: userId ?? generateId(),
+//       payload: {
+//         'pk': publicKey,
+//       },
+//     )['access_token']! as String;

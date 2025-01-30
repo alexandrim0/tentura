@@ -10,10 +10,10 @@ environment:
 resolution: workspace
 
 dependencies:
+  meta:
   logger:
   tentura_root:
   ed25519_edwards:
-  dart_jsonwebtoken:
 
   http: ^1.2.2
   ferry: ^0.16.0

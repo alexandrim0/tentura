@@ -31,6 +31,12 @@ sealed class AuthenticationException implements Exception {
   String toString() => description ?? super.toString();
 }
 
+final class AuthenticationNoKeyException extends AuthenticationException {
+  const AuthenticationNoKeyException([
+    super.description = 'Key pair is not set.',
+  ]);
+}
+
 final class AuthenticationHttpException extends AuthenticationException {
   const AuthenticationHttpException([
     super.description = 'General HTTP error.',

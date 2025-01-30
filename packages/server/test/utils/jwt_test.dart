@@ -74,28 +74,15 @@ void main() {
       );
 
       test(
-        'issueJwt / verifyAuthRequest',
+        'issue / verify AuthRequest',
         () {
-          final userId = generateId();
-          final pk = base64UrlEncode(publicKey.key.bytes);
-          final authRequestToken = issueJwt(
-            subject: userId,
-            payload: {
-              'pk': pk,
-            },
-          )['access_token']! as String;
-
+          final authRequestToken = issueAuthRequestToken(publicKey);
           final jwt = verifyAuthRequest(token: authRequestToken);
           log(jwt.payload.toString());
 
           expect(
             (jwt.payload as Map)['pk'],
-            equals(pk),
-          );
-
-          expect(
-            jwt.subject,
-            equals(userId),
+            equals(base64UrlEncode(publicKey.key.bytes)),
           );
         },
       );
@@ -120,3 +107,11 @@ void main() {
     },
   );
 }
+
+String issueAuthRequestToken(EdDSAPublicKey publicKey) => JWT({
+      'pk': base64UrlEncode(publicKey.key.bytes),
+    }).sign(
+      privateKey,
+      algorithm: JWTAlgorithm.EdDSA,
+      expiresIn: const Duration(seconds: kAuthJwtExpiresIn),
+    );

@@ -10,9 +10,10 @@ import 'controllers/shared/shared_view_controller.dart';
 import 'middleware/auth_middleware.dart';
 
 Handler routeHandler() {
+  final authMiddleware = getIt<AuthMiddleware>();
   final router = Router().plus
     ..use(logRequests())
-    ..use(getIt<AuthMiddleware>().extractBearer)
+    ..use(authMiddleware.extractBearer)
     ..get(
       '/health',
       () => 'I`m fine!',
@@ -28,7 +29,7 @@ Handler routeHandler() {
     ..post(
       '/api/user/files',
       getIt<UserFilesController>().handler,
-      use: getIt<AuthMiddleware>().demandAuth,
+      use: authMiddleware.demandAuth,
     )
     ..post(
       '/api/user/login',
