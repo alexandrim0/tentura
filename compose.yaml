@@ -108,11 +108,13 @@ services:
       - SENTRY_DSN
       - SERVER_NAME
       - IMAGE_SERVER
+      - WORKERS_COUNT
       - POSTGRES_HOST
       - POSTGRES_PORT
       - POSTGRES_DBNAME
       - POSTGRES_USERNAME
       - POSTGRES_PASSWORD
+      - POSTGRES_MAXCONN
       - JWT_PRIVATE_PEM
       - JWT_PUBLIC_PEM
     logging:

@@ -28,6 +28,9 @@ final kBindAddress = environment['BIND_ADDRESS'] ?? '0.0.0.0';
 
 final kListenPort = int.tryParse(environment['LISTEN_PORT'] ?? '') ?? 2080;
 
+final kWorkersCount = int.tryParse(environment['WORKERS_COUNT'] ?? '') ??
+    Platform.numberOfProcessors;
+
 /// First part of FQDN: `https://app.server.name`
 final kServerName = environment['SERVER_NAME'] ?? tentura.kServerName;
 
@@ -36,10 +39,15 @@ final kImageServer = environment['IMAGE_SERVER'] ?? tentura.kImageServer;
 
 // Database connection settings
 final kPgHost = environment['POSTGRES_HOST'] ?? 'postgres';
+
 final kPgPort = int.tryParse(environment['POSTGRES_PORT'] ?? '') ?? 5432;
+
 final kPgDatabase = environment['POSTGRES_DBNAME'] ?? 'postgres';
+
 final kPgUsername = environment['POSTGRES_USERNAME'] ?? 'postgres';
+
 final kPgPassword = environment['POSTGRES_PASSWORD'] ?? 'password';
+
 final kMaxConnectionCount =
     int.tryParse(environment['POSTGRES_MAXCONN'] ?? '') ?? 25;
 

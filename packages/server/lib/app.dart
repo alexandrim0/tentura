@@ -16,7 +16,7 @@ class App {
   App({
     this.env = Environment.prod,
     int? numberOfIsolates,
-  }) : _numberOfIsolates = numberOfIsolates ?? Platform.numberOfProcessors;
+  }) : _numberOfIsolates = numberOfIsolates ?? kWorkersCount;
 
   final Environment env;
 
