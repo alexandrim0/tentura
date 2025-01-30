@@ -15,6 +15,8 @@ export 'package:tentura_root/consts.dart'
         kJwtExpiresIn,
         kPathIcons;
 
+const kContextUserId = 'userId';
+
 // Make [environment] as mutable for testing purposes only!
 final environment = Map<String, String>.from(Platform.environment);
 
@@ -34,10 +36,12 @@ final kImageServer = environment['IMAGE_SERVER'] ?? tentura.kImageServer;
 
 // Database connection settings
 final kPgHost = environment['POSTGRES_HOST'] ?? 'postgres';
-final kPgPort = int.tryParse(environment['POSTGRES_PORT'] ?? '5432');
+final kPgPort = int.tryParse(environment['POSTGRES_PORT'] ?? '') ?? 5432;
 final kPgDatabase = environment['POSTGRES_DBNAME'] ?? 'postgres';
 final kPgUsername = environment['POSTGRES_USERNAME'] ?? 'postgres';
 final kPgPassword = environment['POSTGRES_PASSWORD'] ?? 'password';
+final kMaxConnectionCount =
+    int.tryParse(environment['POSTGRES_MAXCONN'] ?? '') ?? 25;
 
 // JWT
 // This keys needed for testing purposes only!
@@ -56,7 +60,3 @@ final kJwtPrivateKey = environment['JWT_PRIVATE_PEM'] ??
 MC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF
 -----END PRIVATE KEY-----
 ''';
-// final kJwtExpiresIn = Duration(
-//   seconds: int.tryParse(environment['JWT_EXPIRES_IN'] ?? '') ??
-//       tentura.kJwtExpiresIn,
-// );

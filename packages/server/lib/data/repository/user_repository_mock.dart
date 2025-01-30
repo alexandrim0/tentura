@@ -5,11 +5,12 @@ export 'package:tentura_server/domain/entity/user_entity.dart';
 
 import 'user_repository.dart';
 
-@Singleton(
+@Injectable(
   as: UserRepository,
   env: [
     Environment.test,
   ],
+  order: 1,
 )
 class UserRepositoryMock implements UserRepository {
   @override

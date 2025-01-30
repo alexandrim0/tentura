@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
@@ -7,12 +8,11 @@ import 'package:tentura_server/utils/jwt.dart';
 
 import 'user_controller.dart';
 
-@Singleton(
-  order: 1,
+@Injectable(
+  order: 3,
 )
 final class UserLoginController extends UserController {
   UserLoginController(
-    super.logger,
     super.userRepository,
   );
 
@@ -29,19 +29,13 @@ final class UserLoginController extends UserController {
         jsonEncode(issueJwt(subject: user.id)),
       );
     } on IdNotFoundException catch (e) {
-      logger.e(
-        e.toString(),
-        error: e,
-      );
+      log(e.toString());
       return Response.badRequest(
         body: 'User not found',
       );
     } catch (e) {
-      logger.e(
-        e.toString(),
-        error: e,
-      );
-      return Response.unauthorized(e.toString());
+      log(e.toString());
+      return Response.unauthorized(null);
     }
   }
 }

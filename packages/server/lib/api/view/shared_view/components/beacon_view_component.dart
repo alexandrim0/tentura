@@ -1,8 +1,8 @@
 import 'package:jaspr/server.dart';
 
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
-import 'package:tentura_server/view/shared_view/styles/shared_view_styles.dart';
 
+import '../styles/shared_view_styles.dart';
 import 'avatar_component.dart';
 
 class BeaconViewComponent extends StatelessComponent {

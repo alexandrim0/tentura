@@ -7,11 +7,12 @@ import 'package:tentura_server/domain/exception.dart';
 
 export 'package:tentura_server/domain/entity/beacon_entity.dart';
 
-@Singleton(
+@Injectable(
   env: [
     Environment.dev,
     Environment.prod,
   ],
+  order: 1,
 )
 class BeaconRepository {
   BeaconRepository(this._database);

@@ -7,11 +7,12 @@ import 'package:tentura_server/domain/exception.dart';
 
 export 'package:tentura_server/domain/entity/comment_entity.dart';
 
-@Singleton(
+@Injectable(
   env: [
     Environment.dev,
     Environment.prod,
   ],
+  order: 1,
 )
 class CommentRepository {
   CommentRepository(this._database);

@@ -1,31 +1,34 @@
+import 'dart:developer';
 import 'package:test/test.dart';
-import 'package:get_it/get_it.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
+import 'package:tentura_server/di/di.dart';
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/utils/id.dart';
 import 'package:tentura_server/utils/jwt.dart';
-import 'package:tentura_server/controllers/user/user_login_controller.dart';
-import 'package:tentura_server/controllers/user/user_register_controller.dart';
+import 'package:tentura_server/domain/enum.dart';
+import 'package:tentura_server/api/controllers/user/user_login_controller.dart';
+import 'package:tentura_server/api/controllers/user/user_register_controller.dart';
 
-import '../di.dart';
-import '../logger.dart';
+import '../consts.dart';
 
 Future<void> main() async {
   final authRequestToken = _issueAuthRequestToken();
 
-  setUp(() async {
-    await configureDependencies();
+  setUp(() {
+    configureDependencies(
+      kIsIntegrationTest ? Environment.dev : Environment.test,
+    );
   });
 
   tearDown(() async {
-    await GetIt.I.reset();
+    await getIt.reset();
   });
 
   test(
     'routeUserRegister',
     () async {
-      final response = await GetIt.I<UserRegisterController>().handler(
+      final response = await getIt<UserRegisterController>().handler(
         Request(
           'POST',
           Uri.http(
@@ -38,7 +41,7 @@ Future<void> main() async {
         ),
       );
       final responseBody = await response.readAsString();
-      logger.i(responseBody);
+      log(responseBody);
 
       expect(responseBody, isNotEmpty);
     },
@@ -47,7 +50,7 @@ Future<void> main() async {
   test(
     'routeUserLogin',
     () async {
-      final response = await GetIt.I<UserLoginController>().handler(
+      final response = await getIt<UserLoginController>().handler(
         Request(
           'POST',
           Uri.http(
@@ -60,7 +63,7 @@ Future<void> main() async {
         ),
       );
       final responseBody = await response.readAsString();
-      logger.i(responseBody);
+      log(responseBody);
 
       expect(responseBody, isNotEmpty);
     },
@@ -72,7 +75,7 @@ Future<void> main() async {
       const authRequestToken =
           'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJwayI6IjFVTUJueGd4ZVJCTDQwMzcyMTlfMzVDUHZSYlBtc1AyUVUxUlVSeXRpaHciLCJleHAiOjE3MzcyMTU2MTcsImlhdCI6MTczNzIxMjAxN30.A4rU-BoK-mtswY1aSCeWpldHlySGok_DR_sUDAHvOeemQPvDQ6mYCuFG1bb5A-fP7dYGdvyh0-wnIkLDQdgFCg';
 
-      final response = await GetIt.I<UserLoginController>().handler(
+      final response = await getIt<UserLoginController>().handler(
         Request(
           'POST',
           Uri.http(
@@ -85,7 +88,7 @@ Future<void> main() async {
         ),
       );
       final responseBody = await response.readAsString();
-      logger.i(responseBody);
+      log(responseBody);
 
       expect(responseBody, isNotEmpty);
     },

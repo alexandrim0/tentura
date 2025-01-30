@@ -1,15 +1,18 @@
-import 'package:get_it/get_it.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
+import 'package:tentura_server/di/di.dart';
+
 import 'controllers/chat/chat_controller.dart';
-import 'controllers/shared/shared_view_controller.dart';
+import 'controllers/user/user_files.dart';
 import 'controllers/user/user_login_controller.dart';
 import 'controllers/user/user_register_controller.dart';
+import 'controllers/shared/shared_view_controller.dart';
+import 'middleware/auth_middleware.dart';
 
 Handler routeHandler() {
-  final di = GetIt.I;
   final router = Router().plus
     ..use(logRequests())
+    ..use(getIt<AuthMiddleware>().extractBearer)
     ..get(
       '/health',
       () => 'I`m fine!',
@@ -23,12 +26,17 @@ Handler routeHandler() {
       sharedViewController,
     )
     ..post(
+      '/api/user/files',
+      getIt<UserFilesController>().handler,
+      use: getIt<AuthMiddleware>().demandAuth,
+    )
+    ..post(
       '/api/user/login',
-      di<UserLoginController>().handler,
+      getIt<UserLoginController>().handler,
     )
     ..post(
       '/api/user/register',
-      di<UserRegisterController>().handler,
+      getIt<UserRegisterController>().handler,
     );
 
   return router.call;

@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/app.dart';
 
 Future<void> main(List<String> args) async {
-  await runApp(
+  await App(
     env: Environment.test,
-  );
+    numberOfIsolates: 1,
+  ).run();
 }

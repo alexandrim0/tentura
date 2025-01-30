@@ -8,11 +8,12 @@ import 'user_repository_mock.dart';
 
 export 'package:tentura_server/domain/entity/beacon_entity.dart';
 
-@Singleton(
+@Injectable(
   as: BeaconRepository,
   env: [
     Environment.test,
   ],
+  order: 1,
 )
 class BeaconRepositoryMock implements BeaconRepository {
   @override

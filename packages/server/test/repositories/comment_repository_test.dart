@@ -1,41 +1,43 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:test/test.dart';
 import 'package:faker/faker.dart';
-import 'package:get_it/get_it.dart';
 
+import 'package:tentura_server/di/di.dart';
+import 'package:tentura_server/domain/enum.dart';
 import 'package:tentura_server/data/repository/comment_repository.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
 import 'package:tentura_server/utils/id.dart';
 import 'package:tentura_server/utils/jwt.dart';
 
-import '../di.dart';
-import '../logger.dart';
+import '../consts.dart';
 
 Future<void> main() async {
   final faker = Faker();
 
-  setUp(() async {
-    await configureDependencies();
+  setUp(() {
+    configureDependencies(
+      kIsIntegrationTest ? Environment.dev : Environment.test,
+    );
   });
 
   tearDown(() async {
-    await GetIt.I.reset();
+    await getIt.reset();
   });
 
   test(
     'createComment',
     () async {
       final now = DateTime.timestamp();
-      final user = await GetIt.I<UserRepository>().createUser(
+      final user = await getIt<UserRepository>().createUser(
         publicKey: base64UrlEncode(publicKey.key.bytes).replaceAll('=', ''),
         user: UserEntity(
           id: generateId(),
           title: 'Test User',
         ),
       );
-      final beacon =
-          await GetIt.I<BeaconRepository>().createBeacon(BeaconEntity(
+      final beacon = await getIt<BeaconRepository>().createBeacon(BeaconEntity(
         id: generateId(prefix: 'B'),
         title: faker.lorem.sentence(),
         description:
@@ -45,20 +47,20 @@ Future<void> main() async {
         author: user,
       ));
       final comment =
-          await GetIt.I<CommentRepository>().createComment(CommentEntity(
+          await getIt<CommentRepository>().createComment(CommentEntity(
         id: generateId(prefix: 'C'),
         author: user,
         beacon: beacon,
         createdAt: now,
         content: faker.lorem.sentences(faker.randomGenerator.integer(5)).join(),
       ));
-      logger.i([
+      log([
         comment.id,
         comment.content,
       ].join(' | '));
 
       expect(
-        await GetIt.I<CommentRepository>().getCommentById(comment.id),
+        await getIt<CommentRepository>().getCommentById(comment.id),
         comment,
       );
     },

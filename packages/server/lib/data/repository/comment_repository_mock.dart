@@ -7,11 +7,12 @@ import 'user_repository_mock.dart';
 
 export 'package:tentura_server/domain/entity/comment_entity.dart';
 
-@Singleton(
+@Injectable(
   as: CommentRepository,
   env: [
     Environment.test,
   ],
+  order: 1,
 )
 class CommentRepositoryMock implements CommentRepository {
   @override

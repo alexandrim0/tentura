@@ -1,12 +1,12 @@
-import 'package:get_it/get_it.dart';
 import 'package:jaspr/server.dart';
 
 import 'package:tentura_server/consts.dart';
+import 'package:tentura_server/di/di.dart';
 import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/comment_repository.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
-import 'package:tentura_server/view/shared_view/shared_view_document.dart';
+import 'package:tentura_server/api/view/shared_view/shared_view_document.dart';
 
 Future<Response> sharedViewController(Request request) async {
   final ogId = request.requestedUri.queryParameters['id'];
@@ -15,9 +15,9 @@ Future<Response> sharedViewController(Request request) async {
       await renderComponent(
         SharedViewDocument(
           entity: switch (ogId?[0]) {
-            'U' => await GetIt.I<UserRepository>().getUserById(ogId!),
-            'B' => await GetIt.I<BeaconRepository>().getBeaconById(ogId!),
-            'C' => await GetIt.I<CommentRepository>().getCommentById(ogId!),
+            'U' => await getIt<UserRepository>().getUserById(ogId!),
+            'B' => await getIt<BeaconRepository>().getBeaconById(ogId!),
+            'C' => await getIt<CommentRepository>().getCommentById(ogId!),
             _ => throw WrongIdException(ogId),
           },
         ),

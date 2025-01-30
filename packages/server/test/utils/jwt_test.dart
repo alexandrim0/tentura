@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:test/test.dart';
 import 'package:faker/faker.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
@@ -6,8 +7,6 @@ import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/utils/id.dart';
 import 'package:tentura_server/utils/jwt.dart';
-
-import '../logger.dart';
 
 void main() {
   group(
@@ -56,7 +55,7 @@ void main() {
         'extractAuthToken',
         () {
           final jwt = faker.jwt.valid();
-          logger.i('[$jwt]');
+          log('[$jwt]');
 
           expect(
             extractAuthTokenFromHeaders({
@@ -87,7 +86,7 @@ void main() {
           )['access_token']! as String;
 
           final jwt = verifyAuthRequest(token: authRequestToken);
-          logger.i(jwt.payload);
+          log(jwt.payload.toString());
 
           expect(
             (jwt.payload as Map)['pk'],
@@ -110,7 +109,7 @@ void main() {
           )['access_token']! as String;
 
           final jwt = verifyJwt(token: authRequestToken);
-          logger.i(jwt.payload);
+          log(jwt.payload.toString());
 
           expect(
             jwt.subject,

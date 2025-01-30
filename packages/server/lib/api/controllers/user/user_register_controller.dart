@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
@@ -8,12 +9,11 @@ import 'package:tentura_server/utils/jwt.dart';
 
 import 'user_controller.dart';
 
-@Singleton(
-  order: 1,
+@Injectable(
+  order: 3,
 )
 final class UserRegisterController extends UserController {
   UserRegisterController(
-    super.logger,
     super.userRepository,
   );
 
@@ -33,11 +33,8 @@ final class UserRegisterController extends UserController {
         jsonEncode(issueJwt(subject: user.id)),
       );
     } catch (e) {
-      logger.e(
-        e.toString(),
-        error: e,
-      );
-      return Response.unauthorized(e);
+      log(e.toString());
+      return Response.unauthorized(null);
     }
   }
 }
