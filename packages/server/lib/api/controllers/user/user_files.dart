@@ -1,9 +1,10 @@
+import 'dart:io';
 import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
+import 'package:tentura_root/consts.dart';
 import 'package:tentura_server/consts.dart';
-import 'package:tentura_server/domain/exception.dart';
 
 import 'user_controller.dart';
 
@@ -17,23 +18,41 @@ final class UserFilesController extends UserController {
 
   @override
   Future<Response> handler(Request request) async {
-    try {
-      final user = await userRepository.getUserById(
-        request.context[kContextUserId]! as String,
-      );
-      // TBD
-      user.imageUrl;
-
-      return Response.ok(null);
-    } on IdNotFoundException catch (e) {
-      final error = e.toString();
-      log(error);
+    if (request.mimeType != kContentTypeJpeg) {
       return Response.badRequest(
-        body: error,
+        body: 'Wrong MIME!',
       );
+    }
+    final fileName = switch (request.url.queryParameters['id']) {
+      final String id when id.startsWith('U') => 'avatar',
+      final String id when id.startsWith('B') => id,
+      _ => '',
+    };
+    if (fileName.isEmpty) {
+      return Response.badRequest(
+        body: 'Wrong ID!',
+      );
+    }
+    final userId = request.userId;
+    final file = File('$kImageFolderPath/$userId/$fileName.jpg');
+    if (file.existsSync()) {
+      return Response.badRequest(
+        body: 'File already exists!',
+      );
+    }
+    file.parent.createSync(
+      recursive: true,
+    );
+    final sink = file.openWrite();
+    try {
+      await sink.addStream(request.read());
+      await sink.flush();
     } catch (e) {
       log(e.toString());
       return Response.internalServerError();
+    } finally {
+      await sink.close();
     }
+    return Response.ok(null);
   }
 }

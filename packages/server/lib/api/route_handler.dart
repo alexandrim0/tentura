@@ -1,5 +1,6 @@
 import 'package:shelf_plus/shelf_plus.dart';
 
+import 'package:tentura_root/consts.dart';
 import 'package:tentura_server/di/di.dart';
 
 import 'controllers/chat/chat_controller.dart';
@@ -23,20 +24,20 @@ Handler routeHandler() {
       chatController,
     )
     ..get(
-      '/shared/view',
+      kPathAppLinkView,
       sharedViewController,
     )
-    ..post(
-      '/api/user/files',
+    ..put(
+      kPathImageUpload,
       getIt<UserFilesController>().handler,
       use: authMiddleware.demandAuth,
     )
     ..post(
-      '/api/user/login',
+      kPathLogin,
       getIt<UserLoginController>().handler,
     )
     ..post(
-      '/api/user/register',
+      kPathRegister,
       getIt<UserRegisterController>().handler,
     );
 

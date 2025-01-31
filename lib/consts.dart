@@ -22,12 +22,14 @@ const kPathIcons = '/icons';
 
 const kPathLogin = '/api/user/login';
 const kPathRegister = '/api/user/register';
+const kPathImageUpload = '/api/user/image_upload';
 const kPathGraphQLEndpoint = '/api/v1/graphql';
 const kPathAppLinkView = '/shared/view';
 
 const kUserAgent = kAppTitle;
 
 const kContentTypeHtml = 'text/html';
+const kContentTypeJpeg = 'image/jpeg';
 
 const kHeaderContentType = 'Content-Type';
 const kHeaderAuthorization = 'Authorization';

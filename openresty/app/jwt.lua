@@ -64,7 +64,6 @@ end
 
 
 ---@param pk string
----@param exp string
 ---@return nil
 local function init(pk)
     PK = sub(from_b64(pk:match'\n(.+)\n'), -32)

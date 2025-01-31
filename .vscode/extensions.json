@@ -1,9 +1,10 @@
 {
     "recommendations": [
         "sumneko.lua",
+        "humao.rest-client",
         "felixangelov.bloc",
         "ahmadalli.vscode-nginx-conf",
         "apollographql.vscode-apollo",
         "uniquevision.vscode-plpgsql-lsp"
-    ]
+    ],
 }

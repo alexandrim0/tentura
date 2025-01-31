@@ -13,31 +13,32 @@ class AuthMiddleware {
   /// Extract and verify bearer token.
   /// If ok, save it in request.context[kContextUserId]
   ///
-  Middleware get extractBearer => createMiddleware(
-        requestHandler: (Request request) {
-          if (request.headers.containsKey(kHeaderAuthorization)) {
-            try {
-              final jwt = verifyJwt(
-                token: extractAuthTokenFromHeaders(request.headers),
-              );
-              request.context[kContextUserId] = jwt.subject!;
-            } catch (e) {
-              final error = e.toString();
-              log(error);
-              return Response.unauthorized(error);
+  Middleware get extractBearer =>
+      (Handler innerHandler) => (Request request) async {
+            if (request.headers.containsKey(kHeaderAuthorization)) {
+              try {
+                final jwt = verifyJwt(
+                  token: extractAuthTokenFromHeaders(request.headers),
+                );
+                return innerHandler(request.change(
+                  context: {
+                    kContextUserId: jwt.subject,
+                  },
+                ));
+              } catch (e) {
+                final error = e.toString();
+                log(error);
+                return Response.unauthorized(error);
+              }
             }
-          }
-          return null;
-        },
-      );
+            return innerHandler(request);
+          };
 
   ///
   /// Return code 401 if no userId in context
   ///
-  Middleware get demandAuth => createMiddleware(
-        requestHandler: (Request request) =>
-            request.context.containsKey(kContextUserId)
-                ? null
-                : Response.unauthorized(null),
-      );
+  Middleware get demandAuth => (Handler innerHandler) => (Request request) =>
+      request.context.containsKey(kContextUserId)
+          ? innerHandler(request)
+          : Response.unauthorized(null);
 }

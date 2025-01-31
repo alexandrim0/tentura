@@ -12,14 +12,16 @@ COPY ./lib ./lib
 
 RUN dart run build_runner build -d
 
-RUN dart compile exe bin/main.dart -o bin/server
+RUN dart compile exe bin/main.dart -o bin/tentura
 
 FROM scratch
 
 COPY --from=build /runtime/ /
 
-COPY --from=build /app/bin/server /
+COPY --from=build /app/bin/tentura /
 
 EXPOSE 2080/tcp
 
-CMD [ "/server" ]
+USER 33:33
+
+CMD [ "/tentura" ]

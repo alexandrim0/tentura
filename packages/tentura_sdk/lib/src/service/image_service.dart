@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 import 'package:http/http.dart';
 
+import 'package:tentura_root/consts.dart';
+
 class ImageService {
   const ImageService({
     required this.apiUrlBase,
@@ -16,8 +18,8 @@ class ImageService {
       put(
         Uri.parse('$apiUrlBase/images/$userId/avatar.jpg'),
         headers: {
-          'Content-Type': 'image/jpeg',
-          'Authorization': 'Bearer $token',
+          kHeaderContentType: kContentTypeJpeg,
+          kHeaderAuthorization: 'Bearer $token',
         },
         body: image,
       );
@@ -31,8 +33,8 @@ class ImageService {
       put(
         Uri.parse('$apiUrlBase/images/$userId/$beaconId.jpg'),
         headers: {
-          'Content-Type': 'image/jpeg',
-          'Authorization': 'Bearer $token',
+          kHeaderContentType: kContentTypeJpeg,
+          kHeaderAuthorization: 'Bearer $token',
         },
         body: image,
       );

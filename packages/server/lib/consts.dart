@@ -31,6 +31,8 @@ final kListenPort = int.tryParse(environment['LISTEN_PORT'] ?? '') ?? 2080;
 final kWorkersCount = int.tryParse(environment['WORKERS_COUNT'] ?? '') ??
     Platform.numberOfProcessors;
 
+final kImageFolderPath = environment['IMAGES_PATH'] ?? '/tmp/images';
+
 /// First part of FQDN: `https://app.server.name`
 final kServerName = environment['SERVER_NAME'] ?? tentura.kServerName;
 
