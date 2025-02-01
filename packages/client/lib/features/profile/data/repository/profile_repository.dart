@@ -60,8 +60,14 @@ class ProfileRepository {
     _controller.add(RepositoryEventDelete(Profile(id: response.id)));
   }
 
-  Future<void> putAvatarImage(Uint8List image) =>
-      _remoteApiService.putAvatarImage(image);
+  Future<void> putAvatarImage({
+    required Uint8List image,
+    required String id,
+  }) =>
+      _remoteApiService.uploadImage(
+        image: image,
+        id: id,
+      );
 
   static const _label = 'Profile';
 }

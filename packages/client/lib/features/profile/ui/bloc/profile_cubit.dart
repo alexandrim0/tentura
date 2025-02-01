@@ -108,7 +108,10 @@ class ProfileCubit extends Cubit<ProfileState> {
       status: StateStatus.isLoading,
     ));
     try {
-      await _profileRepository.putAvatarImage(image);
+      await _profileRepository.putAvatarImage(
+        id: state.profile.id,
+        image: image,
+      );
       emit(ProfileState(profile: state.profile));
     } catch (e) {
       emit(state.copyWith(

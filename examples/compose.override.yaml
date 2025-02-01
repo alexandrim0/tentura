@@ -1,10 +1,9 @@
 services:
   openresty:
     restart: no
-    image: vbulavintsev/openresty-tentura:v0.0.12
+    image: vbulavintsev/openresty-tentura:v0.0.13
     volumes:
       - ./openresty/conf:/etc/nginx:ro
-      - ./openresty/app:/usr/local/openresty/site/lualib/app:ro
       - ../tentura/build/web:/usr/local/openresty/nginx/html:ro
     environment:
       - "WORKERS=2"
@@ -45,7 +44,9 @@ services:
 
   tentura:
     restart: no
-    image: vbulavintsev/tentura-service:v0.0.5
+    image: vbulavintsev/tentura-service:v0.0.6
+    volumes:
+      - /tmp/images:/srv/images
     networks:
       - proxy
     ports:

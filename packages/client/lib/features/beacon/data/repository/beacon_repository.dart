@@ -102,5 +102,8 @@ class BeaconRepository {
     required Uint8List image,
     required String beaconId,
   }) =>
-      _remoteApiService.putBeaconImage(image, beaconId: beaconId);
+      _remoteApiService.uploadImage(
+        image: image,
+        id: beaconId,
+      );
 }

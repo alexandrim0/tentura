@@ -1,6 +1,5 @@
 {
     "recommendations": [
-        "sumneko.lua",
         "humao.rest-client",
         "felixangelov.bloc",
         "ahmadalli.vscode-nginx-conf",

@@ -24,7 +24,6 @@ dependencies:
   postgres: ^3.4.8
   shelf_plus: ^1.10.0
   stormberry: ^0.15.0
-  shelf_multipart: ^2.0.1
 
 dev_dependencies:
   freezed:

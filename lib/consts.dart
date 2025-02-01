@@ -35,6 +35,7 @@ const kHeaderContentType = 'Content-Type';
 const kHeaderAuthorization = 'Authorization';
 const kHeaderQueryContext = 'X-Hasura-Query-Context';
 
+const kImageExt = 'jpg';
 const kImagesPath = 'images';
 const kAvatarPlaceholderUrl = '$kImageServer/$kImagesPath/placeholder/avatar.jpg';
 const kBeaconPlaceholderUrl = '$kImageServer/$kImagesPath/placeholder/beacon.jpg';

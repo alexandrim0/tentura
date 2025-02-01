@@ -2,18 +2,7 @@ import 'dart:io' show Platform;
 
 import 'package:tentura_root/consts.dart' as tentura;
 
-export 'package:tentura_root/consts.dart'
-    show
-        kAppTitle,
-        kAuthJwtExpiresIn,
-        kAvatarPlaceholderUrl,
-        kBeaconPlaceholderUrl,
-        kContentTypeHtml,
-        kHeaderAuthorization,
-        kHeaderContentType,
-        kHeaderQueryContext,
-        kJwtExpiresIn,
-        kPathIcons;
+export 'package:tentura_root/consts.dart' hide kImageServer, kServerName;
 
 const kContextUserId = 'userId';
 
@@ -22,8 +11,6 @@ final environment = Map<String, String>.from(Platform.environment);
 
 final kDebugMode = environment['DEBUG_MODE'] == 'true';
 
-final kSentryDsn = environment['SENTRY_DSN'] ?? '';
-
 final kBindAddress = environment['BIND_ADDRESS'] ?? '0.0.0.0';
 
 final kListenPort = int.tryParse(environment['LISTEN_PORT'] ?? '') ?? 2080;
@@ -31,7 +18,7 @@ final kListenPort = int.tryParse(environment['LISTEN_PORT'] ?? '') ?? 2080;
 final kWorkersCount = int.tryParse(environment['WORKERS_COUNT'] ?? '') ??
     Platform.numberOfProcessors;
 
-final kImageFolderPath = environment['IMAGES_PATH'] ?? '/tmp/images';
+final kImageFolderPath = environment['IMAGES_PATH'] ?? '/srv/images';
 
 /// First part of FQDN: `https://app.server.name`
 final kServerName = environment['SERVER_NAME'] ?? tentura.kServerName;

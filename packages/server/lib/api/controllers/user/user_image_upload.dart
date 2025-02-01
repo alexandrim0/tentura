@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
-import 'package:tentura_root/consts.dart';
 import 'package:tentura_server/consts.dart';
 
 import 'user_controller.dart';
@@ -11,8 +10,8 @@ import 'user_controller.dart';
 @Injectable(
   order: 3,
 )
-final class UserFilesController extends UserController {
-  UserFilesController(
+final class UserImageUploadController extends UserController {
+  UserImageUploadController(
     super.userRepository,
   );
 
@@ -33,8 +32,9 @@ final class UserFilesController extends UserController {
         body: 'Wrong ID!',
       );
     }
-    final userId = request.userId;
-    final file = File('$kImageFolderPath/$userId/$fileName.jpg');
+    final file = File(
+      '$kImageFolderPath/${request.userId}/$fileName.jpg',
+    );
     if (file.existsSync()) {
       return Response.badRequest(
         body: 'File already exists!',

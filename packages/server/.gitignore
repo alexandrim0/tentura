@@ -1,5 +1,5 @@
 temp/
-bin/server
+bin/*.exe
 **.g.dart
 **.config.dart
 **.schema.dart

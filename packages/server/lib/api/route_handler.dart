@@ -4,7 +4,7 @@ import 'package:tentura_root/consts.dart';
 import 'package:tentura_server/di/di.dart';
 
 import 'controllers/chat/chat_controller.dart';
-import 'controllers/user/user_files.dart';
+import 'controllers/user/user_image_upload.dart';
 import 'controllers/user/user_login_controller.dart';
 import 'controllers/user/user_register_controller.dart';
 import 'controllers/shared/shared_view_controller.dart';
@@ -29,7 +29,7 @@ Handler routeHandler() {
     )
     ..put(
       kPathImageUpload,
-      getIt<UserFilesController>().handler,
+      getIt<UserImageUploadController>().handler,
       use: authMiddleware.demandAuth,
     )
     ..post(

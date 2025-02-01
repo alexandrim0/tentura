@@ -11,7 +11,7 @@ services:
        - tentura
     volumes:
       - /tmp
-      - ./images:/srv/images
+      - ./images:/srv/images:ro
       - ./web:/usr/local/openresty/nginx/html:ro
       - openresty-cert:/etc/nginx/cert
     tmpfs:
@@ -27,7 +27,6 @@ services:
       - RESOLVER
       - ACME_EMAIL
       - SERVER_NAME
-      - JWT_PUBLIC_PEM
       - ERROR_LOG_LEVEL
       - CONTENT_EXPIRES
       - HASURA_KEEPALIVE
@@ -35,8 +34,6 @@ services:
       - WORKER_CONNECTIONS
       - CLIENT_MAX_BODY_SIZE
       - CLIENT_BODY_BUFFER_SIZE
-      - LUA_SOCKET_POOL_SIZE
-      - LUA_CODE_CACHE
     logging:
       driver: journald
 
@@ -101,12 +98,15 @@ services:
     depends_on:
       - postgres
     init: true
+    volumes:
+      - ./images:/srv/images
     networks:
       - backend
     environment:
       - DEBUG_MODE
       - SENTRY_DSN
       - SERVER_NAME
+      - IMAGES_PATH
       - IMAGE_SERVER
       - WORKERS_COUNT
       - POSTGRES_HOST
