@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
+// import 'package:flutter_blurhash/flutter_blurhash.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/domain/entity/coordinates.dart';
-import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
+import 'package:tentura/ui/utils/ui_utils.dart';
 
 import 'package:tentura/features/beacon/ui/bloc/beacon_cubit.dart';
 import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
@@ -141,7 +142,7 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
                 ),
               ),
 
-              // Image
+              // Image Control
               Padding(
                 padding: kPaddingSmallV,
                 child: TextFormField(
@@ -168,7 +169,9 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
                   child: _image == null
                       ? DecoratedBox(
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black12),
+                            border: Border.all(
+                              color: Colors.black12,
+                            ),
                           ),
                           child: const Icon(
                             Icons.photo_outlined,
@@ -226,14 +229,19 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
 
   Future<void> _onPickImage() async {
     final newImage = await pickImage();
-    if (newImage == null) return;
-    _imageController.text = newImage.name;
-    setState(() => _image = newImage.bytes);
+    if (newImage != null) {
+      _imageController.text = newImage.name;
+      setState(() {
+        _image = newImage.bytes;
+      });
+    }
   }
 
   void _onImageClear() {
     _imageController.clear();
-    setState(() => _image = null);
+    setState(() {
+      _image = null;
+    });
   }
 
   String? _titleValidator(String? title) {

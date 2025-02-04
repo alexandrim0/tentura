@@ -20,10 +20,12 @@ dependencies:
   dart_jsonwebtoken:
   freezed_annotation:
 
+  image: ^4.5.2
   jaspr: ^0.17.0
   postgres: ^3.4.8
   shelf_plus: ^1.10.0
   stormberry: ^0.15.0
+  blurhash_dart: ^1.2.1
 
 dev_dependencies:
   freezed:

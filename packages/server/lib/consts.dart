@@ -4,6 +4,12 @@ import 'package:tentura_root/consts.dart' as tentura;
 
 export 'package:tentura_root/consts.dart' hide kImageServer, kServerName;
 
+// Numbers
+const kBlurHashX = 9;
+
+const kBlurHashY = 9;
+
+// Strings
 const kContextUserId = 'userId';
 
 // Make [environment] as mutable for testing purposes only!

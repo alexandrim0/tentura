@@ -11,6 +11,9 @@ class UserEntity with _$UserEntity {
     @Default('') String title,
     @Default('') String description,
     @Default(false) bool hasPicture,
+    @Default('') String blurHash,
+    @Default(0) int picHeight,
+    @Default(0) int picWidth,
   }) = _UserEntity;
 
   const UserEntity._();

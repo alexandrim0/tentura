@@ -1,19 +1,24 @@
-import 'dart:io';
-import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import 'package:tentura_server/consts.dart';
+import 'package:tentura_server/api/helpers/binary_body_reader.dart';
+import 'package:tentura_server/data/repository/beacon_repository.dart';
+import 'package:tentura_server/domain/exception.dart';
 
 import 'user_controller.dart';
 
 @Injectable(
   order: 3,
 )
-final class UserImageUploadController extends UserController {
+final class UserImageUploadController extends UserController
+    with BinaryBodyReader {
   UserImageUploadController(
+    this._beaconRepository,
     super.userRepository,
   );
+
+  final BeaconRepository _beaconRepository;
 
   @override
   Future<Response> handler(Request request) async {
@@ -22,36 +27,51 @@ final class UserImageUploadController extends UserController {
         body: 'Wrong MIME!',
       );
     }
-    final fileName = switch (request.url.queryParameters['id']) {
-      final String id when id.startsWith('U') => 'avatar',
-      final String id when id.startsWith('B') => id,
-      _ => '',
-    };
-    if (fileName.isEmpty) {
-      return Response.badRequest(
-        body: 'Wrong ID!',
-      );
-    }
-    final file = File(
-      '$kImageFolderPath/${request.userId}/$fileName.jpg',
-    );
-    if (file.existsSync()) {
-      return Response.badRequest(
-        body: 'File already exists!',
-      );
-    }
-    file.parent.createSync(
-      recursive: true,
-    );
-    final sink = file.openWrite();
-    try {
-      await sink.addStream(request.read());
-      await sink.flush();
-    } catch (e) {
-      log(e.toString());
-      return Response.internalServerError();
-    } finally {
-      await sink.close();
+    final userId = request.userId;
+
+    switch (request.url.queryParameters['id']) {
+      case final String id when id.startsWith('U'):
+        if (id != userId) {
+          return Response.unauthorized(null);
+        }
+        try {
+          await userRepository.setUserImage(
+            id: userId,
+            imageBytes: await readBodyAsBytes(request.read),
+          );
+        } catch (e) {
+          return Response.internalServerError(
+            body: e.toString(),
+          );
+        }
+
+      case final String id when id.startsWith('B'):
+        try {
+          final beacon = await _beaconRepository.getBeaconById(id);
+          if (beacon.author.id != userId) {
+            return Response.unauthorized(null);
+          }
+          if (!beacon.hasPicture) {
+            return Response.forbidden(null);
+          }
+          await _beaconRepository.setBeaconImage(
+            beacon: beacon,
+            imageBytes: await readBodyAsBytes(request.read),
+          );
+        } on IdNotFoundException catch (e) {
+          return Response.notFound(
+            e.toString(),
+          );
+        } catch (e) {
+          return Response.internalServerError(
+            body: e.toString(),
+          );
+        }
+
+      default:
+        return Response.badRequest(
+          body: 'Wrong ID!',
+        );
     }
     return Response.ok(null);
   }

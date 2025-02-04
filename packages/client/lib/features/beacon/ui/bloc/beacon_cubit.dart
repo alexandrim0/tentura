@@ -39,6 +39,9 @@ class BeaconCubit extends Cubit<BeaconState> {
       if (userId.isNotEmpty) await fetch();
     },
     cancelOnError: false,
+    onError: (Object e) => emit(state.copyWith(
+      status: StateHasError(e),
+    )),
   );
 
   late final _beaconChanges = _beaconRepository.changes.listen(

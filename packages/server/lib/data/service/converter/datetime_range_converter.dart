@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:stormberry/stormberry.dart' as sb;
 
-import 'package:tentura_server/domain/entity/date_time_range.dart';
+import 'package:tentura_root/domain/entity/date_time_range.dart';
 
 class DateTimeRangeConverter extends sb.TypeConverter<DateTimeRange> {
   const DateTimeRangeConverter() : super('tstzrange');
