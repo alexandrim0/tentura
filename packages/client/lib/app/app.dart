@@ -5,7 +5,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/i10n/app_localizations.dart';
-import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/theme.dart';
 
@@ -22,7 +21,6 @@ class App extends StatelessWidget {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    QRScanDialog.init();
     await configureDependencies();
     FlutterNativeSplash.remove();
     runApp(const App());

@@ -6,14 +6,6 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../utils/screen_size.dart';
 
 class QRScanDialog extends StatefulWidget {
-  static void init() {
-    if (kIsWeb) {
-      MobileScannerPlatform.instance.setBarcodeLibraryScriptUrl(
-        '/assets/packages/zxing.min.js',
-      );
-    }
-  }
-
   static Future<String?> show(BuildContext context) => showDialog<String>(
         context: context,
         useSafeArea: false,
