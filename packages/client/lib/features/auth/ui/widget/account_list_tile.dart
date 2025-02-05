@@ -21,7 +21,7 @@ class AccountListTile extends StatelessWidget {
   Widget build(BuildContext context) => ListTile(
         contentPadding: EdgeInsets.zero,
         leading: AvatarImage.small(
-          userId: account.imageId,
+          profile: account,
         ),
         title: Text(account.title),
         trailing: PopupMenuButton(

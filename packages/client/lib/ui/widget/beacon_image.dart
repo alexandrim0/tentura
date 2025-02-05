@@ -4,8 +4,6 @@ import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/beacon.dart';
 
-import 'cached_image/cached_image.dart';
-
 class BeaconImage extends StatelessWidget {
   const BeaconImage({
     required this.beacon,
@@ -18,20 +16,22 @@ class BeaconImage extends StatelessWidget {
   final BoxFit boxFit;
 
   @override
-  Widget build(BuildContext context) {
-    final placeholder = Image.asset(
-      'images/placeholder/beacon.jpg',
-      // ignore: avoid_redundant_argument_values // set from env
-      package: kAssetPackage,
-      fit: boxFit,
-    );
-    return beacon.hasPicture
-        ? CachedImage(
-            imageUrl: '$kImageServer/$kImagesPath/'
+  Widget build(BuildContext context) => beacon.hasPicture
+      ? AspectRatio(
+          aspectRatio: beacon.imageHeight > 0
+              ? beacon.imageWidth / beacon.imageHeight
+              : 1,
+          child: BlurHash(
+            image: '$kImageServer/$kImagesPath/'
                 '${beacon.author.id}/${beacon.id}.$kImageExt',
-            placeholder: placeholder,
-            boxFit: boxFit,
-          )
-        : placeholder;
-  }
+            hash: beacon.blurhash,
+            imageFit: boxFit,
+          ),
+        )
+      : Image.asset(
+          'images/placeholder/beacon.jpg',
+          // ignore: avoid_redundant_argument_values // set from env
+          package: kAssetPackage,
+          fit: boxFit,
+        );
 }

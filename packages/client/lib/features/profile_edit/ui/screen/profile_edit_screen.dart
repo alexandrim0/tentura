@@ -80,8 +80,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               AvatarPositioned(
                 child: _imageBytes == null
                     ? AvatarImage(
+                        profile: profile,
                         size: AvatarPositioned.childSize,
-                        userId: _hasAvatar ? profile.imageId : '',
                       )
                     : Container(
                         clipBehavior: Clip.hardEdge,
@@ -204,7 +204,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     try {
       if (_imageBytes != null) {
         await _profileCubit.putAvatarImage(_imageBytes!);
-        await AvatarImage.evictFromCache(_profileCubit.state.profile.id);
       }
       await _profileCubit.update(_profileCubit.state.profile.copyWith(
         description: _description,

@@ -93,7 +93,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
                     children: [
                       AvatarPositioned(
                         child: AvatarImage(
-                          userId: profile.imageId,
+                          profile: profile,
                           size: AvatarPositioned.childSize,
                         ),
                       ),

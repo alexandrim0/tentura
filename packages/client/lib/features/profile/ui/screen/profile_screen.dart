@@ -61,7 +61,7 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       AvatarPositioned(
                         child: AvatarImage(
-                          userId: profile.imageId,
+                          profile: profile,
                           size: AvatarPositioned.childSize,
                         ),
                       ),

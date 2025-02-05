@@ -22,9 +22,9 @@ class GraphNodeWidget extends StatelessWidget {
     final widget = SizedBox.square(
       dimension: nodeDetails.size,
       child: switch (nodeDetails) {
-        final UserNode user => AvatarImage(
+        final UserNode userNode => AvatarImage(
+            profile: userNode.user,
             size: nodeDetails.size,
-            userId: user.hasImage ? user.id : '',
           ),
         final BeaconNode beaconNode => BeaconImage(
             beacon: beaconNode.beacon,

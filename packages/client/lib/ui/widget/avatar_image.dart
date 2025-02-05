@@ -1,51 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 
 import 'package:tentura/consts.dart';
-
-import 'cached_image/cached_image.dart';
+import 'package:tentura/domain/entity/profile.dart';
 
 class AvatarImage extends StatelessWidget {
-  static Future<void> evictFromCache(String id) =>
-      kIsWeb ? Future.value() : CachedImage.evictFromCache(_getAvatarUrl(id));
-
   const AvatarImage({
     required this.size,
-    required this.userId,
+    required this.profile,
     this.boxFit = BoxFit.cover,
     super.key,
   });
 
   const AvatarImage.small({
-    required this.userId,
+    required this.profile,
     super.key,
   })  : boxFit = BoxFit.cover,
         size = 40;
 
-  final String userId;
+  final Profile profile;
   final BoxFit boxFit;
   final double size;
 
   @override
   Widget build(BuildContext context) {
-    final placeholder = Image.asset(
-      'images/placeholder/avatar.jpg',
-      // ignore: avoid_redundant_argument_values // set from env
-      package: kAssetPackage,
-      height: size,
-      width: size,
-      fit: boxFit,
-    );
     return SizedBox.square(
       dimension: size,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(size / 2),
-        child: userId.isEmpty
-            ? placeholder
-            : CachedImage(
-                boxFit: boxFit,
-                placeholder: placeholder,
-                imageUrl: _getAvatarUrl(userId),
+        child: profile.hasAvatar
+            ? BlurHash(
+                hash: profile.blurhash,
+                image: _getAvatarUrl(profile.id),
+                imageFit: boxFit,
+              )
+            : Image.asset(
+                'images/placeholder/avatar.jpg',
+                // ignore: avoid_redundant_argument_values // set from env
+                package: kAssetPackage,
+                height: size,
+                width: size,
+                fit: boxFit,
               ),
       ),
     );

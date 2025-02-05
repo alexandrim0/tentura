@@ -1,19 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import 'cached_image/cached_image.dart';
-
 class AvatarRated extends StatelessWidget {
-  static String? assetPackage;
-
-  static Future<void> evictFromCache(String id) =>
-      kIsWeb ? Future.value() : CachedImage.evictFromCache(_getAvatarUrl(id));
-
   const AvatarRated({
     required this.profile,
     this.boxFit = BoxFit.cover,
@@ -22,9 +15,7 @@ class AvatarRated extends StatelessWidget {
   });
 
   final double size;
-
   final BoxFit boxFit;
-
   final Profile profile;
 
   @override
@@ -41,9 +32,10 @@ class AvatarRated extends StatelessWidget {
       padding: kPaddingAllS,
       child: ClipOval(
         child: profile.hasAvatar
-            ? CachedImage(
-                imageUrl: _getAvatarUrl(profile.id),
-                placeholder: placeholder,
+            ? BlurHash(
+                image: _getAvatarUrl(profile.id),
+                hash: profile.blurhash,
+                imageFit: boxFit,
               )
             : placeholder,
       ),
