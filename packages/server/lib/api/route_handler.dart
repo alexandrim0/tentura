@@ -14,7 +14,6 @@ Handler routeHandler() {
   final authMiddleware = getIt<AuthMiddleware>();
   final router = Router().plus
     ..use(logRequests())
-    ..use(authMiddleware.extractBearer)
     ..get(
       '/health',
       () => 'I`m fine!',
@@ -30,7 +29,7 @@ Handler routeHandler() {
     ..put(
       kPathImageUpload,
       getIt<UserImageUploadController>().handler,
-      use: authMiddleware.demandAuth,
+      use: authMiddleware.extractBearer + authMiddleware.demandAuth,
     )
     ..post(
       kPathLogin,
