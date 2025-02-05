@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 
 import 'package:tentura/consts.dart';
+import 'package:tentura/domain/entity/beacon.dart';
 
 import 'cached_image/cached_image.dart';
 
 class BeaconImage extends StatelessWidget {
   const BeaconImage({
-    required this.authorId,
-    this.beaconId = '',
+    required this.beacon,
     this.boxFit = BoxFit.cover,
-    this.height,
-    this.width,
     super.key,
   });
 
-  final String beaconId;
-  final String authorId;
-  final double? height;
-  final double? width;
+  final Beacon beacon;
+
   final BoxFit boxFit;
 
   @override
@@ -26,18 +23,15 @@ class BeaconImage extends StatelessWidget {
       'images/placeholder/beacon.jpg',
       // ignore: avoid_redundant_argument_values // set from env
       package: kAssetPackage,
-      height: height,
-      width: width,
       fit: boxFit,
     );
-    return beaconId.isEmpty || authorId.isEmpty
-        ? placeholder
-        : CachedImage(
-            imageUrl: '$kImageServer/$kImagesPath/$authorId/$beaconId.jpg',
+    return beacon.hasPicture
+        ? CachedImage(
+            imageUrl: '$kImageServer/$kImagesPath/'
+                '${beacon.author.id}/${beacon.id}.$kImageExt',
             placeholder: placeholder,
             boxFit: boxFit,
-            height: height,
-            width: width,
-          );
+          )
+        : placeholder;
   }
 }

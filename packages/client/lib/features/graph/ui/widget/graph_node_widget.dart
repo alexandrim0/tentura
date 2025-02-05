@@ -26,9 +26,8 @@ class GraphNodeWidget extends StatelessWidget {
             size: nodeDetails.size,
             userId: user.hasImage ? user.id : '',
           ),
-        final BeaconNode beacon => BeaconImage(
-            authorId: beacon.userId,
-            beaconId: beacon.hasImage ? beacon.id : '',
+        final BeaconNode beaconNode => BeaconImage(
+            beacon: beaconNode.beacon,
           ),
       },
     );

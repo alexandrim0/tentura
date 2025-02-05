@@ -37,6 +37,7 @@ type beacon {
     """filter the rows returned"""
     where: beacon_pinned_bool_exp
   ): [beacon_pinned!]!
+  blur_hash: String!
 
   """An array relationship"""
   comments(
@@ -73,6 +74,8 @@ type beacon {
   A computed field, executes function "beacon_get_my_vote"
   """
   my_vote: Int
+  pic_height: Int!
+  pic_width: Int!
 
   """
   A computed field, executes function "beacon_get_scores"
@@ -140,6 +143,8 @@ order by avg() on columns of table "beacon"
 input beacon_avg_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -151,6 +156,7 @@ input beacon_bool_exp {
   _or: [beacon_bool_exp!]
   author: user_bool_exp
   beacon_pinneds: beacon_pinned_bool_exp
+  blur_hash: String_comparison_exp
   comments: comment_bool_exp
   context: String_comparison_exp
   created_at: timestamptz_comparison_exp
@@ -162,6 +168,8 @@ input beacon_bool_exp {
   lat: float8_comparison_exp
   long: float8_comparison_exp
   my_vote: Int_comparison_exp
+  pic_height: Int_comparison_exp
+  pic_width: Int_comparison_exp
   scores: mutual_score_bool_exp
   timerange: tstzrange_comparison_exp
   title: String_comparison_exp
@@ -200,12 +208,15 @@ input beacon_insert_input {
 order by max() on columns of table "beacon"
 """
 input beacon_max_order_by {
+  blur_hash: order_by
   context: order_by
   created_at: order_by
   description: order_by
   id: order_by
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -215,12 +226,15 @@ input beacon_max_order_by {
 order by min() on columns of table "beacon"
 """
 input beacon_min_order_by {
+  blur_hash: order_by
   context: order_by
   created_at: order_by
   description: order_by
   id: order_by
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -260,6 +274,7 @@ input beacon_on_conflict {
 input beacon_order_by {
   author: user_order_by
   beacon_pinneds_aggregate: beacon_pinned_aggregate_order_by
+  blur_hash: order_by
   comments_aggregate: comment_aggregate_order_by
   context: order_by
   created_at: order_by
@@ -271,6 +286,8 @@ input beacon_order_by {
   lat: order_by
   long: order_by
   my_vote: order_by
+  pic_height: order_by
+  pic_width: order_by
   scores_aggregate: mutual_score_aggregate_order_by
   timerange: order_by
   title: order_by
@@ -432,6 +449,9 @@ select columns of table "beacon"
 """
 enum beacon_select_column {
   """column name"""
+  blur_hash
+
+  """column name"""
   context
 
   """column name"""
@@ -454,6 +474,12 @@ enum beacon_select_column {
 
   """column name"""
   long
+
+  """column name"""
+  pic_height
+
+  """column name"""
+  pic_width
 
   """column name"""
   timerange
@@ -481,6 +507,8 @@ order by stddev() on columns of table "beacon"
 input beacon_stddev_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -489,6 +517,8 @@ order by stddev_pop() on columns of table "beacon"
 input beacon_stddev_pop_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -497,6 +527,8 @@ order by stddev_samp() on columns of table "beacon"
 input beacon_stddev_samp_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -512,6 +544,7 @@ input beacon_stream_cursor_input {
 
 """Initial value of the column from where the streaming should start"""
 input beacon_stream_cursor_value_input {
+  blur_hash: String
   context: String
   created_at: timestamptz
   description: String
@@ -520,6 +553,8 @@ input beacon_stream_cursor_value_input {
   id: String
   lat: float8
   long: float8
+  pic_height: Int
+  pic_width: Int
   timerange: tstzrange
   title: String
   updated_at: timestamptz
@@ -532,6 +567,8 @@ order by sum() on columns of table "beacon"
 input beacon_sum_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -556,6 +593,8 @@ order by var_pop() on columns of table "beacon"
 input beacon_var_pop_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -564,6 +603,8 @@ order by var_samp() on columns of table "beacon"
 input beacon_var_samp_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -572,6 +613,8 @@ order by variance() on columns of table "beacon"
 input beacon_variance_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -2705,6 +2748,7 @@ type user {
     """filter the rows returned"""
     where: beacon_bool_exp
   ): [beacon!]!
+  blur_hash: String!
 
   """An array relationship"""
   comments(
@@ -2732,6 +2776,8 @@ type user {
   A computed field, executes function "user_get_my_vote"
   """
   my_vote: Int
+  pic_height: Int!
+  pic_width: Int!
   public_key: String!
 
   """
@@ -2838,12 +2884,15 @@ input user_bool_exp {
   _or: [user_bool_exp!]
   beacon_pinneds: beacon_pinned_bool_exp
   beacons: beacon_bool_exp
+  blur_hash: String_comparison_exp
   comments: comment_bool_exp
   created_at: timestamptz_comparison_exp
   description: String_comparison_exp
   has_picture: Boolean_comparison_exp
   id: String_comparison_exp
   my_vote: Int_comparison_exp
+  pic_height: Int_comparison_exp
+  pic_width: Int_comparison_exp
   public_key: String_comparison_exp
   scores: mutual_score_bool_exp
   title: String_comparison_exp
@@ -2967,12 +3016,15 @@ type user_mutation_response {
 input user_order_by {
   beacon_pinneds_aggregate: beacon_pinned_aggregate_order_by
   beacons_aggregate: beacon_aggregate_order_by
+  blur_hash: order_by
   comments_aggregate: comment_aggregate_order_by
   created_at: order_by
   description: order_by
   has_picture: order_by
   id: order_by
   my_vote: order_by
+  pic_height: order_by
+  pic_width: order_by
   public_key: order_by
   scores_aggregate: mutual_score_aggregate_order_by
   title: order_by
@@ -2993,6 +3045,9 @@ select columns of table "user"
 """
 enum user_select_column {
   """column name"""
+  blur_hash
+
+  """column name"""
   created_at
 
   """column name"""
@@ -3003,6 +3058,12 @@ enum user_select_column {
 
   """column name"""
   id
+
+  """column name"""
+  pic_height
+
+  """column name"""
+  pic_width
 
   """column name"""
   public_key
@@ -3036,10 +3097,13 @@ input user_stream_cursor_input {
 
 """Initial value of the column from where the streaming should start"""
 input user_stream_cursor_value_input {
+  blur_hash: String
   created_at: timestamptz
   description: String
   has_picture: Boolean
   id: String
+  pic_height: Int
+  pic_width: Int
   public_key: String
   title: String
   updated_at: timestamptz

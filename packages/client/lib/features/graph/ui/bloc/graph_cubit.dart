@@ -22,11 +22,11 @@ class GraphCubit extends Cubit<GraphState> {
     required Profile me,
     String? focus,
   })  : _egoNode = UserNode(
-          id: me.id,
-          label: 'Me',
+          user: me.copyWith(
+            title: 'Me',
+            score: 2,
+          ),
           pinned: true,
-          hasImage: me.hasAvatar,
-          score: 2,
           size: 80,
         ),
         super(GraphState(focus: focus ?? '')) {

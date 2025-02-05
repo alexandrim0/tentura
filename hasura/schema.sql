@@ -53,6 +53,9 @@ CREATE TABLE public.beacon (
     lat double precision,
     long double precision,
     context text,
+    pic_height integer DEFAULT 0 NOT NULL,
+    pic_width integer DEFAULT 0 NOT NULL,
+    blur_hash text DEFAULT ''::text NOT NULL,
     CONSTRAINT beacon__description_len CHECK ((char_length(description) <= 2048)),
     CONSTRAINT beacon__title_len CHECK ((char_length(title) <= 128)),
     CONSTRAINT beacon_context_name_length CHECK (((char_length(context) >= 3) AND (char_length(context) <= 32)))
@@ -564,6 +567,9 @@ CREATE TABLE public."user" (
     description text DEFAULT ''::text NOT NULL,
     has_picture boolean DEFAULT false NOT NULL,
     public_key text NOT NULL,
+    pic_height integer DEFAULT 0 NOT NULL,
+    pic_width integer DEFAULT 0 NOT NULL,
+    blur_hash text DEFAULT ''::text NOT NULL,
     CONSTRAINT user__description_len CHECK ((char_length(description) <= 2048)),
     CONSTRAINT user__title_len CHECK ((char_length(title) <= 128))
 );
@@ -705,6 +711,7 @@ CREATE TABLE public.vote_user (
 
 
 ALTER TABLE public.vote_user OWNER TO postgres;
+
 
 --
 -- Name: beacon_pinned beacon_pinned_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres

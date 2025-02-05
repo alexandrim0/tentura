@@ -55,5 +55,25 @@ services:
       - "SERVER_NAME=https://${SERVER_NAME}"
       - "IMAGE_SERVER=https://${SERVER_NAME}"
 
+  schema_fetcher:
+    build:
+      dockerfile_inline: |
+        FROM node
+        RUN npm install -g get-graphql-schema
+    image: vbulavintsev/schema_fetcher
+    container_name: schema_fetcher
+    hostname: schema_fetcher
+    depends_on:
+      - hasura
+    restart: no
+    volumes:
+      - ./packages/client/lib/data/gql:/gql
+    networks:
+      - proxy
+    user: 1000:1000
+    environment:
+      - HASURA_GRAPHQL_ADMIN_SECRET
+    command: sh -c "get-graphql-schema -h 'x-hasura-admin-secret=${HASURA_GRAPHQL_ADMIN_SECRET}' -h 'x-hasura-role=user' http://hasura:8080/v1/graphql > /gql/schema.graphql"
+
 volumes:
   pg_data:

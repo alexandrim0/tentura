@@ -44,25 +44,26 @@ class AvatarRated extends StatelessWidget {
             ? CachedImage(
                 imageUrl: _getAvatarUrl(profile.id),
                 placeholder: placeholder,
-                height: size,
-                width: size,
               )
             : placeholder,
       ),
     );
-    return profile.score < kRatingSector
-        ? avatar
-        : CustomPaint(
-            painter: _RatingPainter(
-              color: Theme.of(context).colorScheme.primary,
-              score: profile.score,
+    return SizedBox.square(
+      dimension: size,
+      child: profile.score < kRatingSector
+          ? avatar
+          : CustomPaint(
+              painter: _RatingPainter(
+                color: Theme.of(context).colorScheme.primary,
+                score: profile.score,
+              ),
+              child: avatar,
             ),
-            child: avatar,
-          );
+    );
   }
 
   static String _getAvatarUrl(String userId) =>
-      '$kImageServer/$kImagesPath/$userId/avatar.jpg';
+      '$kImageServer/$kImagesPath/$userId/avatar.$kImageExt';
 }
 
 class _RatingPainter extends CustomPainter {

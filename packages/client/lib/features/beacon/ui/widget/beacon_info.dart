@@ -48,8 +48,7 @@ class BeaconInfo extends StatelessWidget {
                       top: Radius.circular(16),
                     ),
                     child: BeaconImage(
-                      authorId: beacon.author.imageId,
-                      beaconId: beacon.imageId,
+                      beacon: beacon,
                     ),
                   ),
                 ),

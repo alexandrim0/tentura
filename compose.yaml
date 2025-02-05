@@ -34,6 +34,9 @@ services:
       - WORKER_CONNECTIONS
       - CLIENT_MAX_BODY_SIZE
       - CLIENT_BODY_BUFFER_SIZE
+    post_start:
+      - command: chown nobody:nogroup /etc/nginx/cert
+        user: root
     logging:
       driver: journald
 
@@ -86,6 +89,8 @@ services:
     networks:
       - backend
     environment:
+      - 'MERITRANK_NUM_WALK=5000'
+      - 'MERITRANK_ZERO_OPINION_FACTOR=2'
       - 'MERITRANK_SERVICE_URL=tcp://0.0.0.0:10234'
     logging:
       driver: journald
@@ -104,7 +109,6 @@ services:
       - backend
     environment:
       - DEBUG_MODE
-      - SENTRY_DSN
       - SERVER_NAME
       - IMAGES_PATH
       - IMAGE_SERVER

@@ -36,20 +36,21 @@ class AvatarImage extends StatelessWidget {
       width: size,
       fit: boxFit,
     );
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(size / 2),
-      child: userId.isEmpty
-          ? placeholder
-          : CachedImage(
-              width: size,
-              height: size,
-              boxFit: boxFit,
-              placeholder: placeholder,
-              imageUrl: _getAvatarUrl(userId),
-            ),
+    return SizedBox.square(
+      dimension: size,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(size / 2),
+        child: userId.isEmpty
+            ? placeholder
+            : CachedImage(
+                boxFit: boxFit,
+                placeholder: placeholder,
+                imageUrl: _getAvatarUrl(userId),
+              ),
+      ),
     );
   }
 
   static String _getAvatarUrl(String userId) =>
-      '$kImageServer/$kImagesPath/$userId/avatar.jpg';
+      '$kImageServer/$kImagesPath/$userId/avatar.$kImageExt';
 }

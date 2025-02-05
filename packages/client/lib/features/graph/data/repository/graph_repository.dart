@@ -1,5 +1,7 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/data/model/beacon_model.dart';
+import 'package:tentura/data/model/user_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 
 import '../../domain/entity/edge_directed.dart';
@@ -9,9 +11,9 @@ import '../gql/_g/graph_fetch.req.gql.dart';
 
 @injectable
 class GraphRepository {
-  static const _label = 'Graph';
-
-  GraphRepository(this._remoteApiService);
+  GraphRepository(
+    this._remoteApiService,
+  );
 
   final RemoteApiService _remoteApiService;
 
@@ -41,18 +43,15 @@ class GraphRepository {
         final result = <EdgeDirected>{};
         for (final e in data.graph) {
           final weight = double.parse(e.dst_score!.value);
-          if (e.user == null) {
+          final user = e.user;
+          if (user == null) {
             if (beacon != null && e.dst == beacon.id) {
               result.add((
                 src: e.src!,
                 dst: e.dst!,
                 weight: weight,
                 node: BeaconNode(
-                  id: beacon.id,
-                  label: beacon.title,
-                  userId: beacon.author.id,
-                  hasImage: beacon.has_picture,
-                  score: weight,
+                  beacon: (beacon as BeaconModel).toEntity,
                 )
               ));
             }
@@ -62,14 +61,13 @@ class GraphRepository {
               dst: e.dst!,
               weight: weight,
               node: UserNode(
-                id: e.user!.id,
-                label: e.user!.title,
-                hasImage: e.user!.has_picture,
-                score: weight,
+                user: (user as UserModel).toEntity,
               ),
             ));
           }
         }
         return result;
       });
+
+  static const _label = 'Graph';
 }

@@ -1,22 +1,38 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:force_directed_graphview/force_directed_graphview.dart';
 
+import 'package:tentura/domain/entity/beacon.dart';
+import 'package:tentura/domain/entity/profile.dart';
+
 import 'package:tentura/features/graph/domain/entity/node_details.dart';
 
 void main() {
   const userNode1 = UserNode(
-    id: 'U1',
+    user: Profile(id: 'U1'),
   );
   const userNode2 = UserNode(
-    id: 'U2',
+    user: Profile(id: 'U2'),
   );
+  final now = DateTime.timestamp();
   final beaconNode1 = BeaconNode(
-    id: 'B1',
-    userId: userNode1.id,
+    beacon: Beacon(
+      createdAt: now,
+      updatedAt: now,
+      id: 'B1',
+      author: Profile(
+        id: userNode1.id,
+      ),
+    ),
   );
   final beaconNode2 = BeaconNode(
-    id: 'B2',
-    userId: userNode2.id,
+    beacon: Beacon(
+      createdAt: now,
+      updatedAt: now,
+      id: 'B2',
+      author: Profile(
+        id: userNode2.id,
+      ),
+    ),
   );
 
   test('test set 1', () {
