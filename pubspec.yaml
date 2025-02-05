@@ -18,8 +18,6 @@ dependencies:
   meta: ^1.15.0
   faker: ^2.2.0
   get_it: ^8.0.3
-  logger: ^2.5.0
-  sentry: ^8.12.0
   latlong2: ^0.9.1
   faker_dart: ^0.2.2
   injectable: ^2.5.0

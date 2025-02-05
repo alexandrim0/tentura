@@ -24,6 +24,7 @@ class AvatarImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cachedSize = size.ceil();
     return SizedBox.square(
       dimension: size,
       child: ClipRRect(
@@ -32,14 +33,16 @@ class AvatarImage extends StatelessWidget {
             ? BlurHash(
                 hash: profile.blurhash,
                 image: _getAvatarUrl(profile.id),
+                decodingHeight: cachedSize,
+                decodingWidth: cachedSize,
                 imageFit: boxFit,
               )
             : Image.asset(
                 'images/placeholder/avatar.jpg',
                 // ignore: avoid_redundant_argument_values // set from env
                 package: kAssetPackage,
-                height: size,
-                width: size,
+                cacheHeight: cachedSize,
+                cacheWidth: cachedSize,
                 fit: boxFit,
               ),
       ),

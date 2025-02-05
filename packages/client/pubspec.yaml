@@ -19,7 +19,6 @@ dependencies:
   intl:
   uuid:
   get_it:
-  logger:
   latlong2:
   collection:
   injectable:
@@ -29,12 +28,13 @@ dependencies:
   freezed_annotation:
 
   # Common
+  logger: ^2.5.0
   auto_route: ^9.3.0
   built_value: ^8.9.3
   flutter_bloc: ^9.0.0
   synchronized: ^3.3.0
-  sentry_drift: ^8.12.0
-  sentry_flutter: ^8.12.0
+  sentry_drift: 8.12.0
+  sentry_flutter: 8.12.0
   json_annotation: ^4.9.0
   intl_translation: ^0.20.1
 

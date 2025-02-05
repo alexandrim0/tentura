@@ -20,12 +20,13 @@ class AvatarRated extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cachedSize = size.ceil();
     final placeholder = Image.asset(
       'images/placeholder/avatar.jpg',
       // ignore: avoid_redundant_argument_values // set from env
       package: kAssetPackage,
-      height: size,
-      width: size,
+      cacheHeight: cachedSize,
+      cacheWidth: cachedSize,
       fit: boxFit,
     );
     final avatar = Padding(
@@ -34,6 +35,8 @@ class AvatarRated extends StatelessWidget {
         child: profile.hasAvatar
             ? BlurHash(
                 image: _getAvatarUrl(profile.id),
+                decodingHeight: cachedSize,
+                decodingWidth: cachedSize,
                 hash: profile.blurhash,
                 imageFit: boxFit,
               )
