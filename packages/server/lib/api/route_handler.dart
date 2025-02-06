@@ -1,10 +1,11 @@
 import 'package:shelf_plus/shelf_plus.dart';
 
-import 'package:tentura_root/consts.dart';
+import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/di/di.dart';
 
+import 'controllers/actions/action_blur_hash_controller.dart';
 import 'controllers/chat/chat_controller.dart';
-import 'controllers/user/user_image_upload.dart';
+import 'controllers/user/user_image_controller.dart';
 import 'controllers/user/user_login_controller.dart';
 import 'controllers/user/user_register_controller.dart';
 import 'controllers/shared/shared_view_controller.dart';
@@ -26,11 +27,6 @@ Handler routeHandler() {
       kPathAppLinkView,
       sharedViewController,
     )
-    ..put(
-      kPathImageUpload,
-      getIt<UserImageUploadController>().handler,
-      use: authMiddleware.extractBearer + authMiddleware.demandAuth,
-    )
     ..post(
       kPathLogin,
       getIt<UserLoginController>().handler,
@@ -38,6 +34,16 @@ Handler routeHandler() {
     ..post(
       kPathRegister,
       getIt<UserRegisterController>().handler,
+    )
+    ..put(
+      kPathImageUpload,
+      getIt<UserImageController>().handler,
+      use: authMiddleware.verifyBearerJwt,
+    )
+    ..post(
+      '$kPathActions/blur_hash',
+      getIt<ActionBlurHashController>().handler,
+      use: authMiddleware.verifyTenturaPassword,
     );
 
   return router.call;

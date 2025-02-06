@@ -6,7 +6,7 @@ import 'package:shelf_plus/shelf_plus.dart';
 
 import 'package:tentura_server/di/di.dart';
 import 'package:tentura_server/consts.dart';
-import 'package:tentura_server/api/controllers/user/user_image_upload.dart';
+import 'package:tentura_server/api/controllers/user/user_image_controller.dart';
 import 'package:tentura_server/api/controllers/user/user_login_controller.dart';
 import 'package:tentura_server/api/controllers/user/user_register_controller.dart';
 import 'package:tentura_server/data/repository/user_repository_mock.dart';
@@ -101,7 +101,7 @@ Future<void> main() async {
     'routeUserImageUpload',
     () async {
       final user = kUserByPublicKey[kPussyCatKey]!;
-      final response = await getIt<UserImageUploadController>().handler(
+      final response = await getIt<UserImageController>().handler(
         Request(
           'PUT',
           Uri.http(

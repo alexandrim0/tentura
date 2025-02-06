@@ -10,10 +10,10 @@ import 'package:tentura_server/utils/jwt.dart';
 )
 class AuthMiddleware {
   ///
-  /// Extract and verify bearer token.
+  /// Extract and verify bearer JWT.
   /// If ok, save it in request.context[kContextUserId]
   ///
-  Middleware get extractBearer =>
+  Middleware get verifyBearerJwt =>
       (Handler innerHandler) => (Request request) async {
             if (request.headers.containsKey(kHeaderAuthorization)) {
               try {
@@ -31,14 +31,23 @@ class AuthMiddleware {
                 return Response.unauthorized(error);
               }
             }
-            return innerHandler(request);
+            return Response.unauthorized(null);
           };
 
   ///
-  /// Return code 401 if no userId in context
+  /// Check password from X-Tentura-Password header
   ///
-  Middleware get demandAuth => (Handler innerHandler) => (Request request) =>
-      request.context.containsKey(kContextUserId)
-          ? innerHandler(request)
-          : Response.unauthorized(null);
+  Middleware get verifyTenturaPassword =>
+      (Handler innerHandler) => (Request request) {
+            // Pass if password is not set
+            if (kTenturaPassword?.isEmpty ?? true) {
+              return innerHandler(request);
+            }
+            // Pass if password is correct
+            if (request.headers['X-Tentura-Password'] == kTenturaPassword) {
+              return innerHandler(request);
+            }
+            // Else return 401
+            return Response.unauthorized(null);
+          };
 }

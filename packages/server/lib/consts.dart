@@ -12,6 +12,10 @@ const kBlurHashY = 9;
 // Strings
 const kContextUserId = 'userId';
 
+const kPathActions = '/hasura/actions';
+
+const kPathEvents = '/hasura/events';
+
 // Make [environment] as mutable for testing purposes only!
 final environment = Map<String, String>.from(Platform.environment);
 
@@ -45,6 +49,8 @@ final kPgPassword = environment['POSTGRES_PASSWORD'] ?? 'password';
 
 final kMaxConnectionCount =
     int.tryParse(environment['POSTGRES_MAXCONN'] ?? '') ?? 25;
+
+final kTenturaPassword = environment['TENTURA_PASSWORD'];
 
 // JWT
 // This keys needed for testing purposes only!

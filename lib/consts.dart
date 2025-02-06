@@ -22,7 +22,7 @@ const kPathIcons = '/icons';
 
 const kPathLogin = '/api/user/login';
 const kPathRegister = '/api/user/register';
-const kPathImageUpload = '/api/user/image_upload';
+const kPathImageUpload = '/api/user/image';
 const kPathGraphQLEndpoint = '/api/v1/graphql';
 const kPathAppLinkView = '/shared/view';
 

@@ -11,9 +11,8 @@ import 'user_controller.dart';
 @Injectable(
   order: 3,
 )
-final class UserImageUploadController extends UserController
-    with BinaryBodyReader {
-  UserImageUploadController(
+final class UserImageController extends UserController with BinaryBodyReader {
+  UserImageController(
     this._beaconRepository,
     super.userRepository,
   );

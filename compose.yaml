@@ -51,6 +51,7 @@ services:
     networks:
       - backend
     environment:
+      - TENTURA_PASSWORD
       - HASURA_GRAPHQL_ADMIN_SECRET
       - 'HASURA_GRAPHQL_ENABLE_TELEMETRY=false'
       - 'HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES=true'
@@ -59,6 +60,7 @@ services:
       - 'HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres'
       - 'HASURA_GRAPHQL_JWT_SECRET={"type":"Ed25519", "key":"${JWT_PUBLIC_PEM}", "claims_map": {"x-hasura-allowed-roles": ["user", "admin"], "x-hasura-default-role": "user", "x-hasura-user-id": {"path": "$$.sub"}}}'
       - 'HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=streaming_subscriptions,remove_empty_subscription_responses'
+      - 'ACTION_BASE_URL=http://tentura:2080/hasura/actions'
     logging:
       driver: journald
 
@@ -119,6 +121,7 @@ services:
       - POSTGRES_USERNAME
       - POSTGRES_PASSWORD
       - POSTGRES_MAXCONN
+      - TENTURA_PASSWORD
       - JWT_PRIVATE_PEM
       - JWT_PUBLIC_PEM
     logging:
