@@ -2,11 +2,11 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 0.12.1
+version: 0.12.2
 
 environment:
   sdk: '>=3.6.1 <4.0.0'
-  flutter: ^3.27.3
+  flutter: ^3.27.4
 
 resolution: workspace
 
