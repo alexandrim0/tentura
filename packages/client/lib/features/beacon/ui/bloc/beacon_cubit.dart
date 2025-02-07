@@ -106,30 +106,6 @@ class BeaconCubit extends Cubit<BeaconState> {
     }
   }
 
-  Future<void> create({
-    required Beacon beacon,
-    Uint8List? image,
-  }) async {
-    emit(state.copyWith(
-      status: StateStatus.isLoading,
-    ));
-    try {
-      final result = await _beaconRepository.create(beacon.copyWith(
-        hasPicture: image != null,
-      ));
-      if (image != null && image.isNotEmpty) {
-        await _beaconRepository.putBeaconImage(
-          beaconId: result.id,
-          image: image,
-        );
-      }
-    } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
-      ));
-    }
-  }
-
   Future<void> delete(String beaconId) async {
     emit(state.copyWith(
       status: StateStatus.isLoading,

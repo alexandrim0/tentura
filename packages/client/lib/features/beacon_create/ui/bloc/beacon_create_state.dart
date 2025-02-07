@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tentura/domain/entity/coordinates.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
+import 'package:tentura/features/image/domain/entity/image_entity.dart';
+
 part 'beacon_create_state.freezed.dart';
 
 @freezed
@@ -12,8 +14,7 @@ class BeaconCreateState extends StateBase with _$BeaconCreateState {
     @Default('') String description,
     DateTimeRange? dateRange,
     Coordinates? coordinates,
-    Uint8List? image,
-    String? blurHash,
+    ImageEntity? image,
     @Default(StateIsSuccess()) StateStatus status,
   }) = _BeaconCreateState;
 

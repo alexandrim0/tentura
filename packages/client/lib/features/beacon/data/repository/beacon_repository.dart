@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/data/gql/_g/schema.schema.gql.dart';
@@ -17,9 +16,9 @@ import '../gql/_g/beacons_fetch_by_user_id.req.gql.dart';
 
 @lazySingleton
 class BeaconRepository {
-  static const _label = 'Beacon';
-
-  BeaconRepository(this._remoteApiService);
+  BeaconRepository(
+    this._remoteApiService,
+  );
 
   final RemoteApiService _remoteApiService;
 
@@ -98,12 +97,5 @@ class BeaconRepository {
                 : _controller.add(RepositoryEventUpdate(v.toEntity)),
           );
 
-  Future<void> putBeaconImage({
-    required Uint8List image,
-    required String beaconId,
-  }) =>
-      _remoteApiService.uploadImage(
-        image: image,
-        id: beaconId,
-      );
+  static const _label = 'Beacon';
 }

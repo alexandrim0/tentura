@@ -1,7 +1,7 @@
 services:
   openresty:
     restart: no
-    image: vbulavintsev/openresty-tentura:v0.0.13
+    image: vbulavintsev/openresty-tentura:v0.0.14
     volumes:
       - ./openresty/conf:/etc/nginx:ro
       - ../tentura/build/web:/usr/local/openresty/nginx/html:ro

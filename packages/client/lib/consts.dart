@@ -6,6 +6,10 @@ const kCommentsShown = 3;
 
 const kSnackBarDuration = 5;
 
+const kImageMaxDimension = 600;
+
+const kImageQuality = 95;
+
 const kSettingsThemeMode = 'themeMode';
 
 const kSettingsIsIntroEnabledKey = 'isIntroEnabled';

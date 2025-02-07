@@ -1,7 +1,4 @@
-import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
-
-import 'package:tentura/domain/entity/beacon.dart';
 
 import 'package:tentura/features/beacon/ui/bloc/beacon_cubit.dart';
 
@@ -17,12 +14,6 @@ class BeaconCubitMock extends Cubit<BeaconState> implements BeaconCubit {
           ],
           userId: profileAlice.id,
         ));
-
-  @override
-  Future<void> create({
-    required Beacon beacon,
-    Uint8List? image,
-  }) async {}
 
   @override
   Future<void> delete(String beaconId) async {}
