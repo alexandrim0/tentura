@@ -8,6 +8,7 @@ part 'image_entity.freezed.dart';
 class ImageEntity with _$ImageEntity {
   const factory ImageEntity({
     required Uint8List imageBytes,
+    @Default('') String fileName,
     @Default('') String blurHash,
     @Default(0) int height,
     @Default(0) int width,

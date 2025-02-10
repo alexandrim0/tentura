@@ -112,6 +112,10 @@ class BeaconCubit extends Cubit<BeaconState> {
     ));
     try {
       await _beaconRepository.delete(beaconId);
+      state.beacons.removeWhere((e) => e.id == beaconId);
+      emit(state.copyWith(
+        status: StateStatus.isSuccess,
+      ));
     } catch (e) {
       emit(state.copyWith(
         status: StateHasError(e),
@@ -128,6 +132,9 @@ class BeaconCubit extends Cubit<BeaconState> {
         !state.beacons.singleWhere((e) => e.id == beaconId).isEnabled,
         id: beaconId,
       );
+      emit(state.copyWith(
+        status: StateStatus.isSuccess,
+      ));
     } catch (e) {
       emit(state.copyWith(
         status: StateHasError(e),

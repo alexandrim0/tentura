@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/coordinates.dart';
+import 'package:tentura/domain/entity/image_entity.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-
-import 'package:tentura/features/image/domain/entity/image_entity.dart';
 
 part 'beacon_create_state.freezed.dart';
 

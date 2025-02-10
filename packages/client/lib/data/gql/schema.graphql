@@ -193,12 +193,15 @@ input type for inserting data into table "beacon"
 """
 input beacon_insert_input {
   beacon_pinneds: beacon_pinned_arr_rel_insert_input
+  blur_hash: String
   comments: comment_arr_rel_insert_input
   context: String
   description: String
   has_picture: Boolean
   lat: float8
   long: float8
+  pic_height: Int
+  pic_width: Int
   timerange: tstzrange
   title: String
   vote_beacons: vote_beacon_arr_rel_insert_input

@@ -61,8 +61,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
           preferredSize: const Size.fromHeight(4),
           child: BlocSelector<BeaconViewCubit, BeaconViewState, bool>(
             selector: (state) => state.isLoading,
-            builder: (context, isLoading) =>
-                isLoading ? const LinearPiActive() : const SizedBox(height: 4),
+            builder: LinearPiActive.builder,
           ),
         ),
       ),
@@ -75,10 +74,11 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
             padding: kPaddingH + const EdgeInsets.only(bottom: 80),
             children: [
               // User row (Avatar and Name)
-              AuthorInfo(
-                author: beacon.author,
-                key: ValueKey(beacon.author),
-              ),
+              if (state.isBeaconNotMine)
+                AuthorInfo(
+                  author: beacon.author,
+                  key: ValueKey(beacon.author),
+                ),
 
               // Beacon Info
               BeaconInfo(
@@ -94,8 +94,9 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
                 padding: kPaddingSmallV,
                 child: state.isBeaconMine
                     ? BeaconMineControl(
-                        beacon: beacon,
                         key: ValueKey(beacon.id),
+                        goBackOnDelete: true,
+                        beacon: beacon,
                       )
                     : BeaconTileControl(
                         beacon: beacon,

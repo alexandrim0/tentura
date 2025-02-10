@@ -3,21 +3,27 @@
 mutation BeaconCreate(
   $title: String!,
   $description: String!,
-  $timerange: tstzrange,
-  $has_picture: Boolean!,
   $lat: float8,
   $long: float8,
-  $context: String
+  $context: String,
+  $timerange: tstzrange,
+  $has_picture: Boolean = false,
+  $blur_hash: String = "",
+  $pic_height: Int = 0,
+  $pic_width: Int = 0
   ) {
   insert_beacon_one(
     object: {
+      lat: $lat,
+      long: $long,
       title: $title,
+      context: $context,
+      timerange: $timerange,
       description: $description,
       has_picture: $has_picture,
-      timerange: $timerange,
-      context: $context,
-      long: $long,
-      lat: $lat
+      blur_hash: $blur_hash,
+      pic_height: $pic_height,
+      pic_width: $pic_width
     }
   ) {
     ...BeaconModel

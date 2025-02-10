@@ -25,6 +25,8 @@ class BeaconMineTile extends StatelessWidget {
           Padding(
             padding: kPaddingSmallV,
             child: BeaconMineControl(
+              key: ValueKey(beacon.id),
+              goBackOnDelete: false,
               beacon: beacon,
             ),
           ),

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/beacon.dart';
@@ -9,10 +10,13 @@ import '../dialog/beacon_delete_dialog.dart';
 class BeaconMineControl extends StatelessWidget {
   const BeaconMineControl({
     required this.beacon,
+    required this.goBackOnDelete,
     super.key,
   });
 
   final Beacon beacon;
+
+  final bool goBackOnDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +54,7 @@ class BeaconMineControl extends StatelessWidget {
               onTap: () async {
                 if (await BeaconDeleteDialog.show(context) ?? false) {
                   await beaconCubit.delete(beacon.id);
+                  if (goBackOnDelete && context.mounted) context.back();
                 }
               },
             ),

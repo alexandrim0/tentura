@@ -6,9 +6,7 @@ import 'package:blurhash_dart/blurhash_dart.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
-
-import '../../domain/entity/image_entity.dart';
-import '../../domain/enum.dart';
+import 'package:tentura/domain/entity/image_entity.dart';
 
 @injectable
 class ImageRepository {
@@ -18,9 +16,7 @@ class ImageRepository {
 
   final RemoteApiService _remoteApiService;
 
-  Future<ImageEntity?> pickImage({
-    required ImageType imageType,
-  }) async {
+  Future<ImageEntity?> pickImage() async {
     final maxDimension = kImageMaxDimension.toDouble();
     final xFile = await _imagePicker.pickImage(
       maxHeight: maxDimension,
@@ -34,14 +30,12 @@ class ImageRepository {
     if (image == null || image.isEmpty || !image.isValid) {
       throw const FormatException('Unsupported image format!');
     }
-    final xy = switch (imageType) {
-      ImageType.avatar => (3, 3),
-      ImageType.beacon => (5, 5),
-    };
+
+    final numComp = image.height > image.width ? (x: 3, y: 4) : (x: 4, y: 3);
     final blurHash = BlurHash.encode(
       image,
-      numCompX: xy.$1,
-      numCompY: xy.$2,
+      numCompX: numComp.x,
+      numCompY: numComp.y,
     ).hash;
     final resultImage = encodeJpg(
       image,
@@ -49,6 +43,7 @@ class ImageRepository {
     );
     return ImageEntity(
       imageBytes: resultImage,
+      fileName: xFile.name,
       blurHash: blurHash,
       height: image.height,
       width: image.width,

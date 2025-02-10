@@ -15,6 +15,7 @@ const kSettingsThemeMode = 'themeMode';
 const kSettingsIsIntroEnabledKey = 'isIntroEnabled';
 
 const kPathRoot = '/';
+const kPathBack = '/back';
 const kPathGraph = '/graph';
 const kPathRating = '/rating';
 const kPathConnect = '/connect';

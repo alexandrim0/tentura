@@ -47,8 +47,11 @@ class BeaconRepository {
           GBeaconCreateReq((b) => b.vars
             ..title = beacon.title
             ..timerange = beacon.dateRange
-            ..has_picture = beacon.hasPicture
             ..description = beacon.description
+            ..has_picture = beacon.hasPicture
+            ..blur_hash = beacon.blurhash
+            ..pic_height = beacon.imageHeight
+            ..pic_width = beacon.imageWidth
             ..context = beacon.context.isEmpty ? null : beacon.context
             ..long = beacon.coordinates?.long == null
                 ? null

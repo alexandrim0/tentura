@@ -78,7 +78,8 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
 
 void commonScreenBlocListener(BuildContext context, StateBase state) =>
     switch (state.status) {
-      final StateIsNavigating s => context.navigateNamedTo(s.path),
+      final StateIsNavigating s =>
+        s.path == kPathBack ? context.back() : context.navigateNamedTo(s.path),
       final StateIsMessaging s => showSnackBar(
           context,
           text: s.message,
@@ -91,10 +92,10 @@ void commonScreenBlocListener(BuildContext context, StateBase state) =>
       _ => null,
     };
 
+// TBD: remove
 Future<({String name, Uint8List bytes})?> pickImage() async {
   final xFile = await ImagePicker().pickImage(
     source: ImageSource.gallery,
-    // TBD: resize and convert by package:image
     maxWidth: 600,
   );
   return xFile == null

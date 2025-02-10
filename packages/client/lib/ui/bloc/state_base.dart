@@ -1,3 +1,5 @@
+import 'package:tentura/consts.dart';
+
 export 'package:flutter/foundation.dart';
 export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:freezed_annotation/freezed_annotation.dart';
@@ -42,6 +44,8 @@ class StateIsMessaging extends StateStatus {
 
 class StateIsNavigating extends StateStatus {
   const StateIsNavigating(this.path);
+
+  const StateIsNavigating.back() : path = kPathBack;
 
   final String path;
 }
