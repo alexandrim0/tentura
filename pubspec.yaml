@@ -31,7 +31,7 @@ dependencies:
 
 dev_dependencies:
   freezed: ^2.5.7
-  build_runner: ^2.4.14
+  build_runner: ^2.4.15
   json_serializable: ^6.9.0
   very_good_analysis: ^7.0.0
   injectable_generator: ^2.6.2

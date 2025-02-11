@@ -34,9 +34,9 @@ class AvatarRated extends StatelessWidget {
       child: ClipOval(
         child: profile.hasAvatar
             ? BlurHash(
-                image: _getAvatarUrl(profile.id),
                 decodingHeight: cachedSize,
                 decodingWidth: cachedSize,
+                image: profile.avatarUrl,
                 hash: profile.blurhash,
                 imageFit: boxFit,
               )
@@ -56,9 +56,6 @@ class AvatarRated extends StatelessWidget {
             ),
     );
   }
-
-  static String _getAvatarUrl(String userId) =>
-      '$kImageServer/$kImagesPath/$userId/avatar.$kImageExt';
 }
 
 class _RatingPainter extends CustomPainter {

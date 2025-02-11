@@ -31,10 +31,10 @@ class AvatarImage extends StatelessWidget {
         borderRadius: BorderRadius.circular(size / 2),
         child: profile.hasAvatar
             ? BlurHash(
-                hash: profile.blurhash,
-                image: _getAvatarUrl(profile.id),
                 decodingHeight: cachedSize,
                 decodingWidth: cachedSize,
+                image: profile.avatarUrl,
+                hash: profile.blurhash,
                 imageFit: boxFit,
               )
             : Image.asset(
@@ -48,7 +48,4 @@ class AvatarImage extends StatelessWidget {
       ),
     );
   }
-
-  static String _getAvatarUrl(String userId) =>
-      '$kImageServer/$kImagesPath/$userId/avatar.$kImageExt';
 }

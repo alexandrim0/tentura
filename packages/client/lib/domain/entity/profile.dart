@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'package:tentura/consts.dart';
+
 import 'likable.dart';
 
 part 'profile.freezed.dart';
@@ -32,4 +34,7 @@ class Profile with _$Profile implements Likable {
   bool get isSeeingMe => rScore > 0;
 
   bool get needEdit => id.isNotEmpty && title.isEmpty;
+
+  String get avatarUrl => '$kImageServer/$kImagesPath/$id/avatar.$kImageExt?'
+      '${blurhash.replaceRange(5, blurhash.length - 5, '')}';
 }
