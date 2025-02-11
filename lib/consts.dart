@@ -37,8 +37,10 @@ const kHeaderQueryContext = 'X-Hasura-Query-Context';
 
 const kImageExt = 'jpg';
 const kImagesPath = 'images';
-const kAvatarPlaceholderUrl = '$kImageServer/$kImagesPath/placeholder/avatar.jpg';
-const kBeaconPlaceholderUrl = '$kImageServer/$kImagesPath/placeholder/beacon.jpg';
+const kAvatarPlaceholderUrl =
+    '$kImageServer/$kImagesPath/placeholder/avatar.$kImageExt';
+const kBeaconPlaceholderUrl =
+    '$kImageServer/$kImagesPath/placeholder/beacon.$kImageExt';
 
 /// First part of FQDN: `https://app.server.name`
 const kServerName = String.fromEnvironment('SERVER_NAME');

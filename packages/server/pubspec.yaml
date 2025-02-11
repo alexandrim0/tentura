@@ -5,7 +5,7 @@ publish_to: none
 version: 0.0.7
 
 environment:
-  sdk: '>=3.6.1 <4.0.0'
+  sdk: '>=3.6.2 <4.0.0'
 
 resolution: workspace
 
@@ -13,6 +13,7 @@ dependencies:
   meta:
   uuid:
   faker:
+  image:
   get_it:
   latlong2:
   injectable:
@@ -21,7 +22,6 @@ dependencies:
   dart_jsonwebtoken:
   freezed_annotation:
 
-  image: ^4.5.2
   jaspr: ^0.17.0
   postgres: ^3.4.8
   shelf_plus: ^1.10.0

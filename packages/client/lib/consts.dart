@@ -6,14 +6,19 @@ const kCommentsShown = 3;
 
 const kSnackBarDuration = 5;
 
+// Images
+const kImageQuality = 95;
 const kImageMaxDimension = 600;
 
-const kImageQuality = 95;
+// blurHash
+const kMaxNumCompX = 6;
+const kMinNumCompX = 4;
 
+// Settings storage keys
 const kSettingsThemeMode = 'themeMode';
-
 const kSettingsIsIntroEnabledKey = 'isIntroEnabled';
 
+// Routes
 const kPathRoot = '/';
 const kPathBack = '/back';
 const kPathGraph = '/graph';

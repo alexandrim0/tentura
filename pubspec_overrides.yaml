@@ -1,2 +1,7 @@
 dependency_overrides:
   web_socket_channel: ^3.0.2
+
+  image:
+    git:
+      url: https://github.com/alexandrim0/image.git
+      ref: js_interop

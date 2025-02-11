@@ -31,7 +31,11 @@ class ImageRepository {
       throw const FormatException('Unsupported image format!');
     }
 
-    final numComp = image.height > image.width ? (x: 3, y: 4) : (x: 4, y: 3);
+    final numComp = image.height == image.width
+        ? (x: kMaxNumCompX, y: kMaxNumCompX)
+        : image.height > image.width
+            ? (x: kMinNumCompX, y: kMaxNumCompX)
+            : (x: kMaxNumCompX, y: kMinNumCompX);
     final blurHash = BlurHash.encode(
       image,
       numCompX: numComp.x,
@@ -53,11 +57,17 @@ class ImageRepository {
   Future<void> putBeaconImage({
     required Uint8List image,
     required String beaconId,
-  }) =>
-      _remoteApiService.uploadImage(
-        image: image,
-        id: beaconId,
-      );
+  }) async {
+    await _remoteApiService.uploadImage(
+      image: image,
+      id: beaconId,
+    );
+    // Wait to be sure image is saved and available via web
+    // TBD: replace with Image.network which can retry
+    await Future<void>.delayed(const Duration(
+      milliseconds: 250,
+    ));
+  }
 
   static final _imagePicker = ImagePicker();
 }
