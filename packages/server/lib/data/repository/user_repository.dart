@@ -70,7 +70,7 @@ class UserRepository {
     required Uint8List imageBytes,
   }) async {
     final image = _imageService.decodeImage(imageBytes);
-    await _imageService.saveToFile(
+    await _imageService.saveBytesToFile(
       imageBytes,
       File('$kImageFolderPath/$id/avatar.$kImageExt'),
     );

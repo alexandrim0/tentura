@@ -66,7 +66,7 @@ class BeaconRepository {
     if (file.existsSync()) {
       throw Exception('File already exists!');
     }
-    await _imageService.saveToFile(
+    await _imageService.saveBytesToFile(
       imageBytes,
       file,
     );

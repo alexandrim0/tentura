@@ -1,9 +1,12 @@
+import 'dart:io';
+import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/api/helpers/binary_body_reader.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
+import 'package:tentura_server/data/service/image_service.dart';
 import 'package:tentura_server/domain/exception.dart';
 
 import 'user_controller.dart';
@@ -18,6 +21,8 @@ final class UserImageController extends UserController with BinaryBodyReader {
   );
 
   final BeaconRepository _beaconRepository;
+
+  final _imageService = const ImageService();
 
   @override
   Future<Response> handler(Request request) async {
@@ -34,9 +39,9 @@ final class UserImageController extends UserController with BinaryBodyReader {
           return Response.unauthorized(null);
         }
         try {
-          await userRepository.setUserImage(
-            id: userId,
-            imageBytes: await readBodyAsBytes(request.read),
+          await _imageService.saveStreamToFile(
+            request.read(),
+            File('$kImageFolderPath/$id/avatar.$kImageExt'),
           );
         } catch (e) {
           return Response.internalServerError(
@@ -53,15 +58,17 @@ final class UserImageController extends UserController with BinaryBodyReader {
           if (!beacon.hasPicture) {
             return Response.forbidden(null);
           }
-          await _beaconRepository.setBeaconImage(
-            beacon: beacon,
-            imageBytes: await readBodyAsBytes(request.read),
+          await _imageService.saveStreamToFile(
+            request.read(),
+            File('$kImageFolderPath/$userId/$id.$kImageExt'),
           );
         } on IdNotFoundException catch (e) {
+          log(e.toString());
           return Response.notFound(
             e.toString(),
           );
         } catch (e) {
+          log(e.toString());
           return Response.internalServerError(
             body: e.toString(),
           );

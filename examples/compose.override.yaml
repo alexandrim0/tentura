@@ -44,7 +44,7 @@ services:
 
   tentura:
     restart: no
-    image: vbulavintsev/tentura-service:v0.0.6
+    image: vbulavintsev/tentura-service:v0.0.7
     volumes:
       - /tmp/images:/srv/images
     networks:
