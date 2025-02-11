@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -64,12 +65,13 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          actions: const [
+          actions: [
             // Publish Button
             Padding(
               padding: kPaddingH,
               child: PublishButton(
-                key: Key('BeaconCreate.PublishButton'),
+                key: const Key('BeaconCreate.PublishButton'),
+                formKey: _formKey,
               ),
             ),
           ],
@@ -80,13 +82,16 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
               builder: LinearPiActive.builder,
             ),
           ),
-          leading: const AutoLeadingButton(),
+          leading: const DeepBackButton(),
+          centerTitle: true,
+          title: const Text(
+            'Create new Beacon',
+          ),
         ),
 
         // Input Form
         body: Form(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.disabled,
           child: ListView(
             padding: kPaddingAll,
             children: [
@@ -99,16 +104,13 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
               // Context
               const Padding(
                 padding: kPaddingSmallV,
-                child: ContextDropDown(
-                  key: Key('BeaconCreate.ContextSelector'),
-                ),
+                child: ContextDropDown(),
               ),
 
               // Location
               Padding(
                 padding: kPaddingSmallV,
                 child: LocationInput(
-                  key: ObjectKey(_locationController),
                   controller: _locationController,
                 ),
               ),
@@ -117,7 +119,6 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
               Padding(
                 padding: kPaddingSmallV,
                 child: DateRangeInput(
-                  key: ObjectKey(_dateRangeController),
                   controller: _dateRangeController,
                 ),
               ),
@@ -126,7 +127,6 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
               Padding(
                 padding: kPaddingSmallV,
                 child: ImageInput(
-                  key: ObjectKey(_imageController),
                   controller: _imageController,
                 ),
               ),
@@ -134,9 +134,7 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
               // Image Container
               const Padding(
                 padding: EdgeInsets.all(48),
-                child: ImageBox(
-                  key: ValueKey('BeaconCreateImageBox'),
-                ),
+                child: ImageBox(),
               ),
             ],
           ),

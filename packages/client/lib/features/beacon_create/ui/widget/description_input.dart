@@ -11,6 +11,7 @@ class DescriptionInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final cubit = context.read<BeaconCreateCubit>();
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: const InputDecoration(
         hintText: 'Description',
       ),
@@ -19,6 +20,7 @@ class DescriptionInput extends StatelessWidget {
       maxLines: null,
       onChanged: cubit.setDescription,
       onTapOutside: (_) => FocusScope.of(context).unfocus(),
+      validator: cubit.descriptionValidator,
     );
   }
 }

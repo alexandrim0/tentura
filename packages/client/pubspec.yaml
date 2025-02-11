@@ -2,7 +2,7 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 0.12.3
+version: 0.12.4
 
 environment:
   sdk: '>=3.6.1 <4.0.0'
@@ -25,6 +25,7 @@ dependencies:
   tentura_sdk:
   tentura_root:
   google_fonts:
+  blurhash_dart:
   freezed_annotation:
 
   # Common
@@ -35,7 +36,6 @@ dependencies:
   flutter_bloc: ^9.0.0
   synchronized: ^3.3.0
   sentry_drift: 8.12.0
-  blurhash_dart: ^1.2.1
   sentry_flutter: 8.12.0
   json_annotation: ^4.9.0
   intl_translation: ^0.20.1

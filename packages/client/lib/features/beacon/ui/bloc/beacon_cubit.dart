@@ -77,7 +77,8 @@ class BeaconCubit extends Cubit<BeaconState> {
   }
 
   void showBeaconCreate() => emit(state.copyWith(
-        status: const StateIsNavigating(kPathBeaconNew),
+        // ignore: prefer_const_constructors // to navigate many times
+        status: StateIsNavigating(kPathBeaconNew),
       ));
 
   void showBeacon(String id) => emit(state.copyWith(
