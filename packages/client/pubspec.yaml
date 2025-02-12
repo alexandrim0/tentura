@@ -2,7 +2,7 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 0.12.5
+version: 0.12.6
 
 environment:
   sdk: '>=3.6.2 <4.0.0'
@@ -35,8 +35,8 @@ dependencies:
   built_value: ^8.9.3
   flutter_bloc: ^9.0.0
   synchronized: ^3.3.0
-  sentry_drift: 8.12.0
-  sentry_flutter: 8.12.0
+  sentry_drift: ^8.13.0
+  sentry_flutter: ^8.13.0
   json_annotation: ^4.9.0
   intl_translation: ^0.20.1
 
