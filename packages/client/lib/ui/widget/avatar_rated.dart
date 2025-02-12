@@ -4,58 +4,71 @@ import 'package:flutter_blurhash/flutter_blurhash.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
-import 'package:tentura/ui/utils/ui_utils.dart';
 
 class AvatarRated extends StatelessWidget {
-  const AvatarRated({
+  AvatarRated({
     required this.profile,
+    this.withRating = true,
     this.boxFit = BoxFit.cover,
     this.size = 40,
     super.key,
   });
 
   final double size;
+
   final BoxFit boxFit;
+
   final Profile profile;
 
-  @override
-  Widget build(BuildContext context) {
-    final cachedSize = size.ceil();
-    final placeholder = Image.asset(
-      'images/placeholder/avatar.jpg',
-      // ignore: avoid_redundant_argument_values // set from env
-      package: kAssetPackage,
-      cacheHeight: cachedSize,
-      cacheWidth: cachedSize,
-      fit: boxFit,
-    );
-    final avatar = Padding(
-      padding: kPaddingAllS,
-      child: ClipOval(
-        child: profile.hasAvatar
-            ? BlurHash(
-                decodingHeight: cachedSize,
-                decodingWidth: cachedSize,
-                image: profile.avatarUrl,
-                hash: profile.blurhash,
-                imageFit: boxFit,
+  final bool withRating;
+
+  late final _cacheSize = size.ceil();
+
+  late final _avatar = ClipOval(
+    child: profile.blurhash.isNotEmpty
+        ? BlurHash(
+            decodingHeight: _cacheSize,
+            decodingWidth: _cacheSize,
+            image: profile.avatarUrl,
+            hash: profile.blurhash,
+            imageFit: boxFit,
+          )
+        : profile.hasAvatar
+            ? Image.network(
+                profile.avatarUrl,
+                cacheHeight: _cacheSize,
+                cacheWidth: _cacheSize,
+                fit: boxFit,
+                errorBuilder: (_, __, ___) => _placeholder,
               )
-            : placeholder,
-      ),
-    );
-    return SizedBox.square(
-      dimension: size,
-      child: profile.score < kRatingSector
-          ? avatar
-          : CustomPaint(
-              painter: _RatingPainter(
-                color: Theme.of(context).colorScheme.primary,
-                score: profile.score,
-              ),
-              child: avatar,
-            ),
-    );
-  }
+            : _placeholder,
+  );
+
+  @override
+  Widget build(BuildContext context) => SizedBox.square(
+        dimension: size,
+        child: withRating && profile.score >= kRatingSector
+            ? CustomPaint(
+                painter: _RatingPainter(
+                  color: Theme.of(context).colorScheme.primary,
+                  score: profile.score,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: _avatar,
+                ),
+              )
+            : _avatar,
+      );
+
+  Widget get _placeholder => Image.asset(
+        kAssetAvatarPlaceholder,
+        // ignore: avoid_redundant_argument_values // set from env
+        package: kAssetPackage,
+        cacheHeight: _cacheSize,
+        cacheWidth: _cacheSize,
+        fit: boxFit,
+      );
 }
 
 class _RatingPainter extends CustomPainter {

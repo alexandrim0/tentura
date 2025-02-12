@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/avatar_image.dart';
+import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
 import 'package:tentura/ui/widget/gradient_stack.dart';
 import 'package:tentura/ui/widget/avatar_positioned.dart';
@@ -37,7 +37,7 @@ class ProfileScreen extends StatelessWidget {
             slivers: [
               // Header
               SliverAppBar(
-                key: Key('ProfileMineScreen:${profile.imageId}'),
+                key: Key('ProfileMineScreen:${profile.blurhash}'),
                 actions: [
                   // Graph View
                   IconButton(
@@ -60,8 +60,9 @@ class ProfileScreen extends StatelessWidget {
                   background: GradientStack(
                     children: [
                       AvatarPositioned(
-                        child: AvatarImage(
+                        child: AvatarRated(
                           profile: profile,
+                          withRating: false,
                           size: AvatarPositioned.childSize,
                         ),
                       ),

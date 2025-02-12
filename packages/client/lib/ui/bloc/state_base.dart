@@ -37,21 +37,21 @@ class StateIsLoading extends StateStatus {
 }
 
 class StateIsMessaging extends StateStatus {
-  const StateIsMessaging(this.message);
+  StateIsMessaging(this.message);
 
   final String? message;
 }
 
 class StateIsNavigating extends StateStatus {
-  const StateIsNavigating(this.path);
+  StateIsNavigating(this.path);
 
-  const StateIsNavigating.back() : path = kPathBack;
+  StateIsNavigating.back() : path = kPathBack;
 
   final String path;
 }
 
 class StateHasError extends StateStatus {
-  const StateHasError(this.error);
+  StateHasError(this.error);
 
   final Object error;
 }

@@ -35,8 +35,6 @@ class Beacon with _$Beacon implements Likable {
 
   @override
   int get votes => myVote;
-
-  String get imageId => hasPicture ? id : '';
 }
 
 final emptyBeacon = Beacon(

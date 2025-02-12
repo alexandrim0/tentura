@@ -3,7 +3,6 @@ import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'package:tentura/consts.dart';
 
@@ -91,17 +90,3 @@ void commonScreenBlocListener(BuildContext context, StateBase state) =>
         ),
       _ => null,
     };
-
-// TBD: remove
-Future<({String name, Uint8List bytes})?> pickImage() async {
-  final xFile = await ImagePicker().pickImage(
-    source: ImageSource.gallery,
-    maxWidth: 600,
-  );
-  return xFile == null
-      ? null
-      : (
-          name: xFile.name,
-          bytes: await xFile.readAsBytes(),
-        );
-}

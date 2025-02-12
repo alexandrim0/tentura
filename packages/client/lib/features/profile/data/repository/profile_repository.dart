@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/data/model/user_model.dart';
@@ -59,15 +58,6 @@ class ProfileRepository {
     if (response == null) throw ProfileDeleteException(id);
     _controller.add(RepositoryEventDelete(Profile(id: response.id)));
   }
-
-  Future<void> putAvatarImage({
-    required Uint8List image,
-    required String id,
-  }) =>
-      _remoteApiService.uploadImage(
-        image: image,
-        id: id,
-      );
 
   static const _label = 'Profile';
 }

@@ -14,6 +14,10 @@ const kImageMaxDimension = 600;
 const kMaxNumCompX = 6;
 const kMinNumCompX = 4;
 
+// Assets
+const kAssetAvatarPlaceholder = 'images/placeholder/avatar.jpg';
+const kAssetBeaconPlaceholder = 'images/placeholder/beacon.jpg';
+
 // Settings storage keys
 const kSettingsThemeMode = 'themeMode';
 const kSettingsIsIntroEnabledKey = 'isIntroEnabled';

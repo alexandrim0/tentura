@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import 'package:tentura/consts.dart';
 import 'package:tentura/data/repository/image_repository.dart';
 import 'package:tentura/domain/entity/coordinates.dart';
 import 'package:tentura/domain/entity/beacon.dart';
+import 'package:tentura/domain/use_case/string_input_validator.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import 'package:tentura/features/beacon/data/repository/beacon_repository.dart';
@@ -15,7 +15,8 @@ export 'package:tentura/ui/bloc/state_base.dart';
 
 export 'beacon_create_state.dart';
 
-class BeaconCreateCubit extends Cubit<BeaconCreateState> {
+class BeaconCreateCubit extends Cubit<BeaconCreateState>
+    with StringInputValidator {
   BeaconCreateCubit({
     ImageRepository? imageRepository,
     BeaconRepository? beaconRepository,
@@ -84,35 +85,18 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
         updatedAt: now,
       ));
       if (state.image != null) {
-        await _imageRepository.putBeaconImage(
+        await _imageRepository.uploadImage(
           image: state.image!.imageBytes,
-          beaconId: result.id,
+          imageId: result.id,
         );
       }
       emit(state.copyWith(
-        status: const StateIsNavigating.back(),
+        status: StateIsNavigating.back(),
       ));
     } catch (e) {
       emit(state.copyWith(
         status: StateHasError(e),
       ));
     }
-  }
-
-  String? titleValidator(String? title) {
-    if (title == null || title.length < kTitleMinLength) {
-      return 'Title too short';
-    }
-    if (title.length > kTitleMaxLength) {
-      return 'Title too long';
-    }
-    return null;
-  }
-
-  String? descriptionValidator(String? description) {
-    if (description != null && description.length > kDescriptionLength) {
-      return 'Description too long';
-    }
-    return null;
   }
 }

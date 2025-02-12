@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/dialog/show_seed_dialog.dart';
-import 'package:tentura/ui/widget/avatar_image.dart';
 import 'package:tentura/ui/dialog/share_code_dialog.dart';
+import 'package:tentura/ui/widget/avatar_rated.dart';
 
 import '../bloc/auth_cubit.dart';
 import '../dialog/account_remove_dialog.dart';
@@ -20,8 +20,9 @@ class AccountListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListTile(
         contentPadding: EdgeInsets.zero,
-        leading: AvatarImage.small(
+        leading: AvatarRated(
           profile: account,
+          withRating: false,
         ),
         title: Text(account.title),
         trailing: PopupMenuButton(

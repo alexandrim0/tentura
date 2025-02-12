@@ -17,7 +17,7 @@ export 'package:get_it/get_it.dart';
 export 'chat_news_state.dart';
 
 /// Global Cubit
-@singleton
+@lazySingleton
 class ChatNewsCubit extends Cubit<ChatNewsState> {
   ChatNewsCubit(
     this._authRepository,

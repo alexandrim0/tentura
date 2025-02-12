@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
-import 'package:tentura/ui/widget/avatar_image.dart';
+import 'package:tentura/ui/widget/avatar_rated.dart';
+import 'package:tentura/ui/utils/ui_utils.dart';
 
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 
@@ -34,8 +35,9 @@ class ProfileNavBarItem extends StatelessWidget {
             onLongPress: state.accounts.length > 1 ? menuController.open : null,
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: AvatarImage(
+              child: AvatarRated(
                 profile: state.currentAccount,
+                withRating: false,
                 size: 36,
               ),
             ),
@@ -64,13 +66,14 @@ class _AccountMenuItem extends StatelessWidget {
         child: Row(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8),
-              child: AvatarImage.small(
+              padding: kPaddingAllS,
+              child: AvatarRated(
                 profile: profile,
+                withRating: false,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: kPaddingAllS,
               child: Text(
                 profile.title,
                 maxLines: 1,
@@ -80,8 +83,10 @@ class _AccountMenuItem extends StatelessWidget {
             ),
             if (isMe)
               const Padding(
-                padding: EdgeInsets.all(8),
-                child: Icon(Icons.check),
+                padding: kPaddingAllS,
+                child: Icon(
+                  Icons.check,
+                ),
               ),
           ],
         ),

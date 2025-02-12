@@ -54,20 +54,14 @@ class ImageRepository {
     );
   }
 
-  Future<void> putBeaconImage({
+  Future<void> uploadImage({
     required Uint8List image,
-    required String beaconId,
-  }) async {
-    await _remoteApiService.uploadImage(
-      image: image,
-      id: beaconId,
-    );
-    // Wait to be sure image is saved and available via web
-    // TBD: replace with Image.network which can retry
-    await Future<void>.delayed(const Duration(
-      milliseconds: 250,
-    ));
-  }
+    required String imageId,
+  }) =>
+      _remoteApiService.uploadImage(
+        image: image,
+        id: imageId,
+      );
 
   static final _imagePicker = ImagePicker();
 }

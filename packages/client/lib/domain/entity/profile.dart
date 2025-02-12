@@ -27,8 +27,6 @@ class Profile with _$Profile implements Likable {
   @override
   int get votes => myVote;
 
-  String get imageId => hasAvatar ? id : '';
-
   bool get isFriend => myVote > 0;
 
   bool get isSeeingMe => rScore > 0;
@@ -36,5 +34,5 @@ class Profile with _$Profile implements Likable {
   bool get needEdit => id.isNotEmpty && title.isEmpty;
 
   String get avatarUrl => '$kImageServer/$kImagesPath/$id/avatar.$kImageExt?'
-      '${blurhash.replaceRange(5, blurhash.length - 5, '')}';
+      '${blurhash.isEmpty ? '' : blurhash.replaceRange(5, blurhash.length - 5, '')}';
 }

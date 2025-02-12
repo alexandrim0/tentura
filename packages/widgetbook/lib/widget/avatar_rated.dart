@@ -10,22 +10,22 @@ import 'package:tentura/ui/widget/avatar_rated.dart';
   path: '[widget]/avatar',
 )
 Widget avatarRatedUseCase(BuildContext context) {
-  return const Center(
+  return Center(
     child: Column(
       spacing: 16,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         AvatarRated(
-          profile: Profile(),
+          profile: const Profile(),
         ),
         AvatarRated(
-          profile: Profile(score: 25),
+          profile: const Profile(score: 25),
         ),
         AvatarRated(
-          profile: Profile(score: 75),
+          profile: const Profile(score: 75),
         ),
         AvatarRated(
-          profile: Profile(score: 100),
+          profile: const Profile(score: 100),
         ),
       ],
     ),

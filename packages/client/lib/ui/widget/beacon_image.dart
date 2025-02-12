@@ -16,7 +16,7 @@ class BeaconImage extends StatelessWidget {
   final BoxFit boxFit;
 
   @override
-  Widget build(BuildContext context) => beacon.hasPicture
+  Widget build(BuildContext context) => beacon.blurhash.isNotEmpty
       ? AspectRatio(
           aspectRatio: beacon.imageHeight > 0
               ? beacon.imageWidth / beacon.imageHeight
@@ -29,7 +29,7 @@ class BeaconImage extends StatelessWidget {
           ),
         )
       : Image.asset(
-          'images/placeholder/beacon.jpg',
+          kAssetBeaconPlaceholder,
           // ignore: avoid_redundant_argument_values // set from env
           package: kAssetPackage,
           fit: boxFit,

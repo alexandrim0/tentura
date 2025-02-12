@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
+import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import 'package:tentura/features/auth/data/repository/auth_repository.dart';
@@ -27,20 +28,27 @@ class ProfileCubit extends Cubit<ProfileState> {
           _onAuthChanges,
           cancelOnError: false,
         );
+    _profileChanges = profileRepository.changes.listen(
+      _onProfileChanges,
+      cancelOnError: false,
+    );
   }
 
   final ProfileRepository _profileRepository;
 
-  StreamSubscription<String>? _authChanges;
+  late final StreamSubscription<String> _authChanges;
+
+  late final StreamSubscription<RepositoryEvent<Profile>> _profileChanges;
 
   @disposeMethod
   Future<void> dispose() async {
-    await _authChanges?.cancel();
+    await _authChanges.cancel();
+    await _profileChanges.cancel();
     return super.close();
   }
 
   void showProfileEditor() => emit(state.copyWith(
-        status: const StateIsNavigating(kPathProfileEdit),
+        status: StateIsNavigating(kPathProfileEdit),
       ));
 
   void showProfile(String id) => emit(state.copyWith(
@@ -48,7 +56,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       ));
 
   void showRating() => emit(state.copyWith(
-        status: const StateIsNavigating(kPathRating),
+        status: StateIsNavigating(kPathRating),
       ));
 
   void showGraph(String focus) => emit(state.copyWith(
@@ -72,47 +80,15 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  Future<void> update(Profile profile) async {
-    if (profile == state.profile) return;
-    emit(state.copyWith(
-      status: StateStatus.isLoading,
-    ));
-    try {
-      await _profileRepository.update(profile);
-      emit(ProfileState(
-        profile: profile,
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
-      ));
-    }
-  }
-
   Future<void> delete() async {
     emit(state.copyWith(
       status: StateStatus.isLoading,
     ));
     try {
       await _profileRepository.delete(state.profile.id);
-      emit(const ProfileState());
-    } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
+      emit(ProfileState(
+        status: StateIsNavigating(kPathLogin),
       ));
-    }
-  }
-
-  Future<void> putAvatarImage(Uint8List image) async {
-    emit(state.copyWith(
-      status: StateStatus.isLoading,
-    ));
-    try {
-      await _profileRepository.putAvatarImage(
-        id: state.profile.id,
-        image: image,
-      );
-      emit(ProfileState(profile: state.profile));
     } catch (e) {
       emit(state.copyWith(
         status: StateHasError(e),
@@ -126,4 +102,11 @@ class ProfileCubit extends Cubit<ProfileState> {
     ));
     if (id.isNotEmpty) await fetch();
   }
+
+  void _onProfileChanges(RepositoryEvent<Profile> event) => switch (event) {
+        RepositoryEventUpdate<Profile>(value: final profile)
+            when profile.id == state.profile.id =>
+          emit(ProfileState(profile: profile)),
+        _ => null,
+      };
 }
