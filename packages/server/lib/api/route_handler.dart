@@ -1,4 +1,5 @@
 import 'package:shelf_plus/shelf_plus.dart';
+import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/di/di.dart';
@@ -15,6 +16,9 @@ Handler routeHandler() {
   final authMiddleware = getIt<AuthMiddleware>();
   final router = Router().plus
     ..use(logRequests())
+    ..use(corsHeaders(
+      headers: _corsHeaders,
+    ))
     ..get(
       '/health',
       () => 'I`m fine!',
@@ -48,3 +52,8 @@ Handler routeHandler() {
 
   return router.call;
 }
+
+final _corsHeaders = {
+  ACCESS_CONTROL_ALLOW_CREDENTIALS: 'false',
+  ACCESS_CONTROL_ALLOW_ORIGIN: kServerUri.host,
+};

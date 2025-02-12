@@ -36,6 +36,8 @@ final kServerName = environment['SERVER_NAME'] ?? tentura.kServerName;
 /// First part of FQDN: `https://image.server.name`
 final kImageServer = environment['IMAGE_SERVER'] ?? tentura.kImageServer;
 
+final kServerUri = Uri.dataFromString(kServerName);
+
 // Database connection settings
 final kPgHost = environment['POSTGRES_HOST'] ?? 'postgres';
 
