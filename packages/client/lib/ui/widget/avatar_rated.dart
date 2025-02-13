@@ -25,75 +25,67 @@ class AvatarRated extends StatelessWidget {
   late final _cacheSize = size.ceil();
 
   late final _avatar = ClipOval(
-    child: profile.blurhash.isNotEmpty
-        ? BlurHash(
-            decodingHeight: _cacheSize,
-            decodingWidth: _cacheSize,
-            image: profile.avatarUrl,
-            hash: profile.blurhash,
-            imageFit: boxFit,
-          )
-        : profile.hasAvatar
+    child:
+        profile.blurhash.isNotEmpty
+            ? BlurHash(
+              decodingHeight: _cacheSize,
+              decodingWidth: _cacheSize,
+              image: profile.avatarUrl,
+              hash: profile.blurhash,
+              imageFit: boxFit,
+            )
+            : profile.hasAvatar
             ? Image.network(
-                profile.avatarUrl,
-                cacheHeight: _cacheSize,
-                cacheWidth: _cacheSize,
-                fit: boxFit,
-                errorBuilder: (_, __, ___) => _placeholder,
-              )
+              profile.avatarUrl,
+              cacheHeight: _cacheSize,
+              cacheWidth: _cacheSize,
+              fit: boxFit,
+              errorBuilder: (_, _, _) => _placeholder,
+            )
             : _placeholder,
   );
 
   @override
   Widget build(BuildContext context) => SizedBox.square(
-        dimension: size,
-        child: withRating && profile.score >= kRatingSector
+    dimension: size,
+    child:
+        withRating && profile.score >= kRatingSector
             ? CustomPaint(
-                painter: _RatingPainter(
-                  color: Theme.of(context).colorScheme.primary,
-                  score: profile.score,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: _avatar,
-                ),
-              )
+              painter: _RatingPainter(
+                color: Theme.of(context).colorScheme.primary,
+                score: profile.score,
+              ),
+              child: Padding(padding: const EdgeInsets.all(5), child: _avatar),
+            )
             : _avatar,
-      );
+  );
 
   Widget get _placeholder => Image.asset(
-        kAssetAvatarPlaceholder,
-        // ignore: avoid_redundant_argument_values // set from env
-        package: kAssetPackage,
-        cacheHeight: _cacheSize,
-        cacheWidth: _cacheSize,
-        fit: boxFit,
-      );
+    kAssetAvatarPlaceholder,
+    // ignore: avoid_redundant_argument_values // set from env
+    package: kAssetPackage,
+    cacheHeight: _cacheSize,
+    cacheWidth: _cacheSize,
+    fit: boxFit,
+  );
 }
 
 class _RatingPainter extends CustomPainter {
-  _RatingPainter({
-    required this.score,
-    required this.color,
-  });
+  _RatingPainter({required this.score, required this.color});
 
   final Color color;
   final double score;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = Rect.fromLTWH(
-      0,
-      0,
-      size.width,
-      size.height,
-    );
-    final paint = Paint()
-      ..color = color
-      ..isAntiAlias = true
-      ..strokeWidth = 4.0
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    final paint =
+        Paint()
+          ..color = color
+          ..isAntiAlias = true
+          ..strokeWidth = 4.0
+          ..strokeCap = StrokeCap.round
+          ..style = PaintingStyle.stroke;
 
     // first arc
     canvas.drawArc(

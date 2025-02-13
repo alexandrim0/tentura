@@ -13,10 +13,7 @@
             "toolArgs": [
                 "--flavor",
                 "prod",
-                "--dart-define",
-                "SERVER_NAME=https://dev.tentura.io",
-                "--dart-define",
-				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
+				"--dart-define-from-file=.env",
             ],
         },
         {
@@ -26,10 +23,7 @@
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
-                "--dart-define",
-                "SERVER_NAME=https://dev.tentura.io",
-                "--dart-define",
-				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
+				"--dart-define-from-file=.env",
             ],
             "args": [
                 "-d", "chrome",
@@ -45,10 +39,7 @@
             "flutterMode": "debug",
             "toolArgs": [
                 "--wasm",
-                "--dart-define",
-                "SERVER_NAME=https://dev.tentura.io",
-                "--dart-define",
-				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
+				"--dart-define-from-file=.env",
             ],
             "args": [
                 "-d", "chrome",
@@ -81,10 +72,7 @@
             "toolArgs": [
                 "--flavor",
                 "prod",
-                "--dart-define",
-                "SERVER_NAME=https://dev.tentura.io",
-                "--dart-define",
-				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
+				"--dart-define-from-file=.env",
             ],
         },
         {
@@ -96,10 +84,7 @@
             "toolArgs": [
                 "--flavor",
                 "prod",
-                "--dart-define",
-                "SERVER_NAME=https://dev.tentura.io",
-                "--dart-define",
-				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
+				"--dart-define-from-file=.env",
             ],
         },
         {
@@ -110,10 +95,7 @@
             "flutterMode": "release",
             "toolArgs": [
                 "--wasm",
-                "--dart-define",
-                "SERVER_NAME=https://dev.tentura.io",
-                "--dart-define",
-				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
+				"--dart-define-from-file=.env",
             ],
             "args": [
                 "-d", "chrome",
@@ -130,10 +112,7 @@
             "toolArgs": [
                 "--dart-define",
                 "IS_IMPORTED=true",
-                "--dart-define",
-                "SERVER_NAME=https://dev.tentura.io",
-                "--dart-define",
-				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
+				"--dart-define-from-file=.env",
             ],
             "args": [
                 "-d", "chrome",
@@ -154,6 +133,9 @@
                 "SERVER_NAME": "https://dev.tentura.io",
                 "IMAGE_SERVER": "https://tentura.ams3.cdn.digitaloceanspaces.com",
             },
+            "toolArgs": [
+				"--dart-define-from-file=.env",
+            ],
         },
         {
             "console": "debugConsole",
@@ -165,9 +147,12 @@
             "env": {
                 "DEBUG_MODE": "true",
                 "LISTEN_PORT": "2082",
-                "SERVER_NAME": "https://stage.tentura.io",
+                "SERVER_NAME": "https://dev.tentura.io",
                 "IMAGE_SERVER": "https://tentura.ams3.cdn.digitaloceanspaces.com",
             },
+            "toolArgs": [
+				"--dart-define-from-file=.env",
+            ],
         },
   ]
 }

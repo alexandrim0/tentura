@@ -33,6 +33,11 @@ class Profile with _$Profile implements Likable {
 
   bool get needEdit => id.isNotEmpty && title.isEmpty;
 
-  String get avatarUrl => '$kImageServer/$kImagesPath/$id/avatar.$kImageExt?'
-      '${blurhash.isEmpty ? '' : blurhash.replaceRange(5, blurhash.length - 5, '')}';
+  String get avatarUrl =>
+      hasAvatar
+          ? '$kImageServer/$kImagesPath/$id/avatar.$kImageExt?$_imageHash'
+          : kAvatarPlaceholderUrl;
+
+  String get _imageHash =>
+      blurhash.isEmpty ? '' : blurhash.replaceRange(5, blurhash.length - 5, '');
 }

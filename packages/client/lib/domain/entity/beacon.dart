@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show DateTimeRange;
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'package:tentura/consts.dart';
+
 import 'coordinates.dart';
 import 'likable.dart';
 import 'profile.dart';
@@ -35,6 +37,11 @@ class Beacon with _$Beacon implements Likable {
 
   @override
   int get votes => myVote;
+
+  String get imageUrl =>
+      hasPicture
+          ? '$kImageServer/$kImagesPath/${author.id}/$id.$kImageExt'
+          : kBeaconPlaceholderUrl;
 }
 
 final emptyBeacon = Beacon(
