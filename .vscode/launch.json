@@ -16,7 +16,7 @@
                 "--dart-define",
                 "SERVER_NAME=https://dev.tentura.io",
                 "--dart-define",
-                "IMAGE_SERVER=https://dev.tentura.io",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
         },
         {
@@ -29,7 +29,7 @@
                 "--dart-define",
                 "SERVER_NAME=https://dev.tentura.io",
                 "--dart-define",
-                "IMAGE_SERVER=https://dev.tentura.io",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
             "args": [
                 "-d", "chrome",
@@ -48,7 +48,7 @@
                 "--dart-define",
                 "SERVER_NAME=https://dev.tentura.io",
                 "--dart-define",
-                "IMAGE_SERVER=https://dev.tentura.io",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
             "args": [
                 "-d", "chrome",
@@ -69,7 +69,7 @@
                 "--dart-define",
                 "SERVER_NAME=https://stage.tentura.io",
                 "--dart-define",
-                "IMAGE_SERVER=https://stage.tentura.io",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
         },
         {
@@ -84,7 +84,7 @@
                 "--dart-define",
                 "SERVER_NAME=https://dev.tentura.io",
                 "--dart-define",
-                "IMAGE_SERVER=https://dev.tentura.io",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
         },
         {
@@ -99,7 +99,7 @@
                 "--dart-define",
                 "SERVER_NAME=https://dev.tentura.io",
                 "--dart-define",
-                "IMAGE_SERVER=https://dev.tentura.io",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
         },
         {
@@ -113,7 +113,7 @@
                 "--dart-define",
                 "SERVER_NAME=https://dev.tentura.io",
                 "--dart-define",
-                "IMAGE_SERVER=https://dev.tentura.io",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
             "args": [
                 "-d", "chrome",
@@ -133,7 +133,7 @@
                 "--dart-define",
                 "SERVER_NAME=https://dev.tentura.io",
                 "--dart-define",
-                "IMAGE_SERVER=https://dev.tentura.io",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
             "args": [
                 "-d", "chrome",
@@ -152,7 +152,7 @@
                 "DEBUG_MODE": "true",
                 "LISTEN_PORT": "2082",
                 "SERVER_NAME": "https://dev.tentura.io",
-                "IMAGE_SERVER": "https://dev.tentura.io",
+                "IMAGE_SERVER": "https://tentura.ams3.cdn.digitaloceanspaces.com",
             },
         },
         {
@@ -166,7 +166,7 @@
                 "DEBUG_MODE": "true",
                 "LISTEN_PORT": "2082",
                 "SERVER_NAME": "https://stage.tentura.io",
-                "IMAGE_SERVER": "https://stage.tentura.io",
+                "IMAGE_SERVER": "https://tentura.ams3.cdn.digitaloceanspaces.com",
             },
         },
   ]

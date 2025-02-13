@@ -1,37 +1,34 @@
-import 'dart:io';
 import 'dart:developer';
+import 'dart:typed_data';
+import 'package:minio/minio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import 'package:tentura_server/consts.dart';
-import 'package:tentura_server/api/helpers/binary_body_reader.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
-import 'package:tentura_server/data/service/image_service.dart';
 import 'package:tentura_server/domain/exception.dart';
 
 import 'user_controller.dart';
 
-@Injectable(
-  order: 3,
-)
-final class UserImageController extends UserController with BinaryBodyReader {
+@Injectable(order: 3)
+final class UserImageController extends UserController {
   UserImageController(
+    this._remoteStorage,
     this._beaconRepository,
     super.userRepository,
   );
 
   final BeaconRepository _beaconRepository;
 
-  final _imageService = const ImageService();
+  final Minio _remoteStorage;
 
   @override
   Future<Response> handler(Request request) async {
     if (request.mimeType != kContentTypeJpeg) {
-      return Response.badRequest(
-        body: 'Wrong MIME!',
-      );
+      return Response.badRequest(body: 'Wrong MIME!');
     }
     final userId = request.userId;
+    var eTag = '';
 
     switch (request.url.queryParameters['id']) {
       case final String id when id.startsWith('U'):
@@ -39,14 +36,14 @@ final class UserImageController extends UserController with BinaryBodyReader {
           return Response.unauthorized(null);
         }
         try {
-          await _imageService.saveStreamToFile(
-            request.read(),
-            File('$kImageFolderPath/$id/avatar.$kImageExt'),
+          eTag = await _remoteStorage.putObject(
+            kS3Bucket,
+            '$kImagesPath/$id/avatar.$kImageExt',
+            request.read().map(Uint8List.fromList),
+            metadata: _s3metadata,
           );
         } catch (e) {
-          return Response.internalServerError(
-            body: e.toString(),
-          );
+          return Response.internalServerError(body: e.toString());
         }
 
       case final String id when id.startsWith('B'):
@@ -58,27 +55,28 @@ final class UserImageController extends UserController with BinaryBodyReader {
           if (!beacon.hasPicture) {
             return Response.forbidden(null);
           }
-          await _imageService.saveStreamToFile(
-            request.read(),
-            File('$kImageFolderPath/$userId/$id.$kImageExt'),
+          eTag = await _remoteStorage.putObject(
+            kS3Bucket,
+            '$kImagesPath/$userId/$id.$kImageExt',
+            request.read().map(Uint8List.fromList),
+            metadata: _s3metadata,
           );
         } on IdNotFoundException catch (e) {
           log(e.toString());
-          return Response.notFound(
-            e.toString(),
-          );
+          return Response.notFound(e.toString());
         } catch (e) {
           log(e.toString());
-          return Response.internalServerError(
-            body: e.toString(),
-          );
+          return Response.internalServerError(body: e.toString());
         }
 
       default:
-        return Response.badRequest(
-          body: 'Wrong ID!',
-        );
+        return Response.badRequest(body: 'Wrong ID!');
     }
-    return Response.ok(null);
+    return Response.ok(null, headers: {'E-Tag': eTag});
   }
+
+  static const _s3metadata = {
+    'x-amz-acl': 'public-read',
+    kHeaderContentType: kContentTypeJpeg,
+  };
 }

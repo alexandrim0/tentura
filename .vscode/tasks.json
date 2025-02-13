@@ -12,7 +12,7 @@
 				"--dart-define",
 				"SERVER_NAME=https://dev.tentura.io",
 				"--dart-define",
-				"IMAGE_SERVER=https://dev.tentura.io",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
 			],
 			"group": {
 				"kind": "build",
@@ -38,7 +38,7 @@
 				"--dart-define",
 				"SERVER_NAME=https://dev.tentura.io",
 				"--dart-define",
-				"IMAGE_SERVER=https://dev.tentura.io",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
 			],
 			"group": {
 				"kind": "build",
@@ -64,7 +64,7 @@
 				"--dart-define",
 				"SERVER_NAME=https://dev.tentura.io",
 				"--dart-define",
-				"IMAGE_SERVER=https://dev.tentura.io",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
 			],
 			"group": {
 				"kind": "build",
@@ -84,7 +84,7 @@
 				"--dart-define",
 				"SERVER_NAME=https://dev.tentura.io",
 				"--dart-define",
-				"IMAGE_SERVER=https://dev.tentura.io",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
 			],
 			"group": {
 				"kind": "build",

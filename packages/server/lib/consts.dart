@@ -25,10 +25,11 @@ final kBindAddress = environment['BIND_ADDRESS'] ?? '0.0.0.0';
 
 final kListenPort = int.tryParse(environment['LISTEN_PORT'] ?? '') ?? 2080;
 
-final kWorkersCount = int.tryParse(environment['WORKERS_COUNT'] ?? '') ??
+final kWorkersCount =
+    int.tryParse(environment['WORKERS_COUNT'] ?? '') ??
     Platform.numberOfProcessors;
 
-final kImageFolderPath = environment['IMAGES_PATH'] ?? '/srv/images';
+final kServerUri = Uri.dataFromString(kServerName);
 
 /// First part of FQDN: `https://app.server.name`
 final kServerName = environment['SERVER_NAME'] ?? tentura.kServerName;
@@ -36,7 +37,7 @@ final kServerName = environment['SERVER_NAME'] ?? tentura.kServerName;
 /// First part of FQDN: `https://image.server.name`
 final kImageServer = environment['IMAGE_SERVER'] ?? tentura.kImageServer;
 
-final kServerUri = Uri.dataFromString(kServerName);
+final kImageFolderPath = environment['IMAGES_PATH'] ?? tentura.kImagesPath;
 
 // Database connection settings
 final kPgHost = environment['POSTGRES_HOST'] ?? 'postgres';
@@ -54,18 +55,28 @@ final kMaxConnectionCount =
 
 final kTenturaPassword = environment['TENTURA_PASSWORD'];
 
+final kS3AccessKey = environment['S3_ACCESS_KEY'] ?? '';
+
+final kS3SecretKey = environment['S3_SECRET_KEY'] ?? '';
+
+final kS3Endpoint = environment['S3_ENDPOINT'] ?? '';
+
+final kS3Bucket = environment['S3_BUCKET'] ?? '';
+
 // JWT
 // This keys needed for testing purposes only!
 // You should not use this keys on public server!
 // Be sure if you set your own secure keys!
 //
-final kJwtPublicKey = environment['JWT_PUBLIC_PEM'] ??
+final kJwtPublicKey =
+    environment['JWT_PUBLIC_PEM'] ??
     '''
 -----BEGIN PUBLIC KEY-----
 MCowBQYDK2VwAyEA2CmIb3Ho2eb6m8WIog6KiyzCY05sbyX04PiGlH5baDw=
 -----END PUBLIC KEY-----
 ''';
-final kJwtPrivateKey = environment['JWT_PRIVATE_PEM'] ??
+final kJwtPrivateKey =
+    environment['JWT_PRIVATE_PEM'] ??
     '''
 -----BEGIN PRIVATE KEY-----
 MC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF
