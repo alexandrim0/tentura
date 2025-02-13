@@ -38,6 +38,8 @@ class Beacon with _$Beacon implements Likable {
   @override
   int get votes => myVote;
 
+  bool get hasNoPicture => !hasPicture;
+
   String get imageUrl =>
       hasPicture
           ? '$kImageServer/$kImagesPath/${author.id}/$id.$kImageExt'

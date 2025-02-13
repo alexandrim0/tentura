@@ -26,15 +26,9 @@ class AvatarRated extends StatelessWidget {
 
   late final _avatar = ClipOval(
     child:
-        profile.blurhash.isNotEmpty
-            ? BlurHash(
-              decodingHeight: _cacheSize,
-              decodingWidth: _cacheSize,
-              image: profile.avatarUrl,
-              hash: profile.blurhash,
-              imageFit: boxFit,
-            )
-            : profile.hasAvatar
+        profile.hasNoAvatar
+            ? _placeholder
+            : profile.blurhash.isEmpty
             ? Image.network(
               profile.avatarUrl,
               cacheHeight: _cacheSize,
@@ -42,7 +36,13 @@ class AvatarRated extends StatelessWidget {
               fit: boxFit,
               errorBuilder: (_, _, _) => _placeholder,
             )
-            : _placeholder,
+            : BlurHash(
+              decodingHeight: _cacheSize,
+              decodingWidth: _cacheSize,
+              image: profile.avatarUrl,
+              hash: profile.blurhash,
+              imageFit: boxFit,
+            ),
   );
 
   @override
