@@ -5,13 +5,15 @@ import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import 'package:tentura_server/consts.dart';
+import 'package:tentura_server/api/helpers/remote_storage_helper.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/domain/exception.dart';
 
 import 'user_controller.dart';
 
 @Injectable(order: 3)
-final class UserImageController extends UserController {
+final class UserImageController extends UserController
+    with RemoteStorageHelper {
   UserImageController(
     this._remoteStorage,
     this._beaconRepository,
@@ -38,7 +40,7 @@ final class UserImageController extends UserController {
         try {
           eTag = await _remoteStorage.putObject(
             kS3Bucket,
-            '$kImagesPath/$id/avatar.$kImageExt',
+            getUserObjectName(userId: id),
             request.read().map(Uint8List.fromList),
             metadata: _s3metadata,
           );
@@ -57,7 +59,7 @@ final class UserImageController extends UserController {
           }
           eTag = await _remoteStorage.putObject(
             kS3Bucket,
-            '$kImagesPath/$userId/$id.$kImageExt',
+            getBeaconObjectName(userId: userId, beaconId: id),
             request.read().map(Uint8List.fromList),
             metadata: _s3metadata,
           );

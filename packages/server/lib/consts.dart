@@ -5,9 +5,10 @@ import 'package:tentura_root/consts.dart' as tentura;
 export 'package:tentura_root/consts.dart' hide kImageServer, kServerName;
 
 // Numbers
-const kBlurHashX = 9;
 
-const kBlurHashY = 9;
+// blurHash
+const kMaxNumCompX = 8;
+const kMinNumCompX = 6;
 
 // Strings
 const kContextUserId = 'userId';

@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-import 'package:image/image.dart';
+import 'package:image/image.dart' as img;
 import 'package:injectable/injectable.dart';
 import 'package:blurhash_dart/blurhash_dart.dart';
 
@@ -9,9 +9,21 @@ import 'package:tentura_server/consts.dart';
 class ImageService {
   const ImageService();
 
-  Image decodeImage(Uint8List imageBytes) =>
-      decodeJpg(imageBytes) ?? (throw Exception('Can`t decode jpeg'));
+  img.Image decodeImage(Uint8List imageBytes) =>
+      img.decodeImage(imageBytes) ??
+      (throw const FormatException('Cant decode image'));
 
-  String calculateBlurHash(Image image) =>
-      BlurHash.encode(image, numCompX: kBlurHashX, numCompY: kBlurHashY).hash;
+  String calculateBlurHash(img.Image image) {
+    final numComp =
+        image.height == image.width
+            ? (x: kMaxNumCompX, y: kMaxNumCompX)
+            : image.height > image.width
+            ? (x: kMinNumCompX, y: kMaxNumCompX)
+            : (x: kMaxNumCompX, y: kMinNumCompX);
+    return BlurHash.encode(
+      image,
+      numCompX: numComp.x,
+      numCompY: numComp.y,
+    ).hash;
+  }
 }

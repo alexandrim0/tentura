@@ -4,6 +4,7 @@ import 'beacon_entity.dart';
 import 'user_entity.dart';
 
 part 'comment_entity.freezed.dart';
+part 'comment_entity.g.dart';
 
 @freezed
 class CommentEntity with _$CommentEntity {
@@ -14,4 +15,7 @@ class CommentEntity with _$CommentEntity {
     required BeaconEntity beacon,
     required DateTime createdAt,
   }) = _CommentEntity;
+
+  factory CommentEntity.fromJson(Map<String, dynamic> json) =>
+      _$CommentEntityFromJson(json);
 }

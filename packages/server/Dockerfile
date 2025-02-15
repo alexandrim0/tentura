@@ -4,10 +4,10 @@ FROM scratch
 
 COPY --from=build /runtime/ /
 
-COPY bin/main.exe /tentura
+COPY bin/*.exe /
 
 EXPOSE 2080/tcp
 
 USER 33:33
 
-CMD [ "/tentura" ]
+CMD [ "/tentura.exe" ]

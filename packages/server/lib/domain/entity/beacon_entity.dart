@@ -7,6 +7,7 @@ import 'package:tentura_server/consts.dart';
 import 'user_entity.dart';
 
 part 'beacon_entity.freezed.dart';
+part 'beacon_entity.g.dart';
 
 @freezed
 class BeaconEntity with _$BeaconEntity {
@@ -27,9 +28,13 @@ class BeaconEntity with _$BeaconEntity {
     String? context,
   }) = _BeaconEntity;
 
+  factory BeaconEntity.fromJson(Map<String, dynamic> json) =>
+      _$BeaconEntityFromJson(json);
+
   const BeaconEntity._();
 
-  String get imageUrl => hasPicture
-      ? '$kImageServer/$kImagesPath/${author.id}/$id.$kImageExt'
-      : kImageServer + kBeaconPlaceholderUrl;
+  String get imageUrl =>
+      hasPicture
+          ? '$kImageServer/$kImagesPath/${author.id}/$id.$kImageExt'
+          : kImageServer + kBeaconPlaceholderUrl;
 }

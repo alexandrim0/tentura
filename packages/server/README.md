@@ -1,7 +1,7 @@
 ## Build server
 
   `dart run build_runner build -d`
-  `dart compile exe bin/main.dart`
+  `dart compile exe bin/tentura.dart`
 
 ## Build docker image
 

@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 import 'package:stormberry/stormberry.dart';
 
 import '../consts.dart';
-import 'di.dart';
 
 @module
 abstract class RegisterModule {
@@ -32,8 +31,4 @@ abstract class RegisterModule {
     endPoint: kS3Endpoint,
     pathStyle: false,
   );
-}
-
-Future<void> closeModules() async {
-  await getIt<Database>().close();
 }

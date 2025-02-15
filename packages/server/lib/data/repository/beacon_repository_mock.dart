@@ -6,19 +6,11 @@ import 'package:tentura_server/domain/exception.dart';
 
 import 'beacon_repository.dart';
 
-@Injectable(
-  as: BeaconRepository,
-  env: [
-    Environment.test,
-  ],
-  order: 1,
-)
+@Injectable(as: BeaconRepository, env: [Environment.test], order: 1)
 class BeaconRepositoryMock implements BeaconRepository {
   static final storageById = <String, BeaconEntity>{};
 
-  BeaconRepositoryMock(
-    this._imageService,
-  );
+  BeaconRepositoryMock(this._imageService);
 
   final ImageService _imageService;
 

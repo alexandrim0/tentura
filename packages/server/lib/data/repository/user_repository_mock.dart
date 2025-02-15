@@ -6,19 +6,11 @@ import 'package:tentura_server/data/service/image_service.dart';
 
 import 'user_repository.dart';
 
-@Injectable(
-  as: UserRepository,
-  env: [
-    Environment.test,
-  ],
-  order: 1,
-)
+@Injectable(as: UserRepository, env: [Environment.test], order: 1)
 class UserRepositoryMock implements UserRepository {
   static final storageByPublicKey = <String, UserEntity>{};
 
-  UserRepositoryMock(
-    this._imageService,
-  );
+  UserRepositoryMock(this._imageService);
 
   final ImageService _imageService;
 
@@ -47,7 +39,7 @@ class UserRepositoryMock implements UserRepository {
   }) async {
     final entry =
         storageByPublicKey.entries.where((e) => e.value.id == id).firstOrNull ??
-            (throw IdNotFoundException(id));
+        (throw IdNotFoundException(id));
     final image = _imageService.decodeImage(imageBytes);
     final blurHash = _imageService.calculateBlurHash(image);
     storageByPublicKey[entry.key] = entry.value.copyWith(
