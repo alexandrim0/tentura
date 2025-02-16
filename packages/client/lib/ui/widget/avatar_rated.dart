@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
+import 'package:blurhash_shader/blurhash_shader.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
@@ -29,20 +29,8 @@ class AvatarRated extends StatelessWidget {
         profile.hasNoAvatar
             ? _placeholder
             : profile.blurhash.isEmpty
-            ? Image.network(
-              profile.avatarUrl,
-              cacheHeight: _cacheSize,
-              cacheWidth: _cacheSize,
-              fit: boxFit,
-              errorBuilder: (_, _, _) => _placeholder,
-            )
-            : BlurHash(
-              decodingHeight: _cacheSize,
-              decodingWidth: _cacheSize,
-              image: profile.avatarUrl,
-              hash: profile.blurhash,
-              imageFit: boxFit,
-            ),
+            ? _imageNetwork
+            : BlurHash(profile.blurhash, child: _imageNetwork),
   );
 
   @override
@@ -58,6 +46,14 @@ class AvatarRated extends StatelessWidget {
               child: Padding(padding: const EdgeInsets.all(5), child: _avatar),
             )
             : _avatar,
+  );
+
+  Widget get _imageNetwork => Image.network(
+    profile.avatarUrl,
+    errorBuilder: (_, _, _) => _placeholder,
+    cacheHeight: _cacheSize,
+    cacheWidth: _cacheSize,
+    fit: boxFit,
   );
 
   Widget get _placeholder => Image.asset(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
+import 'package:blurhash_shader/blurhash_shader.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/beacon.dart';
@@ -20,22 +20,20 @@ class BeaconImage extends StatelessWidget {
       beacon.hasNoPicture
           ? _placeholder
           : beacon.blurhash.isEmpty
-          ? Image.network(
-            beacon.imageUrl,
-            fit: boxFit,
-            errorBuilder: (_, _, _) => _placeholder,
-          )
+          ? _imageNetwork
           : AspectRatio(
             aspectRatio:
                 beacon.imageHeight > 0
                     ? beacon.imageWidth / beacon.imageHeight
                     : 1,
-            child: BlurHash(
-              image: beacon.imageUrl,
-              hash: beacon.blurhash,
-              imageFit: boxFit,
-            ),
+            child: BlurHash(beacon.blurhash, child: _imageNetwork),
           );
+
+  Widget get _imageNetwork => Image.network(
+    beacon.imageUrl,
+    fit: boxFit,
+    errorBuilder: (_, _, _) => _placeholder,
+  );
 
   Widget get _placeholder => Image.asset(
     kAssetBeaconPlaceholder,
