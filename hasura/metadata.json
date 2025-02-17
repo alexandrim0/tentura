@@ -1,5 +1,5 @@
 {
-  "resource_version": 446,
+  "resource_version": 460,
   "metadata": {
     "version": 3,
     "sources": [
@@ -101,11 +101,14 @@
                     "user_id": "x-hasura-User-Id"
                   },
                   "columns": [
+                    "blur_hash",
                     "context",
                     "description",
                     "has_picture",
                     "lat",
                     "long",
+                    "pic_height",
+                    "pic_width",
                     "timerange",
                     "title"
                   ]
@@ -170,6 +173,32 @@
                   }
                 },
                 "comment": ""
+              }
+            ],
+            "event_triggers": [
+              {
+                "name": "beacon_mutate",
+                "definition": {
+                  "delete": {
+                    "columns": "*"
+                  },
+                  "enable_manual": true,
+                  "insert": {
+                    "columns": "*"
+                  }
+                },
+                "retry_conf": {
+                  "interval_sec": 10,
+                  "num_retries": 2,
+                  "timeout_sec": 60
+                },
+                "webhook": "{{EVENT_BASE_URL}}/beacon_mutate",
+                "headers": [
+                  {
+                    "name": "X-Tentura-Password",
+                    "value_from_env": "TENTURA_PASSWORD"
+                  }
+                ]
               }
             ]
           },
@@ -723,18 +752,6 @@
                     }
                   },
                   "check": {}
-                }
-              }
-            ],
-            "delete_permissions": [
-              {
-                "role": "user",
-                "permission": {
-                  "filter": {
-                    "id": {
-                      "_eq": "X-Hasura-User-Id"
-                    }
-                  }
                 }
               }
             ]

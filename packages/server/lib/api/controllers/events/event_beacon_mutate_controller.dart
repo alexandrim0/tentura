@@ -4,14 +4,15 @@ import 'package:shelf_plus/shelf_plus.dart';
 import 'package:stormberry/stormberry.dart';
 
 import 'package:tentura_server/consts.dart';
-import 'package:tentura_server/api/helpers/binary_body_reader.dart';
 import 'package:tentura_server/api/helpers/remote_storage_helper.dart';
 import 'package:tentura_server/data/model/beacon_model.dart';
 import 'package:tentura_server/data/service/image_service.dart';
 
+import '_event_controller.dart';
+
 @Injectable(order: 3)
-final class EventBeaconMutateController
-    with BinaryBodyReader, RemoteStorageHelper {
+final class EventBeaconMutateController extends EventController
+    with RemoteStorageHelper {
   const EventBeaconMutateController(
     this._database,
     this._imageService,
@@ -25,27 +26,27 @@ final class EventBeaconMutateController
   final ImageService _imageService;
 
   Future<Response> handler(Request request) async {
-    final body = await request.body.asJson as Map;
-    final event = body['event'] as Map;
-    final data = event['data'] as Map;
+    final data = getEventData(await request.body.asJson);
 
-    switch (event['op']) {
-      case 'DELETE':
-        final beacon = data['old'] as Map<String, dynamic>;
-        if (beacon['has_picture'] != true) return Response.ok(null);
+    switch (data.operation) {
+      case Operation.delete:
+        final beacon = data.oldEntity!;
+        if (beacon['has_picture'] == true) {
+          await _remoteStorage.removeObject(
+            kS3Bucket,
+            getBeaconObjectName(
+              userId: beacon['user_id']! as String,
+              beaconId: beacon['id']! as String,
+            ),
+          );
+        }
 
-        await _remoteStorage.removeObject(
-          kS3Bucket,
-          getBeaconObjectName(
-            userId: beacon['user_id']! as String,
-            beaconId: beacon['id']! as String,
-          ),
-        );
-
-      case 'INSERT' || 'MANUAL':
-        final beacon = data['new'] as Map<String, dynamic>;
-        if (beacon['has_picture'] != true) return Response.ok(null);
-
+      case Operation.insert:
+      case Operation.manual:
+        final beacon = data.newEntity!;
+        if (beacon['has_picture'] != true) {
+          return Response.ok(null);
+        }
         final beaconId = beacon['id']! as String;
         final objectStream = await _remoteStorage.getObject(
           kS3Bucket,
@@ -67,7 +68,7 @@ final class EventBeaconMutateController
           ),
         );
 
-      default:
+      case Operation.update:
     }
 
     return Response.ok(null);

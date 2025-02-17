@@ -62,7 +62,7 @@ dependencies:
   blurhash_shader: ^1.1.2
   vector_graphics: ^1.1.18
   visibility_detector: ^0.4.0
-  flutter_native_splash: ^2.4.3
+  flutter_native_splash: ^2.4.5
   # smooth_page_indicator: ^1.2.0
   force_directed_graphview: ^0.6.2
   scrollable_positioned_list: ^0.3.8
