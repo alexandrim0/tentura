@@ -1,14 +1,20 @@
 name: tentura
 
 services:
+  common:
+    init: true
+    image: scratch
+    network_mode: host
+
   openresty:
+    extends:
+      service: common
     hostname: openresty
     container_name: openresty
     image: vbulavintsev/openresty-tentura
     depends_on:
-       - hasura
-       - tentura
-    network_mode: host
+      - hasura
+      - tentura
     volumes:
       - ./openresty/conf:/etc/nginx:ro
       - ../tentura/build/web:/usr/local/openresty/nginx/html:ro
@@ -22,14 +28,15 @@ services:
       - "WORKERS=2"
 
   hasura:
+    extends:
+      service: common
     hostname: hasura
     container_name: hasura
     image: hasura/graphql-engine
     depends_on:
       - postgres
-    network_mode: host
+      - tentura
     environment:
-      - TENTURA_PASSWORD
       - 'HASURA_GRAPHQL_DEV_MODE=true'
       - 'HASURA_GRAPHQL_LOG_LEVEL=debug'
       - 'HASURA_GRAPHQL_ENABLE_CONSOLE=true'
@@ -38,7 +45,6 @@ services:
       - 'HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES=true'
       - 'HASURA_GRAPHQL_INFER_FUNCTION_PERMISSIONS=false'
       - 'HASURA_GRAPHQL_ENABLE_METADATA_QUERY_LOGGING=true'
-      - 'HASURA_GRAPHQL_CORS_DOMAIN=${SERVER_NAME},http://localhost:8888,http://localhost'
       - 'HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres'
       - 'HASURA_GRAPHQL_JWT_SECRET={"type":"Ed25519", "key":"${JWT_PUBLIC_PEM}", "claims_map": {"x-hasura-allowed-roles": ["user", "admin"], "x-hasura-default-role": "user", "x-hasura-user-id": {"path": "$$.sub"}}}'
       - 'HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=streaming_subscriptions,remove_empty_subscription_responses'
@@ -46,39 +52,38 @@ services:
       - 'EVENT_BASE_URL=http://localhost:2080/hasura/events'
 
   postgres:
+    extends:
+      service: common
     hostname: postgres
     container_name: postgres
     image: vbulavintsev/postgres-tentura
     depends_on:
       - meritrank
-    network_mode: host
     volumes:
       - pg_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD
       - 'MERITRANK_SERVICE_URL=tcp://localhost:10234'
 
   meritrank:
+    extends:
+      service: common
     hostname: meritrank
     container_name: meritrank
     image: vbulavintsev/meritrank-service
-    network_mode: host
     read_only: true
-    init: true
     environment:
       - 'MERITRANK_NUM_WALK=5000'
       - 'MERITRANK_ZERO_OPINION_FACTOR=2'
       - 'MERITRANK_SERVICE_URL=tcp://0.0.0.0:10234'
 
   tentura:
+    extends:
+      service: common
     hostname: tentura
     container_name: tentura
     image: vbulavintsev/tentura-service
-    restart: unless-stopped
-    network_mode: host
     depends_on:
       - postgres
-    init: true
     environment:
       - SERVER_NAME
       - IMAGES_PATH
@@ -87,9 +92,7 @@ services:
       - POSTGRES_PORT
       - POSTGRES_DBNAME
       - POSTGRES_USERNAME
-      - POSTGRES_PASSWORD
       - POSTGRES_MAXCONN
-      - TENTURA_PASSWORD
       - JWT_PRIVATE_PEM
       - JWT_PUBLIC_PEM
       - JWT_EXPIRES_IN
@@ -98,9 +101,11 @@ services:
       - 'S3_BUCKET=tentura'
       - 'S3_ENDPOINT=ams3.digitaloceanspaces.com'
       - 'IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com'
-      - 'DEBUG_MODE=true'
+      - 'DEBUG_MODE=false'
 
   schema_fetcher:
+    extends:
+      service: common
     build:
       dockerfile_inline: |
         FROM node
@@ -108,7 +113,6 @@ services:
     image: vbulavintsev/schema_fetcher
     container_name: schema_fetcher
     hostname: schema_fetcher
-    network_mode: host
     depends_on:
       - hasura
     volumes:
@@ -117,15 +121,16 @@ services:
     command: sh -c "get-graphql-schema -h 'x-hasura-admin-secret=password' -h 'x-hasura-role=user' http://localhost:8080/v1/graphql > /gql/schema.graphql"
 
   pgadmin:
+    extends:
+      service: common
     image: dpage/pgadmin4
     container_name: pgadmin
     hostname: pgadmin
-    network_mode: host
     depends_on:
       - postgres
     environment:
-      - PGADMIN_DEFAULT_EMAIL
-      - PGADMIN_DEFAULT_PASSWORD
+      - 'PGADMIN_DEFAULT_EMAIL=admin@localhost'
+      - 'PGADMIN_DEFAULT_PASSWORD=password'
       - 'PGADMIN_DISABLE_POSTFIX=true'
       - 'SERVER_MODE=false'
 
