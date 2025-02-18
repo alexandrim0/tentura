@@ -10,23 +10,14 @@ services:
        - tentura
     network_mode: host
     volumes:
-      - ./web:/usr/local/openresty/nginx/html:ro
-      - ./openresty/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./openresty/conf:/etc/nginx:ro
       - ../tentura/build/web:/usr/local/openresty/nginx/html:ro
     tmpfs:
       - /tmp
       - /var/run/openresty
     environment:
-      - RESOLVER
-      - ACME_EMAIL
-      - SERVER_NAME
-      - CONTENT_EXPIRES
-      - HASURA_KEEPALIVE
-      - TENTURA_KEEPALIVE
-      - WORKER_CONNECTIONS
-      - CLIENT_MAX_BODY_SIZE
-      - CLIENT_BODY_BUFFER_SIZE
       - "ERROR_LOG_LEVEL=debug"
+      - "PGADMIN_ENABLED=true"
       - "LUA_CODE_CACHE=off"
       - "WORKERS=2"
 
@@ -89,10 +80,8 @@ services:
       - postgres
     init: true
     environment:
-      - DEBUG_MODE
       - SERVER_NAME
       - IMAGES_PATH
-      - IMAGE_SERVER
       - WORKERS_COUNT
       - POSTGRES_HOST
       - POSTGRES_PORT
@@ -108,6 +97,8 @@ services:
       - S3_SECRET_KEY
       - 'S3_BUCKET=tentura'
       - 'S3_ENDPOINT=ams3.digitaloceanspaces.com'
+      - 'IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com'
+      - 'DEBUG_MODE=true'
 
   schema_fetcher:
     build:
@@ -124,6 +115,19 @@ services:
       - ./packages/client/lib/data/gql:/gql
     user: 1000:1000
     command: sh -c "get-graphql-schema -h 'x-hasura-admin-secret=password' -h 'x-hasura-role=user' http://localhost:8080/v1/graphql > /gql/schema.graphql"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    hostname: pgadmin
+    network_mode: host
+    depends_on:
+      - postgres
+    environment:
+      - PGADMIN_DEFAULT_EMAIL
+      - PGADMIN_DEFAULT_PASSWORD
+      - 'PGADMIN_DISABLE_POSTFIX=true'
+      - 'SERVER_MODE=false'
 
 volumes:
   pg_data:

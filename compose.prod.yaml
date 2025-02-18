@@ -1,11 +1,19 @@
 name: tentura
 
 services:
+  common:
+    restart: unless-stopped
+    networks:
+      - backend
+    logging:
+      driver: journald
+
   openresty:
+    extends:
+      service: common
     hostname: openresty
     container_name: openresty
     image: vbulavintsev/openresty-tentura
-    restart: unless-stopped
     depends_on:
        - hasura
        - tentura
@@ -20,7 +28,6 @@ services:
       - 443:443/tcp
     networks:
       - proxy
-      - backend
     environment:
       - WORKERS
       - RESOLVER
@@ -36,19 +43,15 @@ services:
     post_start:
       - command: chown nobody:nogroup /etc/nginx/cert
         user: root
-    logging:
-      driver: journald
 
   hasura:
+    extends:
+      service: common
     hostname: hasura
     container_name: hasura
     image: hasura/graphql-engine
-    restart: unless-stopped
-    init: true
     depends_on:
       - postgres
-    networks:
-      - backend
     environment:
       - TENTURA_PASSWORD
       - HASURA_GRAPHQL_ADMIN_SECRET
@@ -61,52 +64,42 @@ services:
       - 'HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=streaming_subscriptions,remove_empty_subscription_responses'
       - 'ACTION_BASE_URL=http://tentura:2080/hasura/actions'
       - 'EVENT_BASE_URL=http://tentura:2080/hasura/events'
-    logging:
-      driver: journald
 
   postgres:
+    extends:
+      service: common
     hostname: postgres
     container_name: postgres
     image: vbulavintsev/postgres-tentura
-    restart: unless-stopped
     depends_on:
       - meritrank
     volumes:
       - ./pg_data:/var/lib/postgresql/data
-    networks:
-      - backend
     environment:
       - POSTGRES_PASSWORD
       - 'MERITRANK_SERVICE_URL=tcp://meritrank:10234'
-    logging:
-      driver: journald
 
   meritrank:
+    extends:
+      service: common
     hostname: meritrank
     container_name: meritrank
     image: vbulavintsev/meritrank-service
-    restart: unless-stopped
+    oom_kill_disable: true
     read_only: true
-    init: true
-    networks:
-      - backend
     environment:
       - 'MERITRANK_NUM_WALK=5000'
       - 'MERITRANK_ZERO_OPINION_FACTOR=2'
       - 'MERITRANK_SERVICE_URL=tcp://0.0.0.0:10234'
-    logging:
-      driver: journald
 
   tentura:
+    extends:
+      service: common
     hostname: tentura
     container_name: tentura
     image: vbulavintsev/tentura-service
-    restart: unless-stopped
     depends_on:
       - postgres
-    init: true
-    networks:
-      - backend
     environment:
       - DEBUG_MODE
       - SERVER_NAME
@@ -127,8 +120,6 @@ services:
       - S3_SECRET_KEY
       - S3_ENDPOINT
       - S3_BUCKET
-    logging:
-      driver: journald
 
 volumes:
   openresty-cert:
