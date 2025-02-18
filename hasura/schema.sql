@@ -473,6 +473,30 @@ $$;
 ALTER FUNCTION public.notify_meritrank_vote_user_mutation() OWNER TO postgres;
 
 --
+-- Name: on_public_user_update(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.on_public_user_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  _new record;
+BEGIN
+  _new := NEW;
+  _new."updated_at" = NOW();
+  IF NEW.has_picture = false THEN
+    _new.blur_hash = '';
+    _new.pic_height = 0;
+    _new.pic_width = 0;
+  END IF;
+  RETURN _new;
+END;
+$$;
+
+
+ALTER FUNCTION public.on_public_user_update() OWNER TO postgres;
+
+--
 -- Name: rating(text, json); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -823,6 +847,20 @@ CREATE INDEX message_by_subject ON public.message USING btree (subject);
 
 
 --
+-- Name: beacon notify_hasura_beacon_mutate_DELETE; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER "notify_hasura_beacon_mutate_DELETE" AFTER DELETE ON public.beacon FOR EACH ROW EXECUTE FUNCTION hdb_catalog."notify_hasura_beacon_mutate_DELETE"();
+
+
+--
+-- Name: beacon notify_hasura_beacon_mutate_INSERT; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER "notify_hasura_beacon_mutate_INSERT" AFTER INSERT ON public.beacon FOR EACH ROW EXECUTE FUNCTION hdb_catalog."notify_hasura_beacon_mutate_INSERT"();
+
+
+--
 -- Name: beacon notify_meritrank_beacon_mutation; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -865,6 +903,13 @@ CREATE TRIGGER notify_meritrank_vote_user_mutation AFTER INSERT OR UPDATE ON pub
 
 
 --
+-- Name: user on_public_user_update; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER on_public_user_update BEFORE UPDATE ON public."user" FOR EACH ROW EXECUTE FUNCTION public.on_public_user_update();
+
+
+--
 -- Name: beacon set_public_beacon_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -890,20 +935,6 @@ CREATE TRIGGER set_public_message_updated_at BEFORE UPDATE ON public.message FOR
 --
 
 COMMENT ON TRIGGER set_public_message_updated_at ON public.message IS 'trigger to set value of column "updated_at" to current timestamp on row update';
-
-
---
--- Name: user set_public_user_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER set_public_user_updated_at BEFORE UPDATE ON public."user" FOR EACH ROW EXECUTE FUNCTION public.set_current_timestamp_updated_at();
-
-
---
--- Name: TRIGGER set_public_user_updated_at ON "user"; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON TRIGGER set_public_user_updated_at ON public."user" IS 'trigger to set value of column "updated_at" to current timestamp on row update';
 
 
 --

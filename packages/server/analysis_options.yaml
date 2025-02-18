@@ -11,6 +11,7 @@ analyzer:
 
 linter:
   rules:
+    avoid_print: false
     directives_ordering: false
     sort_pub_dependencies: false
     public_member_api_docs: false
