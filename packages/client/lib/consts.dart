@@ -30,6 +30,7 @@ const kPathRating = '/rating';
 const kPathConnect = '/connect';
 const kPathBeaconNew = '/beacon/new';
 const kPathBeaconView = '/beacon/view';
+const kPathBeaconsView = '/beacons/view';
 const kPathProfileChat = '/profile/chat';
 const kPathProfileEdit = '/profile/edit';
 const kPathProfileView = '/profile/view';

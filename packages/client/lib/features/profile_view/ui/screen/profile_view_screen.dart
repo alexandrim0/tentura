@@ -67,7 +67,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
                   // Graph View
                   IconButton(
                     icon: const Icon(TenturaIcons.graph),
-                    onPressed: () => profileViewCubit.showGraph(profile.id),
+                    onPressed: profileViewCubit.showGraph,
                   ),
 
                   // Share
@@ -77,6 +77,10 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
                   PopupMenuButton(
                     itemBuilder:
                         (_) => <PopupMenuEntry<void>>[
+                          PopupMenuItem(
+                            onTap: profileViewCubit.showBeacons,
+                            child: const Text('Show beacons'),
+                          ),
                           if (profile.isFriend)
                             PopupMenuItem(
                               onTap: profileViewCubit.removeFriend,

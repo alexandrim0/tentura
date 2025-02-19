@@ -29,8 +29,16 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
 
   final LikeRemoteRepository _likeRemoteRepository;
 
-  void showGraph(String focus) => emit(
-    state.copyWith(status: StateIsNavigating('$kPathGraph?focus=$focus')),
+  void showGraph() => emit(
+    state.copyWith(
+      status: StateIsNavigating('$kPathGraph?focus=${state.profile.id}'),
+    ),
+  );
+
+  void showBeacons() => emit(
+    state.copyWith(
+      status: StateIsNavigating('$kPathBeaconsView?id=${state.profile.id}'),
+    ),
   );
 
   Future<void> fetch() async {
