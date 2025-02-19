@@ -1,7 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import 'package:tentura/app/router/root_router.dart';
-import 'package:tentura/ui/bloc/state_base.dart';
+import 'package:tentura/features/opinion/ui/bloc/opinion_cubit.dart';
+import 'package:tentura/features/opinion/ui/widget/opinion_list.dart';
+import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
+
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
@@ -11,42 +14,50 @@ import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/avatar_positioned.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 
-import 'package:tentura/features/beacon/ui/widget/beacon_tile.dart';
-
 import '../bloc/profile_view_cubit.dart';
 
 @RoutePage()
 class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
-  const ProfileViewScreen({
-    @queryParam this.id = '',
-    super.key,
-  });
+  const ProfileViewScreen({@queryParam this.id = '', super.key});
 
   final String id;
 
   @override
-  Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (_) => ProfileViewCubit(id: id),
-        child: BlocListener<ProfileViewCubit, ProfileViewState>(
+  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
+    providers: [
+      BlocProvider(create: (_) => ProfileViewCubit(id: id)),
+      BlocProvider(
+        create:
+            (_) => OpinionCubit(
+              objectId: id,
+              myProfile: GetIt.I<ProfileCubit>().state.profile,
+            ),
+      ),
+    ],
+    child: MultiBlocListener(
+      listeners: const [
+        BlocListener<ProfileViewCubit, ProfileViewState>(
           listener: commonScreenBlocListener,
-          child: this,
         ),
-      );
+        BlocListener<OpinionCubit, OpinionState>(
+          listener: commonScreenBlocListener,
+        ),
+      ],
+      child: this,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
+    final profileViewCubit = context.read<ProfileViewCubit>();
     return BlocBuilder<ProfileViewCubit, ProfileViewState>(
-      buildWhen: (p, c) => c.isSuccess || c.isLoading,
+      buildWhen: (_, c) => c.isSuccess || c.isLoading,
       builder: (context, state) {
         if (state.isLoading) {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
+          return const Center(child: CircularProgressIndicator.adaptive());
         }
         final profile = state.profile;
-        final beacons = state.beacons;
         final textTheme = Theme.of(context).textTheme;
-        final profileViewCubit = context.read<ProfileViewCubit>();
         return Scaffold(
           body: CustomScrollView(
             slivers: [
@@ -64,28 +75,25 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
 
                   // More
                   PopupMenuButton(
-                    itemBuilder: (context) => <PopupMenuEntry<void>>[
-                      if (profile.isFriend)
-                        PopupMenuItem(
-                          onTap: profileViewCubit.removeFriend,
-                          child: const Text('Remove from my field'),
-                        )
-                      else
-                        PopupMenuItem(
-                          onTap: profileViewCubit.addFriend,
-                          child: const Text('Add to my field'),
-                        ),
-                    ],
+                    itemBuilder:
+                        (_) => <PopupMenuEntry<void>>[
+                          if (profile.isFriend)
+                            PopupMenuItem(
+                              onTap: profileViewCubit.removeFriend,
+                              child: const Text('Remove from my field'),
+                            )
+                          else
+                            PopupMenuItem(
+                              onTap: profileViewCubit.addFriend,
+                              child: const Text('Add to my field'),
+                            ),
+                        ],
                   ),
                 ],
-                actionsIconTheme: const IconThemeData(
-                  color: Colors.black,
-                ),
-                floating: true,
-                leading: const DeepBackButton(
-                  color: Colors.black,
-                ),
+                actionsIconTheme: const IconThemeData(color: Colors.black),
+                leading: const DeepBackButton(color: Colors.black),
                 expandedHeight: GradientStack.defaultHeight,
+                floating: true,
 
                 // Avatar
                 flexibleSpace: FlexibleSpaceBar(
@@ -111,72 +119,36 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Title
-                      Text(
-                        profile.title.isEmpty ? 'No name' : profile.title,
-                        textAlign: TextAlign.left,
-                        style: textTheme.headlineLarge,
+                      Padding(
+                        padding: kPaddingSmallV,
+                        child: Text(
+                          profile.title.isEmpty ? 'No name' : profile.title,
+                          textAlign: TextAlign.left,
+                          style: textTheme.headlineLarge,
+                        ),
                       ),
-                      const Padding(padding: kPaddingSmallV),
 
                       // Description
                       ShowMoreText(
                         profile.description,
                         style: ShowMoreText.buildTextStyle(context),
                       ),
-                      const Divider(),
 
-                      const Padding(padding: kPaddingSmallT),
-
-                      Text(
-                        'Beacons',
-                        textAlign: TextAlign.left,
-                        style: textTheme.titleLarge,
+                      Padding(
+                        padding: kPaddingSmallV,
+                        child: Text(
+                          'Community Feedback',
+                          textAlign: TextAlign.left,
+                          style: textTheme.titleLarge,
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
 
-              // Beacons
-              if (beacons.isEmpty)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: kPaddingAll,
-                    child: Text(
-                      'There are no beacons yet',
-                      style: textTheme.bodyMedium,
-                    ),
-                  ),
-                )
-              else
-                SliverList.separated(
-                  key: ValueKey(beacons),
-                  itemCount: beacons.length,
-                  itemBuilder: (context, i) {
-                    final beacon = beacons[i];
-                    return Padding(
-                      padding: kPaddingAll,
-                      child: BeaconTile(
-                        beacon: beacon,
-                        key: ValueKey(beacon),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (_, __) =>
-                      const Divider(endIndent: 20, indent: 20),
-                ),
-
-              // Show more
-              if (beacons.isNotEmpty && state.hasNotReachedMax)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: kPaddingAll,
-                    child: TextButton(
-                      onPressed: profileViewCubit.fetchMore,
-                      child: const Text('Show more'),
-                    ),
-                  ),
-                ),
+              // Opinions
+              OpinionList(key: ValueKey(id)),
             ],
           ),
         );

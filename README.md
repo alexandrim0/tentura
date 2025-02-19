@@ -21,6 +21,12 @@
 
 ## Backup and restore data
 
+backup schema:
+`docker exec -t postgres pg_dump -U postgres --schema-only --schema public > schema.sql`
+
+backup data:
+`docker exec -t postgres pg_dump --inserts -U postgres --data-only --schema public > data.sql`
+
 backup schema and data:
 `docker exec -t postgres pg_dump --inserts -U postgres --schema public > dump_all.sql`
 

@@ -11,8 +11,6 @@ import '../gql/_g/beacon_fetch_by_id_with_comments.req.gql.dart';
 
 @lazySingleton
 class BeaconViewRepository {
-  static const _label = 'BeaconView';
-
   BeaconViewRepository(this._remoteApiService);
 
   final RemoteApiService _remoteApiService;
@@ -23,31 +21,38 @@ class BeaconViewRepository {
           .firstWhere((e) => e.dataSource == DataSource.Link)
           .then((r) => r.dataOrThrow(label: _label).comment_by_pk)
           .then(
-            (v) => v == null
-                ? throw BeaconViewFetchException(commentId)
-                : (
-                    beacon: (v.beacon as BeaconModel).toEntity,
-                    comment: (v as CommentModel).toEntity,
-                  ),
+            (v) =>
+                v == null
+                    ? throw BeaconViewFetchException(commentId)
+                    : (
+                      beacon: (v.beacon as BeaconModel).toEntity,
+                      comment: (v as CommentModel).toEntity,
+                    ),
           );
 
   Future<BeaconViewResults> fetchBeaconByIdWithComments({
     required String beaconId,
     int limit = 3,
-  }) =>
-      _remoteApiService
-          .request(GBeaconFetchByIdWithCommentsReq((b) => b.vars
-            ..id = beaconId
-            ..limit = limit))
-          .firstWhere((e) => e.dataSource == DataSource.Link)
-          .then((r) => r.dataOrThrow(label: _label).beacon_by_pk)
-          .then(
-            (v) => v == null
+  }) => _remoteApiService
+      .request(
+        GBeaconFetchByIdWithCommentsReq(
+          (b) =>
+              b.vars
+                ..id = beaconId
+                ..limit = limit,
+        ),
+      )
+      .firstWhere((e) => e.dataSource == DataSource.Link)
+      .then((r) => r.dataOrThrow(label: _label).beacon_by_pk)
+      .then(
+        (v) =>
+            v == null
                 ? throw BeaconViewFetchException(beaconId)
                 : (
-                    beacon: (v as BeaconModel).toEntity,
-                    comments:
-                        v.comments.map((e) => (e as CommentModel).toEntity),
-                  ),
-          );
+                  beacon: (v as BeaconModel).toEntity,
+                  comments: v.comments.map((e) => (e as CommentModel).toEntity),
+                ),
+      );
+
+  static const _label = 'BeaconView';
 }

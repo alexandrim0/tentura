@@ -9,7 +9,7 @@ import 'package:tentura/features/beacon/ui/widget/beacon_info.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_mine_control.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_tile_control.dart';
 import 'package:tentura/features/comment/ui/bloc/comment_cubit.dart';
-import 'package:tentura/features/comment/ui/widget/comment_card.dart';
+import 'package:tentura/features/comment/ui/widget/comment_tile.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 import 'package:tentura/features/profile/ui/widget/author_info.dart';
 
@@ -18,38 +18,34 @@ import '../widget/new_comment_input.dart';
 
 @RoutePage()
 class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
-  const BeaconViewScreen({
-    @queryParam this.id = '',
-    super.key,
-  });
+  const BeaconViewScreen({@queryParam this.id = '', super.key});
 
   final String id;
 
   @override
   Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => BeaconViewCubit(
+    providers: [
+      BlocProvider(
+        create:
+            (context) => BeaconViewCubit(
               myProfile: GetIt.I<ProfileCubit>().state.profile,
               id: id,
             ),
-          ),
-          BlocProvider(
-            create: (_) => CommentCubit(),
-          ),
-        ],
-        child: MultiBlocListener(
-          listeners: const [
-            BlocListener<CommentCubit, CommentState>(
-              listener: commonScreenBlocListener,
-            ),
-            BlocListener<BeaconViewCubit, BeaconViewState>(
-              listener: commonScreenBlocListener,
-            ),
-          ],
-          child: this,
+      ),
+      BlocProvider(create: (_) => CommentCubit()),
+    ],
+    child: MultiBlocListener(
+      listeners: const [
+        BlocListener<CommentCubit, CommentState>(
+          listener: commonScreenBlocListener,
         ),
-      );
+        BlocListener<BeaconViewCubit, BeaconViewState>(
+          listener: commonScreenBlocListener,
+        ),
+      ],
+      child: this,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +71,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
             children: [
               // User row (Avatar and Name)
               if (state.isBeaconNotMine)
-                AuthorInfo(
-                  author: beacon.author,
-                  key: ValueKey(beacon.author),
-                ),
+                AuthorInfo(author: beacon.author, key: ValueKey(beacon.author)),
 
               // Beacon Info
               BeaconInfo(
@@ -92,30 +85,28 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
               // Buttons Row
               Padding(
                 padding: kPaddingSmallV,
-                child: state.isBeaconMine
-                    ? BeaconMineControl(
-                        key: ValueKey(beacon.id),
-                        goBackOnDelete: true,
-                        beacon: beacon,
-                      )
-                    : BeaconTileControl(
-                        beacon: beacon,
-                        key: ValueKey(beacon.id),
-                      ),
+                child:
+                    state.isBeaconMine
+                        ? BeaconMineControl(
+                          key: ValueKey(beacon.id),
+                          goBackOnDelete: true,
+                          beacon: beacon,
+                        )
+                        : BeaconTileControl(
+                          beacon: beacon,
+                          key: ValueKey(beacon.id),
+                        ),
               ),
 
               // Comments Section
               const Text(
                 'Comments',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
 
               // Comments list
               for (final comment in state.comments.reversed)
-                CommentCard(
+                CommentTile(
                   comment: comment,
                   key: ValueKey(comment),
                   isMine: state.checkIfCommentIsMine(comment),

@@ -1,0 +1,14 @@
+mutation LikeOpinionById($objectId: String!, $amount: Int!) {
+  insert_vote_opinion_one(
+    object: {
+      object: $objectId,
+      amount: $amount
+    },
+    on_conflict: {
+      constraint: vote_opinion_pkey,
+      update_columns: amount
+    }
+  ) {
+    amount
+  }
+}

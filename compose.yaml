@@ -5,6 +5,11 @@ services:
     init: true
     image: scratch
     network_mode: host
+    environment:
+      - POSTGRES_PASSWORD
+      - TENTURA_PASSWORD
+      - JWT_PRIVATE_PEM
+      - JWT_PUBLIC_PEM
 
   openresty:
     extends:

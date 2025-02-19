@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/domain/entity/comment.dart';
+import 'package:tentura/domain/entity/opinion.dart';
+
+import 'package:tentura/features/like/ui/widget/like_control.dart';
+
+import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/rating_indicator.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 import 'package:tentura/ui/widget/show_more_text.dart';
-import 'package:tentura/ui/utils/ui_utils.dart';
 
-import 'package:tentura/features/like/ui/widget/like_control.dart';
+import '../bloc/opinion_cubit.dart';
 
-import '../bloc/comment_cubit.dart';
+class OpinionTile extends StatelessWidget {
+  const OpinionTile({required this.opinion, this.isMine = false, super.key});
 
-class CommentCard extends StatelessWidget {
-  const CommentCard({
-    required this.comment,
-    this.isMine = false,
-    super.key,
-  });
-
-  final Comment comment;
+  final Opinion opinion;
   final bool isMine;
 
   @override
@@ -27,19 +24,24 @@ class CommentCard extends StatelessWidget {
       children: [
         const Divider(),
 
+        // Header
         Padding(
-          key: const Key('CommentHeader'),
+          key: const Key('OpinionHeader'),
           padding: kPaddingSmallT,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Avatar
               GestureDetector(
-                onTap: () =>
-                    context.read<CommentCubit>().showProfile(comment.author.id),
+                onTap:
+                    isMine
+                        ? null
+                        : () => context.read<OpinionCubit>().showProfile(
+                          opinion.author.id,
+                        ),
                 child: Padding(
                   padding: const EdgeInsets.only(right: kSpacingMedium),
-                  child: AvatarRated(profile: comment.author),
+                  child: AvatarRated(profile: opinion.author),
                 ),
               ),
               Expanded(
@@ -48,7 +50,7 @@ class CommentCard extends StatelessWidget {
                   children: [
                     // Title
                     Text(
-                      isMine ? 'Me' : comment.author.title,
+                      isMine ? 'Me' : opinion.author.title,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
 
@@ -56,7 +58,7 @@ class CommentCard extends StatelessWidget {
                     Padding(
                       padding: kPaddingSmallT,
                       child: ShowMoreText(
-                        comment.content,
+                        opinion.content,
                         style: ShowMoreText.buildTextStyle(context),
                       ),
                     ),
@@ -67,14 +69,14 @@ class CommentCard extends StatelessWidget {
           ),
         ),
 
-        // Buttons
+        // Footer (Buttons)
         Padding(
-          key: const Key('CommentButtons'),
+          key: const Key('OpinionButtons'),
           padding: kPaddingSmallV,
           child: Row(
             children: [
               // Share
-              ShareCodeIconButton.id(comment.id),
+              ShareCodeIconButton.id(opinion.id),
 
               const Spacer(),
 
@@ -83,16 +85,13 @@ class CommentCard extends StatelessWidget {
                 Padding(
                   padding: kPaddingH,
                   child: RatingIndicator(
-                    key: ValueKey(comment.score),
-                    score: comment.score,
+                    key: ValueKey(opinion.score),
+                    score: opinion.score,
                   ),
                 ),
 
                 // Vote
-                LikeControl(
-                  entity: comment,
-                  key: ValueKey(comment),
-                ),
+                LikeControl(entity: opinion, key: ValueKey(opinion)),
               ],
             ],
           ),

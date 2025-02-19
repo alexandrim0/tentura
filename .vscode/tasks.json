@@ -9,6 +9,8 @@
 				"build",
 				"web",
 				"--wasm",
+				"--pwa-strategy",
+				"none",
 				"--dart-define-from-file=.env",
 			],
 			"group": {
