@@ -39,4 +39,4 @@ temp/
 pg_data/
 hasura/dump*
 /compose.override.yaml
-packages/client/.env
+.env
