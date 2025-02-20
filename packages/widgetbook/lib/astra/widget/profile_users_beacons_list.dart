@@ -9,7 +9,7 @@ import 'package:tentura_widgetbook/bloc/_data.dart';
 
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
-@UseCase(name: 'Default', type: UsersBeaconsList, path: '[widget]/beacons_list')
+@UseCase(name: 'Default', type: UsersBeaconsList, path: '[astra]/widget/beacons_list')
 Widget beaconsListUseCase(BuildContext context) =>
     UsersBeaconsList(beacons: [beaconA, beaconB]);
 

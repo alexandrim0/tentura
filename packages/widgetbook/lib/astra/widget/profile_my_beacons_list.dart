@@ -11,7 +11,7 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 @UseCase(
   name: 'Default',
   type: UsersBeaconsList,
-  path: '[widget]/my_beacons_list',
+  path: '[astra]/widget/my_beacons_list',
 )
 Widget myBeaconsListUseCase(BuildContext context) =>
     UsersBeaconsList(beacons: [beaconA, beaconB]);

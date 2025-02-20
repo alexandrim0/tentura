@@ -3,13 +3,14 @@ import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 import 'package:tentura/ui/dialog/show_seed_dialog.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/deep_back_button.dart';
+import 'package:tentura_widgetbook/astra/widget/theme_astra.dart';
 
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
 @UseCase(
   name: 'Default',
   type: SettingScreen,
-  path: '[widget]/settings_screen',
+  path: '[astra]/screen/settings_screen',
 )
 Widget settingsUseCase(BuildContext context) => const SettingScreen();
 
@@ -22,22 +23,13 @@ class SettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final authCubit = GetIt.I<AuthCubit>();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        leading: const DeepBackButton(),
-      ),
-      body: Theme(
-        data: Theme.of(context).copyWith(
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-          ),
+    return ThemeAstra(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Settings'),
+          leading: const DeepBackButton(),
         ),
-        child: Padding(
+        body: Padding(
           padding: kPaddingAll,
           child: Column(
             spacing: kSpacingMedium,
@@ -65,7 +57,7 @@ class SettingScreen extends StatelessWidget {
                   },
                 ),
               ),
-
+        
               // const ThemeSwitchButton(),
               SizedBox(
                 width: double.infinity,
@@ -77,10 +69,10 @@ class SettingScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: () => {},
+                  onPressed: () {},
                 ),
               ),
-
+        
               //Logout
               SizedBox(
                 width: double.infinity,
