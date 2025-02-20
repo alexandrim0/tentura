@@ -1,5 +1,5 @@
 {
-  "resource_version": 462,
+  "resource_version": 483,
   "metadata": {
     "version": 3,
     "sources": [
@@ -601,6 +601,99 @@
           },
           {
             "table": {
+              "name": "opinion",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "author",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "subject": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "user",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "computed_fields": [
+              {
+                "name": "my_vote",
+                "definition": {
+                  "function": {
+                    "name": "opinion_get_my_vote",
+                    "schema": "public"
+                  },
+                  "session_argument": "hasura_session"
+                }
+              },
+              {
+                "name": "scores",
+                "definition": {
+                  "function": {
+                    "name": "opinion_get_scores",
+                    "schema": "public"
+                  },
+                  "session_argument": "hasura_session"
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "check": {},
+                  "set": {
+                    "subject": "x-hasura-User-Id"
+                  },
+                  "columns": [
+                    "content",
+                    "object"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "content",
+                    "id",
+                    "object",
+                    "subject",
+                    "created_at"
+                  ],
+                  "computed_fields": [
+                    "my_vote"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "filter": {
+                    "subject": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
               "name": "user",
               "schema": "public"
             },
@@ -953,6 +1046,65 @@
                   },
                   "check": null
                 }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "vote_opinion",
+              "schema": "public"
+            },
+            "insert_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "check": {},
+                  "set": {
+                    "subject": "x-hasura-User-Id"
+                  },
+                  "columns": [
+                    "amount",
+                    "object"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "amount",
+                    "object",
+                    "subject",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "subject": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": ""
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "amount"
+                  ],
+                  "filter": {
+                    "subject": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  },
+                  "check": null
+                },
+                "comment": ""
               }
             ]
           },

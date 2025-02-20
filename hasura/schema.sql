@@ -70,16 +70,11 @@ ALTER TABLE public.beacon OWNER TO postgres;
 
 CREATE FUNCTION public.beacon_get_is_pinned(beacon_row public.beacon, hasura_session json) RETURNS boolean
     LANGUAGE sql STABLE
-    AS $$
-
-SELECT COALESCE(
-
-(SELECT true AS "is_pinned" FROM beacon_pinned WHERE
-
-  user_id = (hasura_session ->> 'x-hasura-user-id')::TEXT AND beacon_id = beacon_row.id),
-
-  false);
-
+    AS $$
+SELECT COALESCE(
+(SELECT true AS "is_pinned" FROM beacon_pinned WHERE
+  user_id = (hasura_session ->> 'x-hasura-user-id')::TEXT AND beacon_id = beacon_row.id),
+  false);
 $$;
 
 
@@ -143,7 +138,8 @@ CREATE TABLE public.comment (
     user_id text NOT NULL,
     content text NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    beacon_id text NOT NULL
+    beacon_id text NOT NULL,
+    CONSTRAINT comment_content_length CHECK (((char_length(content) > 0) AND (char_length(content) <= 2048)))
 );
 
 
@@ -155,10 +151,8 @@ ALTER TABLE public.comment OWNER TO postgres;
 
 CREATE FUNCTION public.comment_get_my_vote(comment_row public.comment, hasura_session json) RETURNS integer
     LANGUAGE sql STABLE
-    AS $$
-
-  SELECT COALESCE((SELECT amount FROM vote_comment WHERE subject = (hasura_session ->> 'x-hasura-user-id')::TEXT AND object = comment_row.id), 0);
-
+    AS $$
+  SELECT COALESCE((SELECT amount FROM vote_comment WHERE subject = (hasura_session ->> 'x-hasura-user-id')::TEXT AND object = comment_row.id), 0);
 $$;
 
 
@@ -497,6 +491,57 @@ $$;
 ALTER FUNCTION public.on_public_user_update() OWNER TO postgres;
 
 --
+-- Name: opinion; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.opinion (
+    id text DEFAULT concat('O', "substring"((gen_random_uuid())::text, '\w{12}'::text)) NOT NULL,
+    subject text NOT NULL,
+    object text NOT NULL,
+    content text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT opinion_content_length CHECK (((char_length(content) > 0) AND (char_length(content) <= 2048)))
+);
+
+
+ALTER TABLE public.opinion OWNER TO postgres;
+
+--
+-- Name: opinion_get_my_vote(public.opinion, json); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.opinion_get_my_vote(opinion_row public.opinion, hasura_session json) RETURNS integer
+    LANGUAGE sql STABLE
+    AS $$
+  SELECT COALESCE((SELECT amount FROM vote_opinion WHERE subject = (hasura_session ->> 'x-hasura-user-id')::TEXT AND object = opinion_row.id), 0);
+$$;
+
+
+ALTER FUNCTION public.opinion_get_my_vote(opinion_row public.opinion, hasura_session json) OWNER TO postgres;
+
+--
+-- Name: opinion_get_scores(public.opinion, json); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.opinion_get_scores(opinion_row public.opinion, hasura_session json) RETURNS SETOF public.mutual_score
+    LANGUAGE sql STABLE
+    AS $$
+SELECT
+  src,
+  dst,
+  score_cluster_of_src AS src_score,
+  score_cluster_of_dst AS dst_score
+FROM mr_node_score(
+    hasura_session ->> 'x-hasura-user-id',
+    opinion_row.id,
+    null
+);
+$$;
+
+
+ALTER FUNCTION public.opinion_get_scores(opinion_row public.opinion, hasura_session json) OWNER TO postgres;
+
+--
 -- Name: rating(text, json); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -722,6 +767,21 @@ CREATE TABLE public.vote_comment (
 ALTER TABLE public.vote_comment OWNER TO postgres;
 
 --
+-- Name: vote_opinion; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.vote_opinion (
+    subject text NOT NULL,
+    object text NOT NULL,
+    amount integer NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.vote_opinion OWNER TO postgres;
+
+--
 -- Name: vote_user; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -735,7 +795,6 @@ CREATE TABLE public.vote_user (
 
 
 ALTER TABLE public.vote_user OWNER TO postgres;
-
 
 --
 -- Name: beacon_pinned beacon_pinned_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -767,6 +826,22 @@ ALTER TABLE ONLY public.comment
 
 ALTER TABLE ONLY public.message
     ADD CONSTRAINT message_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: opinion opinion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.opinion
+    ADD CONSTRAINT opinion_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: opinion opinion_subject_object_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.opinion
+    ADD CONSTRAINT opinion_subject_object_key UNIQUE (subject, object);
 
 
 --
@@ -815,6 +890,14 @@ ALTER TABLE ONLY public.vote_beacon
 
 ALTER TABLE ONLY public.vote_comment
     ADD CONSTRAINT vote_comment_pkey PRIMARY KEY (subject, object);
+
+
+--
+-- Name: vote_opinion vote_opinion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.vote_opinion
+    ADD CONSTRAINT vote_opinion_pkey PRIMARY KEY (subject, object);
 
 
 --
@@ -966,6 +1049,20 @@ COMMENT ON TRIGGER set_public_vote_comment_updated_at ON public.vote_comment IS 
 
 
 --
+-- Name: vote_opinion set_public_vote_opinion_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER set_public_vote_opinion_updated_at BEFORE UPDATE ON public.vote_opinion FOR EACH ROW EXECUTE FUNCTION public.set_current_timestamp_updated_at();
+
+
+--
+-- Name: TRIGGER set_public_vote_opinion_updated_at ON vote_opinion; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TRIGGER set_public_vote_opinion_updated_at ON public.vote_opinion IS 'trigger to set value of column "updated_at" to current timestamp on row update';
+
+
+--
 -- Name: vote_user set_public_vote_user_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1036,6 +1133,22 @@ ALTER TABLE ONLY public.message
 
 
 --
+-- Name: opinion opinion_object_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.opinion
+    ADD CONSTRAINT opinion_object_fkey FOREIGN KEY (object) REFERENCES public."user"(id) ON UPDATE RESTRICT ON DELETE CASCADE;
+
+
+--
+-- Name: opinion opinion_subject_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.opinion
+    ADD CONSTRAINT opinion_subject_fkey FOREIGN KEY (subject) REFERENCES public."user"(id) ON UPDATE RESTRICT ON DELETE CASCADE;
+
+
+--
 -- Name: user_context user_context_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1102,3 +1215,4 @@ ALTER TABLE ONLY public.vote_user
 --
 -- PostgreSQL database dump complete
 --
+
