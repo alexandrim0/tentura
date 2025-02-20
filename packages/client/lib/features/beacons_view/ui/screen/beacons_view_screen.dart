@@ -28,35 +28,35 @@ class BeaconsViewScreen extends StatelessWidget implements AutoRouteWrapper {
   );
 
   @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<BeaconsViewCubit, BeaconsViewState>(
-        builder:
-            (context, state) =>
-                state.beacons.isEmpty
-                    ? SliverToBoxAdapter(
-                      child: Padding(
-                        padding: kPaddingAll,
-                        child: Text(
-                          'There are no beacons yet',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ),
-                    )
-                    : SliverList.separated(
-                      key: ValueKey(state.beacons),
-                      itemCount: state.beacons.length,
-                      itemBuilder: (_, i) {
-                        final beacon = state.beacons[i];
-                        return Padding(
-                          padding: kPaddingAll,
-                          child: BeaconTile(
-                            beacon: beacon,
-                            key: ValueKey(beacon),
-                          ),
-                        );
-                      },
-                      separatorBuilder:
-                          (_, _) => const Divider(endIndent: 20, indent: 20),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Beacons')),
+    body: BlocBuilder<BeaconsViewCubit, BeaconsViewState>(
+      builder:
+          (context, state) =>
+              state.beacons.isEmpty
+                  ? Padding(
+                    padding: kPaddingAll,
+                    child: Text(
+                      'There are no beacons yet',
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
-      );
+                  )
+                  : ListView.separated(
+                    key: ValueKey(state.beacons),
+                    itemCount: state.beacons.length,
+                    itemBuilder: (_, i) {
+                      final beacon = state.beacons[i];
+                      return Padding(
+                        padding: kPaddingAll,
+                        child: BeaconTile(
+                          beacon: beacon,
+                          key: ValueKey(beacon),
+                        ),
+                      );
+                    },
+                    separatorBuilder:
+                        (_, _) => const Divider(endIndent: 20, indent: 20),
+                  ),
+    ),
+  );
 }
