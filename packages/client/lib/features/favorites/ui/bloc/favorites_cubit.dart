@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/beacon.dart';
 
 import 'package:tentura/features/auth/data/repository/auth_repository.dart';
@@ -15,10 +16,8 @@ export 'favorites_state.dart';
 /// Global Cubit
 @lazySingleton
 class FavoritesCubit extends Cubit<FavoritesState> {
-  FavoritesCubit(
-    this._authRepository,
-    this._favoritesRemoteRepository,
-  ) : super(const FavoritesState()) {
+  FavoritesCubit(this._authRepository, this._favoritesRemoteRepository)
+    : super(const FavoritesState()) {
     _authChanges.resume();
     _favoritesChanges.resume();
   }
@@ -27,25 +26,29 @@ class FavoritesCubit extends Cubit<FavoritesState> {
 
   final FavoritesRemoteRepository _favoritesRemoteRepository;
 
-  late final _authChanges = _authRepository.currentAccountChanges().listen(
-    (userId) async {
-      emit(FavoritesState(
+  late final _authChanges = _authRepository.currentAccountChanges().listen((
+    userId,
+  ) async {
+    emit(
+      FavoritesState(
         beacons: [],
         userId: userId,
         status: StateStatus.isLoading,
-      ));
-      if (userId.isNotEmpty) await fetch();
-    },
-    cancelOnError: false,
-  );
+      ),
+    );
+    if (userId.isNotEmpty) await fetch();
+  }, cancelOnError: false);
 
   late final _favoritesChanges = _favoritesRemoteRepository.changes.listen(
-    (beacon) => emit(state.copyWith(
-      beacons: beacon.isPinned
-          ? [beacon, ...state.beacons]
-          : state.beacons.where((e) => e.id != beacon.id).toList(),
-      status: StateStatus.isSuccess,
-    )),
+    (beacon) => emit(
+      state.copyWith(
+        beacons:
+            beacon.isPinned
+                ? [beacon, ...state.beacons]
+                : state.beacons.where((e) => e.id != beacon.id).toList(),
+        status: StateStatus.isSuccess,
+      ),
+    ),
     cancelOnError: false,
   );
 
@@ -59,19 +62,21 @@ class FavoritesCubit extends Cubit<FavoritesState> {
     return super.close();
   }
 
+  void showProfile(String id) => emit(
+    state.copyWith(status: StateIsNavigating('$kPathProfileView?id=$id')),
+  );
+
   Future<void> fetch() async {
-    emit(state.copyWith(
-      status: StateStatus.isLoading,
-    ));
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      emit(state.copyWith(
-        beacons: List.from(await _favoritesRemoteRepository.fetch()),
-        status: StateStatus.isSuccess,
-      ));
+      emit(
+        state.copyWith(
+          beacons: List.from(await _favoritesRemoteRepository.fetch()),
+          status: StateStatus.isSuccess,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
-      ));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
@@ -79,9 +84,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
     try {
       await _favoritesRemoteRepository.pin(beacon);
     } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
-      ));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
@@ -92,9 +95,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
         userId: state.userId,
       );
     } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
-      ));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 }

@@ -27,47 +27,43 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profileCubit = GetIt.I<ProfileCubit>();
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     return ThemeAstra(
       child: Scaffold(
-        // TODO: remove bottomNavigationBar
+        // remove bottomNavigationBar in real app
         bottomNavigationBar: buildNavigationBar(index: 4),
         body: BlocBuilder<ProfileCubit, ProfileState>(
           bloc: profileCubit,
-          buildWhen: (p, c) => c.isSuccess,
-          builder: (context, state) {
+          buildWhen: (_, c) => c.isSuccess,
+          builder: (_, state) {
             final profile = state.profile;
-            final textTheme = Theme.of(context).textTheme;
             return RefreshIndicator.adaptive(
               onRefresh: profileCubit.fetch,
               child: CustomScrollView(
                 slivers: [
                   // Header
                   SliverAppBar(
-                    key: Key('ProfileMineScreen:${profile.avatarUrl}'),
                     floating: true,
                     snap: true,
-                    title: Row(
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Title
-                            Text(
-                              profile.title.isEmpty ? 'No name' : profile.title,
-                              style: textTheme.headlineMedium,
-                              textAlign: TextAlign.left,
-                            ),
+                        // Title
+                        Text(
+                          profile.title.isEmpty ? 'No name' : profile.title,
+                          style: textTheme.headlineMedium,
+                          textAlign: TextAlign.left,
+                        ),
 
-                            // ID
-                            Text(
-                              profile.id,
-                              style: textTheme.bodySmall!.copyWith(
-                                color: Theme.of(context).hintColor,
-                                fontSize: textTheme.bodySmall!.fontSize,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ],
+                        // ID
+                        Text(
+                          profile.id,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: theme.hintColor,
+                            fontSize: textTheme.bodySmall?.fontSize,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ],
                     ),

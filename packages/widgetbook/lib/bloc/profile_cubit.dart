@@ -6,10 +6,7 @@ import '_data.dart';
 
 @Singleton(as: ProfileCubit)
 class ProfileCubitMock extends Cubit<ProfileState> implements ProfileCubit {
-  ProfileCubitMock()
-      : super(const ProfileState(
-          profile: profileAlice,
-        ));
+  ProfileCubitMock() : super(const ProfileState(profile: profileAlice));
 
   @override
   Future<void> delete() async {}
@@ -22,9 +19,6 @@ class ProfileCubitMock extends Cubit<ProfileState> implements ProfileCubit {
 
   @override
   void showGraph(String focus) {}
-
-  @override
-  void showProfile(String id) {}
 
   @override
   void showProfileEditor() {}

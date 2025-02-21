@@ -70,11 +70,16 @@ ALTER TABLE public.beacon OWNER TO postgres;
 
 CREATE FUNCTION public.beacon_get_is_pinned(beacon_row public.beacon, hasura_session json) RETURNS boolean
     LANGUAGE sql STABLE
-    AS $$
-SELECT COALESCE(
-(SELECT true AS "is_pinned" FROM beacon_pinned WHERE
-  user_id = (hasura_session ->> 'x-hasura-user-id')::TEXT AND beacon_id = beacon_row.id),
-  false);
+    AS $$
+
+SELECT COALESCE(
+
+(SELECT true AS "is_pinned" FROM beacon_pinned WHERE
+
+  user_id = (hasura_session ->> 'x-hasura-user-id')::TEXT AND beacon_id = beacon_row.id),
+
+  false);
+
 $$;
 
 
@@ -151,8 +156,10 @@ ALTER TABLE public.comment OWNER TO postgres;
 
 CREATE FUNCTION public.comment_get_my_vote(comment_row public.comment, hasura_session json) RETURNS integer
     LANGUAGE sql STABLE
-    AS $$
-  SELECT COALESCE((SELECT amount FROM vote_comment WHERE subject = (hasura_session ->> 'x-hasura-user-id')::TEXT AND object = comment_row.id), 0);
+    AS $$
+
+  SELECT COALESCE((SELECT amount FROM vote_comment WHERE subject = (hasura_session ->> 'x-hasura-user-id')::TEXT AND object = comment_row.id), 0);
+
 $$;
 
 
@@ -197,7 +204,7 @@ FROM
   mr_graph(
     hasura_session ->> 'x-hasura-user-id',
     focus,
-    COALESCE(context,hasura_session ->> 'x-hasura-query-context'),
+    hasura_session ->> 'x-hasura-query-context',
     positive_only,
     0,
     100
@@ -319,7 +326,7 @@ FROM
   mr_scores(
     hasura_session ->> 'x-hasura-user-id',
     true,
-    COALESCE(context,hasura_session ->> 'x-hasura-query-context'),
+    hasura_session ->> 'x-hasura-query-context',
     'B',
     null,
     null,
@@ -555,7 +562,7 @@ SELECT
     score_cluster_of_dst AS dst_score
 FROM mr_mutual_scores(
     hasura_session->>'x-hasura-user-id',
-    COALESCE(context,hasura_session ->> 'x-hasura-query-context')
+    hasura_session ->> 'x-hasura-query-context'
 );
 $$;
 

@@ -17,5 +17,8 @@ class OpinionState extends StateBase with _$OpinionState {
 
   const OpinionState._();
 
+  bool get hasMyOpinion =>
+      opinions.indexWhere((e) => e.author.id == myProfile.id) != -1;
+
   bool checkIfIsMine(Opinion opinion) => opinion.author.id == myProfile.id;
 }

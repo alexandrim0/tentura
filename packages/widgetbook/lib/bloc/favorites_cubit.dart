@@ -8,19 +8,16 @@ import 'package:tentura_widgetbook/bloc/_data.dart';
 @Singleton(as: FavoritesCubit)
 class FavoritesCubitMock extends Cubit<FavoritesState>
     implements FavoritesCubit {
-  FavoritesCubitMock()
-      : super(FavoritesState(
-          beacons: [
-            beaconA,
-            beaconB,
-          ],
-        ));
-
-  @override
-  Future<void> fetch([String? contextName]) async {}
+  FavoritesCubitMock() : super(FavoritesState(beacons: [beaconA, beaconB]));
 
   @override
   Stream<Beacon> get favoritesChanges async* {}
+
+  @override
+  void showProfile(String id) {}
+
+  @override
+  Future<void> fetch([String? contextName]) async {}
 
   @override
   Future<void> pin(Beacon beacon) async {

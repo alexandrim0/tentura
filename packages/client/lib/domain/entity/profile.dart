@@ -29,6 +29,8 @@ class Profile with _$Profile implements Likable {
 
   bool get isFriend => myVote > 0;
 
+  bool get isNotFriend => !isFriend;
+
   bool get isSeeingMe => rScore > 0;
 
   bool get needEdit => id.isNotEmpty && title.isEmpty;

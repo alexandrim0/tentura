@@ -47,46 +47,47 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
   bool isError = false,
   bool isFloating = false,
   List<TextSpan>? textSpans,
-  Duration duration = const Duration(
-    seconds: kSnackBarDuration,
-  ),
+  Duration duration = const Duration(seconds: kSnackBarDuration),
 }) {
   final theme = Theme.of(context);
   ScaffoldMessenger.of(context).clearSnackBars();
   if (isError) _logger.d(text);
-  return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    behavior: isFloating ? SnackBarBehavior.floating : null,
-    margin: isFloating ? kPaddingAll : null,
-    duration: duration,
-    backgroundColor: isError
-        ? theme.colorScheme.error
-        : color ?? theme.snackBarTheme.backgroundColor,
-    content: RichText(
-      text: TextSpan(
-        text: text,
-        children: textSpans,
-        style: isError
-            ? theme.snackBarTheme.contentTextStyle?.copyWith(
-                color: theme.colorScheme.onError,
-              )
-            : theme.snackBarTheme.contentTextStyle,
+  return ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      behavior: isFloating ? SnackBarBehavior.floating : null,
+      margin: isFloating ? kPaddingAll : null,
+      duration: duration,
+      backgroundColor:
+          isError
+              ? theme.colorScheme.error
+              : color ?? theme.snackBarTheme.backgroundColor,
+      content: RichText(
+        text: TextSpan(
+          text: text,
+          children: textSpans,
+          style:
+              isError
+                  ? theme.snackBarTheme.contentTextStyle?.copyWith(
+                    color: theme.colorScheme.onError,
+                  )
+                  : theme.snackBarTheme.contentTextStyle,
+        ),
       ),
     ),
-  ));
+  );
 }
+
+Widget separatorBuilder(_, _) => const Divider(endIndent: 20, indent: 20);
 
 void commonScreenBlocListener(BuildContext context, StateBase state) =>
     switch (state.status) {
       final StateIsNavigating s =>
         s.path == kPathBack ? context.back() : context.navigateNamedTo(s.path),
-      final StateIsMessaging s => showSnackBar(
-          context,
-          text: s.message,
-        ),
+      final StateIsMessaging s => showSnackBar(context, text: s.message),
       final StateHasError s => showSnackBar(
-          context,
-          isError: true,
-          text: s.error.toString(),
-        ),
+        context,
+        isError: true,
+        text: s.error.toString(),
+      ),
       _ => null,
     };

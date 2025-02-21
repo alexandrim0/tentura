@@ -35,8 +35,8 @@ dependencies:
   built_value: ^8.9.3
   flutter_bloc: ^9.0.0
   synchronized: ^3.3.0
-  sentry_drift: ^8.13.1
-  sentry_flutter: ^8.13.1
+  sentry_drift: ^8.13.2
+  sentry_flutter: ^8.13.2
   json_annotation: ^4.9.0
   intl_translation: ^0.20.1
 

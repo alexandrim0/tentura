@@ -11,6 +11,7 @@ import 'package:tentura/ui/widget/share_code_icon_button.dart';
 import 'package:tentura/ui/widget/show_more_text.dart';
 
 import '../bloc/opinion_cubit.dart';
+import '../dialog/opinion_delete_dialog.dart';
 
 class OpinionTile extends StatelessWidget {
   const OpinionTile({required this.opinion, this.isMine = false, super.key});
@@ -20,6 +21,7 @@ class OpinionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final opinionCubit = context.read<OpinionCubit>();
     return Column(
       children: [
         const Divider(),
@@ -36,14 +38,17 @@ class OpinionTile extends StatelessWidget {
                 onTap:
                     isMine
                         ? null
-                        : () => context.read<OpinionCubit>().showProfile(
-                          opinion.author.id,
-                        ),
+                        : () => opinionCubit.showProfile(opinion.author.id),
                 child: Padding(
                   padding: const EdgeInsets.only(right: kSpacingMedium),
-                  child: AvatarRated(profile: opinion.author),
+                  child: AvatarRated(
+                    profile: opinion.author,
+                    withRating: !isMine,
+                  ),
                 ),
               ),
+
+              // Body
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,7 +59,7 @@ class OpinionTile extends StatelessWidget {
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
 
-                    // Body
+                    // Opinion
                     Padding(
                       padding: kPaddingSmallT,
                       child: ShowMoreText(
@@ -80,8 +85,24 @@ class OpinionTile extends StatelessWidget {
 
               const Spacer(),
 
-              // Rating bar
-              if (!isMine) ...[
+              if (isMine)
+                // More
+                PopupMenuButton(
+                  itemBuilder:
+                      (_) => [
+                        PopupMenuItem<void>(
+                          onTap: () async {
+                            if (await OpinionDeleteDialog.show(context) ??
+                                false) {
+                              await opinionCubit.removeOpinionById(opinion.id);
+                            }
+                          },
+                          child: const Text('Delete my opinion'),
+                        ),
+                      ],
+                )
+              else ...[
+                // Rating bar
                 Padding(
                   padding: kPaddingH,
                   child: RatingIndicator(

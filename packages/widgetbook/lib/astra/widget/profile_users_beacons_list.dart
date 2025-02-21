@@ -9,7 +9,11 @@ import 'package:tentura_widgetbook/bloc/_data.dart';
 
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
-@UseCase(name: 'Default', type: UsersBeaconsList, path: '[astra]/widget/beacons_list')
+@UseCase(
+  name: 'Default',
+  type: UsersBeaconsList,
+  path: '[astra]/widget/beacons_list',
+)
 Widget beaconsListUseCase(BuildContext context) =>
     UsersBeaconsList(beacons: [beaconA, beaconB]);
 
@@ -51,18 +55,6 @@ class UsersBeaconsList extends StatelessWidget {
               separatorBuilder:
                   (_, __) => const Divider(endIndent: 20, indent: 20),
             ),
-
-          // Show more
-          //   if (beacons.isNotEmpty && state.hasNotReachedMax)
-          //     SliverToBoxAdapter(
-          //       child: Padding(
-          //         padding: kPaddingAll,
-          //         child: TextButton(
-          //           onPressed: profileViewCubit.fetchMore,
-          //           child: const Text('Show more'),
-          //         ),
-          //       ),
-          //     ),
         ],
       ),
     );

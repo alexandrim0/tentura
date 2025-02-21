@@ -22,12 +22,12 @@ class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit({
     required AuthRepository authRepository,
     required ProfileRepository profileRepository,
-  })  : _profileRepository = profileRepository,
-        super(const ProfileState()) {
+  }) : _profileRepository = profileRepository,
+       super(const ProfileState()) {
     _authChanges = authRepository.currentAccountChanges().listen(
-          _onAuthChanges,
-          cancelOnError: false,
-        );
+      _onAuthChanges,
+      cancelOnError: false,
+    );
     _profileChanges = profileRepository.changes.listen(
       _onProfileChanges,
       cancelOnError: false,
@@ -47,66 +47,46 @@ class ProfileCubit extends Cubit<ProfileState> {
     return super.close();
   }
 
-  void showProfileEditor() => emit(state.copyWith(
-        status: StateIsNavigating(kPathProfileEdit),
-      ));
+  void showProfileEditor() =>
+      emit(state.copyWith(status: StateIsNavigating(kPathProfileEdit)));
 
-  void showProfile(String id) => emit(state.copyWith(
-        status: StateIsNavigating('$kPathProfileView?id=$id'),
-      ));
+  void showRating() =>
+      emit(state.copyWith(status: StateIsNavigating(kPathRating)));
 
-  void showRating() => emit(state.copyWith(
-        status: StateIsNavigating(kPathRating),
-      ));
-
-  void showGraph(String focus) => emit(state.copyWith(
-        status: StateIsNavigating('$kPathGraph?focus=$focus'),
-      ));
+  void showGraph(String focus) => emit(
+    state.copyWith(status: StateIsNavigating('$kPathGraph?focus=$focus')),
+  );
 
   Future<void> fetch() async {
     if (state.profile.id.isEmpty) return;
-    emit(state.copyWith(
-      status: StateStatus.isLoading,
-    ));
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final profile = await _profileRepository.fetch(state.profile.id);
-      emit(ProfileState(
-        profile: profile,
-      ));
+      emit(ProfileState(profile: profile));
     } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
-      ));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
   Future<void> delete() async {
-    emit(state.copyWith(
-      status: StateStatus.isLoading,
-    ));
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
       await _profileRepository.delete(state.profile.id);
-      emit(ProfileState(
-        status: StateIsNavigating(kPathLogin),
-      ));
+      emit(ProfileState(status: StateIsNavigating(kPathLogin)));
     } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
-      ));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
   Future<void> _onAuthChanges(String id) async {
-    emit(ProfileState(
-      profile: Profile(id: id),
-    ));
+    emit(ProfileState(profile: Profile(id: id)));
     if (id.isNotEmpty) await fetch();
   }
 
   void _onProfileChanges(RepositoryEvent<Profile> event) => switch (event) {
-        RepositoryEventUpdate<Profile>(value: final profile)
-            when profile.id == state.profile.id =>
-          emit(ProfileState(profile: profile)),
-        _ => null,
-      };
+    RepositoryEventUpdate<Profile>(value: final profile)
+        when profile.id == state.profile.id =>
+      emit(ProfileState(profile: profile)),
+    _ => null,
+  };
 }

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:tentura/ui/widget/deep_back_button.dart';
-import 'package:tentura/ui/widget/linear_pi_active.dart';
-import 'package:tentura/ui/utils/ui_utils.dart';
-
 import 'package:tentura/features/beacon/ui/widget/beacon_info.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_mine_control.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_tile_control.dart';
 import 'package:tentura/features/comment/ui/bloc/comment_cubit.dart';
 import 'package:tentura/features/comment/ui/widget/comment_tile.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
-import 'package:tentura/features/profile/ui/widget/author_info.dart';
+
+import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/widget/bottom_text_input.dart';
+import 'package:tentura/ui/widget/deep_back_button.dart';
+import 'package:tentura/ui/widget/linear_pi_active.dart';
+import 'package:tentura/ui/widget/author_info.dart';
 
 import '../bloc/beacon_view_cubit.dart';
-import '../widget/new_comment_input.dart';
 
 @RoutePage()
 class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
@@ -23,11 +23,11 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
   final String id;
 
   @override
-  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
+  Widget wrappedRoute(_) => MultiBlocProvider(
     providers: [
       BlocProvider(
         create:
-            (context) => BeaconViewCubit(
+            (_) => BeaconViewCubit(
               myProfile: GetIt.I<ProfileCubit>().state.profile,
               id: id,
             ),
@@ -49,6 +49,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
+    final beaconViewCubit = context.read<BeaconViewCubit>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Beacon'),
@@ -58,20 +59,25 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
           child: BlocSelector<BeaconViewCubit, BeaconViewState, bool>(
             selector: (state) => state.isLoading,
             builder: LinearPiActive.builder,
+            bloc: beaconViewCubit,
           ),
         ),
       ),
-      bottomSheet: const NewCommentInput(),
       body: BlocBuilder<BeaconViewCubit, BeaconViewState>(
-        buildWhen: (p, c) => c.isSuccess,
-        builder: (context, state) {
+        bloc: beaconViewCubit,
+        buildWhen: (_, c) => c.isSuccess,
+        builder: (_, state) {
           final beacon = state.beacon;
           return ListView(
             padding: kPaddingH + const EdgeInsets.only(bottom: 80),
             children: [
               // User row (Avatar and Name)
               if (state.isBeaconNotMine)
-                AuthorInfo(author: beacon.author, key: ValueKey(beacon.author)),
+                AuthorInfo(
+                  author: beacon.author,
+                  key: ValueKey(beacon.author),
+                  onTap: () => beaconViewCubit.showProfile(beacon.author.id),
+                ),
 
               // Beacon Info
               BeaconInfo(
@@ -119,7 +125,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
                   child: SizedBox(
                     width: double.infinity,
                     child: FilledButton(
-                      onPressed: context.read<BeaconViewCubit>().showAll,
+                      onPressed: beaconViewCubit.showAll,
                       child: const Text('Show all comments'),
                     ),
                   ),
@@ -127,6 +133,10 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
             ],
           );
         },
+      ),
+      bottomSheet: BottomTextInput(
+        hintText: 'Write a comment',
+        onSend: beaconViewCubit.addComment,
       ),
     );
   }

@@ -19,51 +19,43 @@ class FavoritesScreen extends StatelessWidget {
       minimum: kPaddingH,
       child: BlocBuilder<FavoritesCubit, FavoritesState>(
         bloc: favoritesCubit,
-        buildWhen: (p, c) => c.isSuccess,
+        buildWhen: (_, c) => c.isSuccess,
         builder: (context, state) {
           return state.isLoading
               // Loading state
-              ? const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                )
+              ? const Center(child: CircularProgressIndicator.adaptive())
               : RefreshIndicator.adaptive(
-                  onRefresh: favoritesCubit.fetch,
-                  child: state.beacons.isEmpty
-
-                      // Empty state
-                      ? CustomScrollView(
-                          slivers: [
-                            SliverFillRemaining(
-                              child: Container(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'There is nothing here yet',
-                                  style:
-                                      Theme.of(context).textTheme.displaySmall,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ],
+                onRefresh: favoritesCubit.fetch,
+                child:
+                    state.beacons.isEmpty
+                        // Empty state
+                        ? Center(
+                          child: Text(
+                            'There is nothing here yet',
+                            style: Theme.of(context).textTheme.displaySmall,
+                          ),
                         )
-
-                      // Beacons list
-                      : ListView.separated(
+                        // Beacons list
+                        : ListView.separated(
                           key: const PageStorageKey('FavoritesListView'),
                           itemCount: state.beacons.length,
-                          separatorBuilder: (_, __) => const Divider(),
-                          itemBuilder: (context, i) {
+                          separatorBuilder: separatorBuilder,
+                          itemBuilder: (_, i) {
                             final beacon = state.beacons[i];
                             return Padding(
                               padding: kPaddingV,
                               child: BeaconTile(
                                 beacon: beacon,
                                 key: ValueKey(beacon),
+                                onAvatarInfoTap:
+                                    () => favoritesCubit.showProfile(
+                                      beacon.author.id,
+                                    ),
                               ),
                             );
                           },
                         ),
-                );
+              );
         },
       ),
     );
