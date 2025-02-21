@@ -122,9 +122,7 @@ class ProfileScreen extends StatelessWidget {
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton.icon(
-                                    onPressed:
-                                        () =>
-                                            profileCubit.showGraph(profile.id),
+                                    onPressed: profileCubit.showGraph,
                                     icon: const Icon(TenturaIcons.graph),
                                     label: const Text('Show Connections'),
                                   ),

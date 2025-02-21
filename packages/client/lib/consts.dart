@@ -28,6 +28,7 @@ const kPathBack = '/back';
 const kPathGraph = '/graph';
 const kPathRating = '/rating';
 const kPathConnect = '/connect';
+const kPathSettings = '/settings';
 const kPathBeaconNew = '/beacon/new';
 const kPathBeaconView = '/beacon/view';
 const kPathBeaconsView = '/beacons/view';

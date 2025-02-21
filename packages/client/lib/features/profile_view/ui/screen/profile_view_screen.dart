@@ -44,36 +44,41 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
   );
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    body: RefreshIndicator.adaptive(
-      onRefresh: context.read<ProfileViewCubit>().fetch,
-      child: CustomScrollView(
-        slivers: [
-          // Header
-          const ProfileViewAppBar(),
+  Widget build(BuildContext context) {
+    final opinionCubit = context.read<OpinionCubit>();
+    final profileViewCubit = context.read<ProfileViewCubit>();
+    return Scaffold(
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async {
+          await Future.wait([profileViewCubit.fetch(), opinionCubit.fetch()]);
+        },
+        child: CustomScrollView(
+          slivers: [
+            // Header
+            const ProfileViewAppBar(),
 
-          // Body
-          const ProfileViewBody(),
+            // Body
+            const ProfileViewBody(),
 
-          // Opinions
-          OpinionList(key: ValueKey(id)),
-        ],
+            // Opinions
+            OpinionList(key: ValueKey(id)),
+          ],
+        ),
       ),
-    ),
 
-    // Text Input
-    bottomSheet: BlocSelector<OpinionCubit, OpinionState, bool>(
-      selector: (state) => state.hasMyOpinion,
-      builder:
-          (context, hasMyOpinion) =>
-              hasMyOpinion
-                  ? const BottomTextInput(
-                    hintText: 'You can have only one opinion',
-                  )
-                  : BottomTextInput(
-                    hintText: 'Write an opinion',
-                    onSend: context.read<OpinionCubit>().addOpinion,
-                  ),
-    ),
-  );
+      // Text Input
+      bottomSheet: BlocSelector<OpinionCubit, OpinionState, bool>(
+        selector: (state) => state.hasMyOpinion,
+        bloc: opinionCubit,
+        builder: (_, hasMyOpinion) {
+          return hasMyOpinion
+              ? const BottomTextInput(hintText: 'You can have only one opinion')
+              : BottomTextInput(
+                hintText: 'Write an opinion',
+                onSend: opinionCubit.addOpinion,
+              );
+        },
+      ),
+    );
+  }
 }

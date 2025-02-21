@@ -6,17 +6,17 @@ import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/show_more_text.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
 
-import '../bloc/profile_view_cubit.dart';
+import '../bloc/profile_cubit.dart';
 
-class ProfileViewBody extends StatelessWidget {
-  const ProfileViewBody({super.key});
+class ProfileBody extends StatelessWidget {
+  const ProfileBody({super.key});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final profileViewCubit = context.read<ProfileViewCubit>();
-    return BlocSelector<ProfileViewCubit, ProfileViewState, Profile>(
-      bloc: profileViewCubit,
+    final profileCubit = GetIt.I<ProfileCubit>();
+    return BlocSelector<ProfileCubit, ProfileState, Profile>(
+      bloc: profileCubit,
       selector: (state) => state.profile,
       builder: (_, profile) {
         return SliverToBoxAdapter(
@@ -26,7 +26,13 @@ class ProfileViewBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Avatar
-                Center(child: AvatarRated(profile: profile, size: 160)),
+                Center(
+                  child: AvatarRated(
+                    profile: profile,
+                    size: 160,
+                    withRating: false,
+                  ),
+                ),
 
                 // Description
                 Padding(
@@ -37,10 +43,11 @@ class ProfileViewBody extends StatelessWidget {
                   ),
                 ),
 
+                // Show Connections
                 Padding(
                   padding: kPaddingSmallT,
                   child: ElevatedButton.icon(
-                    onPressed: profileViewCubit.showGraph,
+                    onPressed: profileCubit.showGraph,
                     icon: const Icon(TenturaIcons.graph),
                     label: const Text('Show Connections'),
                   ),
@@ -50,25 +57,41 @@ class ProfileViewBody extends StatelessWidget {
                 Padding(
                   padding: kPaddingSmallT,
                   child: ElevatedButton.icon(
-                    onPressed: profileViewCubit.showBeacons,
+                    onPressed: profileCubit.showBeacons,
                     icon: const Icon(Icons.open_in_full),
                     label: const Text('Show Beacons'),
                   ),
                 ),
 
-                if (profile.isNotFriend)
-                  Padding(
-                    padding: kPaddingSmallT,
-                    child: FilledButton.icon(
-                      onPressed: profileViewCubit.addFriend,
-                      icon: const Icon(Icons.people),
-                      label: const Text('Add to My Field'),
-                    ),
+                Padding(
+                  padding: kPaddingSmallT,
+                  child: Row(
+                    spacing: kSpacingSmall,
+                    children: [
+                      // Settings
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.settings),
+                          label: const Text('Settings'),
+                          onPressed: profileCubit.showSettings,
+                        ),
+                      ),
+
+                      // New Beacon
+                      Expanded(
+                        child: FilledButton.icon(
+                          icon: const Icon(Icons.post_add),
+                          label: const Text('New Beacon'),
+                          onPressed: profileCubit.showBeaconNew,
+                        ),
+                      ),
+                    ],
                   ),
+                ),
 
                 // Opinions
                 Padding(
-                  padding: kPaddingV,
+                  padding: kPaddingT,
                   child: Text(
                     'Community Feedback',
                     style: textTheme.headlineMedium,

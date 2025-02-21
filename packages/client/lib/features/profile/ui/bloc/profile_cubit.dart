@@ -53,9 +53,23 @@ class ProfileCubit extends Cubit<ProfileState> {
   void showRating() =>
       emit(state.copyWith(status: StateIsNavigating(kPathRating)));
 
-  void showGraph(String focus) => emit(
-    state.copyWith(status: StateIsNavigating('$kPathGraph?focus=$focus')),
+  void showGraph() => emit(
+    state.copyWith(
+      status: StateIsNavigating('$kPathGraph?focus=${state.profile.id}'),
+    ),
   );
+
+  void showBeacons() => emit(
+    state.copyWith(
+      status: StateIsNavigating('$kPathBeaconsView?id=${state.profile.id}'),
+    ),
+  );
+
+  void showBeaconNew() =>
+      emit(state.copyWith(status: StateIsNavigating(kPathBeaconNew)));
+
+  void showSettings() =>
+      emit(state.copyWith(status: StateIsNavigating(kPathSettings)));
 
   Future<void> fetch() async {
     if (state.profile.id.isEmpty) return;
