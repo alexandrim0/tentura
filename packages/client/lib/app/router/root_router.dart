@@ -125,6 +125,13 @@ class RootRouter extends RootStackRouter {
       page: ProfileEditRoute.page,
     ),
 
+    AutoRoute(
+      keepHistory: false,
+      maintainState: false,
+      path: kPathSettings,
+      page: SettingsRoute.page,
+    ),
+
     // Beacon Create New
     AutoRoute(
       keepHistory: false,
