@@ -61,7 +61,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   void showBeacons() => emit(
     state.copyWith(
-      status: StateIsNavigating('$kPathBeaconsView?id=${state.profile.id}'),
+      status: StateIsNavigating('$kPathBeaconViewAll?id=${state.profile.id}'),
     ),
   );
 

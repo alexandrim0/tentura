@@ -73,11 +73,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
             children: [
               // User row (Avatar and Name)
               if (state.isBeaconNotMine)
-                AuthorInfo(
-                  author: beacon.author,
-                  key: ValueKey(beacon.author),
-                  onTap: () => beaconViewCubit.showProfile(beacon.author.id),
-                ),
+                AuthorInfo(author: beacon.author, key: ValueKey(beacon.author)),
 
               // Beacon Info
               BeaconInfo(

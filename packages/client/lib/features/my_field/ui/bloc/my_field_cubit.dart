@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:get_it/get_it.dart';
 
-import 'package:tentura/consts.dart';
-
 import '../../data/repository/my_field_repository.dart';
 import 'my_field_state.dart';
 
@@ -18,10 +16,6 @@ class MyFieldCubit extends Cubit<MyFieldState> {
   }
 
   final MyFieldRepository _repository;
-
-  void showProfile(String id) => emit(
-    state.copyWith(status: StateIsNavigating('$kPathProfileView?id=$id')),
-  );
 
   Future<void> fetch([String? contextName]) async {
     emit(state.copyWith(status: StateStatus.isLoading));

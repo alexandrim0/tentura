@@ -79,12 +79,9 @@ class MyFieldScreen extends StatelessWidget implements AutoRouteWrapper {
                           return Padding(
                             padding: kPaddingV,
                             child: BeaconTile(
-                              beacon: beacon,
                               key: ValueKey(beacon),
-                              onAvatarInfoTap:
-                                  () => myFieldCubit.showProfile(
-                                    beacon.author.id,
-                                  ),
+                              beacon: beacon,
+                              isMine: false,
                             ),
                           );
                         },

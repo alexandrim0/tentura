@@ -6,7 +6,10 @@ part 'beacon_state.freezed.dart';
 @Freezed(makeCollectionsUnmodifiable: false)
 class BeaconState extends StateBase with _$BeaconState {
   const factory BeaconState({
-    @Default('') String userId,
+    @Default(0) int limit,
+    @Default(0) int offset,
+    @Default(false) bool isMine,
+    @Default('') String profileId,
     @Default([]) List<Beacon> beacons,
     @Default(StateIsSuccess()) StateStatus status,
   }) = _BeaconState;

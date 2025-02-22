@@ -2,52 +2,60 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
-import 'package:tentura/features/beacon/ui/widget/beacon_tile.dart';
 
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import '../bloc/beacons_view_cubit.dart';
+import '../bloc/beacon_cubit.dart';
+import '../widget/beacon_tile.dart';
 
 @RoutePage()
-class BeaconsViewScreen extends StatelessWidget implements AutoRouteWrapper {
-  const BeaconsViewScreen({@queryParam this.id = '', super.key});
+class BeaconScreen extends StatelessWidget implements AutoRouteWrapper {
+  const BeaconScreen({@queryParam this.id = '', super.key});
 
   final String id;
 
   @override
-  Widget wrappedRoute(_) => BlocProvider(
-    create:
-        (_) => BeaconsViewCubit(
-          isMine: GetIt.I<AuthCubit>().checkIfIsMe(id),
-          profileId: id,
+  Widget wrappedRoute(_) => MultiBlocProvider(
+    providers: [
+      BlocProvider(create: (_) => ScreenCubit()),
+      if (GetIt.I<AuthCubit>().checkIfIsMe(id))
+        BlocProvider(create: (_) => BeaconCubit(profileId: id)),
+    ],
+    child: MultiBlocListener(
+      listeners: const [
+        BlocListener<BeaconCubit, BeaconState>(
+          listener: commonScreenBlocListener,
         ),
-    child: BlocListener<BeaconsViewCubit, BeaconsViewState>(
-      listener: commonScreenBlocListener,
+        BlocListener<ScreenCubit, ScreenState>(
+          listener: commonScreenBlocListener,
+        ),
+      ],
       child: this,
     ),
   );
 
   @override
   Widget build(BuildContext context) {
-    final beaconsViewCubit = context.read<BeaconsViewCubit>();
+    final beaconCubit = context.read<BeaconCubit>();
     return Scaffold(
       appBar: AppBar(
         bottom: PreferredSize(
           preferredSize: LinearPiActive.size,
-          child: BlocSelector<BeaconsViewCubit, BeaconsViewState, bool>(
+          child: BlocSelector<BeaconCubit, BeaconState, bool>(
             selector: (state) => state.isLoading,
             builder: LinearPiActive.builder,
           ),
         ),
         title: const Text('Beacons'),
       ),
-      body: BlocBuilder<BeaconsViewCubit, BeaconsViewState>(
-        bloc: beaconsViewCubit,
+      body: BlocBuilder<BeaconCubit, BeaconState>(
+        bloc: beaconCubit,
         buildWhen: (_, c) => c.isSuccess,
         builder: (_, state) {
           return RefreshIndicator.adaptive(
-            onRefresh: beaconsViewCubit.fetch,
+            onRefresh: beaconCubit.fetch,
             child:
                 state.beacons.isEmpty
                     ? Center(
@@ -64,12 +72,9 @@ class BeaconsViewScreen extends StatelessWidget implements AutoRouteWrapper {
                         return Padding(
                           padding: kPaddingAll,
                           child: BeaconTile(
-                            beacon: beacon,
                             key: ValueKey(beacon),
-                            onAvatarInfoTap:
-                                () => beaconsViewCubit.showProfile(
-                                  beacon.author.id,
-                                ),
+                            isMine: state.isMine,
+                            beacon: beacon,
                           ),
                         );
                       },

@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 
 import '../utils/ui_utils.dart';
 import 'avatar_rated.dart';
 import 'tentura_icons.dart';
 
 class AuthorInfo extends StatelessWidget {
-  const AuthorInfo({required this.author, this.onTap, super.key});
+  const AuthorInfo({required this.author, super.key});
 
   final Profile author;
-
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) => GestureDetector(
     behavior: HitTestBehavior.translucent,
-    onTap: onTap,
+    onTap: () => context.read<ScreenCubit>().showProfile(author.id),
     child: Row(
       children: [
         // Avatar

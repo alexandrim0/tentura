@@ -1,6 +1,5 @@
 import 'package:get_it/get_it.dart';
 
-import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
@@ -33,10 +32,6 @@ class BeaconViewCubit extends Cubit<BeaconViewState> {
 
   final BeaconViewRepository _beaconViewRepository;
   final CommentRepository _commentRepository;
-
-  void showProfile(String id) => emit(
-    state.copyWith(status: StateIsNavigating('$kPathProfileView?id=$id')),
-  );
 
   Future<void> showAll() async {
     emit(state.copyWith(status: StateStatus.isLoading));

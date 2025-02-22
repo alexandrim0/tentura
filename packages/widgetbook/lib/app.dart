@@ -3,6 +3,7 @@ import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
 import 'package:tentura/ui/theme.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 
 import 'app.directories.g.dart';
 
@@ -18,25 +19,26 @@ class WidgetbookApp extends StatelessWidget {
       directories: directories,
       addons: [
         DeviceFrameAddon(
-          devices: [
-            ...Devices.android.all,
-            ...Devices.ios.all,
-          ],
+          devices: [...Devices.android.all, ...Devices.ios.all],
           initialDevice: Devices.ios.iPhone13ProMax,
         ),
         MaterialThemeAddon(
           themes: [
-            WidgetbookTheme(
-              name: 'Dark',
-              data: themeDark,
-            ),
-            WidgetbookTheme(
-              name: 'Light',
-              data: themeLight,
-            ),
+            WidgetbookTheme(name: 'Dark', data: themeDark),
+            WidgetbookTheme(name: 'Light', data: themeLight),
           ],
-        )
+        ),
       ],
+      appBuilder:
+          (_, child) => BlocProvider<ScreenCubit>(
+            create: (_) => ScreenCubit(),
+            child: BlocListener<ScreenCubit, ScreenState>(
+              listenWhen: (_, c) => c.isNavigating || c.hasError,
+              // TBD: Navigation
+              listener: (context, state) {},
+              child: child,
+            ),
+          ),
     );
   }
 }

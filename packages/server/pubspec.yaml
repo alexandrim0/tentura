@@ -24,7 +24,7 @@ dependencies:
 
   minio: ^3.5.7
   jaspr: ^0.17.0
-  postgres: ^3.5.2
+  postgres: ^3.5.4
   shelf_plus: ^1.10.0
   stormberry: ^0.15.0
   shelf_cors_headers: ^0.1.5

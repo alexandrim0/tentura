@@ -136,8 +136,8 @@ class RootRouter extends RootStackRouter {
     // Beacon View
     AutoRoute(path: kPathBeaconView, page: BeaconViewRoute.page),
 
-    // Beacons View
-    AutoRoute(path: kPathBeaconsView, page: BeaconsViewRoute.page),
+    // Beacon View All
+    AutoRoute(path: kPathBeaconViewAll, page: BeaconRoute.page),
 
     // Rating
     AutoRoute(path: kPathRating, page: RatingRoute.page),

@@ -45,12 +45,9 @@ class FavoritesScreen extends StatelessWidget {
                             return Padding(
                               padding: kPaddingV,
                               child: BeaconTile(
-                                beacon: beacon,
                                 key: ValueKey(beacon),
-                                onAvatarInfoTap:
-                                    () => favoritesCubit.showProfile(
-                                      beacon.author.id,
-                                    ),
+                                beacon: beacon,
+                                isMine: false,
                               ),
                             );
                           },

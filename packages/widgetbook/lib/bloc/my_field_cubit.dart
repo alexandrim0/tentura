@@ -10,7 +10,4 @@ class MyFieldCubitMock extends Cubit<MyFieldState> implements MyFieldCubit {
 
   @override
   Future<void> fetch([String? contextName]) async {}
-
-  @override
-  void showProfile(String id) {}
 }

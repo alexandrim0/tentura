@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:tentura/domain/entity/beacon.dart';
 
 import 'package:tentura/features/beacon/ui/widget/beacon_tile.dart';
@@ -49,11 +50,14 @@ class UsersBeaconsList extends StatelessWidget {
                 final beacon = beacons[i];
                 return Padding(
                   padding: kPaddingAll,
-                  child: BeaconTile(beacon: beacon, key: ValueKey(beacon)),
+                  child: BeaconTile(
+                    beacon: beacon,
+                    isMine: false,
+                    key: ValueKey(beacon),
+                  ),
                 );
               },
-              separatorBuilder:
-                  (_, __) => const Divider(endIndent: 20, indent: 20),
+              separatorBuilder: separatorBuilder,
             ),
         ],
       ),
