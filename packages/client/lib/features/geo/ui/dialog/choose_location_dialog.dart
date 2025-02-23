@@ -4,8 +4,10 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 
 import 'package:tentura/consts.dart';
+import 'package:tentura/domain/entity/coordinates.dart';
 
-import '../../domain/use_case/geo_case.dart';
+import '../../data/repository/geo_repository.dart';
+import '../../domain/entity/location.dart';
 
 class ChooseLocationDialog extends StatefulWidget {
   static Future<Location?> show(
@@ -38,7 +40,7 @@ class ChooseLocationDialog extends StatefulWidget {
 
 class _ChooseLocationDialogState extends State<ChooseLocationDialog> {
   final _mapController = MapController();
-  final _geoCase = GetIt.I<GeoCase>();
+  final _geoRepository = GetIt.I<GeoRepository>();
 
   @override
   void dispose() {
@@ -66,7 +68,8 @@ class _ChooseLocationDialogState extends State<ChooseLocationDialog> {
                 flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
               ),
               onTap: (tapPosition, point) async {
-                final location = await _geoCase.getLocationByCoords(Coordinates(
+                final location =
+                    await _geoRepository.getLocationByCoords(Coordinates(
                   lat: point.latitude,
                   long: point.longitude,
                 ));
@@ -79,7 +82,7 @@ class _ChooseLocationDialogState extends State<ChooseLocationDialog> {
                     _mapController.camera.zoom,
                   );
                 } else {
-                  final myCoordinates = _geoCase.myCoordinates;
+                  final myCoordinates = _geoRepository.myCoordinates;
                   if (myCoordinates != null) {
                     _mapController.move(
                       Coordinates(

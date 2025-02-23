@@ -4,9 +4,12 @@ fragment BeaconModel on beacon {
   id
   title
   description
-  has_picture
   created_at
   updated_at
+  has_picture
+  pic_height
+  pic_width
+  blur_hash
   is_pinned
   timerange
   context
@@ -18,6 +21,7 @@ fragment BeaconModel on beacon {
     ...UserModel
   }
   scores {
+    src_score
     dst_score
   }
 }

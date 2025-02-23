@@ -15,16 +15,11 @@ export 'package:get_it/get_it.dart';
 
 export 'chat_news_state.dart';
 
-@singleton
+/// Global Cubit
+@lazySingleton
 class ChatNewsCubit extends Cubit<ChatNewsState> {
-  ChatNewsCubit(
-    this._authRepository,
-    this._chatRepository,
-  ) : super(ChatNewsState(
-          cursor: _zeroAge,
-          messages: {},
-          myId: '',
-        )) {
+  ChatNewsCubit(this._authRepository, this._chatRepository)
+    : super(ChatNewsState(cursor: _zeroAge, messages: {}, myId: '')) {
     _authChanges.resume();
   }
 
@@ -35,10 +30,10 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
   final _messagesUpdatesController = StreamController<ChatMessage>.broadcast();
 
   late final _authChanges = _authRepository.currentAccountChanges().listen(
-        _onAuthChanges,
-        cancelOnError: false,
-        onError: (Object e) => emit(state.setError(e)),
-      );
+    _onAuthChanges,
+    cancelOnError: false,
+    onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
+  );
 
   StreamSubscription<Iterable<ChatMessage>>? _messagesUpdatesSubscription;
 
@@ -55,36 +50,36 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
   Future<void> _onAuthChanges(String userId) async {
     if (userId.isEmpty) {
       // User logged out
-      emit(ChatNewsState(
-        cursor: _zeroAge,
-        messages: {},
-        myId: userId,
-      ));
+      emit(ChatNewsState(cursor: _zeroAge, messages: {}, myId: userId));
       await _messagesUpdatesSubscription?.cancel();
       _messagesUpdatesSubscription = null;
     } else {
       // User logged in
-      emit(state.setLoading());
+      emit(state.copyWith(status: StateStatus.isLoading));
       await _chatRepository.syncMessagesFor(userId: userId);
 
       var oldest = _zeroAge;
-      for (final message
-          in await _chatRepository.getAllNewMessagesFor(objectId: userId)) {
+      for (final message in await _chatRepository.getAllNewMessagesFor(
+        objectId: userId,
+      )) {
         if (message.updatedAt.isAfter(oldest)) oldest = message.updatedAt;
         _processMessage(message);
       }
-      emit(state.copyWith(
-        myId: userId,
-        cursor: DateTime.timestamp(),
-        status: FetchStatus.isSuccess,
-        error: null,
-      ));
-      _messagesUpdatesSubscription =
-          _chatRepository.watchUpdates(fromMoment: oldest.toUtc()).listen(
-                _onMessagesUpdate,
-                cancelOnError: false,
-                onError: (Object e) => emit(state.setError(e)),
-              );
+      emit(
+        state.copyWith(
+          myId: userId,
+          cursor: DateTime.timestamp(),
+          status: StateStatus.isSuccess,
+        ),
+      );
+      _messagesUpdatesSubscription = _chatRepository
+          .watchUpdates(fromMoment: oldest.toUtc())
+          .listen(
+            _onMessagesUpdate,
+            cancelOnError: false,
+            onError:
+                (Object e) => emit(state.copyWith(status: StateHasError(e))),
+          );
     }
   }
 
@@ -93,11 +88,13 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
       _messagesUpdatesController.add(message);
       if (message.sender != state.myId) _processMessage(message);
     }
-    emit(ChatNewsState(
-      cursor: DateTime.timestamp(),
-      messages: state.messages,
-      myId: state.myId,
-    ));
+    emit(
+      ChatNewsState(
+        cursor: DateTime.timestamp(),
+        messages: state.messages,
+        myId: state.myId,
+      ),
+    );
   }
 
   void _processMessage(ChatMessage message) {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/bloc/state_base.dart';
 
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 // import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
@@ -27,7 +26,10 @@ class GraphScreen extends StatelessWidget implements AutoRouteWrapper {
           me: GetIt.I<ProfileCubit>().state.profile,
           focus: focus,
         ),
-        child: this,
+        child: BlocListener<GraphCubit, GraphState>(
+          listener: commonScreenBlocListener,
+          child: this,
+        ),
       );
 
   @override
@@ -71,11 +73,7 @@ class GraphScreen extends StatelessWidget implements AutoRouteWrapper {
       ),
 
       // Graph
-      body: BlocListener<GraphCubit, GraphState>(
-        listenWhen: (p, c) => c.status.isFailure,
-        listener: showSnackBarError,
-        child: const GraphBody(),
-      ),
+      body: const GraphBody(),
     );
   }
 }

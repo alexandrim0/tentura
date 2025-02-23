@@ -1,25 +1,20 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
-import '../consts.dart';
+import 'package:tentura_server/consts.dart';
 
-export 'package:dart_jsonwebtoken/src/exceptions.dart';
+final publicKey = EdDSAPublicKey.fromPEM(
+  kJwtPublicKey.replaceAll(r'\n', '\n'),
+);
 
-///
-/// Extract and convert a key from .pem
-///
-Uint8List convertKey(String key) {
-  final bytes = base64Decode(key.split('\n')[1]);
-  return bytes.sublist(bytes.length - 32);
-}
+final privateKey = EdDSAPrivateKey.fromPEM(
+  kJwtPrivateKey.replaceAll(r'\n', '\n'),
+);
 
 ///
 /// Returns bearer token extracted from Request headers
 ///
-String extractAuthToken({
-  required Map<String, String> headers,
-}) {
+String extractAuthTokenFromHeaders(Map<String, String> headers) {
   final authHeader = headers[kHeaderAuthorization];
   if (authHeader == null || authHeader.length <= _bearerPrefixLength) {
     throw JWTInvalidException('Wrong Authorization header');
@@ -49,9 +44,13 @@ JWT verifyAuthRequest({
     throw JWTInvalidException('Wrong JWT algo!');
   }
 
+  final authRequestToken = base64.normalize(
+    (jwtDecoded.payload as Map)['pk'] as String,
+  );
+
   return JWT.verify(
     token,
-    EdDSAPublicKey(base64Decode((jwtDecoded.payload as Map)['pk'] as String)),
+    EdDSAPublicKey(base64Decode(authRequestToken)),
   );
 }
 
@@ -63,7 +62,7 @@ JWT verifyJwt({
 }) =>
     JWT.verify(
       token,
-      _publicKey,
+      publicKey,
     );
 
 ///
@@ -76,23 +75,15 @@ Map<String, Object> issueJwt({
     {
       'subject': subject,
       'token_type': 'bearer',
-      'expires_in': kJwtExpiresIn.inSeconds,
+      'expires_in': kJwtExpiresIn,
       'access_token': JWT(
         payload,
         subject: subject,
       ).sign(
-        _privateKey,
+        privateKey,
         algorithm: JWTAlgorithm.EdDSA,
-        expiresIn: kJwtExpiresIn,
+        expiresIn: const Duration(seconds: kJwtExpiresIn),
       ),
     };
 
 const _bearerPrefixLength = 'Bearer '.length;
-
-final _publicKeyBytes = convertKey(kJwtPublicKey);
-
-final _publicKey = EdDSAPublicKey(_publicKeyBytes);
-
-final _privateKey = EdDSAPrivateKey(
-  convertKey(kJwtPrivateKey) + _publicKeyBytes,
-);

@@ -1,26 +1,30 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
+import 'package:blurhash_shader/blurhash_shader.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
-import 'package:tentura/ui/utils/ui_utils.dart';
-
-import '../utils/asset_package.dart';
-import 'cached_image/cached_image.dart';
 
 class AvatarRated extends StatelessWidget {
-  static String? assetPackage;
+  static const sizeBig = 160.0;
 
-  static Future<void> evictFromCache(String id) =>
-      kIsWeb ? Future.value() : CachedImage.evictFromCache(_getAvatarUrl(id));
+  static const sizeSmall = sizeBig / 4;
 
-  const AvatarRated({
+  AvatarRated({
     required this.profile,
+    this.withRating = true,
     this.boxFit = BoxFit.cover,
-    this.size = 40,
+    this.size = sizeSmall,
     super.key,
   });
+
+  AvatarRated.big({required this.profile, this.withRating = true, super.key})
+    : boxFit = BoxFit.cover,
+      size = sizeBig;
+
+  AvatarRated.small({required this.profile, this.withRating = true, super.key})
+    : boxFit = BoxFit.cover,
+      size = sizeSmall;
 
   final double size;
 
@@ -28,66 +32,68 @@ class AvatarRated extends StatelessWidget {
 
   final Profile profile;
 
-  @override
-  Widget build(BuildContext context) {
-    final placeholder = Image.asset(
-      'assets/images/avatar-placeholder.jpg',
-      package: AssetPackage.assetPackage,
-      height: size,
-      width: size,
-      fit: boxFit,
-    );
-    final avatar = Padding(
-      padding: kPaddingAllS,
-      child: ClipOval(
-        child: profile.hasAvatar
-            ? CachedImage(
-                imageUrl: _getAvatarUrl(profile.id),
-                placeholder: placeholder,
-                height: size,
-                width: size,
-              )
-            : placeholder,
-      ),
-    );
-    return profile.score < kRatingSector
-        ? avatar
-        : CustomPaint(
-            painter: _RatingPainter(
-              color: Theme.of(context).colorScheme.primary,
-              score: profile.score,
-            ),
-            child: avatar,
-          );
-  }
+  final bool withRating;
 
-  static String _getAvatarUrl(String userId) =>
-      '$kAppLinkBase/images/$userId/avatar.jpg';
+  late final _cacheSize = size.ceil();
+
+  late final _avatar = ClipOval(
+    child:
+        profile.hasNoAvatar
+            ? _placeholder
+            : profile.blurhash.isEmpty
+            ? _imageNetwork
+            : BlurHash(profile.blurhash, child: _imageNetwork),
+  );
+
+  @override
+  Widget build(BuildContext context) => SizedBox.square(
+    dimension: size,
+    child:
+        withRating && profile.score >= kRatingSector
+            ? CustomPaint(
+              painter: _RatingPainter(
+                color: Theme.of(context).colorScheme.primary,
+                score: profile.score,
+              ),
+              child: Padding(padding: EdgeInsets.all(size / 8), child: _avatar),
+            )
+            : _avatar,
+  );
+
+  Widget get _imageNetwork => Image.network(
+    profile.avatarUrl,
+    errorBuilder: (_, _, _) => _placeholder,
+    cacheHeight: _cacheSize,
+    cacheWidth: _cacheSize,
+    fit: boxFit,
+  );
+
+  Widget get _placeholder => Image.asset(
+    kAssetAvatarPlaceholder,
+    // ignore: avoid_redundant_argument_values // set from env
+    package: kAssetPackage,
+    cacheHeight: _cacheSize,
+    cacheWidth: _cacheSize,
+    fit: boxFit,
+  );
 }
 
 class _RatingPainter extends CustomPainter {
-  _RatingPainter({
-    required this.score,
-    required this.color,
-  });
+  _RatingPainter({required this.score, required this.color});
 
   final Color color;
   final double score;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = Rect.fromLTWH(
-      0,
-      0,
-      size.width,
-      size.height,
-    );
-    final paint = Paint()
-      ..color = color
-      ..isAntiAlias = true
-      ..strokeWidth = 4.0
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    final paint =
+        Paint()
+          ..color = color
+          ..isAntiAlias = true
+          ..strokeWidth = size.height / 10
+          ..strokeCap = StrokeCap.round
+          ..style = PaintingStyle.stroke;
 
     // first arc
     canvas.drawArc(

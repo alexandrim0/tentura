@@ -12,7 +12,7 @@ class TenturaApi extends TenturaApiBase {
   TenturaApi({
     required super.apiUrlBase,
     super.jwtExpiresIn = const Duration(minutes: 1),
-    super.userAgent = 'Tentura client',
+    super.userAgent = kAppTitle,
     super.storagePath = '',
     super.isDebugMode = false,
   });
@@ -29,7 +29,7 @@ class TenturaApi extends TenturaApiBase {
         userAgent: userAgent,
         isDebugMode: isDebugMode,
         storagePath: storagePath,
-        serverUrl: apiUrlBase + pathGraphQLEndpoint,
+        serverUrl: apiUrlBase + kPathGraphQLEndpoint,
       ),
       messageHandler: (message) async => switch (message) {
         final InitMessage m => _replyPort = m.replyPort,

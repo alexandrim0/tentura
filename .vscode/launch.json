@@ -13,8 +13,7 @@
             "toolArgs": [
                 "--flavor",
                 "prod",
-                "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+				"--dart-define-from-file=.env",
             ],
         },
         {
@@ -24,29 +23,10 @@
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
-                "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+				"--dart-define-from-file=.env",
             ],
             "args": [
                 "-d", "chrome",
-                "--web-port", "8888",
-                "--web-browser-flag=--disable-web-security",
-            ]
-        },
-        {
-            "name": "tentura-wasm (debug)",
-            "request": "launch",
-            "cwd": "packages/client",
-            "type": "dart",
-            "flutterMode": "debug",
-            "toolArgs": [
-                "--wasm",
-                "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
-            ],
-            "args": [
-                "-d", "chrome",
-                "--wasm",
                 "--web-port", "8888",
                 "--web-browser-flag=--disable-web-security",
             ]
@@ -61,7 +41,9 @@
                 "--flavor",
                 "stage",
                 "--dart-define",
-                "APP_LINK_BASE=tentura-stage.intersubjective.space",
+                "SERVER_NAME=https://stage.tentura.io",
+                "--dart-define",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
         },
         {
@@ -73,8 +55,7 @@
             "toolArgs": [
                 "--flavor",
                 "prod",
-                "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+				"--dart-define-from-file=.env",
             ],
         },
         {
@@ -86,8 +67,7 @@
             "toolArgs": [
                 "--flavor",
                 "prod",
-                "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+				"--dart-define-from-file=.env",
             ],
         },
         {
@@ -98,8 +78,7 @@
             "flutterMode": "release",
             "toolArgs": [
                 "--wasm",
-                "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+				"--dart-define-from-file=.env",
             ],
             "args": [
                 "-d", "chrome",
@@ -115,7 +94,8 @@
             "type": "dart",
             "toolArgs": [
                 "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+                "IS_IMPORTED=true",
+				"--dart-define-from-file=.env",
             ],
             "args": [
                 "-d", "chrome",
@@ -127,29 +107,16 @@
             "console": "debugConsole",
             "cwd": "packages/server",
             "name": "tentura-server",
-            "program":"bin/main.dart",
+            "program":"bin/tentura.dart",
             "request": "launch",
             "type": "dart",
             "env": {
                 "DEBUG_MODE": "true",
-                "LISTEN_PORT": "2082",
-                "SERVER_NAME": "https://tentura.intersubjective.space",
-                "IMAGE_SERVER": "https://tentura.intersubjective.space",
+                "SERVER_NAME": "https://dev.tentura.io",
+                "IMAGE_SERVER": "https://tentura.ams3.cdn.digitaloceanspaces.com",
+                "S3_ENDPOINT": "ams3.digitaloceanspaces.com",
+                "S3_BUCKET": "tentura",
             },
         },
-        {
-            "console": "debugConsole",
-            "cwd": "packages/server",
-            "name": "tentura-server (test)",
-            "program":"bin/test.dart",
-            "request": "launch",
-            "type": "dart",
-            "env": {
-                "DEBUG_MODE": "true",
-                "LISTEN_PORT": "2082",
-                "SERVER_NAME": "https://tentura-stage.intersubjective.space",
-                "IMAGE_SERVER": "https://tentura-stage.intersubjective.space",
-            },
-        },
-  ]
+  ],
 }

@@ -1,25 +1,16 @@
 import 'package:tentura/ui/bloc/state_base.dart';
 
+export 'package:tentura/ui/bloc/state_base.dart';
+
 part 'context_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class ContextState with _$ContextState, StateFetchMixin {
+class ContextState extends StateBase with _$ContextState {
   const factory ContextState({
     @Default('') String selected,
     @Default({}) Set<String> contexts,
-    @Default(FetchStatus.isSuccess) FetchStatus status,
-    Object? error,
+    @Default(StateIsSuccess()) StateStatus status,
   }) = _ContextState;
 
   const ContextState._();
-
-  ContextState setLoading() => copyWith(
-        status: FetchStatus.isLoading,
-        error: null,
-      );
-
-  ContextState setError(Object error) => copyWith(
-        status: FetchStatus.isFailure,
-        error: error,
-      );
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:force_directed_graphview/force_directed_graphview.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
@@ -21,11 +22,11 @@ class GraphCubit extends Cubit<GraphState> {
     required Profile me,
     String? focus,
   })  : _egoNode = UserNode(
-          id: me.id,
-          label: 'Me',
+          user: me.copyWith(
+            title: 'Me',
+            score: 2,
+          ),
           pinned: true,
-          hasImage: me.hasAvatar,
-          score: 2,
           size: 80,
         ),
         super(GraphState(focus: focus ?? '')) {
@@ -48,6 +49,15 @@ class GraphCubit extends Cubit<GraphState> {
     graphController.dispose();
     return super.close();
   }
+
+  void showNodeDetails(NodeDetails node) => switch (node) {
+        final UserNode node => emit(state.copyWith(
+            status: StateIsNavigating('$kPathProfileView?id=${node.id}'),
+          )),
+        final BeaconNode node => emit(state.copyWith(
+            status: StateIsNavigating('$kPathBeaconView?id=${node.id}'),
+          )),
+      };
 
   void jumpToEgo() => graphController.jumpToNode(_egoNode);
 
@@ -82,6 +92,9 @@ class GraphCubit extends Cubit<GraphState> {
   }
 
   Future<void> _fetch() async {
+    emit(state.copyWith(
+      status: StateStatus.isLoading,
+    ));
     try {
       final edges = await graphRepository.fetch(
         positiveOnly: state.positiveOnly,
@@ -89,6 +102,9 @@ class GraphCubit extends Cubit<GraphState> {
         focus: state.focus,
         limit: _fetchLimits[state.focus] = (_fetchLimits[state.focus] ?? 0) + 5,
       );
+      emit(state.copyWith(
+        status: StateStatus.isSuccess,
+      ));
       if (edges.isEmpty) return;
 
       for (final e in edges) {
@@ -96,7 +112,9 @@ class GraphCubit extends Cubit<GraphState> {
       }
       _updateGraph(edges);
     } catch (e) {
-      emit(state.copyWith(error: e));
+      emit(state.copyWith(
+        status: StateHasError(e),
+      ));
     }
   }
 

@@ -1,10 +1,11 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 
-import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/profile.dart';
+import 'package:tentura/ui/utils/normalize.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
+
+import '../bloc/rating_cubit.dart';
 
 class RatingListTile extends StatelessWidget {
   RatingListTile({
@@ -25,9 +26,7 @@ class RatingListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onTap: () => context.pushRoute(
-          ProfileViewRoute(id: profile.id),
-        ),
+        onTap: () => context.read<RatingCubit>().showProfile(profile.id),
         child: Row(
           children: [
             AvatarRated(
@@ -66,31 +65,44 @@ class _CustomBarbellPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final halfHeight = size.height / 2;
-    final quarterHeight = halfHeight / 2;
     final leftOffset = Offset(halfHeight, halfHeight);
     final rightOffset = Offset(size.width - halfHeight, halfHeight);
     final maxRadius = halfHeight;
-    final minRadius = quarterHeight / 2;
-    final leftColor = _calcColor(leftWeight);
-    final rightColor = _calcColor(rightWeight);
+    final minRadius = halfHeight / 4;
+    final leftColor = calculateColor(
+      weight: leftWeight,
+      isDark: isDarkTheme,
+    );
+    final rightColor = calculateColor(
+      weight: rightWeight,
+      isDark: isDarkTheme,
+    );
     canvas
       ..drawLine(
         leftOffset,
         rightOffset,
         Paint()
-          ..strokeWidth = quarterHeight / 2
+          ..strokeWidth = halfHeight / 4
           ..shader = LinearGradient(
             colors: [leftColor, rightColor],
           ).createShader(Rect.fromPoints(leftOffset, rightOffset)),
       )
       ..drawCircle(
         leftOffset,
-        _calcRadius(minRadius, maxRadius, leftWeight),
+        calculateRadius(
+          minRadius: minRadius,
+          maxRadius: maxRadius,
+          weight: leftWeight,
+        ),
         Paint()..color = leftColor,
       )
       ..drawCircle(
         rightOffset,
-        _calcRadius(minRadius, maxRadius, rightWeight),
+        calculateRadius(
+          minRadius: minRadius,
+          maxRadius: maxRadius,
+          weight: rightWeight,
+        ),
         Paint()..color = rightColor,
       );
   }
@@ -100,28 +112,4 @@ class _CustomBarbellPainter extends CustomPainter {
 
   @override
   bool shouldRebuildSemantics(_CustomBarbellPainter oldDelegate) => false;
-
-  double _calcRadius(
-    double minRadius,
-    double maxRadius,
-    double weight,
-  ) =>
-      min(
-        maxRadius,
-        (maxRadius - minRadius) * weight + minRadius,
-      );
-
-  Color _calcColor(double weight) {
-    var index = 50;
-    if (weight > 0.75) {
-      index = 900;
-    } else if (weight > 0.5) {
-      index = 700;
-    } else if (weight > 0.25) {
-      index = 500;
-    } else if (weight > 0) {
-      index = 300;
-    }
-    return isDarkTheme ? Colors.amber[index]! : Colors.deepPurple[index]!;
-  }
 }

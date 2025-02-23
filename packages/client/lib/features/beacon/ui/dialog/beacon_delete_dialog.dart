@@ -1,26 +1,12 @@
-import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 
-import 'package:tentura/ui/utils/ui_utils.dart';
-
-import '../bloc/beacon_cubit.dart';
-
 class BeaconDeleteDialog extends StatelessWidget {
-  static Future<void> show(
-    BuildContext context, {
-    required String id,
-  }) =>
-      showDialog(
+  static Future<bool?> show(BuildContext context) => showDialog(
         context: context,
-        builder: (_) => BeaconDeleteDialog(id: id),
+        builder: (_) => const BeaconDeleteDialog(),
       );
 
-  const BeaconDeleteDialog({
-    required this.id,
-    super.key,
-  });
-
-  final String id;
+  const BeaconDeleteDialog({super.key});
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
@@ -30,20 +16,7 @@ class BeaconDeleteDialog extends StatelessWidget {
         actions: [
           // Delete
           TextButton(
-            onPressed: () async {
-              try {
-                await GetIt.I<BeaconCubit>().delete(id);
-              } catch (e) {
-                if (context.mounted) {
-                  showSnackBar(
-                    context,
-                    isError: true,
-                    text: e.toString(),
-                  );
-                }
-              }
-              if (context.mounted) Navigator.of(context).pop();
-            },
+            onPressed: () => Navigator.of(context).pop(true),
             child: const Text('Delete'),
           ),
 

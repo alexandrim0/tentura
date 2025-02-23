@@ -2,15 +2,17 @@ name: tentura_sdk
 description: Dart package for using Tentura server API
 publish_to: none
 
-version: 0.0.3
+version: 0.0.4
 
 environment:
-  sdk: '>=3.6.1 <4.0.0'
+  sdk: '>=3.7.0 <4.0.0'
 
 resolution: workspace
 
 dependencies:
+  meta:
   logger:
+  tentura_root:
   ed25519_edwards:
 
   http: ^1.2.2

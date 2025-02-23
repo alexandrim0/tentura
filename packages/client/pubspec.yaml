@@ -2,89 +2,93 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 0.11.1
+version: 0.13.0
 
 environment:
-  sdk: '>=3.6.1 <4.0.0'
-  flutter: ^3.27.2
+  sdk: '>=3.7.0 <4.0.0'
+  flutter: ^3.29.0
 
 resolution: workspace
 
 dependencies:
+  # From workspace
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
   intl:
   uuid:
+  image:
   get_it:
-  logger:
   latlong2:
   collection:
   injectable:
+  tentura_sdk:
+  tentura_root:
+  google_fonts:
+  blurhash_dart:
   freezed_annotation:
 
+  # Common
+  logger: ^2.5.0
   auto_route: ^9.3.0
   built_value: ^8.9.3
   flutter_bloc: ^9.0.0
   synchronized: ^3.3.0
-  sentry_flutter: ^8.12.0
+  sentry_drift: ^8.13.2
+  sentry_flutter: ^8.13.2
   json_annotation: ^4.9.0
   intl_translation: ^0.20.1
 
   # Platform related
-  drift: ^2.23.1
+  drift: ^2.25.0
   geocoding: ^3.0.0
-  drift_dev: ^2.23.1
+  drift_dev: ^2.25.1
   geolocator: ^13.0.2
   share_plus: ^10.1.4
   image_picker: ^1.1.2
   drift_flutter: ^0.2.4
   share_handler: ^0.0.22
-  mobile_scanner: ^7.0.0-beta.4
+  mobile_scanner: ^7.0.0-beta.7
   flutter_secure_storage: ^10.0.0-beta.4
 
   # UI related
   nil: ^1.1.1
   readmore: ^3.0.0
   qr_flutter: ^4.1.0
-  flutter_map: ^7.0.2
+  flutter_map: ^8.0.0
   flutter_svg: ^2.0.17
-  google_fonts: ^6.2.1
-  mesh_gradient: ^1.3.8
-  vector_graphics: ^1.1.15
+  blurhash_shader: ^1.1.2
+  vector_graphics: ^1.1.18
   visibility_detector: ^0.4.0
-  flutter_native_splash: ^2.4.3
+  flutter_native_splash: ^2.4.5
   # smooth_page_indicator: ^1.2.0
   force_directed_graphview: ^0.6.2
   scrollable_positioned_list: ^0.3.8
   flutter_map_cancellable_tile_provider: ^3.0.0
 
-  # Local
-  tentura_sdk:
-
 dev_dependencies:
-  freezed:
-  build_runner:
   flutter_test:
     sdk: flutter
+  freezed:
+  build_runner:
   json_serializable:
   very_good_analysis:
   injectable_generator:
 
   ferry_generator: ^0.12.0
   auto_route_generator: ^9.0.0
-  flutter_launcher_icons: ^0.14.2
+  flutter_launcher_icons: ^0.14.3
 
 flutter:
   uses-material-design: true
   fonts:
     - family: Tentura
       fonts:
-        - asset: assets/fonts/tentura-icons.ttf
+        - asset: fonts/tentura-icons.ttf
   assets:
-    - assets/images/
-    - assets/intro/
+    - images/placeholder/
+    - images/intro/
 
 sentry:
   upload_debug_symbols: true

@@ -10,6 +10,9 @@ extension type const UserModel(UserView i) implements UserView {
         title: title,
         description: description,
         hasPicture: hasPicture,
+        picHeight: picHeight,
+        picWidth: picWidth,
+        blurHash: blurHash,
       );
 }
 
@@ -38,4 +41,10 @@ abstract class User {
   DateTime get updatedAt;
 
   bool get hasPicture;
+
+  String get blurHash;
+
+  int get picHeight;
+
+  int get picWidth;
 }

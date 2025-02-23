@@ -37,6 +37,7 @@ type beacon {
     """filter the rows returned"""
     where: beacon_pinned_bool_exp
   ): [beacon_pinned!]!
+  blur_hash: String!
 
   """An array relationship"""
   comments(
@@ -73,6 +74,8 @@ type beacon {
   A computed field, executes function "beacon_get_my_vote"
   """
   my_vote: Int
+  pic_height: Int!
+  pic_width: Int!
 
   """
   A computed field, executes function "beacon_get_scores"
@@ -140,6 +143,8 @@ order by avg() on columns of table "beacon"
 input beacon_avg_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -151,6 +156,7 @@ input beacon_bool_exp {
   _or: [beacon_bool_exp!]
   author: user_bool_exp
   beacon_pinneds: beacon_pinned_bool_exp
+  blur_hash: String_comparison_exp
   comments: comment_bool_exp
   context: String_comparison_exp
   created_at: timestamptz_comparison_exp
@@ -162,6 +168,8 @@ input beacon_bool_exp {
   lat: float8_comparison_exp
   long: float8_comparison_exp
   my_vote: Int_comparison_exp
+  pic_height: Int_comparison_exp
+  pic_width: Int_comparison_exp
   scores: mutual_score_bool_exp
   timerange: tstzrange_comparison_exp
   title: String_comparison_exp
@@ -185,12 +193,15 @@ input type for inserting data into table "beacon"
 """
 input beacon_insert_input {
   beacon_pinneds: beacon_pinned_arr_rel_insert_input
+  blur_hash: String
   comments: comment_arr_rel_insert_input
   context: String
   description: String
   has_picture: Boolean
   lat: float8
   long: float8
+  pic_height: Int
+  pic_width: Int
   timerange: tstzrange
   title: String
   vote_beacons: vote_beacon_arr_rel_insert_input
@@ -200,12 +211,15 @@ input beacon_insert_input {
 order by max() on columns of table "beacon"
 """
 input beacon_max_order_by {
+  blur_hash: order_by
   context: order_by
   created_at: order_by
   description: order_by
   id: order_by
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -215,12 +229,15 @@ input beacon_max_order_by {
 order by min() on columns of table "beacon"
 """
 input beacon_min_order_by {
+  blur_hash: order_by
   context: order_by
   created_at: order_by
   description: order_by
   id: order_by
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -260,6 +277,7 @@ input beacon_on_conflict {
 input beacon_order_by {
   author: user_order_by
   beacon_pinneds_aggregate: beacon_pinned_aggregate_order_by
+  blur_hash: order_by
   comments_aggregate: comment_aggregate_order_by
   context: order_by
   created_at: order_by
@@ -271,6 +289,8 @@ input beacon_order_by {
   lat: order_by
   long: order_by
   my_vote: order_by
+  pic_height: order_by
+  pic_width: order_by
   scores_aggregate: mutual_score_aggregate_order_by
   timerange: order_by
   title: order_by
@@ -432,6 +452,9 @@ select columns of table "beacon"
 """
 enum beacon_select_column {
   """column name"""
+  blur_hash
+
+  """column name"""
   context
 
   """column name"""
@@ -454,6 +477,12 @@ enum beacon_select_column {
 
   """column name"""
   long
+
+  """column name"""
+  pic_height
+
+  """column name"""
+  pic_width
 
   """column name"""
   timerange
@@ -481,6 +510,8 @@ order by stddev() on columns of table "beacon"
 input beacon_stddev_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -489,6 +520,8 @@ order by stddev_pop() on columns of table "beacon"
 input beacon_stddev_pop_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -497,6 +530,8 @@ order by stddev_samp() on columns of table "beacon"
 input beacon_stddev_samp_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -512,6 +547,7 @@ input beacon_stream_cursor_input {
 
 """Initial value of the column from where the streaming should start"""
 input beacon_stream_cursor_value_input {
+  blur_hash: String
   context: String
   created_at: timestamptz
   description: String
@@ -520,6 +556,8 @@ input beacon_stream_cursor_value_input {
   id: String
   lat: float8
   long: float8
+  pic_height: Int
+  pic_width: Int
   timerange: tstzrange
   title: String
   updated_at: timestamptz
@@ -532,6 +570,8 @@ order by sum() on columns of table "beacon"
 input beacon_sum_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -556,6 +596,8 @@ order by var_pop() on columns of table "beacon"
 input beacon_var_pop_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -564,6 +606,8 @@ order by var_samp() on columns of table "beacon"
 input beacon_var_samp_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -572,6 +616,8 @@ order by variance() on columns of table "beacon"
 input beacon_variance_order_by {
   lat: order_by
   long: order_by
+  pic_height: order_by
+  pic_width: order_by
 }
 
 """
@@ -1142,6 +1188,19 @@ type mutation_root {
   delete_message_by_pk(id: uuid!): message
 
   """
+  delete data from the table: "opinion"
+  """
+  delete_opinion(
+    """filter the rows which have to be deleted"""
+    where: opinion_bool_exp!
+  ): opinion_mutation_response
+
+  """
+  delete single row from the table: "opinion"
+  """
+  delete_opinion_by_pk(id: String!): opinion
+
+  """
   delete data from the table: "user"
   """
   delete_user(
@@ -1269,6 +1328,28 @@ type mutation_root {
   ): message
 
   """
+  insert data into the table: "opinion"
+  """
+  insert_opinion(
+    """the rows to be inserted"""
+    objects: [opinion_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: opinion_on_conflict
+  ): opinion_mutation_response
+
+  """
+  insert a single row into the table: "opinion"
+  """
+  insert_opinion_one(
+    """the row to be inserted"""
+    object: opinion_insert_input!
+
+    """upsert condition"""
+    on_conflict: opinion_on_conflict
+  ): opinion
+
+  """
   insert data into the table: "user_context"
   """
   insert_user_context(
@@ -1333,6 +1414,28 @@ type mutation_root {
     """upsert condition"""
     on_conflict: vote_comment_on_conflict
   ): vote_comment
+
+  """
+  insert data into the table: "vote_opinion"
+  """
+  insert_vote_opinion(
+    """the rows to be inserted"""
+    objects: [vote_opinion_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vote_opinion_on_conflict
+  ): vote_opinion_mutation_response
+
+  """
+  insert a single row into the table: "vote_opinion"
+  """
+  insert_vote_opinion_one(
+    """the row to be inserted"""
+    object: vote_opinion_insert_input!
+
+    """upsert condition"""
+    on_conflict: vote_opinion_on_conflict
+  ): vote_opinion
 
   """
   insert data into the table: "vote_user"
@@ -1500,6 +1603,40 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [vote_comment_updates!]!
   ): [vote_comment_mutation_response]
+
+  """
+  update data of the table: "vote_opinion"
+  """
+  update_vote_opinion(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: vote_opinion_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vote_opinion_set_input
+
+    """filter the rows which have to be updated"""
+    where: vote_opinion_bool_exp!
+  ): vote_opinion_mutation_response
+
+  """
+  update single row of the table: "vote_opinion"
+  """
+  update_vote_opinion_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: vote_opinion_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vote_opinion_set_input
+    pk_columns: vote_opinion_pk_columns_input!
+  ): vote_opinion
+
+  """
+  update multiples rows of table: "vote_opinion"
+  """
+  update_vote_opinion_many(
+    """updates to execute, in order"""
+    updates: [vote_opinion_updates!]!
+  ): [vote_opinion_mutation_response]
 
   """
   update data of the table: "vote_user"
@@ -1747,6 +1884,164 @@ input my_field_args {
   context: String
 }
 
+"""
+columns and relationships of "opinion"
+"""
+type opinion {
+  """An object relationship"""
+  author: user!
+  content: String!
+  created_at: timestamptz!
+  id: String!
+
+  """
+  A computed field, executes function "opinion_get_my_vote"
+  """
+  my_vote: Int
+  object: String!
+
+  """
+  A computed field, executes function "opinion_get_scores"
+  """
+  scores(
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]
+  subject: String!
+}
+
+"""
+Boolean expression to filter rows from the table "opinion". All fields are combined with a logical 'AND'.
+"""
+input opinion_bool_exp {
+  _and: [opinion_bool_exp!]
+  _not: opinion_bool_exp
+  _or: [opinion_bool_exp!]
+  author: user_bool_exp
+  content: String_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: String_comparison_exp
+  my_vote: Int_comparison_exp
+  object: String_comparison_exp
+  scores: mutual_score_bool_exp
+  subject: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "opinion"
+"""
+enum opinion_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  opinion_pkey
+
+  """
+  unique or primary key constraint on columns "object", "subject"
+  """
+  opinion_subject_object_key
+}
+
+"""
+input type for inserting data into table "opinion"
+"""
+input opinion_insert_input {
+  content: String
+  object: String
+}
+
+"""
+response of any mutation on the table "opinion"
+"""
+type opinion_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [opinion!]!
+}
+
+"""
+on_conflict condition type for table "opinion"
+"""
+input opinion_on_conflict {
+  constraint: opinion_constraint!
+  update_columns: [opinion_update_column!]! = []
+  where: opinion_bool_exp
+}
+
+"""Ordering options when selecting data from "opinion"."""
+input opinion_order_by {
+  author: user_order_by
+  content: order_by
+  created_at: order_by
+  id: order_by
+  my_vote: order_by
+  object: order_by
+  scores_aggregate: mutual_score_aggregate_order_by
+  subject: order_by
+}
+
+"""
+select columns of table "opinion"
+"""
+enum opinion_select_column {
+  """column name"""
+  content
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  object
+
+  """column name"""
+  subject
+}
+
+"""
+Streaming cursor of the table "opinion"
+"""
+input opinion_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: opinion_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input opinion_stream_cursor_value_input {
+  content: String
+  created_at: timestamptz
+  id: String
+  object: String
+  subject: String
+}
+
+"""
+placeholder for update columns of table "opinion" (current role has no relevant permissions)
+"""
+enum opinion_update_column {
+  """placeholder (do not use)"""
+  _PLACEHOLDER
+}
+
 """column ordering options"""
 enum order_by {
   """in ascending order, nulls last"""
@@ -1952,6 +2247,29 @@ type query_root {
   ): [mutual_score!]!
 
   """
+  fetch data from the table: "opinion"
+  """
+  opinion(
+    """distinct select on columns"""
+    distinct_on: [opinion_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [opinion_order_by!]
+
+    """filter the rows returned"""
+    where: opinion_bool_exp
+  ): [opinion!]!
+
+  """fetch data from the table: "opinion" using primary key columns"""
+  opinion_by_pk(id: String!): opinion
+
+  """
   execute function "rating" which returns "mutual_score"
   """
   rating(
@@ -2067,6 +2385,29 @@ type query_root {
 
   """fetch data from the table: "vote_comment" using primary key columns"""
   vote_comment_by_pk(object: String!, subject: String!): vote_comment
+
+  """
+  fetch data from the table: "vote_opinion"
+  """
+  vote_opinion(
+    """distinct select on columns"""
+    distinct_on: [vote_opinion_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_opinion_order_by!]
+
+    """filter the rows returned"""
+    where: vote_opinion_bool_exp
+  ): [vote_opinion!]!
+
+  """fetch data from the table: "vote_opinion" using primary key columns"""
+  vote_opinion_by_pk(object: String!, subject: String!): vote_opinion
 
   """
   fetch data from the table: "vote_user"
@@ -2417,6 +2758,43 @@ type subscription_root {
   ): [mutual_score!]!
 
   """
+  fetch data from the table: "opinion"
+  """
+  opinion(
+    """distinct select on columns"""
+    distinct_on: [opinion_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [opinion_order_by!]
+
+    """filter the rows returned"""
+    where: opinion_bool_exp
+  ): [opinion!]!
+
+  """fetch data from the table: "opinion" using primary key columns"""
+  opinion_by_pk(id: String!): opinion
+
+  """
+  fetch data from the table in a streaming manner: "opinion"
+  """
+  opinion_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [opinion_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: opinion_bool_exp
+  ): [opinion!]!
+
+  """
   execute function "rating" which returns "mutual_score"
   """
   rating(
@@ -2590,6 +2968,43 @@ type subscription_root {
   ): [vote_comment!]!
 
   """
+  fetch data from the table: "vote_opinion"
+  """
+  vote_opinion(
+    """distinct select on columns"""
+    distinct_on: [vote_opinion_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_opinion_order_by!]
+
+    """filter the rows returned"""
+    where: vote_opinion_bool_exp
+  ): [vote_opinion!]!
+
+  """fetch data from the table: "vote_opinion" using primary key columns"""
+  vote_opinion_by_pk(object: String!, subject: String!): vote_opinion
+
+  """
+  fetch data from the table in a streaming manner: "vote_opinion"
+  """
+  vote_opinion_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [vote_opinion_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: vote_opinion_bool_exp
+  ): [vote_opinion!]!
+
+  """
   fetch data from the table: "vote_user"
   """
   vote_user(
@@ -2705,6 +3120,7 @@ type user {
     """filter the rows returned"""
     where: beacon_bool_exp
   ): [beacon!]!
+  blur_hash: String!
 
   """An array relationship"""
   comments(
@@ -2732,6 +3148,8 @@ type user {
   A computed field, executes function "user_get_my_vote"
   """
   my_vote: Int
+  pic_height: Int!
+  pic_width: Int!
   public_key: String!
 
   """
@@ -2838,12 +3256,15 @@ input user_bool_exp {
   _or: [user_bool_exp!]
   beacon_pinneds: beacon_pinned_bool_exp
   beacons: beacon_bool_exp
+  blur_hash: String_comparison_exp
   comments: comment_bool_exp
   created_at: timestamptz_comparison_exp
   description: String_comparison_exp
   has_picture: Boolean_comparison_exp
   id: String_comparison_exp
   my_vote: Int_comparison_exp
+  pic_height: Int_comparison_exp
+  pic_width: Int_comparison_exp
   public_key: String_comparison_exp
   scores: mutual_score_bool_exp
   title: String_comparison_exp
@@ -2967,12 +3388,15 @@ type user_mutation_response {
 input user_order_by {
   beacon_pinneds_aggregate: beacon_pinned_aggregate_order_by
   beacons_aggregate: beacon_aggregate_order_by
+  blur_hash: order_by
   comments_aggregate: comment_aggregate_order_by
   created_at: order_by
   description: order_by
   has_picture: order_by
   id: order_by
   my_vote: order_by
+  pic_height: order_by
+  pic_width: order_by
   public_key: order_by
   scores_aggregate: mutual_score_aggregate_order_by
   title: order_by
@@ -2993,6 +3417,9 @@ select columns of table "user"
 """
 enum user_select_column {
   """column name"""
+  blur_hash
+
+  """column name"""
   created_at
 
   """column name"""
@@ -3003,6 +3430,12 @@ enum user_select_column {
 
   """column name"""
   id
+
+  """column name"""
+  pic_height
+
+  """column name"""
+  pic_width
 
   """column name"""
   public_key
@@ -3036,10 +3469,13 @@ input user_stream_cursor_input {
 
 """Initial value of the column from where the streaming should start"""
 input user_stream_cursor_value_input {
+  blur_hash: String
   created_at: timestamptz
   description: String
   has_picture: Boolean
   id: String
+  pic_height: Int
+  pic_width: Int
   public_key: String
   title: String
   updated_at: timestamptz
@@ -3602,6 +4038,157 @@ order by variance() on columns of table "vote_comment"
 """
 input vote_comment_variance_order_by {
   amount: order_by
+}
+
+"""
+columns and relationships of "vote_opinion"
+"""
+type vote_opinion {
+  amount: Int!
+  created_at: timestamptz!
+  object: String!
+  subject: String!
+  updated_at: timestamptz!
+}
+
+"""
+Boolean expression to filter rows from the table "vote_opinion". All fields are combined with a logical 'AND'.
+"""
+input vote_opinion_bool_exp {
+  _and: [vote_opinion_bool_exp!]
+  _not: vote_opinion_bool_exp
+  _or: [vote_opinion_bool_exp!]
+  amount: Int_comparison_exp
+  created_at: timestamptz_comparison_exp
+  object: String_comparison_exp
+  subject: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "vote_opinion"
+"""
+enum vote_opinion_constraint {
+  """
+  unique or primary key constraint on columns "object", "subject"
+  """
+  vote_opinion_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "vote_opinion"
+"""
+input vote_opinion_inc_input {
+  amount: Int
+}
+
+"""
+input type for inserting data into table "vote_opinion"
+"""
+input vote_opinion_insert_input {
+  amount: Int
+  object: String
+}
+
+"""
+response of any mutation on the table "vote_opinion"
+"""
+type vote_opinion_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vote_opinion!]!
+}
+
+"""
+on_conflict condition type for table "vote_opinion"
+"""
+input vote_opinion_on_conflict {
+  constraint: vote_opinion_constraint!
+  update_columns: [vote_opinion_update_column!]! = []
+  where: vote_opinion_bool_exp
+}
+
+"""Ordering options when selecting data from "vote_opinion"."""
+input vote_opinion_order_by {
+  amount: order_by
+  created_at: order_by
+  object: order_by
+  subject: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: vote_opinion"""
+input vote_opinion_pk_columns_input {
+  object: String!
+  subject: String!
+}
+
+"""
+select columns of table "vote_opinion"
+"""
+enum vote_opinion_select_column {
+  """column name"""
+  amount
+
+  """column name"""
+  created_at
+
+  """column name"""
+  object
+
+  """column name"""
+  subject
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "vote_opinion"
+"""
+input vote_opinion_set_input {
+  amount: Int
+}
+
+"""
+Streaming cursor of the table "vote_opinion"
+"""
+input vote_opinion_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: vote_opinion_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input vote_opinion_stream_cursor_value_input {
+  amount: Int
+  created_at: timestamptz
+  object: String
+  subject: String
+  updated_at: timestamptz
+}
+
+"""
+update columns of table "vote_opinion"
+"""
+enum vote_opinion_update_column {
+  """column name"""
+  amount
+}
+
+input vote_opinion_updates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: vote_opinion_inc_input
+
+  """sets the columns of the filtered rows to the given values"""
+  _set: vote_opinion_set_input
+
+  """filter the rows which have to be updated"""
+  where: vote_opinion_bool_exp!
 }
 
 """

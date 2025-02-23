@@ -1,185 +1,90 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import 'package:tentura/app/router/root_router.dart';
-import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/avatar_image.dart';
-import 'package:tentura/ui/widget/tentura_icons.dart';
-import 'package:tentura/ui/widget/show_more_text.dart';
-import 'package:tentura/ui/widget/gradient_stack.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
-import 'package:tentura/ui/widget/avatar_positioned.dart';
-import 'package:tentura/ui/widget/share_code_icon_button.dart';
+import 'package:tentura/features/opinion/ui/bloc/opinion_cubit.dart';
+import 'package:tentura/features/opinion/ui/widget/opinion_list.dart';
+import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 
-import 'package:tentura/features/beacon/ui/widget/beacon_tile.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
+import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/widget/bottom_text_input.dart';
 
 import '../bloc/profile_view_cubit.dart';
+import '../widget/profile_view_app_bar.dart';
+import '../widget/profile_view_body.dart';
 
 @RoutePage()
 class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
-  const ProfileViewScreen({
-    @queryParam this.id = '',
-    super.key,
-  });
+  const ProfileViewScreen({@queryParam this.id = '', super.key});
 
   final String id;
 
   @override
-  Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (_) => ProfileViewCubit(id: id),
-        child: this,
-      );
+  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
+    providers: [
+      BlocProvider(create: (_) => ScreenCubit()),
+      BlocProvider(create: (_) => ProfileViewCubit(id: id)),
+      BlocProvider(
+        create: (_) {
+          return OpinionCubit(
+            objectId: id,
+            myProfile: GetIt.I<ProfileCubit>().state.profile,
+          );
+        },
+      ),
+    ],
+    child: MultiBlocListener(
+      listeners: const [
+        BlocListener<ProfileViewCubit, ProfileViewState>(
+          listener: commonScreenBlocListener,
+        ),
+        BlocListener<OpinionCubit, OpinionState>(
+          listener: commonScreenBlocListener,
+        ),
+        BlocListener<ScreenCubit, ScreenState>(
+          listener: commonScreenBlocListener,
+        ),
+      ],
+      child: this,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
+    final opinionCubit = context.read<OpinionCubit>();
     final profileViewCubit = context.read<ProfileViewCubit>();
-    return BlocConsumer<ProfileViewCubit, ProfileViewState>(
-      bloc: profileViewCubit,
-      listenWhen: (p, c) => c.hasError,
-      listener: showSnackBarError,
-      buildWhen: (p, c) => c.hasNoError,
-      builder: (context, state) {
-        if (state.isLoading) {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
-        }
-        final profile = state.profile;
-        final beacons = state.beacons;
-        final textTheme = Theme.of(context).textTheme;
-        return Scaffold(
-          body: CustomScrollView(
-            slivers: [
-              // Header
-              SliverAppBar(
-                actions: [
-                  // Graph View
-                  IconButton(
-                    icon: const Icon(TenturaIcons.graph),
-                    onPressed: () =>
-                        context.pushRoute(GraphRoute(focus: profile.id)),
-                  ),
+    return Scaffold(
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async {
+          await Future.wait([profileViewCubit.fetch(), opinionCubit.fetch()]);
+        },
+        child: CustomScrollView(
+          slivers: [
+            // Header
+            const ProfileViewAppBar(),
 
-                  // Share
-                  ShareCodeIconButton.id(profile.id),
+            // Body
+            const ProfileViewBody(),
 
-                  // More
-                  PopupMenuButton(
-                    itemBuilder: (context) => <PopupMenuEntry<void>>[
-                      if (profile.isFriend)
-                        PopupMenuItem(
-                          onTap: profileViewCubit.removeFriend,
-                          child: const Text('Remove from my field'),
-                        )
-                      else
-                        PopupMenuItem(
-                          onTap: profileViewCubit.addFriend,
-                          child: const Text('Add to my field'),
-                        ),
-                    ],
-                  ),
-                ],
-                actionsIconTheme: const IconThemeData(
-                  color: Colors.black,
-                ),
-                floating: true,
-                leading: const DeepBackButton(
-                  color: Colors.black,
-                ),
-                expandedHeight: GradientStack.defaultHeight,
+            // Opinions
+            OpinionList(key: ValueKey(id)),
+          ],
+        ),
+      ),
 
-                // Avatar
-                flexibleSpace: FlexibleSpaceBar(
-                  background: GradientStack(
-                    children: [
-                      AvatarPositioned(
-                        child: AvatarImage(
-                          userId: profile.imageId,
-                          size: AvatarPositioned.childSize,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Body
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: kPaddingH,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Title
-                      Text(
-                        profile.title.isEmpty ? 'No name' : profile.title,
-                        textAlign: TextAlign.left,
-                        style: textTheme.headlineLarge,
-                      ),
-                      const Padding(padding: kPaddingSmallV),
-
-                      // Description
-                      ShowMoreText(
-                        profile.description,
-                        style: ShowMoreText.buildTextStyle(context),
-                      ),
-                      const Divider(),
-
-                      const Padding(padding: kPaddingSmallT),
-
-                      Text(
-                        'Beacons',
-                        textAlign: TextAlign.left,
-                        style: textTheme.titleLarge,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Beacons
-              if (beacons.isEmpty)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: kPaddingAll,
-                    child: Text(
-                      'There are no beacons yet',
-                      style: textTheme.bodyMedium,
-                    ),
-                  ),
-                )
-              else
-                SliverList.separated(
-                  key: ValueKey(beacons),
-                  itemCount: beacons.length,
-                  itemBuilder: (context, i) {
-                    final beacon = beacons[i];
-                    return Padding(
-                      padding: kPaddingAll,
-                      child: BeaconTile(
-                        beacon: beacon,
-                        key: ValueKey(beacon),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (_, __) =>
-                      const Divider(endIndent: 20, indent: 20),
-                ),
-
-              // Show more
-              if (beacons.isNotEmpty && state.hasNotReachedMax)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: kPaddingAll,
-                    child: TextButton(
-                      onPressed: profileViewCubit.fetchMore,
-                      child: const Text('Show more'),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
+      // Text Input
+      bottomSheet: BlocSelector<OpinionCubit, OpinionState, bool>(
+        selector: (state) => state.hasMyOpinion,
+        bloc: opinionCubit,
+        builder: (_, hasMyOpinion) {
+          return hasMyOpinion
+              ? const BottomTextInput(hintText: 'You can have only one opinion')
+              : BottomTextInput(
+                hintText: 'Write an opinion',
+                onSend: opinionCubit.addOpinion,
+              );
+        },
+      ),
     );
   }
 }

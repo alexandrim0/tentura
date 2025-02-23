@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
-import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
 
 import '../dialog/share_code_dialog.dart';
@@ -17,9 +16,9 @@ class ShareCodeIconButton extends StatelessWidget {
       : this(
           key: key,
           header: id,
-          link: Uri.parse(kAppLinkBase).replace(
+          link: Uri.parse(kServerName).replace(
             queryParameters: {'id': id},
-            path: pathAppLinkView,
+            path: kPathAppLinkView,
           ),
         );
 

@@ -1,0 +1,15 @@
+# import '/data/gql/opinion_model.graphql'
+
+query OpinionsFetchByObjectId(
+  $objectId: String!,
+  $offset: Int = 0,
+  $limit: Int = 10
+) {
+  opinion(
+    offset: $offset,
+    limit: $limit,
+    where: {object: {_eq: $objectId}}
+  ) {
+    ...OpinionModel
+  }
+}

@@ -1,8 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:tentura/app/router/root_router.dart';
 import 'package:tentura/domain/entity/beacon.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/beacon_image.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
@@ -15,14 +14,16 @@ import 'package:tentura/features/geo/ui/dialog/choose_location_dialog.dart';
 class BeaconInfo extends StatelessWidget {
   const BeaconInfo({
     required this.beacon,
-    this.isTitleLarge = false,
+    required this.isShowBeaconEnabled,
     this.isShowMoreEnabled = true,
+    this.isTitleLarge = false,
     super.key,
   });
 
   final Beacon beacon;
   final bool isTitleLarge;
   final bool isShowMoreEnabled;
+  final bool isShowBeaconEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +32,10 @@ class BeaconInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         GestureDetector(
-          onTap: context.routeData.name == BeaconViewRoute.name
-              ? null
-              : () => context.pushRoute(BeaconViewRoute(id: beacon.id)),
+          onTap:
+              isShowBeaconEnabled
+                  ? () => context.read<ScreenCubit>().showBeacon(beacon.id)
+                  : null,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -45,10 +47,7 @@ class BeaconInfo extends StatelessWidget {
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(16),
                     ),
-                    child: BeaconImage(
-                      authorId: beacon.author.imageId,
-                      beaconId: beacon.imageId,
-                    ),
+                    child: BeaconImage(beacon: beacon),
                   ),
                 ),
 
@@ -60,9 +59,10 @@ class BeaconInfo extends StatelessWidget {
                   maxLines: 1,
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis,
-                  style: isTitleLarge
-                      ? theme.textTheme.headlineLarge
-                      : theme.textTheme.headlineMedium,
+                  style:
+                      isTitleLarge
+                          ? theme.textTheme.headlineLarge
+                          : theme.textTheme.headlineMedium,
                 ),
               ),
             ],
@@ -76,10 +76,7 @@ class BeaconInfo extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
-                  TenturaIcons.calendar,
-                  size: 18,
-                ),
+                const Icon(TenturaIcons.calendar, size: 18),
                 Text(
                   ' ${dateFormatYMD(beacon.dateRange?.start)}'
                   ' - ${dateFormatYMD(beacon.dateRange?.end)}',
@@ -96,15 +93,16 @@ class BeaconInfo extends StatelessWidget {
         if (beacon.description.isNotEmpty)
           Padding(
             padding: kPaddingSmallT,
-            child: isShowMoreEnabled
-                ? ShowMoreText(
-                    beacon.description,
-                    style: ShowMoreText.buildTextStyle(context),
-                  )
-                : Text(
-                    beacon.description,
-                    style: ShowMoreText.buildTextStyle(context),
-                  ),
+            child:
+                isShowMoreEnabled
+                    ? ShowMoreText(
+                      beacon.description,
+                      style: ShowMoreText.buildTextStyle(context),
+                    )
+                    : Text(
+                      beacon.description,
+                      style: ShowMoreText.buildTextStyle(context),
+                    ),
           ),
 
         // Beacon Geolocation
@@ -119,16 +117,18 @@ class BeaconInfo extends StatelessWidget {
                   TextButton.icon(
                     icon: const Icon(TenturaIcons.location, size: 18),
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                    label: kIsWeb
-                        ? const Text('Show on the map')
-                        : PlaceNameText(
-                            coords: beacon.coordinates!,
-                            style: theme.textTheme.bodySmall,
-                          ),
-                    onPressed: () => ChooseLocationDialog.show(
-                      context,
-                      center: beacon.coordinates,
-                    ),
+                    label:
+                        kIsWeb
+                            ? const Text('Show on the map')
+                            : PlaceNameText(
+                              coords: beacon.coordinates!,
+                              style: theme.textTheme.bodySmall,
+                            ),
+                    onPressed:
+                        () => ChooseLocationDialog.show(
+                          context,
+                          center: beacon.coordinates,
+                        ),
                   ),
 
                 const Spacer(),
@@ -146,15 +146,8 @@ class BeaconInfo extends StatelessWidget {
                         color: theme.colorScheme.primary,
                       ),
                     ),
-                    onPressed: () async {
-                      await GetIt.I<ContextCubit>().add(beacon.context);
-                      if (context.mounted) {
-                        showSnackBar(
-                          context,
-                          text: 'Topic ${beacon.context} has been added.',
-                        );
-                      }
-                    },
+                    onPressed:
+                        () async => GetIt.I<ContextCubit>().add(beacon.context),
                   ),
               ],
             ),

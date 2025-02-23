@@ -1,17 +1,21 @@
 import 'package:jaspr/server.dart';
 import 'package:get_it/get_it.dart';
-import 'package:injectable/injectable.dart';
+import 'package:stormberry/stormberry.dart';
+import 'package:injectable/injectable.dart' hide Environment;
 
-import '../jaspr_options.dart';
+import 'package:tentura_server/domain/enum.dart';
+import 'package:tentura_server/jaspr_options.dart';
+
 import 'di.config.dart';
 
+final getIt = GetIt.instance;
+
 @InjectableInit()
-Future<void> configureDependencies(String environment) async {
-  Jaspr.initializeApp(
-    options: defaultJasprOptions,
-    useIsolates: false,
-  );
-  GetIt.I.init(
-    environment: environment,
-  );
+GetIt configureDependencies(Environment env) {
+  Jaspr.initializeApp(options: defaultJasprOptions, useIsolates: false);
+  return getIt.init(environment: env.name);
+}
+
+Future<void> closeModules() async {
+  await getIt<Database>().close();
 }

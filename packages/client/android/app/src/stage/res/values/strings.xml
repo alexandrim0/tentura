@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Tentura-stage</string>
-    <string name="deep_link_hostname">tentura-stage.intersubjective.space</string>
+    <string name="deep_link_hostname">stage.tentura.io</string>
 </resources>
 

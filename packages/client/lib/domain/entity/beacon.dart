@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show DateTimeRange;
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'package:tentura/consts.dart';
+
 import 'coordinates.dart';
 import 'likable.dart';
 import 'profile.dart';
@@ -18,10 +20,14 @@ class Beacon with _$Beacon implements Likable {
     @Default('') String id,
     @Default('') String title,
     @Default('') String context,
+    @Default('') String blurhash,
     @Default('') String description,
-    @Default(false) bool hasPicture,
-    @Default(false) bool isEnabled,
     @Default(false) bool isPinned,
+    @Default(false) bool isEnabled,
+    @Default(false) bool hasPicture,
+    @Default(0) int imageHeight,
+    @Default(0) int imageWidth,
+    @Default(0) double rScore,
     @Default(0) double score,
     @Default(0) int myVote,
     @Default(Profile()) Profile author,
@@ -32,7 +38,12 @@ class Beacon with _$Beacon implements Likable {
   @override
   int get votes => myVote;
 
-  String get imageId => hasPicture ? id : '';
+  bool get hasNoPicture => !hasPicture;
+
+  String get imageUrl =>
+      hasPicture
+          ? '$kImageServer/$kImagesPath/${author.id}/$id.$kImageExt'
+          : kBeaconPlaceholderUrl;
 }
 
 final emptyBeacon = Beacon(

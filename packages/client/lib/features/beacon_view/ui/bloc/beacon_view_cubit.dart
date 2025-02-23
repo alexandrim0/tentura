@@ -4,7 +4,9 @@ import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import '../../domain/use_case/beacon_view_case.dart';
+import 'package:tentura/features/comment/data/repository/comment_repository.dart';
+
+import '../../data/repository/beacon_view_repository.dart';
 import 'beacon_view_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,9 +17,12 @@ class BeaconViewCubit extends Cubit<BeaconViewState> {
   BeaconViewCubit({
     required String id,
     required Profile myProfile,
-    BeaconViewCase? beaconViewCase,
-  })  : _beaconViewCase = beaconViewCase ?? GetIt.I<BeaconViewCase>(),
-        super(_idToState(id, myProfile)) {
+    CommentRepository? commentRepository,
+    BeaconViewRepository? beaconViewRepository,
+  }) : _beaconViewRepository =
+           beaconViewRepository ?? GetIt.I<BeaconViewRepository>(),
+       _commentRepository = commentRepository ?? GetIt.I<CommentRepository>(),
+       super(_idToState(id, myProfile)) {
     state.hasFocusedComment
         // Show Beacon with one Comment
         ? _fetchBeaconByCommentId()
@@ -25,74 +30,79 @@ class BeaconViewCubit extends Cubit<BeaconViewState> {
         : _fetchBeaconByIdWithComments();
   }
 
-  final BeaconViewCase _beaconViewCase;
+  final BeaconViewRepository _beaconViewRepository;
+  final CommentRepository _commentRepository;
 
   Future<void> showAll() async {
-    emit(state.setLoading());
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final comments =
-          await _beaconViewCase.fetchCommentsByBeaconId(state.beacon.id);
-      emit(state.copyWith(
-        focusCommentId: '',
-        hasReachedMax: true,
-        comments: comments.toList(),
-        status: FetchStatus.isSuccess,
-      ));
+      final comments = await _commentRepository.fetchCommentsByBeaconId(
+        state.beacon.id,
+      );
+      emit(
+        state.copyWith(
+          focusCommentId: '',
+          hasReachedMax: true,
+          comments: comments.toList(),
+          status: StateStatus.isSuccess,
+        ),
+      );
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
   Future<void> addComment(String text) async {
-    emit(state.setLoading());
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final comment = await _beaconViewCase.addComment(
+      final comment = await _commentRepository.addComment(
         beaconId: state.beacon.id,
         content: text,
       );
-      emit(state.copyWith(
-        status: FetchStatus.isSuccess,
-        comments: state.comments
-          ..add(comment.copyWith(
-            author: state.myProfile,
-          )),
-      ));
+      emit(
+        state.copyWith(
+          status: StateStatus.isSuccess,
+          comments:
+              state.comments..add(comment.copyWith(author: state.myProfile)),
+        ),
+      );
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
   Future<void> _fetchBeaconByIdWithComments([int limit = 3]) async {
-    emit(state.setLoading());
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final (:beacon, :comments) =
-          await _beaconViewCase.fetchBeaconByIdWithComments(
-        beaconId: state.beacon.id,
-        limit: limit,
+      final (:beacon, :comments) = await _beaconViewRepository
+          .fetchBeaconByIdWithComments(beaconId: state.beacon.id, limit: limit);
+      emit(
+        state.copyWith(
+          beacon: beacon,
+          comments: comments.toList(),
+          hasReachedMax: comments.length < limit,
+          status: StateStatus.isSuccess,
+        ),
       );
-      emit(state.copyWith(
-        beacon: beacon,
-        comments: comments.toList(),
-        hasReachedMax: comments.length < limit,
-        status: FetchStatus.isSuccess,
-      ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
   Future<void> _fetchBeaconByCommentId() async {
-    emit(state.setLoading());
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final (:beacon, :comment) =
-          await _beaconViewCase.fetchBeaconByCommentId(state.focusCommentId);
-      emit(state.copyWith(
-        beacon: beacon,
-        comments: [comment],
-        status: FetchStatus.isSuccess,
-      ));
+      final (:beacon, :comment) = await _beaconViewRepository
+          .fetchBeaconByCommentId(state.focusCommentId);
+      emit(
+        state.copyWith(
+          beacon: beacon,
+          comments: [comment],
+          status: StateStatus.isSuccess,
+        ),
+      );
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
@@ -105,18 +115,17 @@ class BeaconViewCubit extends Cubit<BeaconViewState> {
   static BeaconViewState _idToState(String id, Profile myProfile) =>
       switch (id) {
         _ when id.startsWith('B') => BeaconViewState(
-            beacon: _emptyBeacon.copyWith(id: id),
-            myProfile: myProfile,
-          ),
+          beacon: _emptyBeacon.copyWith(id: id),
+          myProfile: myProfile,
+        ),
         _ when id.startsWith('C') => BeaconViewState(
-            beacon: _emptyBeacon,
-            focusCommentId: id,
-            myProfile: myProfile,
-          ),
+          beacon: _emptyBeacon,
+          focusCommentId: id,
+          myProfile: myProfile,
+        ),
         _ => BeaconViewState(
-            beacon: _emptyBeacon,
-            error: 'Wrong id: $id',
-            status: FetchStatus.isFailure,
-          ),
+          beacon: _emptyBeacon,
+          status: StateHasError('Wrong id: $id'),
+        ),
       };
 }

@@ -1,21 +1,21 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:http/http.dart';
 import 'package:ferry/ferry.dart' show OperationRequest, OperationResponse;
 
+import 'consts.dart';
 import 'client/message.dart';
-import 'service/image_service.dart';
 import 'service/token_service_native.dart'
     if (dart.library.js_interop) 'service/token_service_web.dart';
 
 abstract class TenturaApiBase {
   TenturaApiBase({
-    required this.apiUrlBase,
+    this.apiUrlBase = kServerName,
     this.jwtExpiresIn = const Duration(minutes: 1),
-    this.userAgent = 'Tentura client',
+    this.userAgent = kUserAgent,
     this.storagePath = '',
     this.isDebugMode = false,
-  })  : _imageService = ImageService(apiUrlBase: apiUrlBase),
-        _tokenService = TokenService(
+  }) : _tokenService = TokenService(
           apiUrlBase: apiUrlBase,
           jwtExpiresIn: jwtExpiresIn,
         );
@@ -27,7 +27,8 @@ abstract class TenturaApiBase {
   final bool isDebugMode;
 
   final TokenService _tokenService;
-  final ImageService _imageService;
+
+  late final _uploadUrl = Uri.parse(apiUrlBase + kPathImageUpload);
 
   String _userId = '';
 
@@ -57,21 +58,18 @@ abstract class TenturaApiBase {
     await _tokenService.signOut();
   }
 
-  Future<void> putAvatarImage(Uint8List image) async => _imageService.putAvatar(
-        token: (await _tokenService.getToken()).valueOrException,
-        userId: _userId,
-        image: image,
-      );
-
-  Future<void> putBeaconImage(
-    Uint8List image, {
-    required String beaconId,
+  Future<void> uploadImage({
+    required Uint8List image,
+    required String id,
   }) async =>
-      _imageService.putBeacon(
-        token: (await _tokenService.getToken()).valueOrException,
-        beaconId: beaconId,
-        userId: _userId,
-        image: image,
+      put(
+        _uploadUrl.replace(query: 'id=$id'),
+        headers: {
+          kHeaderContentType: kContentTypeJpeg,
+          kHeaderAuthorization:
+              'Bearer ${(await _tokenService.getToken()).valueOrException}',
+        },
+        body: image,
       );
 
   Stream<OperationResponse<TData, TVars>> request<TData, TVars>(

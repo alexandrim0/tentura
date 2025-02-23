@@ -4,19 +4,11 @@ import 'package:tentura/ui/bloc/state_base.dart';
 part 'profile_state.freezed.dart';
 
 @freezed
-class ProfileState with _$ProfileState, StateFetchMixin {
+class ProfileState extends StateBase with _$ProfileState {
   const factory ProfileState({
     @Default(Profile()) Profile profile,
-    @Default(FetchStatus.isSuccess) FetchStatus status,
-    Object? error,
+    @Default(StateIsSuccess()) StateStatus status,
   }) = _ProfileState;
 
   const ProfileState._();
-
-  ProfileState setLoading() => copyWith(status: FetchStatus.isLoading);
-
-  ProfileState setError(Object error) => copyWith(
-        status: FetchStatus.isFailure,
-        error: error,
-      );
 }

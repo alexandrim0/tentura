@@ -3,9 +3,9 @@ import 'package:get_it/get_it.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import 'package:tentura/features/friends/domain/use_case/friends_case.dart';
+import 'package:tentura/features/like/data/repository/like_remote_repository.dart';
+import 'package:tentura/features/profile/data/repository/profile_repository.dart';
 
-import '../../domain/use_case/profile_view_case.dart';
 import 'profile_view_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,76 +15,64 @@ export 'profile_view_state.dart';
 class ProfileViewCubit extends Cubit<ProfileViewState> {
   ProfileViewCubit({
     required String id,
-    FriendsCase? friendsCase,
-    ProfileViewCase? profileViewCase,
-  })  : _friendsCase = friendsCase ?? GetIt.I<FriendsCase>(),
-        _profileViewCase = profileViewCase ?? GetIt.I<ProfileViewCase>(),
-        super(ProfileViewState(profile: Profile(id: id))) {
-    fetchProfile();
+    ProfileRepository? profileRepository,
+    LikeRemoteRepository? likeRemoteRepository,
+  }) : _profileRepository = profileRepository ?? GetIt.I<ProfileRepository>(),
+       _likeRemoteRepository =
+           likeRemoteRepository ?? GetIt.I<LikeRemoteRepository>(),
+       super(ProfileViewState(profile: Profile(id: id))) {
+    fetch();
   }
 
-  final FriendsCase _friendsCase;
-  final ProfileViewCase _profileViewCase;
+  final ProfileRepository _profileRepository;
 
-  Future<void> fetchProfile([int limit = 3]) async {
-    emit(state.setLoading());
+  final LikeRemoteRepository _likeRemoteRepository;
+
+  Future<void> fetch() async {
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final (:profile, :beacons) =
-          await _profileViewCase.fetchProfileWithBeaconsByUserId(
-        state.profile.id,
-        limit: limit,
+      emit(
+        state.copyWith(
+          status: StateStatus.isSuccess,
+          profile: await _profileRepository.fetch(state.profile.id),
+        ),
       );
-      emit(state.copyWith(
-        profile: profile,
-        beacons: beacons.toList(),
-        hasReachedMax: beacons.length < limit,
-        status: FetchStatus.isSuccess,
-      ));
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
-
-  Future<void> fetchBeacons() async {
-    emit(state.setLoading());
-    try {
-      final beacons =
-          await _profileViewCase.fetchBeaconsByUserId(state.profile.id);
-      emit(state.copyWith(
-        hasReachedMax: true,
-        profile: state.profile,
-        beacons: beacons.toList(),
-        status: FetchStatus.isSuccess,
-      ));
-    } catch (e) {
-      emit(state.setError(e));
-    }
-  }
-
-  Future<void> fetchMore() =>
-      state.hasNotReachedMax ? fetchBeacons() : fetchProfile();
 
   Future<void> addFriend() async {
-    emit(state.setLoading());
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      emit(state.copyWith(
-        status: FetchStatus.isSuccess,
-        profile: await _friendsCase.addFriend(state.profile),
-      ));
+      emit(
+        state.copyWith(
+          profile: await _likeRemoteRepository.setLike(
+            state.profile,
+            amount: 1,
+          ),
+          status: StateStatus.isSuccess,
+        ),
+      );
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
   Future<void> removeFriend() async {
-    emit(state.setLoading());
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      emit(state.copyWith(
-        status: FetchStatus.isSuccess,
-        profile: await _friendsCase.removeFriend(state.profile),
-      ));
+      emit(
+        state.copyWith(
+          profile: await _likeRemoteRepository.setLike(
+            state.profile,
+            amount: 0,
+          ),
+          status: StateStatus.isSuccess,
+        ),
+      );
     } catch (e) {
-      emit(state.setError(e));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 }

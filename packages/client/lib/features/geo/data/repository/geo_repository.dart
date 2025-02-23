@@ -3,10 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart'
-    if (dart.library.js_interop) '../service/geocoding_web_service.dart';
+    if (dart.library.js_interop) '../service/geocoding_web_service.dart'
+    hide Location;
 
 import 'package:tentura/domain/entity/coordinates.dart';
 
+import '../../domain/entity/location.dart';
 import '../../domain/entity/place.dart';
 
 @singleton
@@ -42,6 +44,11 @@ class GeoRepository {
       return null;
     }
   }
+
+  Future<Location> getLocationByCoords(Coordinates coords) async => Location(
+        coords: coords,
+        place: await getPlaceNameByCoords(coords),
+      );
 
   Future<Coordinates?> getMyCoords({
     Duration timeLimit = const Duration(seconds: 30),

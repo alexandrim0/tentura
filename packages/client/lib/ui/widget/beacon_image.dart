@@ -1,43 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:blurhash_shader/blurhash_shader.dart';
 
 import 'package:tentura/consts.dart';
-
-import '../utils/asset_package.dart';
-import 'cached_image/cached_image.dart';
+import 'package:tentura/domain/entity/beacon.dart';
 
 class BeaconImage extends StatelessWidget {
   const BeaconImage({
-    required this.authorId,
-    this.beaconId = '',
+    required this.beacon,
     this.boxFit = BoxFit.cover,
-    this.height,
-    this.width,
     super.key,
   });
 
-  final String beaconId;
-  final String authorId;
-  final double? height;
-  final double? width;
+  final Beacon beacon;
+
   final BoxFit boxFit;
 
   @override
-  Widget build(BuildContext context) {
-    final placeholder = Image.asset(
-      'assets/images/image-placeholder.jpg',
-      package: AssetPackage.assetPackage,
-      height: height,
-      width: width,
-      fit: boxFit,
-    );
-    return beaconId.isEmpty || authorId.isEmpty
-        ? placeholder
-        : CachedImage(
-            imageUrl: '$kAppLinkBase/images/$authorId/$beaconId.jpg',
-            placeholder: placeholder,
-            boxFit: boxFit,
-            height: height,
-            width: width,
+  Widget build(BuildContext context) =>
+      beacon.hasNoPicture
+          ? _placeholder
+          : beacon.blurhash.isEmpty
+          ? _imageNetwork
+          : AspectRatio(
+            aspectRatio:
+                beacon.imageHeight > 0
+                    ? beacon.imageWidth / beacon.imageHeight
+                    : 1,
+            child: BlurHash(beacon.blurhash, child: _imageNetwork),
           );
-  }
+
+  Widget get _imageNetwork => Image.network(
+    beacon.imageUrl,
+    fit: boxFit,
+    errorBuilder: (_, _, _) => _placeholder,
+  );
+
+  Widget get _placeholder => Image.asset(
+    kAssetBeaconPlaceholder,
+    // ignore: avoid_redundant_argument_values // set from env
+    package: kAssetPackage,
+    fit: boxFit,
+  );
 }

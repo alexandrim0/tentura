@@ -6,15 +6,14 @@ import 'package:tentura/ui/bloc/state_base.dart';
 part 'beacon_view_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class BeaconViewState with _$BeaconViewState, StateFetchMixin {
+class BeaconViewState extends StateBase with _$BeaconViewState {
   const factory BeaconViewState({
     required Beacon beacon,
     @Default('') String focusCommentId,
     @Default(false) bool hasReachedMax,
     @Default([]) List<Comment> comments,
     @Default(Profile()) Profile myProfile,
-    @Default(FetchStatus.isSuccess) FetchStatus status,
-    Object? error,
+    @Default(StateIsSuccess()) StateStatus status,
   }) = _BeaconViewState;
 
   const BeaconViewState._();
@@ -32,11 +31,4 @@ class BeaconViewState with _$BeaconViewState, StateFetchMixin {
 
   bool checkIfCommentIsNotMine(Comment comment) =>
       comment.author.id != myProfile.id;
-
-  BeaconViewState setLoading() => copyWith(status: FetchStatus.isLoading);
-
-  BeaconViewState setError(Object error) => copyWith(
-        status: FetchStatus.isFailure,
-        error: error,
-      );
 }

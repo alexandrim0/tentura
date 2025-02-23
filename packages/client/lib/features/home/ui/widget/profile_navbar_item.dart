@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/ui/widget/avatar_image.dart';
+import 'package:tentura/domain/entity/profile.dart';
+import 'package:tentura/ui/widget/avatar_rated.dart';
+import 'package:tentura/ui/utils/ui_utils.dart';
 
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 
@@ -20,9 +22,8 @@ class ProfileNavBarItem extends StatelessWidget {
             for (final account in authCubit.state.accounts)
               _AccountMenuItem(
                 key: ValueKey(account),
-                title: account.title,
-                imageId: account.imageId,
                 isMe: account.id == state.currentAccountId,
+                profile: account,
                 onTap: () {
                   menuController.close();
                   authCubit.signIn(account.id);
@@ -34,8 +35,9 @@ class ProfileNavBarItem extends StatelessWidget {
             onLongPress: state.accounts.length > 1 ? menuController.open : null,
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: AvatarImage(
-                userId: state.currentAccount.imageId,
+              child: AvatarRated(
+                profile: state.currentAccount,
+                withRating: false,
                 size: 36,
               ),
             ),
@@ -48,45 +50,37 @@ class ProfileNavBarItem extends StatelessWidget {
 
 class _AccountMenuItem extends StatelessWidget {
   const _AccountMenuItem({
-    required this.title,
-    required this.imageId,
+    required this.profile,
     required this.isMe,
     this.onTap,
     super.key,
   });
 
   final bool isMe;
-  final String title;
-  final String imageId;
+  final Profile profile;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: AvatarImage(
-                userId: imageId,
-                size: 40,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                title,
-                maxLines: 1,
-                softWrap: false,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            if (isMe)
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Icon(Icons.check),
-              ),
-          ],
+    onTap: onTap,
+    child: Row(
+      children: [
+        Padding(
+          padding: kPaddingAllS,
+          child: AvatarRated.small(profile: profile, withRating: false),
         ),
-      );
+        Padding(
+          padding: kPaddingAllS,
+          child: Text(
+            profile.title,
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        if (isMe)
+          const Padding(padding: kPaddingAllS, child: Icon(Icons.check)),
+      ],
+    ),
+  );
 }

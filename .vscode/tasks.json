@@ -2,6 +2,27 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "flutter: build web (wasm)",
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"web",
+				"--wasm",
+				"--pwa-strategy",
+				"none",
+				"--dart-define-from-file=.env",
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"options": {
+				"cwd": "packages/client"
+			},
+		},
+		{
+			"label": "flutter: build apk (prod)",
 			"type": "flutter",
 			"command": "flutter",
 			"args": [
@@ -13,59 +34,17 @@
 				"android-arm64",
 				"--split-per-abi",
 				"--no-tree-shake-icons",
-				"--dart-define",
-				"APP_LINK_BASE=tentura.intersubjective.space"
+				"--dart-define-from-file=.env",
 			],
 			"group": {
 				"kind": "build",
-				"isDefault": false
 			},
 			"options": {
 				"cwd": "packages/client"
-    	},
-			"problemMatcher": [],
-			"label": "flutter: flutter build apk"
-		},
-		{
-			"type": "flutter",
-			"command": "flutter",
-			"args": [
-				"build",
-				"web",
-				"--dart-define",
-				"APP_LINK_BASE=tentura.intersubjective.space",
-			],
-			"group": {
-				"kind": "build",
-				"isDefault": false
 			},
-			"options": {
-				"cwd": "packages/client"
-    	},
-			"problemMatcher": [],
-			"label": "flutter: flutter build web (js)"
 		},
 		{
-			"type": "flutter",
-			"command": "flutter",
-			"args": [
-				"build",
-				"web",
-				"--wasm",
-				"--dart-define",
-				"APP_LINK_BASE=tentura.intersubjective.space"
-			],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
-			"options": {
-				"cwd": "packages/client"
-    	},
-			"problemMatcher": [],
-			"label": "flutter: flutter build web (wasm)"
-		},
-		{
+			"label": "flutter: build widgetbook",
 			"type": "flutter",
 			"command": "flutter",
 			"args": [
@@ -77,17 +56,32 @@
 				"--pwa-strategy",
 				"none",
 				"--dart-define",
-				"APP_LINK_BASE=tentura.intersubjective.space"
+				"IS_IMPORTED=true",
+				"--dart-define-from-file=.env",
 			],
 			"group": {
 				"kind": "build",
-				"isDefault": false
 			},
 			"options": {
 				"cwd": "packages/widgetbook"
-    	},
-			"problemMatcher": [],
-			"label": "flutter: flutter build widgetbook"
-		}
-	]
+			},
+		},
+		{
+			"label": "flutter: build web (wasm, stage)",
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"web",
+				"--wasm",
+				"--dart-define-from-file=.env",
+			],
+			"group": {
+				"kind": "build",
+			},
+			"options": {
+				"cwd": "packages/client"
+			},
+		},
+	],
 }

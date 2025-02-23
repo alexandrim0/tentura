@@ -11,8 +11,6 @@ import '../gql/_g/comment_fetch_by_id.req.gql.dart';
 
 @lazySingleton
 class CommentRepository {
-  static const _label = 'Comment';
-
   CommentRepository(this._remoteApiService);
 
   final RemoteApiService _remoteApiService;
@@ -31,29 +29,37 @@ class CommentRepository {
       .firstWhere((e) => e.dataSource == DataSource.Link)
       .then((r) => r.dataOrThrow(label: _label).comment_by_pk)
       .then(
-        (v) => v == null
-            ? throw const CommentFetchException()
-            : (v as CommentModel).toEntity,
+        (v) =>
+            v == null
+                ? throw const CommentFetchException()
+                : (v as CommentModel).toEntity,
       );
 
   Future<Comment> addComment({
     required String beaconId,
     required String content,
-  }) =>
-      _remoteApiService
-          .request(GCommentCreateReq(
-            (b) => b.vars
-              ..beacon_id = beaconId
-              ..content = content,
-          ))
-          .firstWhere((e) => e.dataSource == DataSource.Link)
-          .then((r) => r.dataOrThrow(label: _label).insert_comment_one)
-          .then((v) => v == null
-              ? throw const CommentCreateException()
-              : Comment(
+  }) => _remoteApiService
+      .request(
+        GCommentCreateReq(
+          (b) =>
+              b.vars
+                ..beacon_id = beaconId
+                ..content = content,
+        ),
+      )
+      .firstWhere((e) => e.dataSource == DataSource.Link)
+      .then((r) => r.dataOrThrow(label: _label).insert_comment_one)
+      .then(
+        (v) =>
+            v == null
+                ? throw const CommentCreateException()
+                : Comment(
                   id: v.id,
                   content: content,
                   beaconId: beaconId,
                   createdAt: v.created_at,
-                ));
+                ),
+      );
+
+  static const _label = 'Comment';
 }

@@ -1,25 +1,55 @@
+import 'package:tentura/consts.dart';
+
 export 'package:flutter/foundation.dart';
 export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:freezed_annotation/freezed_annotation.dart';
 
-enum FetchStatus { isLoading, isSuccess, isFailure }
+abstract class StateBase {
+  const StateBase({this.status = const StateIsSuccess()});
 
-extension FetchStatusX on FetchStatus {
-  bool get isLoading => this == FetchStatus.isLoading;
-  bool get isSuccess => this == FetchStatus.isSuccess;
-  bool get isFailure => this == FetchStatus.isFailure;
+  final StateStatus status;
+
+  bool get isSuccess => status is StateIsSuccess;
+
+  bool get isLoading => status is StateIsLoading;
+
+  bool get hasError => status is StateHasError;
+
+  bool get isNavigating => status is StateIsNavigating;
 }
 
-mixin StateFetchMixin {
-  FetchStatus get status;
-  Object? get error;
+sealed class StateStatus {
+  static const isSuccess = StateIsSuccess();
 
-  bool get isSuccess => status.isSuccess;
-  bool get isNotSuccess => !status.isSuccess;
+  static const isLoading = StateIsLoading();
 
-  bool get isLoading => status.isLoading;
-  bool get isNotLoading => !status.isLoading;
+  const StateStatus();
+}
 
-  bool get hasError => error != null || status.isFailure;
-  bool get hasNoError => error == null && status.isSuccess;
+class StateIsSuccess extends StateStatus {
+  const StateIsSuccess();
+}
+
+class StateIsLoading extends StateStatus {
+  const StateIsLoading();
+}
+
+class StateIsMessaging extends StateStatus {
+  StateIsMessaging(this.message);
+
+  final String? message;
+}
+
+class StateIsNavigating extends StateStatus {
+  StateIsNavigating(this.path);
+
+  StateIsNavigating.back() : path = kPathBack;
+
+  final String path;
+}
+
+class StateHasError extends StateStatus {
+  StateHasError(this.error);
+
+  final Object error;
 }

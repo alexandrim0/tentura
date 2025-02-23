@@ -1,0 +1,16 @@
+# import '/data/gql/user_model.graphql'
+
+fragment OpinionModel on opinion {
+  id
+  object
+  content
+  created_at
+  my_vote
+  scores {
+    src_score
+    dst_score
+  }
+  author {
+    ...UserModel
+  }
+}

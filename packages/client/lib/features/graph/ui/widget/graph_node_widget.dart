@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/ui/widget/avatar_image.dart';
+import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/beacon_image.dart';
 
 import '../../domain/entity/node_details.dart';
@@ -22,13 +22,12 @@ class GraphNodeWidget extends StatelessWidget {
     final widget = SizedBox.square(
       dimension: nodeDetails.size,
       child: switch (nodeDetails) {
-        final UserNode user => AvatarImage(
+        final UserNode userNode => AvatarRated(
+            profile: userNode.user,
             size: nodeDetails.size,
-            userId: user.hasImage ? user.id : '',
           ),
-        final BeaconNode beacon => BeaconImage(
-            authorId: beacon.userId,
-            beaconId: beacon.hasImage ? beacon.id : '',
+        final BeaconNode beaconNode => BeaconImage(
+            beacon: beaconNode.beacon,
           ),
       },
     );

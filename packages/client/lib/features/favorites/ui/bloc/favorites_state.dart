@@ -1,23 +1,17 @@
 import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
+export 'package:tentura/ui/bloc/state_base.dart';
+
 part 'favorites_state.freezed.dart';
 
-@freezed
-class FavoritesState with _$FavoritesState, StateFetchMixin {
+@Freezed(makeCollectionsUnmodifiable: false)
+class FavoritesState extends StateBase with _$FavoritesState {
   const factory FavoritesState({
     @Default('') String userId,
     @Default([]) List<Beacon> beacons,
-    @Default(FetchStatus.isSuccess) FetchStatus status,
-    Object? error,
+    @Default(StateIsSuccess()) StateStatus status,
   }) = _FavoritesState;
 
   const FavoritesState._();
-
-  FavoritesState setLoading() => copyWith(status: FetchStatus.isLoading);
-
-  FavoritesState setError(Object error) => copyWith(
-        status: FetchStatus.isFailure,
-        error: error,
-      );
 }

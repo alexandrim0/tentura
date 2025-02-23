@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart';
+import 'package:meta/meta.dart';
 import 'package:ed25519_edwards/ed25519_edwards.dart';
 
 import '../consts.dart';
@@ -61,7 +62,7 @@ abstract class TokenServiceBase {
     _jwt = jwtEmpty;
     _tokenLocked = true;
     try {
-      _jwt = await _fetchJWT(pathLogin);
+      _jwt = await _fetchJWT(kPathLogin);
     } finally {
       _tokenLocked = false;
     }
@@ -73,7 +74,7 @@ abstract class TokenServiceBase {
     _jwt = jwtEmpty;
     _tokenLocked = true;
     try {
-      _jwt = await _fetchJWT(pathRegister);
+      _jwt = await _fetchJWT(kPathRegister);
     } finally {
       _tokenLocked = false;
     }
@@ -88,10 +89,13 @@ abstract class TokenServiceBase {
   }
 
   Future<JWT> _fetchJWT(String path) async {
+    if (keyPair == null) {
+      throw const AuthenticationNoKeyException();
+    }
     final response = await post(
       Uri.parse(apiUrlBase + path),
       headers: {
-        'Authorization': 'Bearer ${_createAuthRequestToken()}',
+        'Authorization': 'Bearer ${createAuthRequestToken(keyPair!)}',
       },
     );
     switch (response.statusCode) {
@@ -116,19 +120,19 @@ abstract class TokenServiceBase {
     }
   }
 
-  String _createAuthRequestToken() {
+  @visibleForTesting
+  String createAuthRequestToken(KeyPair keyPair) {
     final now = DateTime.timestamp().millisecondsSinceEpoch ~/ 1000;
     final body = base64UrlEncode(utf8.encode(jsonEncode({
-      'pk': base64UrlEncode(keyPair!.publicKey.bytes).replaceAll('=', ''),
+      'pk': base64UrlEncode(keyPair.publicKey.bytes).replaceAll('=', ''),
       'exp': now + jwtExpiresIn.inSeconds,
       'iat': now,
     }))).replaceAll('=', '');
+    final token = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.$body';
     final signature = base64UrlEncode(sign(
-      keyPair!.privateKey,
-      Uint8List.fromList(utf8.encode(_jwtHeader + body)),
+      keyPair.privateKey,
+      Uint8List.fromList(utf8.encode(token)),
     )).replaceAll('=', '');
-    return '$_jwtHeader$body.$signature';
+    return '$token.$signature';
   }
-
-  static const _jwtHeader = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.';
 }

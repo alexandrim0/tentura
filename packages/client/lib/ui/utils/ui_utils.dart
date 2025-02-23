@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/consts.dart';
 
@@ -43,62 +43,51 @@ String timeFormatHm(DateTime? dateTime) =>
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
   BuildContext context, {
   String? text,
-  List<TextSpan>? textSpans,
-  Duration duration = kSnackBarDuration,
-  bool isFloating = false,
-  bool isError = false,
   Color? color,
+  bool isError = false,
+  bool isFloating = false,
+  List<TextSpan>? textSpans,
+  Duration duration = const Duration(seconds: kSnackBarDuration),
 }) {
   final theme = Theme.of(context);
   ScaffoldMessenger.of(context).clearSnackBars();
   if (isError) _logger.d(text);
-  return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    behavior: isFloating ? SnackBarBehavior.floating : null,
-    margin: isFloating ? const EdgeInsets.all(16) : null,
-    duration: duration,
-    backgroundColor: isError
-        ? theme.colorScheme.error
-        : color ?? theme.snackBarTheme.backgroundColor,
-    action: kDebugMode
-        ? SnackBarAction(
-            label: 'print',
-            onPressed: () => _logger.d(text),
-          )
-        : null,
-    content: RichText(
-      text: TextSpan(
-        text: text,
-        children: textSpans,
-        style: isError
-            ? theme.snackBarTheme.contentTextStyle?.copyWith(
-                color: theme.colorScheme.onError,
-              )
-            : theme.snackBarTheme.contentTextStyle,
+  return ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      behavior: isFloating ? SnackBarBehavior.floating : null,
+      margin: isFloating ? kPaddingAll : null,
+      duration: duration,
+      backgroundColor:
+          isError
+              ? theme.colorScheme.error
+              : color ?? theme.snackBarTheme.backgroundColor,
+      content: RichText(
+        text: TextSpan(
+          text: text,
+          children: textSpans,
+          style:
+              isError
+                  ? theme.snackBarTheme.contentTextStyle?.copyWith(
+                    color: theme.colorScheme.onError,
+                  )
+                  : theme.snackBarTheme.contentTextStyle,
+        ),
       ),
     ),
-  ));
-}
-
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBarError(
-  BuildContext context,
-  StateFetchMixin state,
-) =>
-    showSnackBar(
-      context,
-      isError: true,
-      text: state.error?.toString() ?? 'Unknown error!',
-    );
-
-Future<({String name, Uint8List bytes})?> pickImage() async {
-  final xFile = await ImagePicker().pickImage(
-    source: ImageSource.gallery,
-    // TBD: resize and convert by package:image
-    maxWidth: 600,
   );
-  return xFile == null
-      ? null
-      : (
-          name: xFile.name,
-          bytes: await xFile.readAsBytes(),
-        );
 }
+
+Widget separatorBuilder(_, _) => const Divider(endIndent: 20, indent: 20);
+
+void commonScreenBlocListener(BuildContext context, StateBase state) =>
+    switch (state.status) {
+      final StateIsNavigating s =>
+        s.path == kPathBack ? context.back() : context.navigateNamedTo(s.path),
+      final StateIsMessaging s => showSnackBar(context, text: s.message),
+      final StateHasError s => showSnackBar(
+        context,
+        isError: true,
+        text: s.error.toString(),
+      ),
+      _ => null,
+    };

@@ -1,5 +1,4 @@
-import 'package:get_it/get_it.dart';
-import 'package:logger/logger.dart';
+import 'package:minio/minio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:stormberry/stormberry.dart';
 
@@ -7,27 +6,29 @@ import '../consts.dart';
 
 @module
 abstract class RegisterModule {
-  @singleton
-  Logger get logger => kDebugMode
-      ? Logger()
-      : Logger(
-          filter: ProductionFilter(),
-          level: Level.warning,
-        );
+  Database get database => Database.withPool(
+    debugPrint: kDebugMode,
+    pool: Pool.withEndpoints(
+      [
+        Endpoint(
+          host: kPgHost,
+          port: kPgPort,
+          database: kPgDatabase,
+          username: kPgUsername,
+          password: kPgPassword,
+        ),
+      ],
+      settings: PoolSettings(
+        maxConnectionCount: kMaxConnectionCount,
+        sslMode: SslMode.disable,
+      ),
+    ),
+  );
 
-  @singleton
-  Database get database => Database(
-        username: kPgUsername,
-        password: kPgPassword,
-        database: kPgDatabase,
-        port: kPgPort,
-        host: kPgHost,
-        useSSL: false,
-        isUnixSocket: false,
-      );
-}
-
-Future<void> closeModules() async {
-  await GetIt.I<Database>().close();
-  await GetIt.I<Logger>().close();
+  Minio get minio => Minio(
+    accessKey: kS3AccessKey,
+    secretKey: kS3SecretKey,
+    endPoint: kS3Endpoint,
+    pathStyle: false,
+  );
 }

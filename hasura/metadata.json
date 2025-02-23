@@ -1,5 +1,5 @@
 {
-  "resource_version": 417,
+  "resource_version": 483,
   "metadata": {
     "version": 3,
     "sources": [
@@ -101,11 +101,14 @@
                     "user_id": "x-hasura-User-Id"
                   },
                   "columns": [
+                    "blur_hash",
                     "context",
                     "description",
                     "has_picture",
                     "lat",
                     "long",
+                    "pic_height",
+                    "pic_width",
                     "timerange",
                     "title"
                   ]
@@ -118,18 +121,21 @@
                 "role": "user",
                 "permission": {
                   "columns": [
-                    "context",
-                    "created_at",
-                    "description",
                     "enabled",
                     "has_picture",
-                    "id",
                     "lat",
                     "long",
-                    "timerange",
+                    "pic_height",
+                    "pic_width",
+                    "blur_hash",
+                    "context",
+                    "description",
+                    "id",
                     "title",
+                    "user_id",
+                    "created_at",
                     "updated_at",
-                    "user_id"
+                    "timerange"
                   ],
                   "computed_fields": [
                     "is_pinned",
@@ -167,6 +173,32 @@
                   }
                 },
                 "comment": ""
+              }
+            ],
+            "event_triggers": [
+              {
+                "name": "beacon_mutate",
+                "definition": {
+                  "delete": {
+                    "columns": "*"
+                  },
+                  "enable_manual": true,
+                  "insert": {
+                    "columns": "*"
+                  }
+                },
+                "retry_conf": {
+                  "interval_sec": 10,
+                  "num_retries": 2,
+                  "timeout_sec": 60
+                },
+                "webhook": "{{EVENT_BASE_URL}}/beacon_mutate",
+                "headers": [
+                  {
+                    "name": "X-Tentura-Password",
+                    "value_from_env": "TENTURA_PASSWORD"
+                  }
+                ]
               }
             ]
           },
@@ -569,6 +601,99 @@
           },
           {
             "table": {
+              "name": "opinion",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "author",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "subject": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "user",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "computed_fields": [
+              {
+                "name": "my_vote",
+                "definition": {
+                  "function": {
+                    "name": "opinion_get_my_vote",
+                    "schema": "public"
+                  },
+                  "session_argument": "hasura_session"
+                }
+              },
+              {
+                "name": "scores",
+                "definition": {
+                  "function": {
+                    "name": "opinion_get_scores",
+                    "schema": "public"
+                  },
+                  "session_argument": "hasura_session"
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "check": {},
+                  "set": {
+                    "subject": "x-hasura-User-Id"
+                  },
+                  "columns": [
+                    "content",
+                    "object"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "content",
+                    "id",
+                    "object",
+                    "subject",
+                    "created_at"
+                  ],
+                  "computed_fields": [
+                    "my_vote"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "filter": {
+                    "subject": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
               "name": "user",
               "schema": "public"
             },
@@ -686,10 +811,13 @@
                 "role": "user",
                 "permission": {
                   "columns": [
+                    "blur_hash",
                     "created_at",
                     "description",
                     "has_picture",
                     "id",
+                    "pic_height",
+                    "pic_width",
                     "public_key",
                     "title",
                     "updated_at"
@@ -717,18 +845,6 @@
                     }
                   },
                   "check": {}
-                }
-              }
-            ],
-            "delete_permissions": [
-              {
-                "role": "user",
-                "permission": {
-                  "filter": {
-                    "id": {
-                      "_eq": "X-Hasura-User-Id"
-                    }
-                  }
                 }
               }
             ]
@@ -935,6 +1051,65 @@
           },
           {
             "table": {
+              "name": "vote_opinion",
+              "schema": "public"
+            },
+            "insert_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "check": {},
+                  "set": {
+                    "subject": "x-hasura-User-Id"
+                  },
+                  "columns": [
+                    "amount",
+                    "object"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "amount",
+                    "object",
+                    "subject",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "subject": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": ""
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "amount"
+                  ],
+                  "filter": {
+                    "subject": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  },
+                  "check": null
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
               "name": "vote_user",
               "schema": "public"
             },
@@ -1124,9 +1299,11 @@
         ],
         "configuration": {
           "connection_info": {
-            "database_url": "postgres://postgres:password@postgres:5432/postgres",
+            "database_url": {
+              "from_env": "HASURA_GRAPHQL_DATABASE_URL"
+            },
             "isolation_level": "read-committed",
-            "use_prepared_statements": false
+            "use_prepared_statements": true
           }
         }
       }

@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
 class LinearPiActive extends StatefulWidget {
+  static const height = 4.0;
+
+  static const size = Size.fromHeight(height);
+
+  static Widget builder(BuildContext context, bool isLoading) =>
+      isLoading ? const LinearPiActive() : const SizedBox(height: height);
+
   const LinearPiActive({
     Duration duration = const Duration(seconds: 2),
     super.key,

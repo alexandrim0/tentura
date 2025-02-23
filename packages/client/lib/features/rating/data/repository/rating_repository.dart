@@ -17,7 +17,7 @@ class RatingRepository {
       _remoteApiService
           .request(GRatingFetchReq((r) => r
             ..context = const Context().withEntry(HttpLinkHeaders(headers: {
-              headerQueryContext: context,
+              kHeaderQueryContext: context,
             }))
             ..vars.context = context))
           .firstWhere((e) => e.dataSource == DataSource.Link)

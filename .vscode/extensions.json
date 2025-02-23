@@ -1,9 +1,17 @@
 {
     "recommendations": [
-        "sumneko.lua",
+        "blaxou.freezed",
+        "Google.arb-editor",
+        "humao.rest-client",
         "felixangelov.bloc",
+        "mhutchie.git-graph",
+        "QAQyzk.freezed-bloc",
+        "vscjava.vscode-gradle",
+        "donjayamanne.githistory",
+        "localizely.flutter-intl",
         "ahmadalli.vscode-nginx-conf",
         "apollographql.vscode-apollo",
-        "uniquevision.vscode-plpgsql-lsp"
-    ]
+        "Nash.awesome-flutter-snippets",
+        "uniquevision.vscode-plpgsql-lsp",
+    ],
 }

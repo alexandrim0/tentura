@@ -1,0 +1,6 @@
+mutation OpinionCreate($objectId: String!, $content: String!) {
+  insert_opinion_one(object: {object: $objectId, content: $content}) {
+    id
+    created_at
+  }
+}

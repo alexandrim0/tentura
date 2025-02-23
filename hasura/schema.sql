@@ -53,6 +53,9 @@ CREATE TABLE public.beacon (
     lat double precision,
     long double precision,
     context text,
+    pic_height integer DEFAULT 0 NOT NULL,
+    pic_width integer DEFAULT 0 NOT NULL,
+    blur_hash text DEFAULT ''::text NOT NULL,
     CONSTRAINT beacon__description_len CHECK ((char_length(description) <= 2048)),
     CONSTRAINT beacon__title_len CHECK ((char_length(title) <= 128)),
     CONSTRAINT beacon_context_name_length CHECK (((char_length(context) >= 3) AND (char_length(context) <= 32)))
@@ -124,7 +127,7 @@ SELECT
 FROM mr_node_score(
   hasura_session ->> 'x-hasura-user-id',
   beacon_row.id,
-  COALESCE(hasura_session ->> 'x-hasura-query-context', beacon_row.context)
+  hasura_session ->> 'x-hasura-query-context'
 );
 $$;
 
@@ -140,7 +143,8 @@ CREATE TABLE public.comment (
     user_id text NOT NULL,
     content text NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    beacon_id text NOT NULL
+    beacon_id text NOT NULL,
+    CONSTRAINT comment_content_length CHECK (((char_length(content) > 0) AND (char_length(content) <= 2048)))
 );
 
 
@@ -176,36 +180,13 @@ SELECT
 FROM mr_node_score(
     hasura_session ->> 'x-hasura-user-id',
     comment_row.id,
-    COALESCE(
-        hasura_session ->> 'x-hasura-query-context',
-        (SELECT context FROM (SELECT context FROM beacon WHERE beacon.id = comment_row.beacon_id))
-    )
+    hasura_session ->> 'x-hasura-query-context'
+    
 );
 $$;
 
 
 ALTER FUNCTION public.comment_get_scores(comment_row public.comment, hasura_session json) OWNER TO postgres;
-
---
--- Name: decrement_beacon_comments_count(); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.decrement_beacon_comments_count() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-
-BEGIN
-
-    UPDATE beacon SET comments_count = comments_count - 1 WHERE id = NEW.beacon_id;
-
-    RETURN NEW;
-
-END;
-
-$$;
-
-
-ALTER FUNCTION public.decrement_beacon_comments_count() OWNER TO postgres;
 
 --
 -- Name: graph(text, text, boolean, json); Type: FUNCTION; Schema: public; Owner: postgres
@@ -223,7 +204,7 @@ FROM
   mr_graph(
     hasura_session ->> 'x-hasura-user-id',
     focus,
-    COALESCE(context,hasura_session ->> 'x-hasura-query-context'),
+    hasura_session ->> 'x-hasura-query-context',
     positive_only,
     0,
     100
@@ -232,27 +213,6 @@ $$;
 
 
 ALTER FUNCTION public.graph(focus text, context text, positive_only boolean, hasura_session json) OWNER TO postgres;
-
---
--- Name: increment_beacon_comments_count(); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.increment_beacon_comments_count() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-
-BEGIN
-
-    UPDATE beacon SET comments_count = comments_count + 1 WHERE id = NEW.beacon_id;
-
-    RETURN NEW;
-
-END;
-
-$$;
-
-
-ALTER FUNCTION public.increment_beacon_comments_count() OWNER TO postgres;
 
 --
 -- Name: meritrank_init(); Type: FUNCTION; Schema: public; Owner: postgres
@@ -366,7 +326,7 @@ FROM
   mr_scores(
     hasura_session ->> 'x-hasura-user-id',
     true,
-    COALESCE(context,hasura_session ->> 'x-hasura-query-context'),
+    hasura_session ->> 'x-hasura-query-context',
     'B',
     null,
     null,
@@ -445,7 +405,6 @@ $$;
 
 ALTER FUNCTION public.notify_meritrank_context_mutation() OWNER TO postgres;
 
-
 --
 -- Name: notify_meritrank_vote_beacon_mutation(); Type: FUNCTION; Schema: public; Owner: postgres
 --
@@ -515,6 +474,81 @@ $$;
 ALTER FUNCTION public.notify_meritrank_vote_user_mutation() OWNER TO postgres;
 
 --
+-- Name: on_public_user_update(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.on_public_user_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  _new record;
+BEGIN
+  _new := NEW;
+  _new."updated_at" = NOW();
+  IF NEW.has_picture = false THEN
+    _new.blur_hash = '';
+    _new.pic_height = 0;
+    _new.pic_width = 0;
+  END IF;
+  RETURN _new;
+END;
+$$;
+
+
+ALTER FUNCTION public.on_public_user_update() OWNER TO postgres;
+
+--
+-- Name: opinion; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.opinion (
+    id text DEFAULT concat('O', "substring"((gen_random_uuid())::text, '\w{12}'::text)) NOT NULL,
+    subject text NOT NULL,
+    object text NOT NULL,
+    content text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT opinion_content_length CHECK (((char_length(content) > 0) AND (char_length(content) <= 2048)))
+);
+
+
+ALTER TABLE public.opinion OWNER TO postgres;
+
+--
+-- Name: opinion_get_my_vote(public.opinion, json); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.opinion_get_my_vote(opinion_row public.opinion, hasura_session json) RETURNS integer
+    LANGUAGE sql STABLE
+    AS $$
+  SELECT COALESCE((SELECT amount FROM vote_opinion WHERE subject = (hasura_session ->> 'x-hasura-user-id')::TEXT AND object = opinion_row.id), 0);
+$$;
+
+
+ALTER FUNCTION public.opinion_get_my_vote(opinion_row public.opinion, hasura_session json) OWNER TO postgres;
+
+--
+-- Name: opinion_get_scores(public.opinion, json); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.opinion_get_scores(opinion_row public.opinion, hasura_session json) RETURNS SETOF public.mutual_score
+    LANGUAGE sql STABLE
+    AS $$
+SELECT
+  src,
+  dst,
+  score_cluster_of_src AS src_score,
+  score_cluster_of_dst AS dst_score
+FROM mr_node_score(
+    hasura_session ->> 'x-hasura-user-id',
+    opinion_row.id,
+    null
+);
+$$;
+
+
+ALTER FUNCTION public.opinion_get_scores(opinion_row public.opinion, hasura_session json) OWNER TO postgres;
+
+--
 -- Name: rating(text, json); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -528,7 +562,7 @@ SELECT
     score_cluster_of_dst AS dst_score
 FROM mr_mutual_scores(
     hasura_session->>'x-hasura-user-id',
-    COALESCE(context,hasura_session ->> 'x-hasura-query-context')
+    hasura_session ->> 'x-hasura-query-context'
 );
 $$;
 
@@ -609,6 +643,9 @@ CREATE TABLE public."user" (
     description text DEFAULT ''::text NOT NULL,
     has_picture boolean DEFAULT false NOT NULL,
     public_key text NOT NULL,
+    pic_height integer DEFAULT 0 NOT NULL,
+    pic_width integer DEFAULT 0 NOT NULL,
+    blur_hash text DEFAULT ''::text NOT NULL,
     CONSTRAINT user__description_len CHECK ((char_length(description) <= 2048)),
     CONSTRAINT user__title_len CHECK ((char_length(title) <= 128))
 );
@@ -737,6 +774,21 @@ CREATE TABLE public.vote_comment (
 ALTER TABLE public.vote_comment OWNER TO postgres;
 
 --
+-- Name: vote_opinion; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.vote_opinion (
+    subject text NOT NULL,
+    object text NOT NULL,
+    amount integer NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.vote_opinion OWNER TO postgres;
+
+--
 -- Name: vote_user; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -781,6 +833,22 @@ ALTER TABLE ONLY public.comment
 
 ALTER TABLE ONLY public.message
     ADD CONSTRAINT message_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: opinion opinion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.opinion
+    ADD CONSTRAINT opinion_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: opinion opinion_subject_object_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.opinion
+    ADD CONSTRAINT opinion_subject_object_key UNIQUE (subject, object);
 
 
 --
@@ -832,6 +900,14 @@ ALTER TABLE ONLY public.vote_comment
 
 
 --
+-- Name: vote_opinion vote_opinion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.vote_opinion
+    ADD CONSTRAINT vote_opinion_pkey PRIMARY KEY (subject, object);
+
+
+--
 -- Name: vote_user vote_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -861,17 +937,17 @@ CREATE INDEX message_by_subject ON public.message USING btree (subject);
 
 
 --
--- Name: comment decrement_beacon_comments_count; Type: TRIGGER; Schema: public; Owner: postgres
+-- Name: beacon notify_hasura_beacon_mutate_DELETE; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER decrement_beacon_comments_count AFTER DELETE ON public.comment FOR EACH ROW EXECUTE FUNCTION public.decrement_beacon_comments_count();
+CREATE TRIGGER "notify_hasura_beacon_mutate_DELETE" AFTER DELETE ON public.beacon FOR EACH ROW EXECUTE FUNCTION hdb_catalog."notify_hasura_beacon_mutate_DELETE"();
 
 
 --
--- Name: comment increment_beacon_comments_count; Type: TRIGGER; Schema: public; Owner: postgres
+-- Name: beacon notify_hasura_beacon_mutate_INSERT; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER increment_beacon_comments_count AFTER INSERT ON public.comment FOR EACH ROW EXECUTE FUNCTION public.increment_beacon_comments_count();
+CREATE TRIGGER "notify_hasura_beacon_mutate_INSERT" AFTER INSERT ON public.beacon FOR EACH ROW EXECUTE FUNCTION hdb_catalog."notify_hasura_beacon_mutate_INSERT"();
 
 
 --
@@ -917,6 +993,13 @@ CREATE TRIGGER notify_meritrank_vote_user_mutation AFTER INSERT OR UPDATE ON pub
 
 
 --
+-- Name: user on_public_user_update; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER on_public_user_update BEFORE UPDATE ON public."user" FOR EACH ROW EXECUTE FUNCTION public.on_public_user_update();
+
+
+--
 -- Name: beacon set_public_beacon_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -945,20 +1028,6 @@ COMMENT ON TRIGGER set_public_message_updated_at ON public.message IS 'trigger t
 
 
 --
--- Name: user set_public_user_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER set_public_user_updated_at BEFORE UPDATE ON public."user" FOR EACH ROW EXECUTE FUNCTION public.set_current_timestamp_updated_at();
-
-
---
--- Name: TRIGGER set_public_user_updated_at ON "user"; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON TRIGGER set_public_user_updated_at ON public."user" IS 'trigger to set value of column "updated_at" to current timestamp on row update';
-
-
---
 -- Name: vote_beacon set_public_vote_beacon_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -984,6 +1053,20 @@ CREATE TRIGGER set_public_vote_comment_updated_at BEFORE UPDATE ON public.vote_c
 --
 
 COMMENT ON TRIGGER set_public_vote_comment_updated_at ON public.vote_comment IS 'trigger to set value of column "updated_at" to current timestamp on row update';
+
+
+--
+-- Name: vote_opinion set_public_vote_opinion_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER set_public_vote_opinion_updated_at BEFORE UPDATE ON public.vote_opinion FOR EACH ROW EXECUTE FUNCTION public.set_current_timestamp_updated_at();
+
+
+--
+-- Name: TRIGGER set_public_vote_opinion_updated_at ON vote_opinion; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TRIGGER set_public_vote_opinion_updated_at ON public.vote_opinion IS 'trigger to set value of column "updated_at" to current timestamp on row update';
 
 
 --
@@ -1057,6 +1140,22 @@ ALTER TABLE ONLY public.message
 
 
 --
+-- Name: opinion opinion_object_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.opinion
+    ADD CONSTRAINT opinion_object_fkey FOREIGN KEY (object) REFERENCES public."user"(id) ON UPDATE RESTRICT ON DELETE CASCADE;
+
+
+--
+-- Name: opinion opinion_subject_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.opinion
+    ADD CONSTRAINT opinion_subject_fkey FOREIGN KEY (subject) REFERENCES public."user"(id) ON UPDATE RESTRICT ON DELETE CASCADE;
+
+
+--
 -- Name: user_context user_context_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1123,3 +1222,4 @@ ALTER TABLE ONLY public.vote_user
 --
 -- PostgreSQL database dump complete
 --
+

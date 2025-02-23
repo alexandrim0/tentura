@@ -1,0 +1,133 @@
+name: tentura
+
+services:
+  common:
+    init: true
+    image: scratch
+    restart: unless-stopped
+    networks:
+      - backend
+    logging:
+      driver: journald
+
+  openresty:
+    extends:
+      service: common
+    hostname: openresty
+    container_name: openresty
+    image: vbulavintsev/openresty-tentura
+    depends_on:
+      - hasura
+      - tentura
+    volumes:
+      - /tmp
+      - ./web:/usr/local/openresty/nginx/html:ro
+      - openresty-cert:/etc/nginx/cert
+    tmpfs:
+      - /var/run/openresty
+    ports:
+      - 80:80/tcp
+      - 443:443/tcp
+    networks:
+      - proxy
+    environment:
+      - WORKERS
+      - RESOLVER
+      - ACME_EMAIL
+      - SERVER_NAME
+      - ERROR_LOG_LEVEL
+      - CONTENT_EXPIRES
+      - HASURA_KEEPALIVE
+      - TENTURA_KEEPALIVE
+      - WORKER_CONNECTIONS
+      - CLIENT_MAX_BODY_SIZE
+      - CLIENT_BODY_BUFFER_SIZE
+    post_start:
+      - command: chown nobody:nogroup /etc/nginx/cert
+        user: root
+
+  hasura:
+    extends:
+      service: common
+    hostname: hasura
+    container_name: hasura
+    image: hasura/graphql-engine
+    depends_on:
+      - tentura
+      - postgres
+    environment:
+      - TENTURA_PASSWORD
+      - HASURA_GRAPHQL_ADMIN_SECRET
+      - 'HASURA_GRAPHQL_ENABLE_TELEMETRY=false'
+      - 'HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES=true'
+      - 'HASURA_GRAPHQL_INFER_FUNCTION_PERMISSIONS=false'
+      - 'HASURA_GRAPHQL_HTTP_LOG_QUERY_ONLY_ON_ERROR=true'
+      - 'HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres'
+      - 'HASURA_GRAPHQL_JWT_SECRET={"type":"Ed25519", "key":"${JWT_PUBLIC_PEM}", "claims_map": {"x-hasura-allowed-roles": ["user", "admin"], "x-hasura-default-role": "user", "x-hasura-user-id": {"path": "$$.sub"}}}'
+      - 'HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=streaming_subscriptions,remove_empty_subscription_responses'
+      - 'ACTION_BASE_URL=http://tentura:2080/hasura/actions'
+      - 'EVENT_BASE_URL=http://tentura:2080/hasura/events'
+
+  postgres:
+    extends:
+      service: common
+    hostname: postgres
+    container_name: postgres
+    image: vbulavintsev/postgres-tentura
+    depends_on:
+      - meritrank
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD
+      - 'MERITRANK_SERVICE_URL=tcp://meritrank:10234'
+
+  meritrank:
+    extends:
+      service: common
+    hostname: meritrank
+    container_name: meritrank
+    image: vbulavintsev/meritrank-service
+    oom_kill_disable: true
+    read_only: true
+    environment:
+      - 'MERITRANK_NUM_WALK=5000'
+      - 'MERITRANK_ZERO_OPINION_FACTOR=2'
+      - 'MERITRANK_SERVICE_URL=tcp://0.0.0.0:10234'
+
+  tentura:
+    extends:
+      service: common
+    hostname: tentura
+    container_name: tentura
+    image: vbulavintsev/tentura-service
+    depends_on:
+      - postgres
+    environment:
+      - 'DEBUG_MODE=false'
+      - SERVER_NAME
+      - IMAGES_PATH
+      - IMAGE_SERVER
+      - WORKERS_COUNT
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      - POSTGRES_DBNAME
+      - POSTGRES_USERNAME
+      - POSTGRES_PASSWORD
+      - POSTGRES_MAXCONN
+      - TENTURA_PASSWORD
+      - JWT_PRIVATE_PEM
+      - JWT_PUBLIC_PEM
+      - JWT_EXPIRES_IN
+      - S3_ACCESS_KEY
+      - S3_SECRET_KEY
+      - S3_ENDPOINT
+      - S3_BUCKET
+
+volumes:
+  openresty-cert:
+
+networks:
+  proxy:
+  backend:
+    internal: true

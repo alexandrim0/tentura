@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:force_directed_graphview/force_directed_graphview.dart';
 
-import 'package:tentura/app/router/root_router.dart';
-
 import '../../domain/entity/edge_details.dart';
 import '../../domain/entity/node_details.dart';
 import '../utils/animated_highlighted_edge_painter.dart';
@@ -95,12 +93,7 @@ class GraphBodyState extends State<GraphBody>
           key: ValueKey(node),
           nodeDetails: node,
           onTap: () => _cubit.setFocus(node),
-          onDoubleTap: () => context.pushRoute(
-            switch (node) {
-              final UserNode node => ProfileViewRoute(id: node.id),
-              final BeaconNode node => BeaconViewRoute(id: node.id),
-            },
-          ),
+          onDoubleTap: () => _cubit.showNodeDetails(node),
         ),
       );
 }

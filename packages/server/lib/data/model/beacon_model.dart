@@ -1,8 +1,8 @@
 import 'package:latlong2/latlong.dart';
 import 'package:stormberry/stormberry.dart' hide DateTimeRange;
 
+import 'package:tentura_root/domain/entity/date_time_range.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
-import 'package:tentura_server/domain/entity/date_time_range.dart';
 
 import '../service/converter/datetime_range_converter.dart';
 import 'user_model.dart';
@@ -16,6 +16,9 @@ extension type const BeaconModel(BeaconView i) implements BeaconView {
         context: context ?? '',
         description: description,
         hasPicture: hasPicture,
+        picHeight: picHeight,
+        picWidth: picWidth,
+        blurHash: blurHash,
         isEnabled: enabled,
         createdAt: createdAt,
         updatedAt: updatedAt,
@@ -53,6 +56,12 @@ abstract class Beacon {
   bool get enabled;
 
   bool get hasPicture;
+
+  String get blurHash;
+
+  int get picHeight;
+
+  int get picWidth;
 
   double? get lat;
 

@@ -2,10 +2,10 @@ name: tentura_server
 description: Tentura server API
 publish_to: none
 
-version: 0.0.2
+version: 0.0.9
 
 environment:
-  sdk: '>=3.6.1 <4.0.0'
+  sdk: '>=3.7.0 <4.0.0'
 
 resolution: workspace
 
@@ -13,30 +13,33 @@ dependencies:
   meta:
   uuid:
   faker:
+  image:
   get_it:
-  logger:
-  sentry:
-  mockito:
   latlong2:
   injectable:
+  tentura_root:
+  blurhash_dart:
+  dart_jsonwebtoken:
   freezed_annotation:
 
+  minio: ^3.5.7
   jaspr: ^0.17.0
-  postgres: ^3.4.8
+  postgres: ^3.5.4
   shelf_plus: ^1.10.0
-  stormberry: ^0.14.0
-  dart_jsonwebtoken: ^2.14.2
+  stormberry: ^0.15.0
+  shelf_cors_headers: ^0.1.5
 
 dev_dependencies:
+  lints:
   freezed:
   build_runner:
   json_serializable:
   very_good_analysis:
   injectable_generator:
 
-  test: ^1.25.8
+  test: ^1.25.15
   jaspr_builder: ^0.17.0
-  build_web_compilers: ^4.1.0
+  build_web_compilers: ^4.1.1
 
 jaspr:
   mode: server

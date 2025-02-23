@@ -20,7 +20,7 @@ class TenturaApi extends TenturaApiBase {
   @override
   Future<void> init() async {
     _gqlClient = await buildClient(
-      serverUrl: apiUrlBase + pathGraphQLEndpoint,
+      serverUrl: apiUrlBase + kPathGraphQLEndpoint,
       getToken: getToken,
     );
   }
