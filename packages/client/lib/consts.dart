@@ -6,6 +6,10 @@ const kCommentsShown = 3;
 
 const kSnackBarDuration = 5;
 
+const kFetchWindowSize = 5;
+
+const kFetchListOffset = 0.9;
+
 // Images
 const kImageQuality = 95;
 const kImageMaxDimension = 600;

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:get_it/get_it.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import '../../data/repository/beacon_repository.dart';
@@ -13,33 +14,27 @@ export 'beacon_state.dart';
 
 class BeaconCubit extends Cubit<BeaconState> {
   BeaconCubit({
+    required bool isMine,
     required String profileId,
-    bool isMine = false,
     BeaconRepository? beaconRepository,
   }) : _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
-       super(
-         BeaconState(
-           profileId: profileId,
-           isMine: isMine,
-           beacons: [],
-           offset: 0,
-           limit: 10,
-         ),
-       ) {
-    fetch();
-  }
+       super(BeaconState(profileId: profileId, isMine: isMine, beacons: []));
 
   final BeaconRepository _beaconRepository;
 
   Future<void> fetch() async {
+    if (state.hasReachedLast || state.status is StateIsLoading) return;
+
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final beacons = await _beaconRepository.fetchBeacons(
+        offset: state.beacons.length,
         profileId: state.profileId,
       );
       emit(
         state.copyWith(
-          beacons: beacons.toList(),
+          beacons: state.beacons..addAll(beacons),
+          hasReachedLast: beacons.length < kFetchWindowSize,
           status: StateStatus.isSuccess,
         ),
       );

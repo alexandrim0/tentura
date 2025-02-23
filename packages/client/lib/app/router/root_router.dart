@@ -125,6 +125,7 @@ class RootRouter extends RootStackRouter {
       page: ProfileEditRoute.page,
     ),
 
+    // Settings
     AutoRoute(
       keepHistory: false,
       maintainState: false,
@@ -141,10 +142,20 @@ class RootRouter extends RootStackRouter {
     ),
 
     // Beacon View
-    AutoRoute(path: kPathBeaconView, page: BeaconViewRoute.page),
+    AutoRoute(
+      keepHistory: false,
+      maintainState: false,
+      path: kPathBeaconView,
+      page: BeaconViewRoute.page,
+    ),
 
     // Beacon View All
-    AutoRoute(path: kPathBeaconViewAll, page: BeaconRoute.page),
+    AutoRoute(
+      keepHistory: false,
+      maintainState: false,
+      path: kPathBeaconViewAll,
+      page: BeaconRoute.page,
+    ),
 
     // Rating
     AutoRoute(path: kPathRating, page: RatingRoute.page),

@@ -13,8 +13,6 @@ class BeaconCubitMock extends Cubit<BeaconState> implements BeaconCubit {
           profileId: profileAlice.id,
           beacons: [beaconA, beaconB],
           hasReachedLast: true,
-          offset: 0,
-          limit: 0,
         ),
       );
 

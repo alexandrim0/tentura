@@ -15,10 +15,9 @@ class ProfileBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final profileCubit = GetIt.I<ProfileCubit>();
     final screenCubit = context.read<ScreenCubit>();
     return BlocSelector<ProfileCubit, ProfileState, Profile>(
-      bloc: profileCubit,
+      bloc: GetIt.I<ProfileCubit>(),
       selector: (state) => state.profile,
       builder: (_, profile) {
         return SliverToBoxAdapter(

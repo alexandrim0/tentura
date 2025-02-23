@@ -5,6 +5,7 @@ import 'package:tentura/features/opinion/ui/bloc/opinion_cubit.dart';
 import 'package:tentura/features/opinion/ui/widget/opinion_list.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/bottom_text_input.dart';
 
@@ -21,13 +22,15 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
     providers: [
+      BlocProvider(create: (_) => ScreenCubit()),
       BlocProvider(create: (_) => ProfileViewCubit(id: id)),
       BlocProvider(
-        create:
-            (_) => OpinionCubit(
-              objectId: id,
-              myProfile: GetIt.I<ProfileCubit>().state.profile,
-            ),
+        create: (_) {
+          return OpinionCubit(
+            objectId: id,
+            myProfile: GetIt.I<ProfileCubit>().state.profile,
+          );
+        },
       ),
     ],
     child: MultiBlocListener(
@@ -36,6 +39,9 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
           listener: commonScreenBlocListener,
         ),
         BlocListener<OpinionCubit, OpinionState>(
+          listener: commonScreenBlocListener,
+        ),
+        BlocListener<ScreenCubit, ScreenState>(
           listener: commonScreenBlocListener,
         ),
       ],

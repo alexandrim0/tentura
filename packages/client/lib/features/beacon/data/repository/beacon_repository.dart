@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/data/gql/_g/schema.schema.gql.dart';
 import 'package:tentura/data/model/beacon_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
@@ -27,18 +28,29 @@ class BeaconRepository {
   @disposeMethod
   Future<void> dispose() => _controller.close();
 
+  Future<Iterable<Beacon>> fetchBeacons({
+    required String profileId,
+    required int offset,
+    int limit = kFetchWindowSize,
+  }) => _remoteApiService
+      .request(
+        GBeaconsFetchByUserIdReq(
+          (b) =>
+              b.vars
+                ..user_id = profileId
+                ..offset = offset
+                ..limit = limit,
+        ),
+      )
+      .firstWhere((e) => e.dataSource == DataSource.Link)
+      .then((r) => r.dataOrThrow(label: _label).beacon)
+      .then((v) => v.map((e) => (e as BeaconModel).toEntity));
+
   Future<Beacon> fetchBeaconById(String id) => _remoteApiService
       .request(GBeaconFetchByIdReq((b) => b.vars.id = id))
       .firstWhere((e) => e.dataSource == DataSource.Link)
       .then((r) => r.dataOrThrow(label: _label).beacon_by_pk as BeaconModel?)
       .then((v) => v == null ? throw BeaconFetchException(id) : v.toEntity);
-
-  Future<Iterable<Beacon>> fetchBeacons({required String profileId}) =>
-      _remoteApiService
-          .request(GBeaconsFetchByUserIdReq((b) => b.vars.user_id = profileId))
-          .firstWhere((e) => e.dataSource == DataSource.Link)
-          .then((r) => r.dataOrThrow(label: _label).beacon)
-          .then((v) => v.map((e) => (e as BeaconModel).toEntity));
 
   Future<Beacon> create(Beacon beacon) async {
     final response = await _remoteApiService
