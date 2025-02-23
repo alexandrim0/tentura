@@ -55,7 +55,7 @@ class AvatarRated extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
                 score: profile.score,
               ),
-              child: Padding(padding: const EdgeInsets.all(5), child: _avatar),
+              child: Padding(padding: EdgeInsets.all(size / 8), child: _avatar),
             )
             : _avatar,
   );
@@ -91,7 +91,7 @@ class _RatingPainter extends CustomPainter {
         Paint()
           ..color = color
           ..isAntiAlias = true
-          ..strokeWidth = 4.0
+          ..strokeWidth = size.height / 10
           ..strokeCap = StrokeCap.round
           ..style = PaintingStyle.stroke;
 

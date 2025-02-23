@@ -62,33 +62,25 @@ class _AccountMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Row(
-          children: [
-            Padding(
-              padding: kPaddingAllS,
-              child: AvatarRated(
-                profile: profile,
-                withRating: false,
-              ),
-            ),
-            Padding(
-              padding: kPaddingAllS,
-              child: Text(
-                profile.title,
-                maxLines: 1,
-                softWrap: false,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            if (isMe)
-              const Padding(
-                padding: kPaddingAllS,
-                child: Icon(
-                  Icons.check,
-                ),
-              ),
-          ],
+    onTap: onTap,
+    child: Row(
+      children: [
+        Padding(
+          padding: kPaddingAllS,
+          child: AvatarRated.small(profile: profile, withRating: false),
         ),
-      );
+        Padding(
+          padding: kPaddingAllS,
+          child: Text(
+            profile.title,
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        if (isMe)
+          const Padding(padding: kPaddingAllS, child: Icon(Icons.check)),
+      ],
+    ),
+  );
 }

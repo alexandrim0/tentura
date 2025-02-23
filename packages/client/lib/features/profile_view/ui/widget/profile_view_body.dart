@@ -25,7 +25,7 @@ class ProfileViewBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Avatar
-                Center(child: AvatarRated(profile: profile, size: 160)),
+                Center(child: AvatarRated.big(profile: profile)),
 
                 // Description
                 Padding(

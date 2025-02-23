@@ -19,7 +19,10 @@ class AuthorInfo extends StatelessWidget {
     child: Row(
       children: [
         // Avatar
-        Padding(padding: kPaddingAllS, child: AvatarRated(profile: author)),
+        Padding(
+          padding: kPaddingAllS,
+          child: AvatarRated.small(profile: author),
+        ),
 
         // User displayName
         Text(author.title, style: Theme.of(context).textTheme.headlineMedium),

@@ -20,7 +20,7 @@ class ChatPeerListTile extends StatelessWidget {
       // Avatar
       leading: GestureDetector(
         onTap: () => context.read<ScreenCubit>().showProfile(profile.id),
-        child: AvatarRated(profile: profile),
+        child: AvatarRated.small(profile: profile),
       ),
 
       title: Row(

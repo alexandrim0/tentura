@@ -29,11 +29,7 @@ class ProfileBody extends StatelessWidget {
               children: [
                 // Avatar
                 Center(
-                  child: AvatarRated(
-                    profile: profile,
-                    size: 160,
-                    withRating: false,
-                  ),
+                  child: AvatarRated.big(profile: profile, withRating: false),
                 ),
 
                 // Description

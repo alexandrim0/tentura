@@ -43,7 +43,7 @@ class OpinionTile extends StatelessWidget {
                         ),
                 child: Padding(
                   padding: const EdgeInsets.only(right: kSpacingMedium),
-                  child: AvatarRated(
+                  child: AvatarRated.small(
                     profile: opinion.author,
                     withRating: !isMine,
                   ),

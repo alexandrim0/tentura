@@ -101,10 +101,9 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           // Avatar
                           Center(
-                            child: AvatarRated(
+                            child: AvatarRated.big(
                               withRating: false,
                               profile: profile,
-                              size: 160,
                             ),
                           ),
 

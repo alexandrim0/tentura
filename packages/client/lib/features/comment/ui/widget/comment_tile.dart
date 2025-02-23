@@ -39,7 +39,7 @@ class CommentTile extends StatelessWidget {
                         ),
                 child: Padding(
                   padding: const EdgeInsets.only(right: kSpacingMedium),
-                  child: AvatarRated(profile: comment.author),
+                  child: AvatarRated.small(profile: comment.author),
                 ),
               ),
               Expanded(

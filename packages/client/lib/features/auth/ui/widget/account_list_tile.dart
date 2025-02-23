@@ -10,37 +10,31 @@ import '../bloc/auth_cubit.dart';
 import '../dialog/account_remove_dialog.dart';
 
 class AccountListTile extends StatelessWidget {
-  const AccountListTile({
-    required this.account,
-    super.key,
-  });
+  const AccountListTile({required this.account, super.key});
 
   final Profile account;
 
   @override
   Widget build(BuildContext context) => ListTile(
-        contentPadding: EdgeInsets.zero,
-        leading: AvatarRated(
-          profile: account,
-          withRating: false,
-        ),
-        title: Text(account.title),
-        trailing: PopupMenuButton(
-          itemBuilder: (context) => <PopupMenuEntry<void>>[
+    contentPadding: EdgeInsets.zero,
+    leading: AvatarRated.small(profile: account, withRating: false),
+    title: Text(account.title),
+    trailing: PopupMenuButton(
+      itemBuilder:
+          (context) => <PopupMenuEntry<void>>[
             //
             // Share account code
             PopupMenuItem<void>(
               child: const Text('Share account'),
-              onTap: () => ShareCodeDialog.show(
-                context,
-                header: account.id,
-                link: Uri.parse(kServerName).replace(
-                  path: kPathAppLinkView,
-                  queryParameters: {
-                    'id': account.id,
-                  },
-                ),
-              ),
+              onTap:
+                  () => ShareCodeDialog.show(
+                    context,
+                    header: account.id,
+                    link: Uri.parse(kServerName).replace(
+                      path: kPathAppLinkView,
+                      queryParameters: {'id': account.id},
+                    ),
+                  ),
             ),
             const PopupMenuDivider(),
 
@@ -48,8 +42,9 @@ class AccountListTile extends StatelessWidget {
             PopupMenuItem<void>(
               child: const Text('Show seed'),
               onTap: () async {
-                final seed =
-                    await GetIt.I<AuthCubit>().getSeedByAccountId(account.id);
+                final seed = await GetIt.I<AuthCubit>().getSeedByAccountId(
+                  account.id,
+                );
                 if (context.mounted) {
                   await ShowSeedDialog.show(
                     context,
@@ -64,15 +59,12 @@ class AccountListTile extends StatelessWidget {
             // Remove account
             PopupMenuItem<void>(
               child: const Text('Remove from list'),
-              onTap: () => AccountRemoveDialog.show(
-                context,
-                id: account.id,
-              ),
+              onTap: () => AccountRemoveDialog.show(context, id: account.id),
             ),
           ],
-        ),
+    ),
 
-        // Log in
-        onTap: () => GetIt.I<AuthCubit>().signIn(account.id),
-      );
+    // Log in
+    onTap: () => GetIt.I<AuthCubit>().signIn(account.id),
+  );
 }
