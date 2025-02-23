@@ -5,9 +5,6 @@ import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/image_entity.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
-import 'package:tentura/ui/widget/gradient_stack.dart';
-import 'package:tentura/ui/widget/avatar_positioned.dart';
 
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 
@@ -19,22 +16,23 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (_) => ProfileEditCubit(
+    providers: [
+      BlocProvider(
+        create:
+            (_) => ProfileEditCubit(
               profile: GetIt.I<ProfileCubit>().state.profile,
             ),
-          ),
-        ],
-        child: MultiBlocListener(
-          listeners: const [
-            BlocListener<ProfileEditCubit, ProfileEditState>(
-              listener: commonScreenBlocListener,
-            ),
-          ],
-          child: this,
+      ),
+    ],
+    child: MultiBlocListener(
+      listeners: const [
+        BlocListener<ProfileEditCubit, ProfileEditState>(
+          listener: commonScreenBlocListener,
         ),
-      );
+      ],
+      child: this,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -45,97 +43,66 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
       appBar: AppBar(
         actions: [
           // Save Button
-          Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: kPaddingAll,
-              child: IconButton.outlined(
-                icon: const Icon(
-                  Icons.save,
-                  color: Colors.black,
-                ),
-                onPressed: cubit.save,
-              ),
-            ),
-          ),
+          TextButton(onPressed: cubit.save, child: const Text('Save')),
         ],
-
-        // Back Button
-        leading: const Align(
-          alignment: Alignment.topCenter,
-          child: Padding(
-            padding: kPaddingAll,
-            child: DeepBackButton(
-              color: Colors.black,
-            ),
-          ),
-        ),
-        toolbarHeight: GradientStack.defaultHeight,
-
-        // Avatar
-        flexibleSpace:
-            BlocSelector<ProfileEditCubit, ProfileEditState, ImageEntity?>(
-          selector: (state) => state.image,
-          builder: (context, image) => FlexibleSpaceBar(
-            background: GradientStack(
-              children: [
-                AvatarPositioned(
-                  child: image == null
-                      // Original Avatar
-                      ? AvatarRated(
-                          profile: cubit.profile,
-                          size: AvatarPositioned.childSize,
-                          withRating: false,
-                        )
-                      : SizedBox.square(
-                          dimension: AvatarPositioned.childSize,
-                          child: ClipOval(
-                            child: image.imageBytes.isEmpty
-                                // Placeholder
-                                ? Image.asset(
-                                    kAssetAvatarPlaceholder,
-                                    // ignore: avoid_redundant_argument_values //
-                                    package: kAssetPackage,
-                                  )
-                                // New Avatar
-                                : Image.memory(
-                                    image.imageBytes,
-                                    fit: BoxFit.cover,
-                                  ),
-                          ),
-                        ),
-                ),
-                Positioned(
-                  top: _top,
-                  left: _left,
-                  child: image == null || image.imageBytes.isNotEmpty
-                      // Remove Picture Button
-                      ? IconButton.filledTonal(
-                          iconSize: 50,
-                          icon: const Icon(
-                            Icons.highlight_remove_outlined,
-                          ),
-                          onPressed: cubit.clearImage,
-                        )
-                      // Upload Picture Button
-                      : IconButton.filledTonal(
-                          iconSize: 50,
-                          icon: const Icon(
-                            Icons.add_a_photo_outlined,
-                          ),
-                          onPressed: cubit.pickImage,
-                        ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
       resizeToAvoidBottomInset: false,
 
       // Form
       body: Column(
         children: [
+          // Avatar
+          BlocSelector<ProfileEditCubit, ProfileEditState, ImageEntity?>(
+            selector: (state) => state.image,
+            builder: (_, image) {
+              return Stack(
+                children: [
+                  if (image == null)
+                    // Original Avatar
+                    AvatarRated.big(profile: cubit.profile, withRating: false)
+                  else
+                    SizedBox.square(
+                      dimension: AvatarRated.sizeBig,
+                      child: ClipOval(
+                        child:
+                            image.imageBytes.isEmpty
+                                // Placeholder
+                                ? Image.asset(
+                                  kAssetAvatarPlaceholder,
+                                  // ignore: avoid_redundant_argument_values //
+                                  package: kAssetPackage,
+                                )
+                                // New Avatar
+                                : Image.memory(
+                                  image.imageBytes,
+                                  fit: BoxFit.cover,
+                                ),
+                      ),
+                    ),
+
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child:
+                        image == null || image.imageBytes.isNotEmpty
+                            // Remove Picture Button
+                            ? IconButton.filledTonal(
+                              iconSize: AvatarRated.sizeSmall,
+                              icon: const Icon(Icons.highlight_remove_outlined),
+                              onPressed: cubit.clearImage,
+                            )
+                            // Upload Picture Button
+                            : IconButton.filledTonal(
+                              iconSize: AvatarRated.sizeSmall,
+                              icon: const Icon(Icons.add_a_photo_outlined),
+                              onPressed: cubit.pickImage,
+                            ),
+                  ),
+                ],
+              );
+            },
+          ),
+
           // Username
           Padding(
             padding: kPaddingAll,
@@ -157,22 +124,20 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
           // User Description
           Expanded(
             child: Padding(
-              padding: kPaddingH,
+              padding: kPaddingAll,
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final textStyle = textTheme.bodyMedium!;
                   final painter = TextPainter(
-                    text: TextSpan(
-                      text: 'A',
-                      style: textStyle,
-                    ),
+                    text: TextSpan(text: 'A', style: textStyle),
                     maxLines: 1,
                     textDirection: TextDirection.ltr,
                   )..layout();
                   return TextFormField(
-                    maxLines: constraints.maxHeight > 0
-                        ? (constraints.maxHeight / painter.height).floor()
-                        : 1,
+                    maxLines:
+                        constraints.maxHeight > 0
+                            ? (constraints.maxHeight / painter.height).floor()
+                            : 1,
                     minLines: 1,
                     maxLength: kDescriptionLength,
                     keyboardType: TextInputType.multiline,
@@ -191,15 +156,8 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
               ),
             ),
           ),
-
-          const Padding(
-            padding: kPaddingT,
-          ),
         ],
       ),
     );
   }
-
-  static const _top = 225.0;
-  static const _left = 200.0;
 }

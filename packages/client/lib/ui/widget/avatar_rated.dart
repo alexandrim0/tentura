@@ -6,13 +6,25 @@ import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 
 class AvatarRated extends StatelessWidget {
+  static const sizeBig = 160.0;
+
+  static const sizeSmall = sizeBig / 4;
+
   AvatarRated({
     required this.profile,
     this.withRating = true,
     this.boxFit = BoxFit.cover,
-    this.size = 40,
+    this.size = sizeSmall,
     super.key,
   });
+
+  AvatarRated.big({required this.profile, this.withRating = true, super.key})
+    : boxFit = BoxFit.cover,
+      size = sizeBig;
+
+  AvatarRated.small({required this.profile, this.withRating = true, super.key})
+    : boxFit = BoxFit.cover,
+      size = sizeSmall;
 
   final double size;
 
