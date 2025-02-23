@@ -4,6 +4,7 @@ import 'package:tentura/domain/entity/opinion.dart';
 
 import 'package:tentura/features/like/ui/widget/like_control.dart';
 
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/rating_indicator.dart';
@@ -21,7 +22,6 @@ class OpinionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final opinionCubit = context.read<OpinionCubit>();
     return Column(
       children: [
         const Divider(),
@@ -38,7 +38,9 @@ class OpinionTile extends StatelessWidget {
                 onTap:
                     isMine
                         ? null
-                        : () => opinionCubit.showProfile(opinion.author.id),
+                        : () => context.read<ScreenCubit>().showProfile(
+                          opinion.author.id,
+                        ),
                 child: Padding(
                   padding: const EdgeInsets.only(right: kSpacingMedium),
                   child: AvatarRated(
@@ -89,12 +91,16 @@ class OpinionTile extends StatelessWidget {
                 // More
                 PopupMenuButton(
                   itemBuilder:
-                      (_) => [
+                      (context) => [
                         PopupMenuItem<void>(
                           onTap: () async {
                             if (await OpinionDeleteDialog.show(context) ??
                                 false) {
-                              await opinionCubit.removeOpinionById(opinion.id);
+                              if (context.mounted) {
+                                await context
+                                    .read<OpinionCubit>()
+                                    .removeOpinionById(opinion.id);
+                              }
                             }
                           },
                           child: const Text('Delete my opinion'),

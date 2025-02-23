@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/show_more_text.dart';
@@ -15,6 +16,7 @@ class ProfileBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final profileCubit = GetIt.I<ProfileCubit>();
+    final screenCubit = context.read<ScreenCubit>();
     return BlocSelector<ProfileCubit, ProfileState, Profile>(
       bloc: profileCubit,
       selector: (state) => state.profile,
@@ -47,7 +49,7 @@ class ProfileBody extends StatelessWidget {
                 Padding(
                   padding: kPaddingSmallT,
                   child: ElevatedButton.icon(
-                    onPressed: profileCubit.showGraph,
+                    onPressed: () => screenCubit.showGraph(profile.id),
                     icon: const Icon(TenturaIcons.graph),
                     label: const Text('Show Connections'),
                   ),
@@ -57,7 +59,7 @@ class ProfileBody extends StatelessWidget {
                 Padding(
                   padding: kPaddingSmallT,
                   child: ElevatedButton.icon(
-                    onPressed: profileCubit.showBeacons,
+                    onPressed: () => screenCubit.showBeacons(profile.id),
                     icon: const Icon(Icons.open_in_full),
                     label: const Text('Show Beacons'),
                   ),
@@ -73,7 +75,7 @@ class ProfileBody extends StatelessWidget {
                         child: ElevatedButton.icon(
                           icon: const Icon(Icons.settings),
                           label: const Text('Settings'),
-                          onPressed: profileCubit.showSettings,
+                          onPressed: screenCubit.showSettings,
                         ),
                       ),
 
@@ -82,7 +84,7 @@ class ProfileBody extends StatelessWidget {
                         child: FilledButton.icon(
                           icon: const Icon(Icons.post_add),
                           label: const Text('New Beacon'),
-                          onPressed: profileCubit.showBeaconNew,
+                          onPressed: screenCubit.showBeaconCreate,
                         ),
                       ),
                     ],

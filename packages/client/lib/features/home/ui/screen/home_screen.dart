@@ -7,7 +7,6 @@ import 'package:tentura/ui/widget/tentura_icons.dart';
 
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 import 'package:tentura/features/like/ui/bloc/like_cubit.dart';
-import 'package:tentura/features/beacon/ui/bloc/beacon_cubit.dart';
 import 'package:tentura/features/chat/ui/bloc/chat_news_cubit.dart';
 import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
 import 'package:tentura/features/friends/ui/bloc/friends_cubit.dart';
@@ -33,11 +32,6 @@ class HomeScreen extends StatelessWidget implements AutoRouteWrapper {
         // Auth
         BlocListener<AuthCubit, AuthState>(
           bloc: GetIt.I<AuthCubit>(),
-          listener: commonScreenBlocListener,
-        ),
-        // Beacon
-        BlocListener<BeaconCubit, BeaconState>(
-          bloc: GetIt.I<BeaconCubit>(),
           listener: commonScreenBlocListener,
         ),
         // Context

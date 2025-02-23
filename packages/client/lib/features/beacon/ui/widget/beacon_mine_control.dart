@@ -20,7 +20,6 @@ class BeaconMineControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final beaconCubit = GetIt.I<BeaconCubit>();
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -38,33 +37,35 @@ class BeaconMineControl extends StatelessWidget {
 
         // Menu
         PopupMenuButton<void>(
-          itemBuilder:
-              (context) => [
-                // Enable / Disable
-                PopupMenuItem<void>(
-                  child:
-                      beaconCubit.state.beacons
-                              .singleWhere((e) => e.id == beacon.id)
-                              .isEnabled
-                          ? const Text('Disable beacon')
-                          : const Text('Enable beacon'),
-                  onTap: () async => beaconCubit.toggleEnabled(beacon.id),
-                ),
-                const PopupMenuDivider(),
+          itemBuilder: (context) {
+            final beaconCubit = context.read<BeaconCubit>();
+            return [
+              // Enable / Disable
+              PopupMenuItem<void>(
+                child:
+                    beaconCubit.state.beacons
+                            .singleWhere((e) => e.id == beacon.id)
+                            .isEnabled
+                        ? const Text('Disable beacon')
+                        : const Text('Enable beacon'),
+                onTap: () async => beaconCubit.toggleEnabled(beacon.id),
+              ),
+              const PopupMenuDivider(),
 
-                // Delete
-                PopupMenuItem<void>(
-                  child: const Text('Delete beacon'),
-                  onTap: () async {
-                    if (await BeaconDeleteDialog.show(context) ?? false) {
-                      await beaconCubit.delete(beacon.id);
-                      if (goBackOnDelete && context.mounted) {
-                        context.read<ScreenCubit>().back();
-                      }
+              // Delete
+              PopupMenuItem<void>(
+                child: const Text('Delete beacon'),
+                onTap: () async {
+                  if (await BeaconDeleteDialog.show(context) ?? false) {
+                    await beaconCubit.delete(beacon.id);
+                    if (goBackOnDelete && context.mounted) {
+                      context.read<ScreenCubit>().back();
                     }
-                  },
-                ),
-              ],
+                  }
+                },
+              ),
+            ];
+          },
         ),
       ],
     );

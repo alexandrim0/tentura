@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
 import 'package:tentura/features/opinion/ui/widget/opinion_tile.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
+
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 import 'package:tentura/ui/widget/show_more_text.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
+
 import 'package:tentura_widgetbook/astra/widget/theme_astra.dart';
 
 import 'package:tentura_widgetbook/bloc/_data.dart';
 import 'package:tentura_widgetbook/utils/navigation_bar.dart';
-
-import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
 @UseCase(
   name: 'My Profile',
@@ -26,9 +28,10 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profileCubit = GetIt.I<ProfileCubit>();
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final profileCubit = GetIt.I<ProfileCubit>();
+    final screenCubit = context.read<ScreenCubit>();
     return ThemeAstra(
       child: Scaffold(
         // remove bottomNavigationBar in real app
@@ -71,13 +74,13 @@ class ProfileScreen extends StatelessWidget {
                       // Edit
                       IconButton(
                         icon: const Icon(Icons.edit_outlined),
-                        onPressed: profileCubit.showProfileEditor,
+                        onPressed: screenCubit.showProfileEditor,
                       ),
 
                       // Show Rating
                       IconButton(
                         icon: const Icon(Icons.leaderboard),
-                        onPressed: profileCubit.showRating,
+                        onPressed: screenCubit.showRating,
                       ),
 
                       // Share
@@ -122,7 +125,8 @@ class ProfileScreen extends StatelessWidget {
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton.icon(
-                                    onPressed: profileCubit.showGraph,
+                                    onPressed:
+                                        () => screenCubit.showGraph(profile.id),
                                     icon: const Icon(TenturaIcons.graph),
                                     label: const Text('Show Connections'),
                                   ),
@@ -134,7 +138,9 @@ class ProfileScreen extends StatelessWidget {
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton.icon(
-                                    onPressed: () {},
+                                    onPressed:
+                                        () =>
+                                            screenCubit.showBeacons(profile.id),
                                     icon: const Icon(Icons.open_in_full),
                                     label: const Text('Show Beacons'),
                                   ),
@@ -148,7 +154,7 @@ class ProfileScreen extends StatelessWidget {
                                     // Settings
                                     Expanded(
                                       child: ElevatedButton.icon(
-                                        onPressed: () {},
+                                        onPressed: screenCubit.showSettings,
                                         icon: const Icon(Icons.settings),
                                         label: const Text('Settings'),
                                       ),
@@ -157,16 +163,9 @@ class ProfileScreen extends StatelessWidget {
                                     // New Beacon
                                     Expanded(
                                       child: FilledButton.icon(
-                                        onPressed: () {},
+                                        onPressed: screenCubit.showBeaconCreate,
                                         icon: const Icon(Icons.post_add),
                                         label: const Text('New Beacon'),
-                                        style: FilledButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
-                                          ),
-                                        ),
                                       ),
                                     ),
                                   ],
@@ -183,14 +182,18 @@ class ProfileScreen extends StatelessWidget {
                               style: textTheme.headlineMedium,
                             ),
                           ),
-
-                          // Comments List
-                          OpinionTile(opinion: commentsOnAlice[0]),
-                          OpinionTile(opinion: commentsOnAlice[1]),
-                          OpinionTile(opinion: commentsOnAlice[2]),
                         ],
                       ),
                     ),
+                  ),
+
+                  // Comments List
+                  SliverList.list(
+                    children: [
+                      OpinionTile(opinion: commentsOnAlice[0]),
+                      OpinionTile(opinion: commentsOnAlice[1]),
+                      OpinionTile(opinion: commentsOnAlice[2]),
+                    ],
                   ),
                 ],
               ),

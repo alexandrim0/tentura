@@ -1,6 +1,5 @@
 import 'package:get_it/get_it.dart';
 
-import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
@@ -28,18 +27,6 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
   final ProfileRepository _profileRepository;
 
   final LikeRemoteRepository _likeRemoteRepository;
-
-  void showGraph() => emit(
-    state.copyWith(
-      status: StateIsNavigating('$kPathGraph?focus=${state.profile.id}'),
-    ),
-  );
-
-  void showBeacons() => emit(
-    state.copyWith(
-      status: StateIsNavigating('$kPathBeaconViewAll?id=${state.profile.id}'),
-    ),
-  );
 
   Future<void> fetch() async {
     emit(state.copyWith(status: StateStatus.isLoading));

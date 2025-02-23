@@ -16,22 +16,4 @@ class ProfileCubitMock extends Cubit<ProfileState> implements ProfileCubit {
 
   @override
   Future<void> fetch() async {}
-
-  @override
-  void showGraph() {}
-
-  @override
-  void showProfileEditor() {}
-
-  @override
-  void showRating() {}
-
-  @override
-  void showBeacons() {}
-
-  @override
-  void showSettings() {}
-
-  @override
-  void showBeaconNew() {}
 }

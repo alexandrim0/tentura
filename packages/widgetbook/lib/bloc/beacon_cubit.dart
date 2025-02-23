@@ -9,9 +9,12 @@ class BeaconCubitMock extends Cubit<BeaconState> implements BeaconCubit {
   BeaconCubitMock({bool isMine = false})
     : super(
         BeaconState(
-          beacons: [beaconA, beaconB],
           isMine: isMine,
           profileId: profileAlice.id,
+          beacons: [beaconA, beaconB],
+          hasReachedLast: true,
+          offset: 0,
+          limit: 0,
         ),
       );
 

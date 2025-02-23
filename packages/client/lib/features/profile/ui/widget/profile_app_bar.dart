@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/profile_app_bar_title.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
@@ -12,23 +13,22 @@ class ProfileAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profileCubit = GetIt.I<ProfileCubit>();
     return BlocSelector<ProfileCubit, ProfileState, Profile>(
       selector: (state) => state.profile,
-      bloc: profileCubit,
-      builder: (_, profile) {
+      bloc: GetIt.I<ProfileCubit>(),
+      builder: (context, profile) {
         return SliverAppBar(
           actions: [
             // Edit
             IconButton(
               icon: const Icon(Icons.edit_outlined),
-              onPressed: profileCubit.showProfileEditor,
+              onPressed: context.read<ScreenCubit>().showProfileEditor,
             ),
 
             // Show Rating
             IconButton(
               icon: const Icon(Icons.leaderboard),
-              onPressed: profileCubit.showRating,
+              onPressed: context.read<ScreenCubit>().showRating,
             ),
 
             // Share

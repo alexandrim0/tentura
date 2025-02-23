@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
+import 'package:tentura/features/chat/ui/bloc/chat_news_cubit.dart';
+import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
+import 'package:tentura/features/favorites/ui/bloc/favorites_cubit.dart';
+import 'package:tentura/features/friends/ui/bloc/friends_cubit.dart';
+import 'package:tentura/features/like/ui/bloc/like_cubit.dart';
+import 'package:tentura/features/my_field/ui/bloc/my_field_cubit.dart';
+
 import 'package:tentura/ui/theme.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 
@@ -30,8 +37,16 @@ class WidgetbookApp extends StatelessWidget {
         ),
       ],
       appBuilder:
-          (_, child) => BlocProvider<ScreenCubit>(
-            create: (_) => ScreenCubit(),
+          (_, child) => MultiBlocProvider(
+            providers: [
+              BlocProvider<ScreenCubit>(create: (_) => ScreenCubit()),
+              BlocProvider.value(value: GetIt.I<ChatNewsCubit>()),
+              BlocProvider.value(value: GetIt.I<ContextCubit>()),
+              BlocProvider.value(value: GetIt.I<FriendsCubit>()),
+              BlocProvider.value(value: GetIt.I<LikeCubit>()),
+              BlocProvider.value(value: GetIt.I<MyFieldCubit>()),
+              BlocProvider.value(value: GetIt.I<FavoritesCubit>()),
+            ],
             child: BlocListener<ScreenCubit, ScreenState>(
               listenWhen: (_, c) => c.isNavigating || c.hasError,
               // TBD: Navigation

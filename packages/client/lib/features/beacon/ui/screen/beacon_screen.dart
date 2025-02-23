@@ -20,8 +20,13 @@ class BeaconScreen extends StatelessWidget implements AutoRouteWrapper {
   Widget wrappedRoute(_) => MultiBlocProvider(
     providers: [
       BlocProvider(create: (_) => ScreenCubit()),
-      if (GetIt.I<AuthCubit>().checkIfIsMe(id))
-        BlocProvider(create: (_) => BeaconCubit(profileId: id)),
+      BlocProvider(
+        create:
+            (_) => BeaconCubit(
+              profileId: id,
+              isMine: GetIt.I<AuthCubit>().checkIfIsMe(id),
+            ),
+      ),
     ],
     child: MultiBlocListener(
       listeners: const [
@@ -38,7 +43,6 @@ class BeaconScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    final beaconCubit = context.read<BeaconCubit>();
     return Scaffold(
       appBar: AppBar(
         bottom: PreferredSize(
@@ -51,11 +55,10 @@ class BeaconScreen extends StatelessWidget implements AutoRouteWrapper {
         title: const Text('Beacons'),
       ),
       body: BlocBuilder<BeaconCubit, BeaconState>(
-        bloc: beaconCubit,
         buildWhen: (_, c) => c.isSuccess,
         builder: (_, state) {
           return RefreshIndicator.adaptive(
-            onRefresh: beaconCubit.fetch,
+            onRefresh: context.read<BeaconCubit>().fetch,
             child:
                 state.beacons.isEmpty
                     ? Center(

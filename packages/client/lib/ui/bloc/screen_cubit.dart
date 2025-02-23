@@ -9,8 +9,16 @@ class ScreenCubit extends Cubit<ScreenState> {
 
   void back() => emit(state.navigateBack());
 
+  void showChatWith(String id) =>
+      emit(state.navigateTo('$kPathProfileChat?id=$id'));
+
   void showGraph(String focus) =>
       emit(state.navigateTo('$kPathGraph?focus=$focus'));
+
+  void showRating() => emit(state.navigateTo(kPathRating));
+
+  void showBeacons(String id) =>
+      emit(state.navigateTo('$kPathBeaconViewAll?id=$id'));
 
   void showBeaconCreate() => emit(state.navigateTo(kPathBeaconNew));
 
@@ -19,6 +27,10 @@ class ScreenCubit extends Cubit<ScreenState> {
 
   void showProfile(String id) =>
       emit(state.navigateTo('$kPathProfileView?id=$id'));
+
+  void showProfileEditor() => emit(state.navigateTo(kPathProfileEdit));
+
+  void showSettings() => emit(state.navigateTo(kPathSettings));
 }
 
 class ScreenState extends StateBase {

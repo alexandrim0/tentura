@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/show_more_text.dart';
@@ -14,11 +15,9 @@ class ProfileViewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final profileViewCubit = context.read<ProfileViewCubit>();
     return BlocSelector<ProfileViewCubit, ProfileViewState, Profile>(
-      bloc: profileViewCubit,
       selector: (state) => state.profile,
-      builder: (_, profile) {
+      builder: (context, profile) {
         return SliverToBoxAdapter(
           child: Padding(
             padding: kPaddingAll,
@@ -40,7 +39,8 @@ class ProfileViewBody extends StatelessWidget {
                 Padding(
                   padding: kPaddingSmallT,
                   child: ElevatedButton.icon(
-                    onPressed: profileViewCubit.showGraph,
+                    onPressed:
+                        () => context.read<ScreenCubit>().showGraph(profile.id),
                     icon: const Icon(TenturaIcons.graph),
                     label: const Text('Show Connections'),
                   ),
@@ -50,7 +50,9 @@ class ProfileViewBody extends StatelessWidget {
                 Padding(
                   padding: kPaddingSmallT,
                   child: ElevatedButton.icon(
-                    onPressed: profileViewCubit.showBeacons,
+                    onPressed:
+                        () =>
+                            context.read<ScreenCubit>().showBeacons(profile.id),
                     icon: const Icon(Icons.open_in_full),
                     label: const Text('Show Beacons'),
                   ),
@@ -60,7 +62,7 @@ class ProfileViewBody extends StatelessWidget {
                   Padding(
                     padding: kPaddingSmallT,
                     child: FilledButton.icon(
-                      onPressed: profileViewCubit.addFriend,
+                      onPressed: context.read<ProfileViewCubit>().addFriend,
                       icon: const Icon(Icons.people),
                       label: const Text('Add to My Field'),
                     ),

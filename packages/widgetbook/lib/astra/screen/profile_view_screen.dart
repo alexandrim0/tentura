@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tentura/features/opinion/ui/widget/opinion_tile.dart';
 import 'package:tentura/features/profile_view/ui/bloc/profile_view_state.dart';
 
-import 'package:tentura/ui/bloc/state_base.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/bottom_text_input.dart';
@@ -46,6 +46,7 @@ class ProfileViewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+    final screenCubit = context.read<ScreenCubit>();
     final profileViewCubit = context.read<ProfileViewCubit>();
     return BlocBuilder<ProfileViewCubit, ProfileViewState>(
       bloc: profileViewCubit,
@@ -94,8 +95,7 @@ class ProfileViewScreen extends StatelessWidget {
                         const Padding(padding: kPaddingT),
 
                         ElevatedButton.icon(
-                          onPressed:
-                              () => profileViewCubit.showGraph(profile.id),
+                          onPressed: () => screenCubit.showGraph(profile.id),
                           icon: const Icon(TenturaIcons.graph),
                           label: const Text('Show Connections'),
                         ),
@@ -103,8 +103,7 @@ class ProfileViewScreen extends StatelessWidget {
 
                         // Show Beacons
                         ElevatedButton.icon(
-                          onPressed:
-                              () => profileViewCubit.showBeacons(profile.id),
+                          onPressed: () => screenCubit.showBeacons(profile.id),
                           icon: const Icon(Icons.open_in_full),
                           label: const Text('Show Beacons'),
                         ),
@@ -141,14 +140,18 @@ class ProfileViewScreen extends StatelessWidget {
                             style: textTheme.headlineMedium,
                           ),
                         ),
-
-                        // Comments List
-                        OpinionTile(opinion: commentsOnAlice[0]),
-                        OpinionTile(opinion: commentsOnAlice[1]),
-                        OpinionTile(opinion: commentsOnAlice[2]),
                       ],
                     ),
                   ),
+                ),
+
+                // Comments List
+                SliverList.list(
+                  children: [
+                    OpinionTile(opinion: commentsOnAlice[0]),
+                    OpinionTile(opinion: commentsOnAlice[1]),
+                    OpinionTile(opinion: commentsOnAlice[2]),
+                  ],
                 ),
               ],
             ),
