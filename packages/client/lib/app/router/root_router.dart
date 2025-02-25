@@ -105,6 +105,7 @@ class RootRouter extends RootStackRouter {
 
     // Profile View
     AutoRoute(
+      maintainState: false,
       path: kPathProfileView,
       page: ProfileViewRoute.page,
       guards: [
@@ -143,7 +144,6 @@ class RootRouter extends RootStackRouter {
 
     // Beacon View
     AutoRoute(
-      keepHistory: false,
       maintainState: false,
       path: kPathBeaconView,
       page: BeaconViewRoute.page,
@@ -151,20 +151,33 @@ class RootRouter extends RootStackRouter {
 
     // Beacon View All
     AutoRoute(
-      keepHistory: false,
       maintainState: false,
       path: kPathBeaconViewAll,
       page: BeaconRoute.page,
     ),
 
     // Rating
-    AutoRoute(path: kPathRating, page: RatingRoute.page),
+    AutoRoute(
+      maintainState: false,
+      path: kPathRating,
+      page: RatingRoute.page,
+      //
+    ),
 
     // Graph
-    AutoRoute(path: kPathGraph, page: GraphRoute.page),
+    AutoRoute(
+      maintainState: false,
+      path: kPathGraph,
+      page: GraphRoute.page,
+      //
+    ),
 
     // Chat
-    AutoRoute(path: kPathProfileChat, page: ChatRoute.page),
+    AutoRoute(
+      maintainState: false,
+      path: kPathProfileChat,
+      page: ChatRoute.page,
+    ),
 
     // default
     RedirectRoute(path: '*', redirectTo: kPathRoot),

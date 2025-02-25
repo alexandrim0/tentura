@@ -1,4 +1,4 @@
-# Upload image
+# Upload image local
 PUT http://localhost:2080/api/user/image_upload?id=U3ea0a229ad85
 Authorization: Bearer {{$dotenv TENTURA_JWT}}
 Content-Type: image/jpeg
@@ -6,7 +6,7 @@ Content-Type: image/jpeg
 < ../../client/images/placeholder/avatar.jpg
 
 ###
-# Upload image
+# Upload image remote
 PUT {{$dotenv BASE_URL}}/api/user/image_upload?id=U3ea0a229ad85
 Authorization: Bearer {{$dotenv TENTURA_JWT}}
 Content-Type: image/jpeg

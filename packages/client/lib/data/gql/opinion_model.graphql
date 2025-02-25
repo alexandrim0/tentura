@@ -3,9 +3,9 @@
 fragment OpinionModel on opinion {
   id
   object
+  amount
   content
   created_at
-  my_vote
   scores {
     src_score
     dst_score

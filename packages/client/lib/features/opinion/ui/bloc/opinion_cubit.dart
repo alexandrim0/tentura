@@ -31,26 +31,24 @@ class OpinionCubit extends Cubit<OpinionState> {
   Future<void> fetch() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      emit(
-        state.copyWith(
-          status: StateStatus.isSuccess,
-          opinions: await _opinionRepository.fetchByObjectId(
-            objectId: state.objectId,
-            offset: 0,
-            limit: 10,
-          ),
-        ),
-      );
+      final opinions = await _opinionRepository.fetchByUserId(
+          userId: state.objectId,
+          offset: 0,
+          limit: 50,
+        )
+        ..sort((a, b) => a.score.compareTo(b.score));
+      emit(state.copyWith(opinions: opinions, status: StateStatus.isSuccess));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
-  Future<void> addOpinion(String text) async {
+  Future<void> addOpinion({required String text, required int amount}) async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final opinion = await _opinionRepository.createOpinion(
-        objectId: state.objectId,
+        userId: state.objectId,
+        amount: amount,
         content: text,
       );
       state.opinions.add(opinion.copyWith(author: state.myProfile));

@@ -1201,19 +1201,6 @@ type mutation_root {
   delete_opinion_by_pk(id: String!): opinion
 
   """
-  delete data from the table: "user"
-  """
-  delete_user(
-    """filter the rows which have to be deleted"""
-    where: user_bool_exp!
-  ): user_mutation_response
-
-  """
-  delete single row from the table: "user"
-  """
-  delete_user_by_pk(id: String!): user
-
-  """
   delete data from the table: "user_context"
   """
   delete_user_context(
@@ -1416,28 +1403,6 @@ type mutation_root {
   ): vote_comment
 
   """
-  insert data into the table: "vote_opinion"
-  """
-  insert_vote_opinion(
-    """the rows to be inserted"""
-    objects: [vote_opinion_insert_input!]!
-
-    """upsert condition"""
-    on_conflict: vote_opinion_on_conflict
-  ): vote_opinion_mutation_response
-
-  """
-  insert a single row into the table: "vote_opinion"
-  """
-  insert_vote_opinion_one(
-    """the row to be inserted"""
-    object: vote_opinion_insert_input!
-
-    """upsert condition"""
-    on_conflict: vote_opinion_on_conflict
-  ): vote_opinion
-
-  """
   insert data into the table: "vote_user"
   """
   insert_vote_user(
@@ -1603,40 +1568,6 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [vote_comment_updates!]!
   ): [vote_comment_mutation_response]
-
-  """
-  update data of the table: "vote_opinion"
-  """
-  update_vote_opinion(
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: vote_opinion_inc_input
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: vote_opinion_set_input
-
-    """filter the rows which have to be updated"""
-    where: vote_opinion_bool_exp!
-  ): vote_opinion_mutation_response
-
-  """
-  update single row of the table: "vote_opinion"
-  """
-  update_vote_opinion_by_pk(
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: vote_opinion_inc_input
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: vote_opinion_set_input
-    pk_columns: vote_opinion_pk_columns_input!
-  ): vote_opinion
-
-  """
-  update multiples rows of table: "vote_opinion"
-  """
-  update_vote_opinion_many(
-    """updates to execute, in order"""
-    updates: [vote_opinion_updates!]!
-  ): [vote_opinion_mutation_response]
 
   """
   update data of the table: "vote_user"
@@ -1888,16 +1819,13 @@ input my_field_args {
 columns and relationships of "opinion"
 """
 type opinion {
+  amount: Int!
+
   """An object relationship"""
-  author: user!
+  author: user
   content: String!
   created_at: timestamptz!
   id: String!
-
-  """
-  A computed field, executes function "opinion_get_my_vote"
-  """
-  my_vote: Int
   object: String!
 
   """
@@ -1929,11 +1857,11 @@ input opinion_bool_exp {
   _and: [opinion_bool_exp!]
   _not: opinion_bool_exp
   _or: [opinion_bool_exp!]
+  amount: Int_comparison_exp
   author: user_bool_exp
   content: String_comparison_exp
   created_at: timestamptz_comparison_exp
   id: String_comparison_exp
-  my_vote: Int_comparison_exp
   object: String_comparison_exp
   scores: mutual_score_bool_exp
   subject: String_comparison_exp
@@ -1958,6 +1886,7 @@ enum opinion_constraint {
 input type for inserting data into table "opinion"
 """
 input opinion_insert_input {
+  amount: Int
   content: String
   object: String
 }
@@ -1984,11 +1913,11 @@ input opinion_on_conflict {
 
 """Ordering options when selecting data from "opinion"."""
 input opinion_order_by {
+  amount: order_by
   author: user_order_by
   content: order_by
   created_at: order_by
   id: order_by
-  my_vote: order_by
   object: order_by
   scores_aggregate: mutual_score_aggregate_order_by
   subject: order_by
@@ -1998,6 +1927,9 @@ input opinion_order_by {
 select columns of table "opinion"
 """
 enum opinion_select_column {
+  """column name"""
+  amount
+
   """column name"""
   content
 
@@ -2027,6 +1959,7 @@ input opinion_stream_cursor_input {
 
 """Initial value of the column from where the streaming should start"""
 input opinion_stream_cursor_value_input {
+  amount: Int
   content: String
   created_at: timestamptz
   id: String
@@ -2385,29 +2318,6 @@ type query_root {
 
   """fetch data from the table: "vote_comment" using primary key columns"""
   vote_comment_by_pk(object: String!, subject: String!): vote_comment
-
-  """
-  fetch data from the table: "vote_opinion"
-  """
-  vote_opinion(
-    """distinct select on columns"""
-    distinct_on: [vote_opinion_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vote_opinion_order_by!]
-
-    """filter the rows returned"""
-    where: vote_opinion_bool_exp
-  ): [vote_opinion!]!
-
-  """fetch data from the table: "vote_opinion" using primary key columns"""
-  vote_opinion_by_pk(object: String!, subject: String!): vote_opinion
 
   """
   fetch data from the table: "vote_user"
@@ -2966,43 +2876,6 @@ type subscription_root {
     """filter the rows returned"""
     where: vote_comment_bool_exp
   ): [vote_comment!]!
-
-  """
-  fetch data from the table: "vote_opinion"
-  """
-  vote_opinion(
-    """distinct select on columns"""
-    distinct_on: [vote_opinion_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [vote_opinion_order_by!]
-
-    """filter the rows returned"""
-    where: vote_opinion_bool_exp
-  ): [vote_opinion!]!
-
-  """fetch data from the table: "vote_opinion" using primary key columns"""
-  vote_opinion_by_pk(object: String!, subject: String!): vote_opinion
-
-  """
-  fetch data from the table in a streaming manner: "vote_opinion"
-  """
-  vote_opinion_stream(
-    """maximum number of rows returned in a single batch"""
-    batch_size: Int!
-
-    """cursor to stream the results returned by the query"""
-    cursor: [vote_opinion_stream_cursor_input]!
-
-    """filter the rows returned"""
-    where: vote_opinion_bool_exp
-  ): [vote_opinion!]!
 
   """
   fetch data from the table: "vote_user"
@@ -4038,157 +3911,6 @@ order by variance() on columns of table "vote_comment"
 """
 input vote_comment_variance_order_by {
   amount: order_by
-}
-
-"""
-columns and relationships of "vote_opinion"
-"""
-type vote_opinion {
-  amount: Int!
-  created_at: timestamptz!
-  object: String!
-  subject: String!
-  updated_at: timestamptz!
-}
-
-"""
-Boolean expression to filter rows from the table "vote_opinion". All fields are combined with a logical 'AND'.
-"""
-input vote_opinion_bool_exp {
-  _and: [vote_opinion_bool_exp!]
-  _not: vote_opinion_bool_exp
-  _or: [vote_opinion_bool_exp!]
-  amount: Int_comparison_exp
-  created_at: timestamptz_comparison_exp
-  object: String_comparison_exp
-  subject: String_comparison_exp
-  updated_at: timestamptz_comparison_exp
-}
-
-"""
-unique or primary key constraints on table "vote_opinion"
-"""
-enum vote_opinion_constraint {
-  """
-  unique or primary key constraint on columns "object", "subject"
-  """
-  vote_opinion_pkey
-}
-
-"""
-input type for incrementing numeric columns in table "vote_opinion"
-"""
-input vote_opinion_inc_input {
-  amount: Int
-}
-
-"""
-input type for inserting data into table "vote_opinion"
-"""
-input vote_opinion_insert_input {
-  amount: Int
-  object: String
-}
-
-"""
-response of any mutation on the table "vote_opinion"
-"""
-type vote_opinion_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [vote_opinion!]!
-}
-
-"""
-on_conflict condition type for table "vote_opinion"
-"""
-input vote_opinion_on_conflict {
-  constraint: vote_opinion_constraint!
-  update_columns: [vote_opinion_update_column!]! = []
-  where: vote_opinion_bool_exp
-}
-
-"""Ordering options when selecting data from "vote_opinion"."""
-input vote_opinion_order_by {
-  amount: order_by
-  created_at: order_by
-  object: order_by
-  subject: order_by
-  updated_at: order_by
-}
-
-"""primary key columns input for table: vote_opinion"""
-input vote_opinion_pk_columns_input {
-  object: String!
-  subject: String!
-}
-
-"""
-select columns of table "vote_opinion"
-"""
-enum vote_opinion_select_column {
-  """column name"""
-  amount
-
-  """column name"""
-  created_at
-
-  """column name"""
-  object
-
-  """column name"""
-  subject
-
-  """column name"""
-  updated_at
-}
-
-"""
-input type for updating data in table "vote_opinion"
-"""
-input vote_opinion_set_input {
-  amount: Int
-}
-
-"""
-Streaming cursor of the table "vote_opinion"
-"""
-input vote_opinion_stream_cursor_input {
-  """Stream column input with initial value"""
-  initial_value: vote_opinion_stream_cursor_value_input!
-
-  """cursor ordering"""
-  ordering: cursor_ordering
-}
-
-"""Initial value of the column from where the streaming should start"""
-input vote_opinion_stream_cursor_value_input {
-  amount: Int
-  created_at: timestamptz
-  object: String
-  subject: String
-  updated_at: timestamptz
-}
-
-"""
-update columns of table "vote_opinion"
-"""
-enum vote_opinion_update_column {
-  """column name"""
-  amount
-}
-
-input vote_opinion_updates {
-  """increments the numeric columns with given value of the filtered values"""
-  _inc: vote_opinion_inc_input
-
-  """sets the columns of the filtered rows to the given values"""
-  _set: vote_opinion_set_input
-
-  """filter the rows which have to be updated"""
-  where: vote_opinion_bool_exp!
 }
 
 """
