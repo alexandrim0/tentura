@@ -19,65 +19,61 @@ class ProfileViewBody extends StatelessWidget {
       selector: (state) => state.profile,
       builder: (context, profile) {
         return SliverToBoxAdapter(
-          child: Padding(
-            padding: kPaddingAll,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Avatar
-                Center(child: AvatarRated.big(profile: profile)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Avatar
+              Center(child: AvatarRated.big(profile: profile)),
 
-                // Description
-                Padding(
-                  padding: kPaddingT,
-                  child: ShowMoreText(
-                    profile.description,
-                    style: textTheme.bodyMedium,
-                  ),
+              // Description
+              Padding(
+                padding: kPaddingT,
+                child: ShowMoreText(
+                  profile.description,
+                  style: textTheme.bodyMedium,
                 ),
+              ),
 
+              Padding(
+                padding: kPaddingSmallT,
+                child: ElevatedButton.icon(
+                  onPressed:
+                      () => context.read<ScreenCubit>().showGraph(profile.id),
+                  icon: const Icon(TenturaIcons.graph),
+                  label: const Text('Show Connections'),
+                ),
+              ),
+
+              // Show Beacons
+              Padding(
+                padding: kPaddingSmallT,
+                child: ElevatedButton.icon(
+                  onPressed:
+                      () => context.read<ScreenCubit>().showBeacons(profile.id),
+                  icon: const Icon(Icons.open_in_full),
+                  label: const Text('Show Beacons'),
+                ),
+              ),
+
+              if (profile.isNotFriend)
                 Padding(
                   padding: kPaddingSmallT,
-                  child: ElevatedButton.icon(
-                    onPressed:
-                        () => context.read<ScreenCubit>().showGraph(profile.id),
-                    icon: const Icon(TenturaIcons.graph),
-                    label: const Text('Show Connections'),
+                  child: FilledButton.icon(
+                    onPressed: context.read<ProfileViewCubit>().addFriend,
+                    icon: const Icon(Icons.people),
+                    label: const Text('Add to My Field'),
                   ),
                 ),
 
-                // Show Beacons
-                Padding(
-                  padding: kPaddingSmallT,
-                  child: ElevatedButton.icon(
-                    onPressed:
-                        () =>
-                            context.read<ScreenCubit>().showBeacons(profile.id),
-                    icon: const Icon(Icons.open_in_full),
-                    label: const Text('Show Beacons'),
-                  ),
+              // Opinions
+              Padding(
+                padding: kPaddingV,
+                child: Text(
+                  'Community Feedback',
+                  style: textTheme.headlineMedium,
                 ),
-
-                if (profile.isNotFriend)
-                  Padding(
-                    padding: kPaddingSmallT,
-                    child: FilledButton.icon(
-                      onPressed: context.read<ProfileViewCubit>().addFriend,
-                      icon: const Icon(Icons.people),
-                      label: const Text('Add to My Field'),
-                    ),
-                  ),
-
-                // Opinions
-                Padding(
-                  padding: kPaddingV,
-                  child: Text(
-                    'Community Feedback',
-                    style: textTheme.headlineMedium,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

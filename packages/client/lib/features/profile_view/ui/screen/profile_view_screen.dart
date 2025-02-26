@@ -55,24 +55,27 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
     final opinionCubit = context.read<OpinionCubit>();
     final profileViewCubit = context.read<ProfileViewCubit>();
     return Scaffold(
-      body: Padding(
-        padding: kPaddingH,
-        child: RefreshIndicator.adaptive(
-          onRefresh: () async {
-            await Future.wait([profileViewCubit.fetch(), opinionCubit.fetch()]);
-          },
-          child: CustomScrollView(
-            slivers: [
-              // Header
-              const ProfileViewAppBar(),
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async {
+          await Future.wait([profileViewCubit.fetch(), opinionCubit.fetch()]);
+        },
+        child: CustomScrollView(
+          slivers: [
+            // Header
+            const ProfileViewAppBar(),
 
-              // Body
-              const ProfileViewBody(),
+            // Body
+            const SliverPadding(
+              padding: kPaddingAll,
+              sliver: ProfileViewBody(),
+            ),
 
-              // Opinions
-              OpinionList(key: ValueKey(id)),
-            ],
-          ),
+            // Opinions
+            SliverPadding(
+              padding: kPaddingH,
+              sliver: OpinionList(key: ValueKey(id)),
+            ),
+          ],
         ),
       ),
 
