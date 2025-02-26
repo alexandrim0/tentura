@@ -56,7 +56,7 @@ dependencies:
   nil: ^1.1.1
   readmore: ^3.0.0
   qr_flutter: ^4.1.0
-  flutter_map: ^8.0.0
+  flutter_map: ^8.1.0
   flutter_svg: ^2.0.17
   blurhash_shader: ^1.1.2
   vector_graphics: ^1.1.18
