@@ -43,7 +43,9 @@ class OpinionCubit extends Cubit<OpinionState> {
     }
   }
 
-  Future<void> addOpinion({required String text, required int amount}) async {
+  Future<void> addOpinion({required String text, required int? amount}) async {
+    if (amount == null) return;
+
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final opinion = await _opinionRepository.createOpinion(

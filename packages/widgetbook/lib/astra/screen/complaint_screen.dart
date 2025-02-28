@@ -34,35 +34,32 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      //TODO: to change to the real validation
       const success = true;
       await _showResultDialog(success);
     }
   }
 
-  Future<void> _showResultDialog(bool success) async {
-    await showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(success ? 'Success!' : 'Error'),
-            content: Text(
-              success
-                  ? 'Complaint submitted successfully!'
-                  : 'Something went wrong. Please try again.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  if (success) Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
+  Future<void> _showResultDialog(bool success) => showDialog(
+    context: context,
+    builder:
+        (context) => AlertDialog(
+          title: Text(success ? 'Success!' : 'Error'),
+          content: Text(
+            success
+                ? 'Complaint submitted successfully!'
+                : 'Something went wrong. Please try again.',
           ),
-    );
-  }
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                if (success) Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +90,10 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                       (value) => setState(() => _selectedComplaintType = value),
                   decoration: const InputDecoration(
                     labelText: 'Complaint Type',
-                    border: OutlineInputBorder(),                  
+                    border: OutlineInputBorder(),
                   ),
-                  dropdownColor: Theme.of(context).colorScheme.secondaryContainer,
+                  dropdownColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
                   validator:
                       (value) =>
                           value == null

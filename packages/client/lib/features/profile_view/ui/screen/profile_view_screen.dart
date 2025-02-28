@@ -23,7 +23,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
     providers: [
-      BlocProvider(create: (_) => ScreenCubit()),
+      BlocProvider.value(value: GetIt.I<ScreenCubit>()),
       BlocProvider(create: (_) => ProfileViewCubit(id: id)),
       BlocProvider(
         create: (_) {
@@ -89,10 +89,10 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
               : BottomTextInput(
                 hintText: 'Write an opinion',
                 onSend: (text) async {
-                  final amount = await OpinionPublishDialog.show(context);
-                  if (amount != null) {
-                    await opinionCubit.addOpinion(text: text, amount: amount);
-                  }
+                  await opinionCubit.addOpinion(
+                    amount: await OpinionPublishDialog.show(context),
+                    text: text,
+                  );
                 },
               );
         },

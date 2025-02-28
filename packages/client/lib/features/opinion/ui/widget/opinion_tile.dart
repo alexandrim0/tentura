@@ -68,32 +68,37 @@ class OpinionTile extends StatelessWidget {
 
         // Footer (Buttons)
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // Share
             ShareCodeIconButton.id(opinion.id),
 
-            const Spacer(),
-
-            if (isMine)
-              // More
-              PopupMenuButton(
-                itemBuilder:
-                    (context) => [
+            // More
+            PopupMenuButton(
+              itemBuilder:
+                  (context) => [
+                    if (isMine)
                       PopupMenuItem<void>(
                         onTap: () async {
+                          final opinionCubit = context.read<OpinionCubit>();
                           if (await OpinionDeleteDialog.show(context) ??
                               false) {
-                            if (context.mounted) {
-                              await context
-                                  .read<OpinionCubit>()
-                                  .removeOpinionById(opinion.id);
-                            }
+                            await opinionCubit.removeOpinionById(opinion.id);
                           }
                         },
                         child: const Text('Delete my opinion'),
+                      )
+                    else
+                      // Complaint
+                      PopupMenuItem<void>(
+                        onTap:
+                            () => context.read<ScreenCubit>().showComplaint(
+                              opinion.id,
+                            ),
+                        child: const Text('Complaint'),
                       ),
-                    ],
-              ),
+                  ],
+            ),
           ],
         ),
       ],
