@@ -7,7 +7,7 @@ import 'package:tentura/domain/entity/opinion.dart';
 import '../../domain/exception.dart';
 import '../gql/_g/opinion_create.req.gql.dart';
 import '../gql/_g/opinion_remove_by_id.req.gql.dart';
-import '../gql/_g/opinions_fetch_by_object_id.req.gql.dart';
+import '../gql/_g/opinions_fetch_by_user_id.req.gql.dart';
 
 @lazySingleton
 class OpinionRepository {
@@ -15,16 +15,16 @@ class OpinionRepository {
 
   final RemoteApiService _remoteApiService;
 
-  Future<List<Opinion>> fetchByObjectId({
-    required String objectId,
+  Future<List<Opinion>> fetchByUserId({
+    required String userId,
     required int offset,
     required int limit,
   }) => _remoteApiService
       .request(
-        GOpinionsFetchByObjectIdReq(
+        GOpinionsFetchByUserIdReq(
           (b) =>
               b.vars
-                ..objectId = objectId
+                ..objectId = userId
                 ..offset = offset
                 ..limit = limit,
         ),
@@ -34,29 +34,25 @@ class OpinionRepository {
       .then((v) => v.map((e) => (e as OpinionModel).toEntity).toList());
 
   Future<Opinion> createOpinion({
-    required String objectId,
     required String content,
+    required String userId,
+    required int amount,
   }) => _remoteApiService
       .request(
         GOpinionCreateReq(
           (b) =>
               b.vars
-                ..objectId = objectId
-                ..content = content,
+                ..amount = amount
+                ..content = content
+                ..objectId = userId,
         ),
       )
       .firstWhere((e) => e.dataSource == DataSource.Link)
       .then((r) => r.dataOrThrow(label: _label).insert_opinion_one)
       .then(
         (v) =>
-            v == null
-                ? throw const OpinionCreateException()
-                : Opinion(
-                  id: v.id,
-                  content: content,
-                  objectId: objectId,
-                  createdAt: v.created_at,
-                ),
+            (v as OpinionModel?)?.toEntity ??
+            (throw const OpinionCreateException()),
       );
 
   Future<void> removeOpinionById(String id) => _remoteApiService

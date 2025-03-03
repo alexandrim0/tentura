@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/beacon.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/author_info.dart';
 
@@ -20,7 +21,28 @@ class BeaconTile extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       // User row (Avatar and Name)
-      if (!isMine) AuthorInfo(author: beacon.author),
+      if (!isMine)
+        Row(
+          children: [
+            Expanded(child: AuthorInfo(author: beacon.author)),
+
+            // More
+            PopupMenuButton(
+              itemBuilder: (context) {
+                return <PopupMenuEntry<void>>[
+                  // Complaint
+                  PopupMenuItem(
+                    onTap:
+                        () => context.read<ScreenCubit>().showComplaint(
+                          beacon.id,
+                        ),
+                    child: const Text('Complaint'),
+                  ),
+                ];
+              },
+            ),
+          ],
+        ),
 
       // Beacon Info
       BeaconInfo(beacon: beacon, isShowBeaconEnabled: true),

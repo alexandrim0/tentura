@@ -46,6 +46,7 @@ final List<Opinion> commentsOnAlice = [
     createdAt: DateTime(2025, 1, 31),
     content: 'Inspiring work, keep it up!',
     author: profileBob,
+    amount: 0,
   ),
   Opinion(
     objectId: 'cmt-4d5e6f111',
@@ -54,6 +55,7 @@ final List<Opinion> commentsOnAlice = [
     content:
         'I love how you approach challenges with creativity and determination. Your ideas are always fresh!',
     author: profileBob,
+    amount: 1,
   ),
   Opinion(
     id: 'cmt-7g8h9i',
@@ -62,6 +64,7 @@ final List<Opinion> commentsOnAlice = [
     content:
         'Alice, your insights and passion for innovation are truly impressive. I’ve been following your work for a while, and I appreciate how you combine technology with creativity. Your problem-solving skills make a real difference, and I’m excited to see what you accomplish next. Keep pushing boundaries!',
     author: profileBob,
+    amount: -1,
   ),
 ];
 

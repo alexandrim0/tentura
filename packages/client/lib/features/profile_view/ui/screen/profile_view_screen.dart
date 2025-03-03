@@ -10,6 +10,7 @@ import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/bottom_text_input.dart';
 
 import '../bloc/profile_view_cubit.dart';
+import '../dialog/opinion_publish_dialog.dart';
 import '../widget/profile_view_app_bar.dart';
 import '../widget/profile_view_body.dart';
 
@@ -22,7 +23,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
     providers: [
-      BlocProvider(create: (_) => ScreenCubit()),
+      BlocProvider.value(value: GetIt.I<ScreenCubit>()),
       BlocProvider(create: (_) => ProfileViewCubit(id: id)),
       BlocProvider(
         create: (_) {
@@ -64,10 +65,16 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
             const ProfileViewAppBar(),
 
             // Body
-            const ProfileViewBody(),
+            const SliverPadding(
+              padding: kPaddingAll,
+              sliver: ProfileViewBody(),
+            ),
 
             // Opinions
-            OpinionList(key: ValueKey(id)),
+            SliverPadding(
+              padding: kPaddingH,
+              sliver: OpinionList(key: ValueKey(id)),
+            ),
           ],
         ),
       ),
@@ -81,7 +88,12 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
               ? const BottomTextInput(hintText: 'You can have only one opinion')
               : BottomTextInput(
                 hintText: 'Write an opinion',
-                onSend: opinionCubit.addOpinion,
+                onSend: (text) async {
+                  await opinionCubit.addOpinion(
+                    amount: await OpinionPublishDialog.show(context),
+                    text: text,
+                  );
+                },
               );
         },
       ),

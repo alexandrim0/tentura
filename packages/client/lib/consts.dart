@@ -33,12 +33,18 @@ const kPathGraph = '/graph';
 const kPathRating = '/rating';
 const kPathConnect = '/connect';
 const kPathSettings = '/settings';
+const kPathComplaint = '/complaint';
 const kPathBeaconNew = '/beacon/new';
 const kPathBeaconView = '/beacon/view';
 const kPathBeaconViewAll = '/beacon/all';
 const kPathProfileChat = '/profile/chat';
 const kPathProfileEdit = '/profile/edit';
 const kPathProfileView = '/profile/view';
+
+const kComplaintEmail = String.fromEnvironment(
+  'COMPLAINT_EMAIL',
+  defaultValue: 'complaint@intersubjective.space',
+);
 
 const kOsmUrlTemplate = String.fromEnvironment(
   'OSM_LINK_BASE',

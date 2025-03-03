@@ -2,7 +2,7 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 0.13.0
+version: 0.13.2
 
 environment:
   sdk: '>=3.7.0 <4.0.0'
@@ -32,21 +32,23 @@ dependencies:
   # Common
   logger: ^2.5.0
   auto_route: ^9.3.0
-  built_value: ^8.9.3
-  flutter_bloc: ^9.0.0
+  built_value: ^8.9.4
+  flutter_bloc: ^9.1.0
   synchronized: ^3.3.0
   sentry_drift: ^8.13.2
   sentry_flutter: ^8.13.2
   json_annotation: ^4.9.0
   intl_translation: ^0.20.1
 
-  # Platform related
+  # Platform 
   drift: ^2.25.0
+  mailto: ^2.0.0
   geocoding: ^3.0.0
   drift_dev: ^2.25.1
   geolocator: ^13.0.2
   share_plus: ^10.1.4
   image_picker: ^1.1.2
+  url_launcher: ^6.3.1
   drift_flutter: ^0.2.4
   share_handler: ^0.0.22
   mobile_scanner: ^7.0.0-beta.7
@@ -56,8 +58,9 @@ dependencies:
   nil: ^1.1.1
   readmore: ^3.0.0
   qr_flutter: ^4.1.0
-  flutter_map: ^8.0.0
+  flutter_map: ^8.1.0
   flutter_svg: ^2.0.17
+  validatorless: ^1.2.4
   blurhash_shader: ^1.1.2
   vector_graphics: ^1.1.18
   visibility_detector: ^0.4.0

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/profile_app_bar_title.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
@@ -12,6 +13,7 @@ class ProfileViewAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenCubit = context.read<ScreenCubit>();
     final profileViewCubit = context.read<ProfileViewCubit>();
     return BlocSelector<ProfileViewCubit, ProfileViewState, Profile>(
       selector: (state) => state.profile,
@@ -33,12 +35,13 @@ class ProfileViewAppBar extends StatelessWidget {
                       PopupMenuItem(
                         onTap: profileViewCubit.removeFriend,
                         child: const Text('Remove from my field'),
-                      )
-                    else
-                      PopupMenuItem(
-                        onTap: profileViewCubit.addFriend,
-                        child: const Text('Add to my field'),
                       ),
+
+                    // Complaint
+                    PopupMenuItem(
+                      onTap: () => screenCubit.showComplaint(profile.id),
+                      child: const Text('Complaint'),
+                    ),
                   ];
                 },
               ),

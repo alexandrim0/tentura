@@ -1,10 +1,7 @@
-import 'package:injectable/injectable.dart';
-
 import 'package:tentura/features/beacon/ui/bloc/beacon_cubit.dart';
 
 import 'package:tentura_widgetbook/bloc/_data.dart';
 
-@Singleton(as: BeaconCubit)
 class BeaconCubitMock extends Cubit<BeaconState> implements BeaconCubit {
   BeaconCubitMock({bool isMine = false})
     : super(

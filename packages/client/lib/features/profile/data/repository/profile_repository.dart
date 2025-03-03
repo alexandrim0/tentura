@@ -7,7 +7,6 @@ import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 
 import '../../domain/exception.dart';
-import '../gql/_g/user_delete_by_id.req.gql.dart';
 import '../gql/_g/user_fetch_by_id.req.gql.dart';
 import '../gql/_g/user_update.req.gql.dart';
 
@@ -37,11 +36,16 @@ class ProfileRepository {
 
   Future<void> update(Profile profile) async {
     final response = await _remoteApiService
-        .request(GUserUpdateReq((b) => b.vars
-          ..id = profile.id
-          ..title = profile.title
-          ..description = profile.description
-          ..has_picture = profile.hasAvatar))
+        .request(
+          GUserUpdateReq(
+            (b) =>
+                b.vars
+                  ..id = profile.id
+                  ..title = profile.title
+                  ..description = profile.description
+                  ..has_picture = profile.hasAvatar,
+          ),
+        )
         .firstWhere((e) => e.dataSource == DataSource.Link)
         .then(
           (r) => r.dataOrThrow(label: _label).update_user_by_pk as UserModel?,
@@ -50,13 +54,14 @@ class ProfileRepository {
     _controller.add(RepositoryEventUpdate(response.toEntity));
   }
 
+  // TBD: via rpc
   Future<void> delete(String id) async {
-    final response = await _remoteApiService
-        .request(GUserDeleteByIdReq((b) => b.vars.id = id))
-        .firstWhere((e) => e.dataSource == DataSource.Link)
-        .then((r) => r.dataOrThrow(label: _label).delete_user_by_pk);
-    if (response == null) throw ProfileDeleteException(id);
-    _controller.add(RepositoryEventDelete(Profile(id: response.id)));
+    // final response = await _remoteApiService
+    //     .request(GUserDeleteByIdReq((b) => b.vars.id = id))
+    //     .firstWhere((e) => e.dataSource == DataSource.Link)
+    //     .then((r) => r.dataOrThrow(label: _label).delete_user_by_pk);
+    // if (response == null) throw ProfileDeleteException(id);
+    _controller.add(RepositoryEventDelete(Profile(id: id)));
   }
 
   static const _label = 'Profile';

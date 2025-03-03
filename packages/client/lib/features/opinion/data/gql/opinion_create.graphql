@@ -1,6 +1,17 @@
-mutation OpinionCreate($objectId: String!, $content: String!) {
-  insert_opinion_one(object: {object: $objectId, content: $content}) {
-    id
-    created_at
+# import '/data/gql/opinion_model.graphql'
+
+mutation OpinionCreate(
+  $objectId: String!,
+  $content: String!,
+  $amount: Int = 0
+) {
+  insert_opinion_one(
+    object: {
+      object: $objectId,
+      content: $content,
+      amount: $amount
+    }
+  ) {
+    ...OpinionModel
   }
 }

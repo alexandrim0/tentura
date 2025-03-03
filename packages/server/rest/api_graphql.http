@@ -1,0 +1,9 @@
+# GQL test request local
+POST http://localhost:8080/v1/graphql
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: application/json
+X-Hasura-Query-Context: Fatum
+
+{
+  "query": "query {echo_session(args: {zero: 0}) {user_id context_name}}"
+}

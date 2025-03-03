@@ -1,9 +1,12 @@
+import 'package:injectable/injectable.dart';
+
 import 'package:tentura/consts.dart';
 
 import 'state_base.dart';
 
 export 'state_base.dart';
 
+@singleton
 class ScreenCubit extends Cubit<ScreenState> {
   ScreenCubit() : super(const ScreenState());
 
@@ -31,6 +34,9 @@ class ScreenCubit extends Cubit<ScreenState> {
   void showProfileEditor() => emit(state.navigateTo(kPathProfileEdit));
 
   void showSettings() => emit(state.navigateTo(kPathSettings));
+
+  void showComplaint(String id) =>
+      emit(state.navigateTo('$kPathComplaint?id=$id'));
 }
 
 class ScreenState extends StateBase {

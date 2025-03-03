@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/comment.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/rating_indicator.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
@@ -62,6 +63,22 @@ class CommentTile extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+
+              // More
+              PopupMenuButton(
+                itemBuilder: (context) {
+                  return <PopupMenuEntry<void>>[
+                    // Complaint
+                    PopupMenuItem(
+                      onTap:
+                          () => context.read<ScreenCubit>().showComplaint(
+                            comment.id,
+                          ),
+                      child: const Text('Complaint'),
+                    ),
+                  ];
+                },
               ),
             ],
           ),

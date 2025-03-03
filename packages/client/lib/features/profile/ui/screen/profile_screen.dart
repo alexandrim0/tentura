@@ -41,10 +41,10 @@ class ProfileScreen extends StatelessWidget implements AutoRouteWrapper {
           ProfileAppBar(),
 
           // Profile
-          ProfileBody(),
+          SliverPadding(padding: kPaddingAll, sliver: ProfileBody()),
 
           // Opinions List
-          OpinionList(),
+          SliverPadding(padding: kPaddingH, sliver: OpinionList()),
         ],
       ),
     );

@@ -21,81 +21,78 @@ class ProfileBody extends StatelessWidget {
       selector: (state) => state.profile,
       builder: (_, profile) {
         return SliverToBoxAdapter(
-          child: Padding(
-            padding: kPaddingAll,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Avatar
-                Center(
-                  child: AvatarRated.big(profile: profile, withRating: false),
-                ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Avatar
+              Center(
+                child: AvatarRated.big(profile: profile, withRating: false),
+              ),
 
-                // Description
-                Padding(
-                  padding: kPaddingT,
-                  child: ShowMoreText(
-                    profile.description,
-                    style: textTheme.bodyMedium,
-                  ),
+              // Description
+              Padding(
+                padding: kPaddingT,
+                child: ShowMoreText(
+                  profile.description,
+                  style: textTheme.bodyMedium,
                 ),
+              ),
 
-                // Show Connections
-                Padding(
-                  padding: kPaddingSmallT,
-                  child: ElevatedButton.icon(
-                    onPressed: () => screenCubit.showGraph(profile.id),
-                    icon: const Icon(TenturaIcons.graph),
-                    label: const Text('Show Connections'),
-                  ),
+              // Show Connections
+              Padding(
+                padding: kPaddingSmallT,
+                child: ElevatedButton.icon(
+                  onPressed: () => screenCubit.showGraph(profile.id),
+                  icon: const Icon(TenturaIcons.graph),
+                  label: const Text('Show Connections'),
                 ),
+              ),
 
-                // Show Beacons
-                Padding(
-                  padding: kPaddingSmallT,
-                  child: ElevatedButton.icon(
-                    onPressed: () => screenCubit.showBeacons(profile.id),
-                    icon: const Icon(Icons.open_in_full),
-                    label: const Text('Show Beacons'),
-                  ),
+              // Show Beacons
+              Padding(
+                padding: kPaddingSmallT,
+                child: ElevatedButton.icon(
+                  onPressed: () => screenCubit.showBeacons(profile.id),
+                  icon: const Icon(Icons.open_in_full),
+                  label: const Text('Show Beacons'),
                 ),
+              ),
 
-                Padding(
-                  padding: kPaddingSmallT,
-                  child: Row(
-                    spacing: kSpacingSmall,
-                    children: [
-                      // Settings
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          icon: const Icon(Icons.settings),
-                          label: const Text('Settings'),
-                          onPressed: screenCubit.showSettings,
-                        ),
+              Padding(
+                padding: kPaddingSmallT,
+                child: Row(
+                  spacing: kSpacingSmall,
+                  children: [
+                    // Settings
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.settings),
+                        label: const Text('Settings'),
+                        onPressed: screenCubit.showSettings,
                       ),
+                    ),
 
-                      // New Beacon
-                      Expanded(
-                        child: FilledButton.icon(
-                          icon: const Icon(Icons.post_add),
-                          label: const Text('New Beacon'),
-                          onPressed: screenCubit.showBeaconCreate,
-                        ),
+                    // New Beacon
+                    Expanded(
+                      child: FilledButton.icon(
+                        icon: const Icon(Icons.post_add),
+                        label: const Text('New Beacon'),
+                        onPressed: screenCubit.showBeaconCreate,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
 
-                // Opinions
-                Padding(
-                  padding: kPaddingT,
-                  child: Text(
-                    'Community Feedback',
-                    style: textTheme.headlineMedium,
-                  ),
+              // Opinions
+              Padding(
+                padding: kPaddingT,
+                child: Text(
+                  'Community Feedback',
+                  style: textTheme.headlineMedium,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

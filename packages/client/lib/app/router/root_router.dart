@@ -45,8 +45,8 @@ class RootRouter extends RootStackRouter {
     // Home
     AutoRoute(
       initial: true,
-      path: kPathRoot,
       page: HomeRoute.page,
+      path: kPathRoot,
       children: [
         // Field
         AutoRoute(page: MyFieldRoute.page),
@@ -105,8 +105,9 @@ class RootRouter extends RootStackRouter {
 
     // Profile View
     AutoRoute(
-      path: kPathProfileView,
+      maintainState: false,
       page: ProfileViewRoute.page,
+      path: kPathProfileView,
       guards: [
         AutoRouteGuard.redirect(
           (r) =>
@@ -121,50 +122,74 @@ class RootRouter extends RootStackRouter {
     AutoRoute(
       keepHistory: false,
       maintainState: false,
-      path: kPathProfileEdit,
+      fullscreenDialog: true,
       page: ProfileEditRoute.page,
+      path: kPathProfileEdit,
     ),
 
     // Settings
     AutoRoute(
       keepHistory: false,
       maintainState: false,
-      path: kPathSettings,
+      fullscreenDialog: true,
       page: SettingsRoute.page,
+      path: kPathSettings,
     ),
 
     // Beacon Create New
     AutoRoute(
       keepHistory: false,
       maintainState: false,
-      path: kPathBeaconNew,
+      fullscreenDialog: true,
       page: BeaconCreateRoute.page,
+      path: kPathBeaconNew,
     ),
 
     // Beacon View
     AutoRoute(
-      keepHistory: false,
       maintainState: false,
-      path: kPathBeaconView,
       page: BeaconViewRoute.page,
+      path: kPathBeaconView,
     ),
 
     // Beacon View All
     AutoRoute(
-      keepHistory: false,
       maintainState: false,
-      path: kPathBeaconViewAll,
       page: BeaconRoute.page,
+      path: kPathBeaconViewAll,
     ),
 
     // Rating
-    AutoRoute(path: kPathRating, page: RatingRoute.page),
+    AutoRoute(
+      maintainState: false,
+      page: RatingRoute.page,
+      path: kPathRating,
+      //
+    ),
 
     // Graph
-    AutoRoute(path: kPathGraph, page: GraphRoute.page),
+    AutoRoute(
+      maintainState: false,
+      page: GraphRoute.page,
+      path: kPathGraph,
+      //
+    ),
 
     // Chat
-    AutoRoute(path: kPathProfileChat, page: ChatRoute.page),
+    AutoRoute(
+      maintainState: false,
+      page: ChatRoute.page,
+      path: kPathProfileChat,
+    ),
+
+    // Complaint
+    AutoRoute(
+      keepHistory: false,
+      maintainState: false,
+      fullscreenDialog: true,
+      page: ComplaintRoute.page,
+      path: kPathComplaint,
+    ),
 
     // default
     RedirectRoute(path: '*', redirectTo: kPathRoot),

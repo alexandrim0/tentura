@@ -8,6 +8,7 @@ import 'package:tentura/features/comment/ui/bloc/comment_cubit.dart';
 import 'package:tentura/features/comment/ui/widget/comment_tile.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/bottom_text_input.dart';
 import 'package:tentura/ui/widget/deep_back_button.dart';
@@ -25,6 +26,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(_) => MultiBlocProvider(
     providers: [
+      BlocProvider.value(value: GetIt.I<ScreenCubit>()),
       BlocProvider(
         create:
             (_) => BeaconViewCubit(
@@ -36,6 +38,9 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
     ],
     child: MultiBlocListener(
       listeners: const [
+        BlocListener<ScreenCubit, ScreenState>(
+          listener: commonScreenBlocListener,
+        ),
         BlocListener<CommentCubit, CommentState>(
           listener: commonScreenBlocListener,
         ),
@@ -54,6 +59,20 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
       appBar: AppBar(
         title: const Text('Beacon'),
         leading: const DeepBackButton(),
+        actions: [
+          // More
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return <PopupMenuEntry<void>>[
+                // Complaint
+                PopupMenuItem(
+                  onTap: () => context.read<ScreenCubit>().showComplaint(id),
+                  child: const Text('Complaint'),
+                ),
+              ];
+            },
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4),
           child: BlocSelector<BeaconViewCubit, BeaconViewState, bool>(
