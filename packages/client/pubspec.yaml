@@ -33,7 +33,7 @@ dependencies:
   logger: ^2.5.0
   auto_route: ^9.3.0
   built_value: ^8.9.4
-  flutter_bloc: ^9.0.0
+  flutter_bloc: ^9.1.0
   synchronized: ^3.3.0
   sentry_drift: ^8.13.2
   sentry_flutter: ^8.13.2
