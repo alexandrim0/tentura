@@ -4,12 +4,13 @@ import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/di/di.dart';
 
-import 'controllers/events/event_beacon_mutate_controller.dart';
+import 'controllers/actions_controller.dart';
+import 'controllers/events_controller.dart';
+import 'controllers/chat/chat_controller.dart';
 import 'controllers/user/user_image_controller.dart';
 import 'controllers/user/user_login_controller.dart';
 import 'controllers/user/user_register_controller.dart';
 import 'controllers/shared/shared_view_controller.dart';
-import 'controllers/chat/chat_controller.dart';
 import 'middleware/auth_middleware.dart';
 
 Handler routeHandler() {
@@ -29,8 +30,13 @@ Handler routeHandler() {
           use: authMiddleware.verifyBearerJwt,
         )
         ..post(
-          '$kPathEvents/beacon_mutate',
-          getIt<EventBeaconMutateController>().handler,
+          kPathActions,
+          getIt<ActionsController>().handler,
+          use: authMiddleware.verifyTenturaPassword,
+        )
+        ..post(
+          kPathEvents,
+          getIt<EventsController>().handler,
           use: authMiddleware.verifyTenturaPassword,
         );
 

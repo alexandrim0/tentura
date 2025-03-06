@@ -7,7 +7,6 @@ import 'package:tentura_server/consts.dart';
 import 'user_entity.dart';
 
 part 'beacon_entity.freezed.dart';
-part 'beacon_entity.g.dart';
 
 @freezed
 class BeaconEntity with _$BeaconEntity {
@@ -18,8 +17,8 @@ class BeaconEntity with _$BeaconEntity {
     required DateTime createdAt,
     required DateTime updatedAt,
     @Default(false) bool isEnabled,
-    @Default('') String description,
     @Default(false) bool hasPicture,
+    @Default('') String description,
     @Default('') String blurHash,
     @Default(0) int picHeight,
     @Default(0) int picWidth,
@@ -27,9 +26,6 @@ class BeaconEntity with _$BeaconEntity {
     LatLng? coordinates,
     String? context,
   }) = _BeaconEntity;
-
-  factory BeaconEntity.fromJson(Map<String, dynamic> json) =>
-      _$BeaconEntityFromJson(json);
 
   const BeaconEntity._();
 

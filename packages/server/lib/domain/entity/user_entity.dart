@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tentura_server/consts.dart';
 
 part 'user_entity.freezed.dart';
-part 'user_entity.g.dart';
 
 @freezed
 class UserEntity with _$UserEntity {
@@ -16,9 +15,6 @@ class UserEntity with _$UserEntity {
     @Default(0) int picHeight,
     @Default(0) int picWidth,
   }) = _UserEntity;
-
-  factory UserEntity.fromJson(Map<String, dynamic> json) =>
-      _$UserEntityFromJson(json);
 
   const UserEntity._();
 

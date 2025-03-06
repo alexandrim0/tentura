@@ -1,6 +1,9 @@
 import 'dart:typed_data';
+import 'package:shelf_plus/shelf_plus.dart';
 
-base class BaseController {
+export 'package:shelf_plus/shelf_plus.dart';
+
+abstract base class BaseController {
   const BaseController();
 
   Future<Uint8List> readBodyAsBytes(
@@ -12,4 +15,6 @@ base class BaseController {
     }
     return builder.takeBytes();
   }
+
+  Future<Response> handler(Request request);
 }

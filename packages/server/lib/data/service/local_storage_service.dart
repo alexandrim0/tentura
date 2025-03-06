@@ -3,15 +3,17 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
-@injectable
+@singleton
 class LocalStorageService {
   const LocalStorageService();
 
-  Future<void> saveBytesToFile(Uint8List imageBytes, File file) async {
+  Future<Uint8List> readFile(String path) => File(path).readAsBytes();
+
+  Future<void> saveBytesToFile(Uint8List bytes, File file) async {
     IOSink? sink;
     try {
       file.parent.createSync(recursive: true);
-      sink = file.openWrite()..add(imageBytes);
+      sink = file.openWrite()..add(bytes);
       await sink.flush();
     } catch (e) {
       log(e.toString());
@@ -21,9 +23,10 @@ class LocalStorageService {
     }
   }
 
-  Future<void> saveStreamToFile(Stream<List<int>> stream, File file) async {
+  Future<String> saveStreamToFile(String path, Stream<Uint8List> stream) async {
     IOSink? sink;
     try {
+      final file = File(path);
       file.parent.createSync(recursive: true);
       sink = file.openWrite();
       await sink.addStream(stream);
@@ -34,5 +37,9 @@ class LocalStorageService {
     } finally {
       await sink?.close();
     }
+    // TBD: calculate E-Tag
+    return '';
   }
+
+  Future<void> deleteFile(String path) => File(path).delete();
 }
