@@ -14,7 +14,6 @@ const kMinNumCompX = 6;
 const kContextUserId = 'userId';
 
 const kPathActions = '/hasura/actions';
-
 const kPathEvents = '/hasura/events';
 
 // Make [environment] as mutable for testing purposes only!
@@ -63,6 +62,12 @@ final kS3SecretKey = environment['S3_SECRET_KEY'] ?? '';
 final kS3Endpoint = environment['S3_ENDPOINT'] ?? '';
 
 final kS3Bucket = environment['S3_BUCKET'] ?? '';
+
+final kIsRemoteStorageEnabled =
+    kS3Endpoint.isNotEmpty &&
+    kS3Bucket.isNotEmpty &&
+    kS3AccessKey.isNotEmpty &&
+    kS3SecretKey.isNotEmpty;
 
 // JWT
 // This keys needed for testing purposes only!

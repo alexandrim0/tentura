@@ -1,4 +1,3 @@
-import 'package:minio/minio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:stormberry/stormberry.dart';
 
@@ -23,12 +22,5 @@ abstract class RegisterModule {
         sslMode: SslMode.disable,
       ),
     ),
-  );
-
-  Minio get minio => Minio(
-    accessKey: kS3AccessKey,
-    secretKey: kS3SecretKey,
-    endPoint: kS3Endpoint,
-    pathStyle: false,
   );
 }

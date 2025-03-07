@@ -10,12 +10,12 @@ services:
     logging:
       driver: journald
 
-  openresty:
+  proxy:
     extends:
       service: common
-    hostname: openresty
-    container_name: openresty
-    image: vbulavintsev/openresty-tentura
+    hostname: proxy
+    container_name: proxy
+    image: vbulavintsev/tentura-proxy
     depends_on:
       - hasura
       - tentura
@@ -29,7 +29,7 @@ services:
       - 80:80/tcp
       - 443:443/tcp
     networks:
-      - proxy
+      - frontend
     environment:
       - WORKERS
       - RESOLVER
@@ -128,6 +128,6 @@ volumes:
   openresty-cert:
 
 networks:
-  proxy:
+  frontend:
   backend:
     internal: true

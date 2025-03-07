@@ -25,17 +25,19 @@ class BeaconRepositoryMock implements BeaconRepository {
       storageById[id] ?? (throw IdNotFoundException(id));
 
   @override
-  Future<void> setBeaconImage({
-    required BeaconEntity beacon,
+  Future<void> deleteBeaconById(String id) async =>
+      storageById.removeWhere((key, value) => value.id == id);
+
+  @override
+  Future<void> updateBeaconBlurHash({
+    required String beaconId,
     required Uint8List imageBytes,
-  }) async {
-    final image = _imageService.decodeImage(imageBytes);
-    final blurHash = _imageService.calculateBlurHash(image);
-    storageById[beacon.id] = beacon.copyWith(
-      blurHash: blurHash,
-      hasPicture: true,
-      picHeight: image.height,
-      picWidth: image.width,
-    );
-  }
+  }) async => storageById.update(
+    beaconId,
+    (beacon) => beacon.copyWith(
+      blurHash: _imageService.calculateBlurHash(
+        _imageService.decodeImage(imageBytes),
+      ),
+    ),
+  );
 }

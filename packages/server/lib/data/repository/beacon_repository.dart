@@ -1,12 +1,9 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 import 'package:stormberry/stormberry.dart';
 
-import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/data/model/beacon_model.dart';
 import 'package:tentura_server/data/service/image_service.dart';
-import 'package:tentura_server/data/service/local_storage_service.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
 
@@ -14,17 +11,11 @@ export 'package:tentura_server/domain/entity/beacon_entity.dart';
 
 @Injectable(env: [Environment.dev, Environment.prod], order: 1)
 class BeaconRepository {
-  BeaconRepository(
-    this._database,
-    this._imageService,
-    this._localStorageService,
-  );
+  BeaconRepository(this._database, this._imageService);
 
   final Database _database;
 
   final ImageService _imageService;
-
-  final LocalStorageService _localStorageService;
 
   Future<BeaconEntity> createBeacon(BeaconEntity beacon) async {
     await _database.beacons.insertOne(
@@ -49,34 +40,25 @@ class BeaconRepository {
     return getBeaconById(beacon.id);
   }
 
-  Future<BeaconEntity> getBeaconById(String id) async => switch (await _database
-      .beacons
-      .queryBeacon(id)) {
-    final BeaconModel m => m.asEntity,
-    null => throw IdNotFoundException(id),
-  };
-
-  Future<void> setBeaconImage({
-    required BeaconEntity beacon,
-    required Uint8List imageBytes,
-  }) async {
-    final image = _imageService.decodeImage(imageBytes);
-    final file = File(
-      '$kImageFolderPath/${beacon.author.id}/${beacon.id}.$kImageExt',
-    );
-    if (file.existsSync()) {
-      throw Exception('File already exists!');
+  Future<BeaconEntity> getBeaconById(String id) async {
+    final beaconModel = await _database.beacons.queryBeacon(id);
+    if (beaconModel == null) {
+      throw IdNotFoundException(id);
     }
-    await _localStorageService.saveBytesToFile(imageBytes, file);
-    final blurHash = _imageService.calculateBlurHash(image);
-    await _database.beacons.updateOne(
-      BeaconUpdateRequest(
-        id: beacon.id,
-        hasPicture: true,
-        blurHash: blurHash,
-        picHeight: image.height,
-        picWidth: image.width,
-      ),
-    );
+    return (beaconModel as BeaconModel).asEntity;
   }
+
+  Future<void> updateBeaconBlurHash({
+    required String beaconId,
+    required Uint8List imageBytes,
+  }) => _database.beacons.updateOne(
+    BeaconUpdateRequest(
+      blurHash: _imageService.calculateBlurHash(
+        _imageService.decodeImage(imageBytes),
+      ),
+      id: beaconId,
+    ),
+  );
+
+  Future<void> deleteBeaconById(String id) => _database.beacons.deleteOne(id);
 }

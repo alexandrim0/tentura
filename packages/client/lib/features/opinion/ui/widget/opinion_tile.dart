@@ -63,15 +63,6 @@ class OpinionTile extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-        ),
-
-        // Footer (Buttons)
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Share
-            ShareCodeIconButton.id(opinion.id),
 
             // More
             PopupMenuButton(
@@ -98,6 +89,30 @@ class OpinionTile extends StatelessWidget {
                         child: const Text('Complaint'),
                       ),
                   ],
+            ),
+          ],
+        ),
+
+        // Footer (Buttons)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Share
+            ShareCodeIconButton.id(opinion.id),
+
+            // Status
+            Padding(
+              padding: kPaddingH,
+              child:
+                  opinion.amount > 0
+                      ? Icon(
+                        Icons.sentiment_satisfied_outlined,
+                        color: Colors.green.shade300,
+                      )
+                      : Icon(
+                        Icons.sentiment_dissatisfied_outlined,
+                        color: Colors.red.shade300,
+                      ),
             ),
           ],
         ),

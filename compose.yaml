@@ -11,12 +11,12 @@ services:
       - JWT_PRIVATE_PEM
       - JWT_PUBLIC_PEM
 
-  openresty:
+  proxy:
     extends:
       service: common
-    hostname: openresty
-    container_name: openresty
-    image: vbulavintsev/openresty-tentura
+    hostname: proxy
+    container_name: proxy
+    image: vbulavintsev/tentura-proxy
     depends_on:
       - hasura
       - tentura
