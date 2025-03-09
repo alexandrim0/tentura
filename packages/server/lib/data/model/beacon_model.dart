@@ -5,36 +5,34 @@ import 'package:tentura_root/domain/entity/date_time_range.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
 
 import '../service/converter/datetime_range_converter.dart';
+import '../service/converter/timestamptz_converter.dart';
 import 'user_model.dart';
 
 part 'beacon_model.schema.dart';
 
 extension type const BeaconModel(BeaconView i) implements BeaconView {
   BeaconEntity get asEntity => BeaconEntity(
-        id: id,
-        title: title,
-        context: context ?? '',
-        description: description,
-        hasPicture: hasPicture,
-        picHeight: picHeight,
-        picWidth: picWidth,
-        blurHash: blurHash,
-        isEnabled: enabled,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        timerange: timerange,
-        coordinates: lat == null || long == null ? null : LatLng(lat!, long!),
-        author: (user as UserModel).asEntity,
-      );
+    id: id,
+    title: title,
+    context: context ?? '',
+    description: description,
+    hasPicture: hasPicture,
+    picHeight: picHeight,
+    picWidth: picWidth,
+    blurHash: blurHash,
+    isEnabled: enabled,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    timerange: timerange,
+    coordinates: lat == null || long == null ? null : LatLng(lat!, long!),
+    author: (user as UserModel).asEntity,
+  );
 }
 
 @Model(
   tableName: 'beacon',
   indexes: [
-    TableIndex(
-      name: 'beacon_author_id',
-      columns: ['user_id'],
-    ),
+    TableIndex(name: 'beacon_author_id', columns: ['user_id']),
   ],
 )
 abstract class Beacon {
@@ -49,9 +47,9 @@ abstract class Beacon {
 
   User get user;
 
-  DateTime get createdAt;
+  double? get lat;
 
-  DateTime get updatedAt;
+  double? get long;
 
   bool get enabled;
 
@@ -63,10 +61,12 @@ abstract class Beacon {
 
   int get picWidth;
 
-  double? get lat;
-
-  double? get long;
-
   @UseConverter(DateTimeRangeConverter())
   DateTimeRange? get timerange;
+
+  @UseConverter(TimestamptzConverter())
+  DateTime get createdAt;
+
+  @UseConverter(TimestamptzConverter())
+  DateTime get updatedAt;
 }

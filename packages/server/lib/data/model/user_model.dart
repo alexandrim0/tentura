@@ -2,18 +2,20 @@ import 'package:stormberry/stormberry.dart';
 
 import 'package:tentura_server/domain/entity/user_entity.dart';
 
+import '../service/converter/timestamptz_converter.dart';
+
 part 'user_model.schema.dart';
 
 extension type const UserModel(UserView i) implements UserView {
   UserEntity get asEntity => UserEntity(
-        id: id,
-        title: title,
-        description: description,
-        hasPicture: hasPicture,
-        picHeight: picHeight,
-        picWidth: picWidth,
-        blurHash: blurHash,
-      );
+    id: id,
+    title: title,
+    description: description,
+    hasPicture: hasPicture,
+    picHeight: picHeight,
+    picWidth: picWidth,
+    blurHash: blurHash,
+  );
 }
 
 @Model(
@@ -36,8 +38,10 @@ abstract class User {
 
   String get publicKey;
 
+  @UseConverter(TimestamptzConverter())
   DateTime get createdAt;
 
+  @UseConverter(TimestamptzConverter())
   DateTime get updatedAt;
 
   bool get hasPicture;
