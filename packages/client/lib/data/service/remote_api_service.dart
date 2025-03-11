@@ -1,12 +1,13 @@
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+
+import 'package:tentura/consts.dart';
 
 import 'package:tentura_sdk/tentura_sdk.dart';
 
 export 'package:tentura_sdk/tentura_sdk.dart';
 
 @singleton
-class RemoteApiService extends TenturaApi {
+final class RemoteApiService extends TenturaApi {
   @FactoryMethod(preResolve: true)
   static Future<RemoteApiService> create() async {
     final api = RemoteApiService();
@@ -15,13 +16,10 @@ class RemoteApiService extends TenturaApi {
   }
 
   RemoteApiService({
-    super.storagePath = '',
     super.userAgent = kUserAgent,
-    super.isDebugMode = kDebugMode,
     super.apiUrlBase = kServerName,
-    super.jwtExpiresIn = const Duration(
-      seconds: kJwtExpiresIn,
-    ),
+    super.jwtExpiresIn = const Duration(seconds: kJwtExpiresIn),
+    super.requestTimeout = const Duration(seconds: kRequestTimeout),
   });
 
   @disposeMethod

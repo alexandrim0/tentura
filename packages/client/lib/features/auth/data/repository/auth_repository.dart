@@ -1,5 +1,7 @@
+import 'dart:math' show Random;
 import 'dart:async';
-import 'package:logger/logger.dart';
+import 'dart:convert';
+import 'dart:developer';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/data/database/database.dart';
@@ -12,13 +14,10 @@ import '../../domain/exception.dart';
 @singleton
 class AuthRepository {
   AuthRepository(
-    this._logger,
     this._database,
     this._remoteApiService,
     this._localSecureStorage,
   );
-
-  final Logger _logger;
 
   final Database _database;
 
@@ -44,38 +43,36 @@ class AuthRepository {
   Future<String> getSeedByAccountId(String id) async =>
       await _localSecureStorage.read(_getAccountKey(id)) ?? '';
 
-  Future<String> getCurrentAccountId() async => _currentAccountId.isEmpty
-      ? _localSecureStorage
-          .read(_currentAccountKey)
-          .then((v) => _currentAccountId = v ?? '')
-      : _currentAccountId;
+  Future<String> getCurrentAccountId() async =>
+      _currentAccountId.isEmpty
+          ? _localSecureStorage
+              .read(_currentAccountKey)
+              .then((v) => _currentAccountId = v ?? '')
+          : _currentAccountId;
 
   Future<List<Profile>> getAccountsAll() async => [
-        for (final account in await _database.managers.accounts.get())
-          Profile(
-            id: account.id,
-            title: account.title,
-            hasAvatar: account.hasAvatar,
-          ),
-      ];
+    for (final account in await _database.managers.accounts.get())
+      Profile(
+        id: account.id,
+        title: account.title,
+        hasAvatar: account.hasAvatar,
+      ),
+  ];
 
   Future<Profile?> getAccountById(String id) => _database.managers.accounts
       .filter((f) => f.id.equals(id))
       .getSingleOrNull()
       .then(
-        (e) => e == null
-            ? null
-            : Profile(
-                id: e.id,
-                title: e.title,
-                hasAvatar: e.hasAvatar,
-              ),
+        (e) =>
+            e == null
+                ? null
+                : Profile(id: e.id, title: e.title, hasAvatar: e.hasAvatar),
       );
 
   Future<String> addAccount(String seed) async {
     if (seed.isEmpty) throw const AuthSeedIsWrongException();
 
-    final id = await _remoteApiService.signIn(seed: seed);
+    final id = await _remoteApiService.signIn(seed);
 
     if (id.isEmpty) throw const AuthIdIsWrongException();
 
@@ -85,11 +82,12 @@ class AuthRepository {
   }
 
   Future<String> signUp() async {
-    final (:id, :seed) = await _remoteApiService.signUp();
+    final seed = base64UrlEncode(
+      Uint8List(32)..fillRange(0, 32, Random.secure().nextInt(256)),
+    );
+    final id = await _remoteApiService.signUp(seed);
 
     if (id.isEmpty) throw const AuthIdIsWrongException();
-
-    if (seed.isEmpty) throw const AuthSeedIsWrongException();
 
     await _addAccount(id, seed);
 
@@ -98,13 +96,9 @@ class AuthRepository {
     return id;
   }
 
-  Future<void> signIn(
-    String id, {
-    bool isPremature = false,
-  }) async {
+  Future<void> signIn(String id, {bool isPremature = false}) async {
     await _remoteApiService.signIn(
-      prematureUserId: isPremature ? id : null,
-      seed: await _localSecureStorage.read(_getAccountKey(id)) ?? '',
+      await _localSecureStorage.read(_getAccountKey(id)) ?? '',
     );
     await _setCurrentAccountId(id);
   }
@@ -130,10 +124,10 @@ class AuthRepository {
 
   Future<void> updateAccount(Profile account) => _database.managers.accounts
       .filter((f) => f.id.equals(account.id))
-      .update((o) => o(
-            title: Value(account.title),
-            hasAvatar: Value(account.hasAvatar),
-          ));
+      .update(
+        (o) =>
+            o(title: Value(account.title), hasAvatar: Value(account.hasAvatar)),
+      );
 
   Future<void> _setCurrentAccountId(String? id) async {
     await _localSecureStorage.write(
@@ -141,14 +135,11 @@ class AuthRepository {
       _currentAccountId = id ?? '',
     );
     _controller.add(_currentAccountId);
-    _logger.i('Current User Id: $id');
+    log('Current User Id: $id');
   }
 
   Future<void> _addAccount(String id, String seed) async {
-    await _localSecureStorage.write(
-      _getAccountKey(id),
-      seed,
-    );
+    await _localSecureStorage.write(_getAccountKey(id), seed);
     await _database.managers.accounts.create(
       (o) => o(id: id),
       mode: InsertMode.insert,

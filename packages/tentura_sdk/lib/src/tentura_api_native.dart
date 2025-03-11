@@ -1,20 +1,24 @@
 import 'dart:async';
 import 'dart:isolate';
-import 'package:ferry/ferry.dart' show OperationRequest, OperationResponse;
+import 'package:ferry/ferry.dart'
+    show Client, OperationRequest, OperationResponse;
 import 'package:ferry/ferry_isolate.dart';
 
-import 'consts.dart';
-import 'client/message.dart';
-import 'client/gql_client.dart';
-import 'tentura_api_base.dart';
+import 'package:tentura_root/consts.dart';
 
-class TenturaApi extends TenturaApiBase {
+import 'tentura_api_base.dart';
+import 'gql_client.dart';
+
+typedef GetTokenRequest = ({DateTime getTokenRequestTimestamp});
+
+typedef GetTokenResponse = ({String? token, Object? error});
+
+base class TenturaApi extends TenturaApiBase {
   TenturaApi({
     required super.apiUrlBase,
-    super.jwtExpiresIn = const Duration(minutes: 1),
-    super.userAgent = kAppTitle,
-    super.storagePath = '',
-    super.isDebugMode = false,
+    required super.jwtExpiresIn,
+    required super.requestTimeout,
+    required super.userAgent,
   });
 
   late final SendPort _replyPort;
@@ -23,19 +27,10 @@ class TenturaApi extends TenturaApiBase {
 
   @override
   Future<void> init() async {
-    _gqlClient = await IsolateClient.create(
-      buildClient,
-      params: (
-        userAgent: userAgent,
-        isDebugMode: isDebugMode,
-        storagePath: storagePath,
-        serverUrl: apiUrlBase + kPathGraphQLEndpoint,
-      ),
-      messageHandler: (message) async => switch (message) {
-        final InitMessage m => _replyPort = m.replyPort,
-        final GetTokenRequest _ => _replyPort.send(await getToken()),
-        _ => null,
-      },
+    _gqlClient = await IsolateClient.create<ClientParams>(
+      _initClient,
+      params: params,
+      messageHandler: _messageHandler,
     );
   }
 
@@ -48,8 +43,40 @@ class TenturaApi extends TenturaApiBase {
   Stream<OperationResponse<TData, TVars>> request<TData, TVars>(
     OperationRequest<TData, TVars> request, [
     Stream<OperationResponse<TData, TVars>> Function(
-            OperationRequest<TData, TVars>)?
-        forward,
-  ]) =>
-      _gqlClient.request(request);
+      OperationRequest<TData, TVars>,
+    )?
+    forward,
+  ]) => _gqlClient.request(request);
+
+  Future<Client> _initClient(ClientParams params, SendPort? sendPort) async {
+    final receivePort = ReceivePort();
+    sendPort?.send(receivePort.sendPort);
+    final tokenStream =
+        receivePort
+            .where((e) => e is GetTokenResponse)
+            .cast<GetTokenResponse>()
+            .asBroadcastStream();
+
+    Future<String?> getAuthToken() async {
+      sendPort?.send((getTokenRequestTimestamp: DateTime.timestamp()));
+      final response = await tokenStream.first.timeout(
+        const Duration(seconds: kRequestTimeout),
+      );
+      return response.token;
+    }
+
+    return buildClient(params: params, getToken: getAuthToken);
+  }
+
+  Future<void> _messageHandler(Object? message) async {
+    if (message is GetTokenRequest) {
+      try {
+        _replyPort.send((token: await getToken(), error: null));
+      } catch (e) {
+        _replyPort.send((token: null, error: e));
+      }
+    } else if (message is SendPort) {
+      _replyPort = message;
+    }
+  }
 }

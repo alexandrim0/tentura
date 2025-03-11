@@ -14,6 +14,8 @@ const kJwtExpiresIn = 3_600;
 
 const kAuthJwtExpiresIn = 30;
 
+const kRequestTimeout = 15;
+
 // Strings
 
 const kAppTitle = 'Tentura';
@@ -30,7 +32,10 @@ const kUserAgent = kAppTitle;
 
 const kContentTypeHtml = 'text/html';
 const kContentTypeJpeg = 'image/jpeg';
+const kContentApplicationJson = 'application/json';
 
+const kHeaderAccept = 'Accept';
+const kHeaderUserAgent = 'User-Agent';
 const kHeaderContentType = 'Content-Type';
 const kHeaderAuthorization = 'Authorization';
 const kHeaderQueryContext = 'X-Hasura-Query-Context';
