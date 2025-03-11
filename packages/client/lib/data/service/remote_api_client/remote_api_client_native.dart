@@ -6,15 +6,15 @@ import 'package:ferry/ferry_isolate.dart';
 
 import 'package:tentura_root/consts.dart';
 
-import 'tentura_api_base.dart';
+import 'remote_api_client_base.dart';
 import 'gql_client.dart';
 
 typedef GetTokenRequest = ({DateTime getTokenRequestTimestamp});
 
 typedef GetTokenResponse = ({String? token, Object? error});
 
-base class TenturaApi extends TenturaApiBase {
-  TenturaApi({
+base class RemoteApiClient extends RemoteApiClientBase {
+  RemoteApiClient({
     required super.apiUrlBase,
     required super.jwtExpiresIn,
     required super.requestTimeout,
@@ -36,6 +36,7 @@ base class TenturaApi extends TenturaApiBase {
 
   @override
   Future<void> close() async {
+    await super.close();
     await _gqlClient.dispose();
   }
 

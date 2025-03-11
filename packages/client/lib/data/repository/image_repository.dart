@@ -10,9 +10,7 @@ import 'package:tentura/domain/entity/image_entity.dart';
 
 @injectable
 class ImageRepository {
-  ImageRepository(
-    this._remoteApiService,
-  );
+  ImageRepository(this._remoteApiService);
 
   final RemoteApiService _remoteApiService;
 
@@ -31,20 +29,15 @@ class ImageRepository {
       throw const FormatException('Unsupported image format!');
     }
 
-    final numComp = image.height == image.width
-        ? (x: kMaxNumCompX, y: kMaxNumCompX)
-        : image.height > image.width
+    final numComp =
+        image.height == image.width
+            ? (x: kMaxNumCompX, y: kMaxNumCompX)
+            : image.height > image.width
             ? (x: kMinNumCompX, y: kMaxNumCompX)
             : (x: kMaxNumCompX, y: kMinNumCompX);
-    final blurHash = BlurHash.encode(
-      image,
-      numCompX: numComp.x,
-      numCompY: numComp.y,
-    ).hash;
-    final resultImage = encodeJpg(
-      image,
-      quality: kImageQuality,
-    );
+    final blurHash =
+        BlurHash.encode(image, numCompX: numComp.x, numCompY: numComp.y).hash;
+    final resultImage = encodeJpg(image, quality: kImageQuality);
     return ImageEntity(
       imageBytes: resultImage,
       fileName: xFile.name,
@@ -57,11 +50,11 @@ class ImageRepository {
   Future<void> uploadImage({
     required Uint8List image,
     required String imageId,
-  }) =>
-      _remoteApiService.uploadImage(
-        image: image,
-        id: imageId,
-      );
+  }) => _remoteApiService.httpPut(
+    Uri.parse('$kServerName/$kPathImageUpload?id=$imageId'),
+    headers: {kHeaderContentType: kContentTypeJpeg},
+    body: image,
+  );
 
   static final _imagePicker = ImagePicker();
 }

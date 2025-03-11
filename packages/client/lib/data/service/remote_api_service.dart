@@ -1,13 +1,18 @@
+import 'package:ferry/ferry.dart' show OperationResponse;
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/consts.dart';
 
-import 'package:tentura_sdk/tentura_sdk.dart';
+import 'remote_api_client/exception.dart';
+import 'remote_api_client/remote_api_client_native.dart'
+    if (dart.library.js_interop) 'remote_api_client/remote_api_client_web.dart';
 
-export 'package:tentura_sdk/tentura_sdk.dart';
+export 'package:ferry/ferry.dart'
+    show DataSource, FetchPolicy, OperationResponse;
+export 'package:gql_exec/gql_exec.dart' show Context, HttpLinkHeaders;
 
 @singleton
-final class RemoteApiService extends TenturaApi {
+final class RemoteApiService extends RemoteApiClient {
   @FactoryMethod(preResolve: true)
   static Future<RemoteApiService> create() async {
     final api = RemoteApiService();

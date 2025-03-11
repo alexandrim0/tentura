@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:ferry/ferry.dart'
     show Client, OperationRequest, OperationResponse;
 
-import 'tentura_api_base.dart';
+import 'remote_api_client_base.dart';
 import 'gql_client.dart';
 
-base class TenturaApi extends TenturaApiBase {
-  TenturaApi({
+base class RemoteApiClient extends RemoteApiClientBase {
+  RemoteApiClient({
     required super.apiUrlBase,
     required super.jwtExpiresIn,
     required super.requestTimeout,
@@ -22,6 +22,7 @@ base class TenturaApi extends TenturaApiBase {
 
   @override
   Future<void> close() async {
+    await super.close();
     await _gqlClient.dispose();
   }
 

@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
-import 'package:http/http.dart';
-import 'package:meta/meta.dart';
+import 'package:http/http.dart' as http;
 import 'package:ferry/ferry.dart' show OperationRequest, OperationResponse;
+import 'package:flutter/foundation.dart';
 import 'package:ed25519_edwards/ed25519_edwards.dart';
 
 import 'package:tentura_root/consts.dart';
@@ -13,8 +12,8 @@ import 'gql_client.dart';
 
 typedef JWT = ({String id, String accessToken, DateTime expiresAt});
 
-abstract base class TenturaApiBase {
-  TenturaApiBase({
+abstract base class RemoteApiClientBase {
+  RemoteApiClientBase({
     required this.userAgent,
     required this.apiUrlBase,
     required this.jwtExpiresIn,
@@ -25,6 +24,8 @@ abstract base class TenturaApiBase {
   final String apiUrlBase;
   final Duration jwtExpiresIn;
   final Duration requestTimeout;
+
+  final _httpClient = http.Client();
 
   KeyPair? _keyPair;
 
@@ -42,19 +43,10 @@ abstract base class TenturaApiBase {
 
   Future<void> init();
 
-  Future<void> close();
-
-  Future<void> uploadImage({
-    required Uint8List image,
-    required String id,
-  }) async => put(
-    Uri.parse('$apiUrlBase/$kPathImageUpload?id=$id'),
-    headers: {
-      kHeaderContentType: kContentTypeJpeg,
-      kHeaderAuthorization: 'Bearer ${await getToken()}',
-    },
-    body: image,
-  );
+  @mustCallSuper
+  Future<void> close() async {
+    _httpClient.close();
+  }
 
   Stream<OperationResponse<TData, TVars>> request<TData, TVars>(
     OperationRequest<TData, TVars> request, [
@@ -72,14 +64,12 @@ abstract base class TenturaApiBase {
       await _fetchJWT(kPathLogin);
       return _jwt!.accessToken;
     }
-
     for (var i = 0; i < 5; i++) {
       await Future<void>.delayed(Duration(milliseconds: 100 + 100 * i));
       if (!_tokenLocked && hasValidToken) {
         return _jwt!.accessToken;
       }
     }
-
     throw TimeoutException('Timeout while refreshing token!');
   }
 
@@ -93,13 +83,8 @@ abstract base class TenturaApiBase {
   /// Returns id of actual account
   Future<String> signUp(String seed) async {
     _setKeyPairFromSeed(seed);
-    try {
-      _tokenLocked = true;
-      await _fetchJWT(kPathRegister);
-      return _jwt!.id;
-    } finally {
-      _tokenLocked = false;
-    }
+    await _fetchJWT(kPathRegister);
+    return _jwt!.id;
   }
 
   // TBD: invalidate jwt on remote server also
@@ -109,8 +94,65 @@ abstract base class TenturaApiBase {
     _tokenLocked = false;
   }
 
-  @visibleForTesting
-  String createAuthRequestToken(KeyPair keyPair) {
+  Future<http.Response> httpGet(
+    Uri url, {
+    Map<String, String>? headers,
+    bool withAuthToken = true,
+  }) async => _httpClient.get(
+    url,
+    headers: {
+      if (withAuthToken) kHeaderAuthorization: 'Bearer ${await getToken()}',
+      kHeaderUserAgent: userAgent,
+      ...?headers,
+    },
+  );
+
+  Future<http.Response> httpPut(
+    Uri url, {
+    Map<String, String>? headers,
+    bool withAuthToken = true,
+    Object? body,
+  }) async => _httpClient.put(
+    url,
+    body: body,
+    headers: {
+      if (withAuthToken) kHeaderAuthorization: 'Bearer ${await getToken()}',
+      kHeaderUserAgent: userAgent,
+      ...?headers,
+    },
+  );
+
+  Future<http.Response> httpPost(
+    Uri url, {
+    Map<String, String>? headers,
+    bool withAuthToken = true,
+    Object? body,
+  }) async => _httpClient.post(
+    url,
+    body: body,
+    headers: {
+      if (withAuthToken) kHeaderAuthorization: 'Bearer ${await getToken()}',
+      kHeaderUserAgent: userAgent,
+      ...?headers,
+    },
+  );
+
+  Future<http.Response> httpDelete(
+    Uri url, {
+    Map<String, String>? headers,
+    bool withAuthToken = true,
+    Object? body,
+  }) async => _httpClient.delete(
+    url,
+    body: body,
+    headers: {
+      if (withAuthToken) kHeaderAuthorization: 'Bearer ${await getToken()}',
+      kHeaderUserAgent: userAgent,
+      ...?headers,
+    },
+  );
+
+  String _createAuthRequestToken(KeyPair keyPair) {
     final now = DateTime.timestamp().millisecondsSinceEpoch ~/ 1000;
     final body = base64UrlEncode(
       utf8.encode(
@@ -139,13 +181,15 @@ abstract base class TenturaApiBase {
     }
     try {
       _tokenLocked = true;
-      final response = await post(
-        Uri.parse(apiUrlBase + path),
-        headers: {
-          'Authorization': 'Bearer ${createAuthRequestToken(_keyPair!)}',
-          'User-Agent': userAgent,
-        },
-      ).timeout(requestTimeout);
+      final response = await _httpClient
+          .post(
+            Uri.parse(apiUrlBase + path),
+            headers: {
+              'Authorization': 'Bearer ${_createAuthRequestToken(_keyPair!)}',
+              'User-Agent': userAgent,
+            },
+          )
+          .timeout(requestTimeout);
       switch (response.statusCode) {
         case 200:
           final body = jsonDecode(response.body) as Map;
