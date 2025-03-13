@@ -26,9 +26,9 @@ class BeaconRepositoryMock implements BeaconRepository {
     String? filterByUserId,
   }) async {
     final beacon =
-        storageById[beaconId] ?? (throw IdNotFoundException(beaconId));
+        storageById[beaconId] ?? (throw IdNotFoundException(id: beaconId));
     if (filterByUserId != null && beacon.author.id != filterByUserId) {
-      throw IdNotFoundException(beaconId);
+      throw IdNotFoundException(id: beaconId);
     }
     return beacon;
   }

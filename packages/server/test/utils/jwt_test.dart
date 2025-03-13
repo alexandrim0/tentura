@@ -9,108 +9,73 @@ import 'package:tentura_server/utils/id.dart';
 import 'package:tentura_server/utils/jwt.dart';
 
 void main() {
-  group(
-    'Read keys from PEM',
-    () {
-      const envPublicKey =
-          r'-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA2CmIb3Ho2eb6m8WIog6KiyzCY05sbyX04PiGlH5baDw=\n-----END PUBLIC KEY-----';
-      const envPrivateKey =
-          r'-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF\n-----END PRIVATE KEY-----';
+  group('Read keys from PEM', () {
+    const envPublicKey =
+        r'-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA2CmIb3Ho2eb6m8WIog6KiyzCY05sbyX04PiGlH5baDw=\n-----END PUBLIC KEY-----';
+    const envPrivateKey =
+        r'-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF\n-----END PRIVATE KEY-----';
 
-      test(
-        'Read PEM',
-        () {
-          expect(
-            EdDSAPublicKey.fromPEM(kJwtPublicKey).key.bytes,
-            isNotEmpty,
-          );
+    test('Read PEM', () {
+      expect(EdDSAPublicKey.fromPEM(kJwtPublicKey).key.bytes, isNotEmpty);
 
-          expect(
-            EdDSAPrivateKey.fromPEM(kJwtPrivateKey).key.bytes,
-            isNotEmpty,
-          );
+      expect(EdDSAPrivateKey.fromPEM(kJwtPrivateKey).key.bytes, isNotEmpty);
 
-          expect(
-            EdDSAPublicKey.fromPEM(envPublicKey.replaceAll(r'\n', '\n'))
-                .key
-                .bytes,
-            isNotEmpty,
-          );
-
-          expect(
-            EdDSAPrivateKey.fromPEM(envPrivateKey.replaceAll(r'\n', '\n'))
-                .key
-                .bytes,
-            isNotEmpty,
-          );
-        },
-      );
-    },
-  );
-
-  group(
-    'Test of JWT utils',
-    () {
-      test(
-        'extractAuthToken',
-        () {
-          final jwt = faker.jwt.valid();
-          log('[$jwt]');
-
-          expect(
-            extractAuthTokenFromHeaders({
-              kHeaderAuthorization: 'Bearer   $jwt  ',
-            }),
-            equals(jwt),
-          );
-
-          expect(
-            () => extractAuthTokenFromHeaders({
-              kHeaderAuthorization: 'Bearer',
-            }),
-            throwsA(isA<JWTInvalidException>()),
-          );
-        },
+      expect(
+        EdDSAPublicKey.fromPEM(envPublicKey.replaceAll(r'\n', '\n')).key.bytes,
+        isNotEmpty,
       );
 
-      test(
-        'issue / verify AuthRequest',
-        () {
-          final authRequestToken = issueAuthRequestToken(publicKey);
-          final jwt = verifyAuthRequest(token: authRequestToken);
-          log(jwt.payload.toString());
+      expect(
+        EdDSAPrivateKey.fromPEM(
+          envPrivateKey.replaceAll(r'\n', '\n'),
+        ).key.bytes,
+        isNotEmpty,
+      );
+    });
+  });
 
-          expect(
-            (jwt.payload as Map)['pk'],
-            equals(base64UrlEncode(publicKey.key.bytes)),
-          );
-        },
+  group('Test of JWT utils', () {
+    test('extractAuthToken', () {
+      final jwt = faker.jwt.valid();
+      log('[$jwt]');
+
+      expect(
+        extractAuthTokenFromHeaders({kHeaderAuthorization: 'Bearer   $jwt  '}),
+        equals(jwt),
       );
 
-      test(
-        'issueJwt / verifyJwt',
-        () {
-          final userId = generateId();
-          final authRequestToken = issueJwt(
-            subject: userId,
-          )['access_token']! as String;
-
-          final jwt = verifyJwt(token: authRequestToken);
-          log(jwt.payload.toString());
-
-          expect(
-            jwt.subject,
-            equals(userId),
-          );
-        },
+      expect(
+        () => extractAuthTokenFromHeaders({kHeaderAuthorization: 'Bearer'}),
+        throwsA(isA<JWTInvalidException>()),
       );
-    },
-  );
+    });
+
+    test('issue / verify AuthRequest', () {
+      final authRequestToken = issueAuthRequestToken(publicKey);
+      final jwt = verifyAuthRequest(token: authRequestToken);
+      log(jwt.payload.toString());
+
+      expect(
+        (jwt.payload as Map)['pk'],
+        equals(base64UrlEncode(publicKey.key.bytes)),
+      );
+    });
+
+    test('issueJwt / verifyJwt', () {
+      final userId = generateId('U');
+      final authRequestToken =
+          issueJwt(subject: userId)['access_token']! as String;
+
+      final jwt = verifyJwt(token: authRequestToken);
+      log(jwt.payload.toString());
+
+      expect(jwt.subject, equals(userId));
+    });
+  });
 }
 
-String issueAuthRequestToken(EdDSAPublicKey publicKey) => JWT({
-      'pk': base64UrlEncode(publicKey.key.bytes),
-    }).sign(
+String issueAuthRequestToken(EdDSAPublicKey publicKey) =>
+    JWT({'pk': base64UrlEncode(publicKey.key.bytes)}).sign(
       privateKey,
       algorithm: JWTAlgorithm.EdDSA,
       expiresIn: const Duration(seconds: kAuthJwtExpiresIn),

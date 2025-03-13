@@ -22,16 +22,13 @@ class UserRepository {
 
   final LocalStorageService _localStorageService;
 
-  Future<UserEntity> createUser({
-    required String publicKey,
-    required UserEntity user,
-  }) async {
+  Future<UserEntity> createUser({required UserEntity user}) async {
     final now = DateTime.timestamp();
     await _database.users.insertOne(
       UserInsertRequest(
-        publicKey: publicKey,
         id: user.id,
         title: user.title,
+        publicKey: user.publicKey,
         description: user.description,
         hasPicture: user.hasPicture,
         picHeight: user.picHeight,
@@ -48,7 +45,7 @@ class UserRepository {
       .users
       .queryUser(id)) {
     final UserModel m => m.asEntity,
-    null => throw IdNotFoundException(id),
+    null => throw IdNotFoundException(id: id),
   };
 
   Future<UserEntity> getUserByPublicKey(String publicKey) async {
@@ -56,7 +53,7 @@ class UserRepository {
       QueryParams(where: 'public_key=@pk', values: {'pk': publicKey}),
     );
     if (users.isEmpty) {
-      throw IdNotFoundException(publicKey);
+      throw IdNotFoundException(id: publicKey);
     }
     return (users.first as UserModel).asEntity;
   }

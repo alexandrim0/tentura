@@ -15,22 +15,20 @@ class UserRepositoryMock implements UserRepository {
   final ImageService _imageService;
 
   @override
-  Future<UserEntity> createUser({
-    required String publicKey,
-    required UserEntity user,
-  }) async =>
-      storageByPublicKey.containsKey(publicKey)
-          ? throw Exception('Key already exists [$publicKey]')
-          : storageByPublicKey[publicKey] = user;
+  Future<UserEntity> createUser({required UserEntity user}) async =>
+      storageByPublicKey.containsKey(user.publicKey)
+          ? throw Exception('Key already exists [${user.publicKey}]')
+          : storageByPublicKey[user.publicKey] = user;
 
   @override
   Future<UserEntity> getUserById(String id) async =>
       storageByPublicKey.values.where((e) => e.id == id).firstOrNull ??
-      (throw IdNotFoundException(id));
+      (throw IdNotFoundException(id: id));
 
   @override
   Future<UserEntity> getUserByPublicKey(String publicKey) async =>
-      storageByPublicKey[publicKey] ?? (throw IdNotFoundException(publicKey));
+      storageByPublicKey[publicKey] ??
+      (throw IdNotFoundException(id: publicKey));
 
   @override
   Future<void> setUserImage({
@@ -39,7 +37,7 @@ class UserRepositoryMock implements UserRepository {
   }) async {
     final entry =
         storageByPublicKey.entries.where((e) => e.value.id == id).firstOrNull ??
-        (throw IdNotFoundException(id));
+        (throw IdNotFoundException(id: id));
     final image = _imageService.decodeImage(imageBytes);
     final blurHash = _imageService.calculateBlurHash(image);
     storageByPublicKey[entry.key] = entry.value.copyWith(

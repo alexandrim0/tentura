@@ -3,6 +3,7 @@ import 'package:latlong2/latlong.dart';
 
 import 'package:tentura_root/domain/entity/date_time_range.dart';
 import 'package:tentura_server/consts.dart';
+import 'package:tentura_server/utils/id.dart';
 
 import 'user_entity.dart';
 
@@ -10,6 +11,8 @@ part 'beacon_entity.freezed.dart';
 
 @freezed
 class BeaconEntity with _$BeaconEntity {
+  static String get newId => generateId('B');
+
   const factory BeaconEntity({
     required String id,
     required String title,

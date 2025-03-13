@@ -28,7 +28,7 @@ Handler routeHandler() {
         ..post(
           kPathGraphql,
           getIt<GraphqlController>().handler,
-          use: authMiddleware.verifyHasuraClaims,
+          use: authMiddleware.extractJwtClaims,
         )
         ..post(
           kPathActions,

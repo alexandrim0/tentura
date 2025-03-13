@@ -31,12 +31,15 @@ Future<void> main() async {
   test('createBeacon', () async {
     final now = DateTime.timestamp();
     final user = await getIt<UserRepository>().createUser(
-      publicKey: base64UrlEncode(publicKey.key.bytes).replaceAll('=', ''),
-      user: UserEntity(id: generateId(), title: 'Test User'),
+      user: UserEntity(
+        id: generateId('U'),
+        title: 'Test User',
+        publicKey: base64UrlEncode(publicKey.key.bytes).replaceAll('=', ''),
+      ),
     );
     final beacon = await getIt<BeaconRepository>().createBeacon(
       BeaconEntity(
-        id: generateId(prefix: 'B'),
+        id: generateId('B'),
         title: faker.lorem.sentence(),
         description:
             faker.lorem.sentences(faker.randomGenerator.integer(5)).join(),

@@ -6,13 +6,7 @@ import 'comment_repository.dart';
 
 export 'package:tentura_server/domain/entity/comment_entity.dart';
 
-@Injectable(
-  as: CommentRepository,
-  env: [
-    Environment.test,
-  ],
-  order: 1,
-)
+@Injectable(as: CommentRepository, env: [Environment.test], order: 1)
 class CommentRepositoryMock implements CommentRepository {
   static final storageById = <String, CommentEntity>{};
 
@@ -22,5 +16,5 @@ class CommentRepositoryMock implements CommentRepository {
 
   @override
   Future<CommentEntity> getCommentById(String id) async =>
-      storageById[id] ?? (throw IdNotFoundException(id));
+      storageById[id] ?? (throw IdNotFoundException(id: id));
 }

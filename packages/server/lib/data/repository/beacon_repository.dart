@@ -49,10 +49,10 @@ class BeaconRepository {
   }) async {
     final beaconModel =
         await _database.beacons.queryBeacon(beaconId) ??
-        (throw IdNotFoundException(beaconId));
+        (throw IdNotFoundException(id: beaconId));
 
     if (filterByUserId != null && beaconModel.user.id != filterByUserId) {
-      throw IdNotFoundException(beaconId);
+      throw IdNotFoundException(id: beaconId);
     }
 
     return (beaconModel as BeaconModel).asEntity;

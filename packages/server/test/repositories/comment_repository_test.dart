@@ -29,43 +29,40 @@ Future<void> main() async {
     await getIt.reset();
   });
 
-  test(
-    'createComment',
-    () async {
-      final now = DateTime.timestamp();
-      final user = await getIt<UserRepository>().createUser(
+  test('createComment', () async {
+    final now = DateTime.timestamp();
+    final user = await getIt<UserRepository>().createUser(
+      user: UserEntity(
+        id: generateId('U'),
+        title: 'Test User',
         publicKey: base64UrlEncode(publicKey.key.bytes).replaceAll('=', ''),
-        user: UserEntity(
-          id: generateId(),
-          title: 'Test User',
-        ),
-      );
-      final beacon = await getIt<BeaconRepository>().createBeacon(BeaconEntity(
-        id: generateId(prefix: 'B'),
+      ),
+    );
+    final beacon = await getIt<BeaconRepository>().createBeacon(
+      BeaconEntity(
+        id: generateId('B'),
         title: faker.lorem.sentence(),
         description:
             faker.lorem.sentences(faker.randomGenerator.integer(5)).join(),
         createdAt: now,
         updatedAt: now,
         author: user,
-      ));
-      final comment =
-          await getIt<CommentRepository>().createComment(CommentEntity(
-        id: generateId(prefix: 'C'),
+      ),
+    );
+    final comment = await getIt<CommentRepository>().createComment(
+      CommentEntity(
+        id: generateId('C'),
         author: user,
         beacon: beacon,
         createdAt: now,
         content: faker.lorem.sentences(faker.randomGenerator.integer(5)).join(),
-      ));
-      log([
-        comment.id,
-        comment.content,
-      ].join(' | '));
+      ),
+    );
+    log([comment.id, comment.content].join(' | '));
 
-      expect(
-        await getIt<CommentRepository>().getCommentById(comment.id),
-        comment,
-      );
-    },
-  );
+    expect(
+      await getIt<CommentRepository>().getCommentById(comment.id),
+      comment,
+    );
+  });
 }

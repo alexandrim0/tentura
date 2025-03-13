@@ -20,13 +20,13 @@ Future<Response> sharedViewController(Request request) async {
               beaconId: ogId!,
             ),
             'C' => await getIt<CommentRepository>().getCommentById(ogId!),
-            _ => throw WrongIdException(ogId),
+            _ => throw IdWrongException(id: ogId!),
           },
         ),
       ),
       headers: {kHeaderContentType: kContentTypeHtml},
     );
-  } on WrongIdException catch (e) {
+  } on IdWrongException catch (e) {
     return Response.badRequest(body: e.toString());
   } on IdNotFoundException catch (e) {
     return Response.badRequest(body: e.toString());

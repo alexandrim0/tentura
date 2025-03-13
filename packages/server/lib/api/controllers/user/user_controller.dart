@@ -1,5 +1,5 @@
-import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
+import 'package:tentura_server/domain/entity/jwt_entity.dart';
 
 import '../_base_controller.dart';
 
@@ -13,5 +13,5 @@ abstract base class UserController extends BaseController {
 }
 
 extension RequestUserX on Request {
-  String get userId => context[kContextUserId]! as String;
+  String get userId => (context[JwtEntity.key]! as JwtEntity).sub;
 }

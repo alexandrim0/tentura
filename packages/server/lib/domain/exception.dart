@@ -1,26 +1,53 @@
-class IdNotFoundException implements Exception {
-  const IdNotFoundException([this.message]);
+import 'dart:convert';
 
-  final String? message;
+import 'enum.dart';
+
+base class ExceptionBase implements Exception {
+  const ExceptionBase({required this.code, required this.description});
+
+  final ExceptionCode code;
+  final String description;
+
+  Map<String, Object> get toMap => {
+    'code': code.index + 1000,
+    'description': description,
+  };
 
   @override
-  String toString() => 'Id not found: [$message]';
+  String toString() => jsonEncode(toMap);
 }
 
-class WrongIdException implements Exception {
-  const WrongIdException([this.message]);
-
-  final String? message;
-
-  @override
-  String toString() => 'Wrong Id: [$message]';
+final class IdNotFoundException extends ExceptionBase {
+  const IdNotFoundException({String id = '', String? description})
+    : super(
+        code: ExceptionCode.authIdNotFoundException,
+        description: description ?? 'Id not found: [$id]',
+      );
 }
 
-class WrongPEMKeyException implements Exception {
-  const WrongPEMKeyException([this.message]);
+final class IdWrongException extends ExceptionBase {
+  const IdWrongException({String id = '', String? description})
+    : super(
+        code: ExceptionCode.authIdNotFoundException,
+        description: description ?? 'Wrong Id: [$id]',
+      );
+}
 
-  final String? message;
+final class PemKeyWrongException extends ExceptionBase {
+  const PemKeyWrongException({String key = '', String? description})
+    : super(
+        code: ExceptionCode.authIdNotFoundException,
+        description: description ?? 'Wrong PEM keys: [$key]',
+      );
 
   @override
-  String toString() => 'Wrong PEM keys: [$message]';
+  String toString() => 'Wrong PEM keys: [$description]';
+}
+
+final class AuthorizationHeaderWrongException extends ExceptionBase {
+  const AuthorizationHeaderWrongException()
+    : super(
+        code: ExceptionCode.authAuthorizationHeaderWrongException,
+        description: 'Wrong Authorization header',
+      );
 }

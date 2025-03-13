@@ -10,6 +10,7 @@ extension type const UserModel(UserView i) implements UserView {
   UserEntity get asEntity => UserEntity(
     id: id,
     title: title,
+    publicKey: publicKey,
     description: description,
     hasPicture: hasPicture,
     picHeight: picHeight,
