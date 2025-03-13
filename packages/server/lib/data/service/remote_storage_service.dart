@@ -6,11 +6,7 @@ import 'package:tentura_server/consts.dart';
 
 @singleton
 class RemoteStorageService {
-  RemoteStorageService({String? bucket}) : _bucket = bucket ?? kS3Bucket;
-
-  final String _bucket;
-
-  late final _remoteStorage = Minio(
+  final _remoteStorage = Minio(
     accessKey: kS3AccessKey,
     secretKey: kS3SecretKey,
     endPoint: kS3Endpoint,
@@ -18,7 +14,7 @@ class RemoteStorageService {
   );
 
   Future<Uint8List> getObject(String path) async {
-    final stream = await _remoteStorage.getObject(_bucket, path);
+    final stream = await _remoteStorage.getObject(kS3Bucket, path);
     final buffer = await stream.cast<Uint8List>().fold(
       BytesBuilder(copy: false),
       (p, e) => p..add(e),
@@ -27,10 +23,10 @@ class RemoteStorageService {
   }
 
   Future<String> putObject(String path, Stream<Uint8List> bytes) =>
-      _remoteStorage.putObject(_bucket, path, bytes, metadata: _s3metadata);
+      _remoteStorage.putObject(kS3Bucket, path, bytes, metadata: _s3metadata);
 
   Future<void> removeObject(String path) =>
-      _remoteStorage.removeObject(_bucket, path);
+      _remoteStorage.removeObject(kS3Bucket, path);
 
   static const _s3metadata = {
     'x-amz-acl': 'public-read',

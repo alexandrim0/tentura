@@ -37,14 +37,24 @@ class BeaconRepository {
         long: beacon.coordinates?.longitude,
       ),
     );
-    return getBeaconById(beacon.id);
+    return getBeaconById(beaconId: beacon.id);
   }
 
-  Future<BeaconEntity> getBeaconById(String id) async {
-    final beaconModel = await _database.beacons.queryBeacon(id);
-    if (beaconModel == null) {
-      throw IdNotFoundException(id);
+  ///
+  /// Query Beacon by beaconId, filter by userId if set
+  ///
+  Future<BeaconEntity> getBeaconById({
+    required String beaconId,
+    String? filterByUserId,
+  }) async {
+    final beaconModel =
+        await _database.beacons.queryBeacon(beaconId) ??
+        (throw IdNotFoundException(beaconId));
+
+    if (filterByUserId != null && beaconModel.user.id != filterByUserId) {
+      throw IdNotFoundException(beaconId);
     }
+
     return (beaconModel as BeaconModel).asEntity;
   }
 

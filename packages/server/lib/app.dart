@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:isolate';
-import 'dart:developer';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import 'consts.dart';
@@ -20,22 +19,26 @@ class App {
   final int _numberOfIsolates;
 
   Future<void> run() async {
-    log(
+    print(
       'Start serving at ${DateTime.timestamp()} [$kBindAddress:$kListenPort]',
     );
 
-    final children = [
-      for (var i = 1; i < _numberOfIsolates; i += 1)
-        await Isolate.spawn(_serve, this),
-    ];
+    if (kDebugMode) {
+      await _serve(this);
+    } else {
+      final children = [
+        for (var i = 1; i < _numberOfIsolates; i += 1)
+          await Isolate.spawn(_serve, this),
+      ];
 
-    await _serve(this);
+      await _serve(this);
 
-    for (final isolate in children) {
-      isolate.kill();
+      for (final isolate in children) {
+        isolate.kill();
+      }
     }
 
-    log('Stop serving at ${DateTime.timestamp()}.');
+    print('Stop serving at ${DateTime.timestamp()}.');
     exit(0);
   }
 }

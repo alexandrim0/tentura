@@ -7,6 +7,7 @@ import 'package:tentura_server/di/di.dart';
 import 'controllers/actions_controller.dart';
 import 'controllers/events_controller.dart';
 import 'controllers/chat/chat_controller.dart';
+import 'controllers/graphql_controller.dart';
 import 'controllers/user/user_image_controller.dart';
 import 'controllers/user/user_login_controller.dart';
 import 'controllers/user/user_register_controller.dart';
@@ -24,10 +25,10 @@ Handler routeHandler() {
         ..get(kPathAppLinkView, sharedViewController)
         ..post(kPathLogin, getIt<UserLoginController>().handler)
         ..post(kPathRegister, getIt<UserRegisterController>().handler)
-        ..put(
-          kPathImageUpload,
-          getIt<UserImageController>().handler,
-          use: authMiddleware.verifyBearerJwt,
+        ..post(
+          kPathGraphql,
+          getIt<GraphqlController>().handler,
+          use: authMiddleware.verifyHasuraClaims,
         )
         ..post(
           kPathActions,
@@ -38,6 +39,11 @@ Handler routeHandler() {
           kPathEvents,
           getIt<EventsController>().handler,
           use: authMiddleware.verifyTenturaPassword,
+        )
+        ..put(
+          kPathImageUpload,
+          getIt<UserImageController>().handler,
+          use: authMiddleware.verifyBearerJwt,
         );
 
   return router.call;

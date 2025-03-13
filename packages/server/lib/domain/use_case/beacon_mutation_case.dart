@@ -15,14 +15,14 @@ class BeaconMutationCase {
 
   final ImageRepository _imageRepository;
 
-  Future<bool> handleActionDelete(ActionEntity action) async {
+  Future<bool> deleteById({
+    required String beaconId,
+    required String userId,
+  }) async {
     final beacon = await _beaconRepository.getBeaconById(
-      action.input['id']! as String,
+      beaconId: beaconId,
+      filterByUserId: userId,
     );
-
-    if (beacon.author.id != action.userId) {
-      throw Exception('Not authorized');
-    }
 
     await _imageRepository.removeBeaconImage(
       authorId: beacon.author.id,
@@ -32,6 +32,11 @@ class BeaconMutationCase {
 
     return true;
   }
+
+  Future<bool> handleActionDelete(ActionEntity action) => deleteById(
+    beaconId: action.input['id']! as String,
+    userId: action.userId,
+  );
 
   Future<void> handleEvent(EventEntity event) async {
     switch (event.operation) {

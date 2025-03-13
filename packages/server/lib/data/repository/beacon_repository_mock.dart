@@ -21,8 +21,17 @@ class BeaconRepositoryMock implements BeaconRepository {
           : storageById[beacon.id] = beacon;
 
   @override
-  Future<BeaconEntity> getBeaconById(String id) async =>
-      storageById[id] ?? (throw IdNotFoundException(id));
+  Future<BeaconEntity> getBeaconById({
+    required String beaconId,
+    String? filterByUserId,
+  }) async {
+    final beacon =
+        storageById[beaconId] ?? (throw IdNotFoundException(beaconId));
+    if (filterByUserId != null && beacon.author.id != filterByUserId) {
+      throw IdNotFoundException(beaconId);
+    }
+    return beacon;
+  }
 
   @override
   Future<void> deleteBeaconById(String id) async =>

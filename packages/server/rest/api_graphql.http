@@ -7,3 +7,36 @@ X-Hasura-Query-Context: Fatum
 {
   "query": "query {echo_session(args: {zero: 0}) {user_id context_name}}"
 }
+
+### GQL test query
+POST http://localhost:2080/api/v2/graphql
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: application/json
+X-Hasura-Query-Context: Fatum
+
+{
+  "query": "query {version}"
+}
+
+### GQL test mutation
+POST http://localhost:2080/api/v2/graphql
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: application/json
+X-Hasura-Query-Context: Fatum
+
+{
+  "query": "mutation {logout}"
+}
+
+### GQL delete_beacon_by_id
+POST http://localhost:2080/api/v2/graphql
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: application/json
+X-Hasura-Query-Context: Fatum
+
+{
+  "query": "mutation BeaconDeleteById($id: String!) {delete_beacon_by_id(id: $id)}",
+  "variables": {
+    "id": "Bb9d31c168baf"
+  }
+}

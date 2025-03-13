@@ -16,24 +16,20 @@ Future<Response> sharedViewController(Request request) async {
         SharedViewDocument(
           entity: switch (ogId?[0]) {
             'U' => await getIt<UserRepository>().getUserById(ogId!),
-            'B' => await getIt<BeaconRepository>().getBeaconById(ogId!),
+            'B' => await getIt<BeaconRepository>().getBeaconById(
+              beaconId: ogId!,
+            ),
             'C' => await getIt<CommentRepository>().getCommentById(ogId!),
             _ => throw WrongIdException(ogId),
           },
         ),
       ),
-      headers: {
-        kHeaderContentType: kContentTypeHtml,
-      },
+      headers: {kHeaderContentType: kContentTypeHtml},
     );
   } on WrongIdException catch (e) {
-    return Response.badRequest(
-      body: e.toString(),
-    );
+    return Response.badRequest(body: e.toString());
   } on IdNotFoundException catch (e) {
-    return Response.badRequest(
-      body: e.toString(),
-    );
+    return Response.badRequest(body: e.toString());
   } catch (e) {
     return Response.internalServerError();
   }

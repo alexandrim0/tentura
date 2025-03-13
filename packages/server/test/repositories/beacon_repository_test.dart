@@ -28,18 +28,14 @@ Future<void> main() async {
     await getIt.reset();
   });
 
-  test(
-    'createBeacon',
-    () async {
-      final now = DateTime.timestamp();
-      final user = await getIt<UserRepository>().createUser(
-        publicKey: base64UrlEncode(publicKey.key.bytes).replaceAll('=', ''),
-        user: UserEntity(
-          id: generateId(),
-          title: 'Test User',
-        ),
-      );
-      final beacon = await getIt<BeaconRepository>().createBeacon(BeaconEntity(
+  test('createBeacon', () async {
+    final now = DateTime.timestamp();
+    final user = await getIt<UserRepository>().createUser(
+      publicKey: base64UrlEncode(publicKey.key.bytes).replaceAll('=', ''),
+      user: UserEntity(id: generateId(), title: 'Test User'),
+    );
+    final beacon = await getIt<BeaconRepository>().createBeacon(
+      BeaconEntity(
         id: generateId(prefix: 'B'),
         title: faker.lorem.sentence(),
         description:
@@ -47,17 +43,13 @@ Future<void> main() async {
         createdAt: now,
         updatedAt: now,
         author: user,
-      ));
-      log([
-        beacon.id,
-        beacon.title,
-        beacon.description,
-      ].join(' | '));
+      ),
+    );
+    log([beacon.id, beacon.title, beacon.description].join(' | '));
 
-      expect(
-        await getIt<BeaconRepository>().getBeaconById(beacon.id),
-        beacon,
-      );
-    },
-  );
+    expect(
+      await getIt<BeaconRepository>().getBeaconById(beaconId: beacon.id),
+      beacon,
+    );
+  });
 }

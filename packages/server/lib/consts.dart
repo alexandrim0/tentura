@@ -12,9 +12,15 @@ const kMinNumCompX = 6;
 
 // Strings
 const kContextUserId = 'userId';
+const kContextUserRole = 'userRole';
 
+const kPathGraphql = '/api/v2/graphql';
 const kPathActions = '/hasura/actions';
 const kPathEvents = '/hasura/events';
+
+const kHeaderTenturaPassword = 'X-Tentura-Password';
+const kHeaderHasuraUserRole = 'X-Hasura-Role';
+const kHeaderHasuraUserId = 'X-Hasura-User-Id';
 
 // Make [environment] as mutable for testing purposes only!
 final environment = Map<String, String>.from(Platform.environment);

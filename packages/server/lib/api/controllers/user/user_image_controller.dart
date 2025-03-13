@@ -45,7 +45,9 @@ final class UserImageController extends UserController {
 
       case final String beaconId when beaconId.startsWith('B'):
         try {
-          final beacon = await _beaconRepository.getBeaconById(beaconId);
+          final beacon = await _beaconRepository.getBeaconById(
+            beaconId: beaconId,
+          );
           if (beacon.author.id != request.userId) {
             return Response.unauthorized(null);
           }
