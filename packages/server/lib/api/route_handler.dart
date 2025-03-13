@@ -4,7 +4,6 @@ import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/di/di.dart';
 
-import 'controllers/actions_controller.dart';
 import 'controllers/events_controller.dart';
 import 'controllers/chat/chat_controller.dart';
 import 'controllers/graphql_controller.dart';
@@ -29,11 +28,6 @@ Handler routeHandler() {
           kPathGraphql,
           getIt<GraphqlController>().handler,
           use: authMiddleware.extractJwtClaims,
-        )
-        ..post(
-          kPathActions,
-          getIt<ActionsController>().handler,
-          use: authMiddleware.verifyTenturaPassword,
         )
         ..post(
           kPathEvents,

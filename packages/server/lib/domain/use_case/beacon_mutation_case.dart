@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/image_repository.dart';
 
-import '../entity/action_entity.dart';
 import '../entity/event_entity.dart';
 import '../enum.dart';
 
@@ -32,11 +31,6 @@ class BeaconMutationCase {
 
     return true;
   }
-
-  Future<bool> handleActionDelete(ActionEntity action) => deleteById(
-    beaconId: action.input['id']! as String,
-    userId: action.userId,
-  );
 
   Future<void> handleEvent(EventEntity event) async {
     switch (event.operation) {
