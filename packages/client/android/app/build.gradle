@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.intersubjective.tentura"
-    compileSdk 35
+    compileSdk 36
     ndkVersion "27.2.12479018"
 
     compileOptions {
@@ -80,7 +80,7 @@ android {
             versionNameSuffix "-stage"
         }
     }
-    buildToolsVersion '35.0.0'
+    buildToolsVersion '36.0.0'
 
 }
 

@@ -13,6 +13,14 @@ directive @cached(
   refresh: Boolean! = false
 ) on QUERY
 
+type AuthResponse {
+  access_token: String!
+  expires_in: Int!
+  refresh_token: String
+  subject: String!
+  token_type: String!
+}
+
 """
 columns and relationships of "beacon"
 """
@@ -1142,6 +1150,7 @@ type mutation_root {
     """filter the rows which have to be deleted"""
     where: beacon_bool_exp!
   ): beacon_mutation_response
+  delete_beacon_by_id(id: String!): Boolean!
 
   """
   delete single row from the table: "beacon"
@@ -1423,6 +1432,9 @@ type mutation_root {
     """upsert condition"""
     on_conflict: vote_user_on_conflict
   ): vote_user
+  signIn(authRequestToken: String!): AuthResponse!
+  signOut: Boolean!
+  signUp(authRequestToken: String!, description: String, title: String): AuthResponse!
 
   """
   update data of the table: "beacon"
@@ -2272,6 +2284,7 @@ type query_root {
 
   """fetch data from the table: "user_context" using primary key columns"""
   user_context_by_pk(context_name: String!, user_id: String!): user_context
+  version: String!
 
   """
   fetch data from the table: "vote_beacon"
