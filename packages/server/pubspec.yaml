@@ -5,7 +5,7 @@ publish_to: none
 version: 0.1.0
 
 environment:
-  sdk: '>=3.7.0 <4.0.0'
+  sdk: '>=3.7.2 <4.0.0'
 
 resolution: workspace
 
@@ -27,8 +27,8 @@ dependencies:
   postgres: ^3.5.4
   shelf_plus: ^1.10.0
   stormberry: ^0.15.0
-  graphql_schema2: ^6.2.0
-  graphql_server2: ^6.2.0
+  graphql_schema2: ^6.3.0
+  graphql_server2: ^6.3.0
   shelf_cors_headers: ^0.1.5
 
 dev_dependencies:
