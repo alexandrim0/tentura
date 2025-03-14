@@ -1,5 +1,5 @@
 {
-  "resource_version": 512,
+  "resource_version": 520,
   "metadata": {
     "version": 3,
     "sources": [
@@ -896,6 +896,12 @@
           },
           {
             "table": {
+              "name": "user_vsids",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
               "name": "vote_beacon",
               "schema": "public"
             },
@@ -1236,6 +1242,32 @@
             "use_prepared_statements": true
           }
         }
+      }
+    ],
+    "remote_schemas": [
+      {
+        "name": "tentura",
+        "definition": {
+          "url": "{{TENTURA_GRAPHQL_URL}}",
+          "timeout_seconds": 60,
+          "customization": {},
+          "forward_client_headers": true
+        },
+        "comment": "",
+        "permissions": [
+          {
+            "role": "anon",
+            "definition": {
+              "schema": "schema  { query: Query mutation: Mutation }\n\ntype AuthResponse { access_token: String!\n  expires_in: Int!\n  refresh_token: String\n  subject: String!\n  token_type: String!\n}\n\ntype Mutation { signIn(authRequestToken: String!): AuthResponse!\n  signUp(title: String, description: String, authRequestToken: String!): AuthResponse!\n}\n\ntype Query { version: String!\n}"
+            }
+          },
+          {
+            "role": "user",
+            "definition": {
+              "schema": "schema  { query: Query mutation: Mutation }\n\ntype AuthResponse { access_token: String!\n  expires_in: Int!\n  refresh_token: String\n  subject: String!\n  token_type: String!\n}\n\ntype Mutation { delete_beacon_by_id(id: String!): Boolean!\n  signIn(authRequestToken: String!): AuthResponse!\n  signOut: Boolean!\n  signUp(title: String, description: String, authRequestToken: String!): AuthResponse!\n}\n\ntype Query { version: String!\n}"
+            }
+          }
+        ]
       }
     ]
   }

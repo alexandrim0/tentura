@@ -59,12 +59,15 @@ services:
       - TENTURA_PASSWORD
       - HASURA_GRAPHQL_ADMIN_SECRET
       - 'HASURA_GRAPHQL_ENABLE_TELEMETRY=false'
+      - 'HASURA_GRAPHQL_UNAUTHORIZED_ROLE=anon'
       - 'HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES=true'
       - 'HASURA_GRAPHQL_INFER_FUNCTION_PERMISSIONS=false'
       - 'HASURA_GRAPHQL_HTTP_LOG_QUERY_ONLY_ON_ERROR=true'
+      - 'HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS=true'
       - 'HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres'
       - 'HASURA_GRAPHQL_JWT_SECRET={"type":"Ed25519", "key":"${JWT_PUBLIC_PEM}", "claims_map": {"x-hasura-allowed-roles": ["user", "admin"], "x-hasura-default-role": "user", "x-hasura-user-id": {"path": "$$.sub"}}}'
       - 'HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=streaming_subscriptions,remove_empty_subscription_responses'
+      - 'TENTURA_GRAPHQL_URL=http://tentura:2080/api/v2/graphql'
       - 'EVENT_BASE_URL=http://tentura:2080/hasura/events'
 
   postgres:

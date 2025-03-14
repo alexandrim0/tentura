@@ -349,10 +349,13 @@ ALTER FUNCTION public.my_field(context text, hasura_session json) OWNER TO postg
 CREATE FUNCTION public.notify_meritrank_beacon_mutation() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
+DECLARE
+    _counter integer;
 BEGIN
     IF (TG_OP = 'INSERT') THEN
-        PERFORM mr_put_edge(NEW.id, NEW.user_id, 1::double precision, NEW.context);
-        PERFORM mr_put_edge(NEW.user_id, NEW.id, 1::double precision, NEW.context);
+        UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.user_id RETURNING counter INTO _counter;
+        PERFORM mr_put_edge(NEW.id, NEW.user_id, 1::double precision, NEW.context, _counter);
+        PERFORM mr_put_edge(NEW.user_id, NEW.id, 1::double precision, NEW.context, _counter);
     ELSIF (TG_OP = 'DELETE') THEN
         PERFORM mr_delete_edge(OLD.id, OLD.user_id, OLD.context);
         PERFORM mr_delete_edge(OLD.user_id, OLD.id, OLD.context);
@@ -373,11 +376,13 @@ CREATE FUNCTION public.notify_meritrank_comment_mutation() RETURNS trigger
     AS $$
 DECLARE
     context text;
+    _counter integer;
 BEGIN
     SELECT beacon.context INTO context FROM beacon WHERE beacon.id = NEW.beacon_id;
     IF (TG_OP = 'INSERT') THEN
-        PERFORM mr_put_edge(NEW.id, NEW.user_id, 1::double precision, context);
-        PERFORM mr_put_edge(NEW.user_id, NEW.id, 1::double precision, context);
+        UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.user_id RETURNING counter INTO _counter;
+        PERFORM mr_put_edge(NEW.id, NEW.user_id, 1::double precision, context, _counter);
+        PERFORM mr_put_edge(NEW.user_id, NEW.id, 1::double precision, context, _counter);
     ELSIF (TG_OP = 'DELETE') THEN
         PERFORM mr_delete_edge(OLD.id, OLD.user_id, context);
         PERFORM mr_delete_edge(OLD.user_id, OLD.id, context);
@@ -414,11 +419,14 @@ ALTER FUNCTION public.notify_meritrank_context_mutation() OWNER TO postgres;
 CREATE FUNCTION public.notify_meritrank_opinion_mutation() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
+DECLARE
+    _counter integer;
 BEGIN
   IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
-    PERFORM mr_put_edge(NEW.subject, NEW.id, (abs(NEW.amount))::double precision);
-    PERFORM mr_put_edge(NEW.id, NEW.subject, (1)::double precision);
-    PERFORM mr_put_edge(NEW.id, NEW.object, (sign(NEW.amount))::double precision);
+        UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.user_id RETURNING counter INTO _counter;
+    PERFORM mr_put_edge(NEW.subject, NEW.id, (abs(NEW.amount))::double precision, _counter);
+    PERFORM mr_put_edge(NEW.id, NEW.subject, (1)::double precision, _counter);
+    PERFORM mr_put_edge(NEW.id, NEW.object, (sign(NEW.amount))::double precision, _counter);
   ELSIF (TG_OP = 'DELETE') THEN
     PERFORM mr_delete_edge(OLD.subject, OLD.id);
     PERFORM mr_delete_edge(OLD.id, OLD.subject);
@@ -440,10 +448,12 @@ CREATE FUNCTION public.notify_meritrank_vote_beacon_mutation() RETURNS trigger
     AS $$
 DECLARE
     context text;
+    _counter integer;
 BEGIN
     SELECT beacon.context INTO STRICT context FROM beacon WHERE beacon.id = NEW.object;
     IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
-        PERFORM mr_put_edge(NEW.subject, NEW.object, (NEW.amount)::double precision, context);
+        UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.user_id RETURNING counter INTO _counter;
+        PERFORM mr_put_edge(NEW.subject, NEW.object, (NEW.amount)::double precision, context, _counter);
     ELSIF (TG_OP = 'DELETE') THEN
         PERFORM mr_delete_edge(OLD.subject, OLD.object, context);
     END IF;
@@ -464,11 +474,13 @@ CREATE FUNCTION public.notify_meritrank_vote_comment_mutation() RETURNS trigger
 DECLARE
     context text;
     beacon_id text;
+    _counter integer;
 BEGIN
     SELECT comment.beacon_id INTO beacon_id FROM comment WHERE comment.id = NEW.object;
     SELECT beacon.context INTO context FROM beacon WHERE beacon.id = beacon_id;
     IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
-        PERFORM mr_put_edge(NEW.subject, NEW.object, (NEW.amount)::double precision, context);
+        UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.user_id RETURNING counter INTO _counter;
+        PERFORM mr_put_edge(NEW.subject, NEW.object, (NEW.amount)::double precision, context, _counter);
     ELSIF (TG_OP = 'DELETE') THEN
         PERFORM mr_delete_edge(OLD.subject, OLD.object, context);
     END IF;
@@ -486,9 +498,12 @@ ALTER FUNCTION public.notify_meritrank_vote_comment_mutation() OWNER TO postgres
 CREATE FUNCTION public.notify_meritrank_vote_user_mutation() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
+DECLARE
+    _counter integer;
 BEGIN
     IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
-        PERFORM mr_put_edge(NEW.subject, NEW.object, (NEW.amount)::double precision, ''::text);
+        UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.user_id RETURNING counter INTO _counter;
+        PERFORM mr_put_edge(NEW.subject, NEW.object, (NEW.amount)::double precision, ''::text, _counter);
     ELSIF (TG_OP = 'DELETE') THEN
         PERFORM mr_delete_edge(OLD.subject, OLD.object, ''::text);
     END IF;
@@ -522,6 +537,22 @@ $$;
 
 
 ALTER FUNCTION public.on_public_user_update() OWNER TO postgres;
+
+--
+-- Name: on_user_created(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.on_user_created() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  INSERT INTO user_vsids VALUES (NEW.id, DEFAULT, DEFAULT);
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.on_user_created() OWNER TO postgres;
 
 --
 -- Name: opinion; Type: TABLE; Schema: public; Owner: postgres
@@ -759,6 +790,19 @@ CREATE TABLE public.user_updates (
 ALTER TABLE public.user_updates OWNER TO postgres;
 
 --
+-- Name: user_vsids; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE UNLOGGED TABLE public.user_vsids (
+    user_id text NOT NULL,
+    counter integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.user_vsids OWNER TO postgres;
+
+--
 -- Name: vote_beacon; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -885,6 +929,14 @@ ALTER TABLE ONLY public.user_updates
 
 
 --
+-- Name: user_vsids user_vsids_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_vsids
+    ADD CONSTRAINT user_vsids_pkey PRIMARY KEY (user_id);
+
+
+--
 -- Name: vote_beacon vote_beacon_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1000,6 +1052,13 @@ CREATE TRIGGER on_public_user_update BEFORE UPDATE ON public."user" FOR EACH ROW
 
 
 --
+-- Name: user on_user_created; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER on_user_created AFTER INSERT ON public."user" FOR EACH ROW EXECUTE FUNCTION public.on_user_created();
+
+
+--
 -- Name: beacon set_public_beacon_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1025,6 +1084,20 @@ CREATE TRIGGER set_public_message_updated_at BEFORE UPDATE ON public.message FOR
 --
 
 COMMENT ON TRIGGER set_public_message_updated_at ON public.message IS 'trigger to set value of column "updated_at" to current timestamp on row update';
+
+
+--
+-- Name: user_vsids set_public_user_vsids_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER set_public_user_vsids_updated_at BEFORE UPDATE ON public.user_vsids FOR EACH ROW EXECUTE FUNCTION public.set_current_timestamp_updated_at();
+
+
+--
+-- Name: TRIGGER set_public_user_vsids_updated_at ON user_vsids; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TRIGGER set_public_user_vsids_updated_at ON public.user_vsids IS 'trigger to set value of column "updated_at" to current timestamp on row update';
 
 
 --
@@ -1155,6 +1228,14 @@ ALTER TABLE ONLY public.user_context
 
 ALTER TABLE ONLY public.user_updates
     ADD CONSTRAINT user_updates_user_id_fkey FOREIGN KEY (user_id) REFERENCES public."user"(id) ON UPDATE RESTRICT ON DELETE CASCADE;
+
+
+--
+-- Name: user_vsids user_vsids_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_vsids
+    ADD CONSTRAINT user_vsids_user_id_fkey FOREIGN KEY (user_id) REFERENCES public."user"(id) ON UPDATE RESTRICT ON DELETE CASCADE;
 
 
 --
