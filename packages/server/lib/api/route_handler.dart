@@ -25,7 +25,7 @@ Handler routeHandler() {
         ..post(kPathLogin, getIt<UserLoginController>().handler)
         ..post(kPathRegister, getIt<UserRegisterController>().handler)
         ..post(
-          kPathGraphql,
+          kPathGraphQLEndpointV2,
           getIt<GraphqlController>().handler,
           use: authMiddleware.extractJwtClaims,
         )

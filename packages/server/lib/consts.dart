@@ -14,8 +14,6 @@ const kMinNumCompX = 6;
 const kContextUserId = 'userId';
 const kContextUserRole = 'userRole';
 
-const kPathGraphql = '/api/v2/graphql';
-const kPathActions = '/hasura/actions';
 const kPathEvents = '/hasura/events';
 
 const kHeaderTenturaPassword = 'X-Tentura-Password';

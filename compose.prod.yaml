@@ -52,6 +52,7 @@ services:
     hostname: hasura
     container_name: hasura
     image: hasura/graphql-engine
+    user: 1001:1001
     depends_on:
       - tentura
       - postgres
