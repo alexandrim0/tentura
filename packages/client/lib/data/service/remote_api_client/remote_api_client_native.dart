@@ -7,7 +7,6 @@ import 'package:ferry/ferry_isolate.dart';
 import 'package:tentura_root/consts.dart';
 
 import 'remote_api_client_base.dart';
-import 'gql_client.dart';
 
 typedef GetTokenRequest = ({DateTime getTokenRequestTimestamp});
 
@@ -66,13 +65,16 @@ base class RemoteApiClient extends RemoteApiClientBase {
       return response.token;
     }
 
-    return buildClient(params: params, getToken: getAuthToken);
+    return RemoteApiClientBase.buildClient(
+      params: params,
+      getToken: getAuthToken,
+    );
   }
 
   Future<void> _messageHandler(Object? message) async {
     if (message is GetTokenRequest) {
       try {
-        _replyPort.send((token: await getToken(), error: null));
+        _replyPort.send((token: await getAuthToken(), error: null));
       } catch (e) {
         _replyPort.send((token: null, error: e));
       }

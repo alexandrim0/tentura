@@ -1,16 +1,36 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:http/http.dart' as http;
-import 'package:ferry/ferry.dart' show OperationRequest, OperationResponse;
+import 'package:ferry/ferry.dart'
+    show
+        Cache,
+        Client,
+        FetchPolicy,
+        Link,
+        MemoryStore,
+        OperationRequest,
+        OperationResponse,
+        OperationType;
+import 'package:gql_exec/gql_exec.dart';
 import 'package:flutter/foundation.dart';
+import 'package:gql_http_link/gql_http_link.dart';
+import 'package:gql_error_link/gql_error_link.dart';
+import 'package:gql_dedupe_link/gql_dedupe_link.dart';
 import 'package:ed25519_edwards/ed25519_edwards.dart';
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+import 'package:gql_websocket_link/gql_websocket_link.dart';
 
 import 'package:tentura_root/consts.dart';
 
 import 'exception.dart';
-import 'gql_client.dart';
+import 'auth_link.dart';
 
-typedef JWT = ({String id, String accessToken, DateTime expiresAt});
+typedef ClientParams = ({String serverUrl, String userAgent});
+
+typedef AuthToken = ({String id, String accessToken, DateTime expiresAt});
+
+typedef KeyPair = ({EdDSAPrivateKey privateKey, EdDSAPublicKey publicKey});
 
 abstract base class RemoteApiClientBase {
   RemoteApiClientBase({
@@ -29,7 +49,7 @@ abstract base class RemoteApiClientBase {
 
   KeyPair? _keyPair;
 
-  JWT? _jwt;
+  AuthToken? _jwt;
 
   bool _tokenLocked = false;
 
@@ -40,6 +60,19 @@ abstract base class RemoteApiClientBase {
     serverUrl: apiUrlBase + kPathGraphQLEndpoint,
     userAgent: userAgent,
   );
+
+  String get authRequestToken =>
+      JWT({'pk': base64Encode(_keyPair!.publicKey.key.bytes)}).sign(
+        _keyPair!.privateKey,
+        algorithm: JWTAlgorithm.EdDSA,
+        expiresIn: jwtExpiresIn,
+      );
+
+  // ignore: avoid_setters_without_getters //
+  set authToken(AuthToken? value) {
+    _tokenLocked = false;
+    _jwt = value;
+  }
 
   Future<void> init();
 
@@ -56,12 +89,25 @@ abstract base class RemoteApiClientBase {
     forward,
   ]);
 
-  Future<String> getToken() async {
+  void setKeyPairFromSeed(String? seed) {
+    _jwt = null;
+    if (seed == null) {
+      _keyPair = null;
+    } else {
+      final privateKey = newKeyFromSeed(base64Decode(seed));
+      _keyPair = (
+        privateKey: EdDSAPrivateKey(privateKey.bytes),
+        publicKey: EdDSAPublicKey(public(privateKey).bytes),
+      );
+    }
+  }
+
+  Future<String> getAuthToken() async {
     if (hasValidToken) {
       return _jwt!.accessToken;
     }
     if (!_tokenLocked) {
-      await _fetchJWT(kPathLogin);
+      await _fetchJWT();
       return _jwt!.accessToken;
     }
     for (var i = 0; i < 5; i++) {
@@ -73,40 +119,6 @@ abstract base class RemoteApiClientBase {
     throw TimeoutException('Timeout while refreshing token!');
   }
 
-  /// Returns id of actual account
-  Future<String> signIn(String seed) async {
-    _setKeyPairFromSeed(seed);
-    await _fetchJWT(kPathLogin);
-    return _jwt!.id;
-  }
-
-  /// Returns id of actual account
-  Future<String> signUp(String seed) async {
-    _setKeyPairFromSeed(seed);
-    await _fetchJWT(kPathRegister);
-    return _jwt!.id;
-  }
-
-  // TBD: invalidate jwt on remote server also
-  Future<void> signOut() async {
-    _jwt = null;
-    _keyPair = null;
-    _tokenLocked = false;
-  }
-
-  Future<http.Response> httpGet(
-    Uri url, {
-    Map<String, String>? headers,
-    bool withAuthToken = true,
-  }) async => _httpClient.get(
-    url,
-    headers: {
-      if (withAuthToken) kHeaderAuthorization: 'Bearer ${await getToken()}',
-      kHeaderUserAgent: userAgent,
-      ...?headers,
-    },
-  );
-
   Future<http.Response> httpPut(
     Uri url, {
     Map<String, String>? headers,
@@ -116,66 +128,13 @@ abstract base class RemoteApiClientBase {
     url,
     body: body,
     headers: {
-      if (withAuthToken) kHeaderAuthorization: 'Bearer ${await getToken()}',
+      if (withAuthToken) kHeaderAuthorization: 'Bearer ${await getAuthToken()}',
       kHeaderUserAgent: userAgent,
       ...?headers,
     },
   );
 
-  Future<http.Response> httpPost(
-    Uri url, {
-    Map<String, String>? headers,
-    bool withAuthToken = true,
-    Object? body,
-  }) async => _httpClient.post(
-    url,
-    body: body,
-    headers: {
-      if (withAuthToken) kHeaderAuthorization: 'Bearer ${await getToken()}',
-      kHeaderUserAgent: userAgent,
-      ...?headers,
-    },
-  );
-
-  Future<http.Response> httpDelete(
-    Uri url, {
-    Map<String, String>? headers,
-    bool withAuthToken = true,
-    Object? body,
-  }) async => _httpClient.delete(
-    url,
-    body: body,
-    headers: {
-      if (withAuthToken) kHeaderAuthorization: 'Bearer ${await getToken()}',
-      kHeaderUserAgent: userAgent,
-      ...?headers,
-    },
-  );
-
-  String _createAuthRequestToken(KeyPair keyPair) {
-    final now = DateTime.timestamp().millisecondsSinceEpoch ~/ 1000;
-    final body = base64UrlEncode(
-      utf8.encode(
-        jsonEncode({
-          'pk': base64UrlEncode(keyPair.publicKey.bytes).replaceAll('=', ''),
-          'exp': now + jwtExpiresIn.inSeconds,
-          'iat': now,
-        }),
-      ),
-    ).replaceAll('=', '');
-    final token = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.$body';
-    final signature = base64UrlEncode(
-      sign(keyPair.privateKey, Uint8List.fromList(utf8.encode(token))),
-    ).replaceAll('=', '');
-    return '$token.$signature';
-  }
-
-  void _setKeyPairFromSeed(String seed) {
-    final privateKey = newKeyFromSeed(base64Decode(seed));
-    _keyPair = KeyPair(privateKey, public(privateKey));
-  }
-
-  Future<void> _fetchJWT(String path) async {
+  Future<void> _fetchJWT() async {
     if (_keyPair == null) {
       throw const AuthenticationNoKeyException();
     }
@@ -183,36 +142,99 @@ abstract base class RemoteApiClientBase {
       _tokenLocked = true;
       final response = await _httpClient
           .post(
-            Uri.parse(apiUrlBase + path),
+            Uri.parse(apiUrlBase + kPathGraphQLEndpoint),
             headers: {
-              'Authorization': 'Bearer ${_createAuthRequestToken(_keyPair!)}',
-              'User-Agent': userAgent,
+              kHeaderContentType: kContentApplicationJson,
+              kHeaderUserAgent: userAgent,
             },
+            body: jsonEncode({
+              'query': _fetchTokenQuery,
+              'variables': {'authRequestToken': authRequestToken},
+            }),
           )
           .timeout(requestTimeout);
-      switch (response.statusCode) {
-        case 200:
-          final body = jsonDecode(response.body) as Map;
-          _jwt = (
-            id: body['subject'] as String,
-            accessToken: body['access_token'] as String,
-            expiresAt: DateTime.timestamp().add(
-              Duration(seconds: body['expires_in'] as int),
-            ),
-          );
-        case 401:
-          throw const AuthenticationFailedException();
-        case 404:
-          throw const AuthenticationNotFoundException();
-        case 409:
-          throw const AuthenticationDuplicatedException();
-        case 502:
-          throw const AuthenticationServerException();
-        default:
-          throw AuthenticationHttpException(response.reasonPhrase);
+
+      if (response.statusCode != 200) {
+        throw AuthenticationHttpException(response.reasonPhrase);
+      } else {
+        final body = jsonDecode(response.body) as Map;
+        _jwt = (
+          id: body['subject'] as String,
+          accessToken: body['access_token'] as String,
+          expiresAt: DateTime.timestamp().add(
+            Duration(seconds: body['expires_in'] as int),
+          ),
+        );
       }
     } finally {
       _tokenLocked = false;
     }
   }
+
+  static const _fetchTokenQuery = r'''
+mutation SignIn($authRequestToken: String!) {
+  signIn(authRequestToken: $authRequestToken) {
+    access_token
+    expires_in
+    subject
+  }
+}
+''';
+
+  static Future<Client> buildClient({
+    required ClientParams params,
+    required Future<String?> Function() getToken,
+  }) async => Client(
+    cache: Cache(store: MemoryStore()),
+    defaultFetchPolicies: {OperationType.query: FetchPolicy.NoCache},
+    link: Link.from([
+      DedupeLink(),
+
+      AuthLink(getToken),
+
+      ErrorLink(
+        onException: (request, forward, exception) {
+          log(exception.toString());
+          return null;
+        },
+        onGraphQLError: (request, forward, response) {
+          log(response.errors.toString());
+          return null;
+        },
+      ),
+
+      Link.split(
+        (Request request) =>
+            request.operation.getOperationType() == OperationType.subscription,
+        TransportWebSocketLink(
+          TransportWsClientOptions(
+            connectionParams:
+                () async => {
+                  'headers': {
+                    kHeaderUserAgent: params.userAgent,
+                    kHeaderContentType: kContentApplicationJson,
+                    kHeaderAuthorization: 'Bearer ${await getToken()}',
+                  },
+                },
+
+            socketMaker: WebSocketMaker.url(
+              () =>
+                  Uri.parse(
+                    params.serverUrl,
+                  ).replace(port: 443, scheme: 'wss').toString(),
+            ),
+            shouldRetry: (_) => true,
+            log: log,
+          ),
+        ),
+        HttpLink(
+          params.serverUrl,
+          defaultHeaders: {
+            kHeaderAccept: kContentApplicationJson,
+            kHeaderUserAgent: params.userAgent,
+          },
+        ),
+      ),
+    ]),
+  );
 }

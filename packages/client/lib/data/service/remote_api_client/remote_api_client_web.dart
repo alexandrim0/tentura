@@ -3,7 +3,6 @@ import 'package:ferry/ferry.dart'
     show Client, OperationRequest, OperationResponse;
 
 import 'remote_api_client_base.dart';
-import 'gql_client.dart';
 
 base class RemoteApiClient extends RemoteApiClientBase {
   RemoteApiClient({
@@ -17,7 +16,10 @@ base class RemoteApiClient extends RemoteApiClientBase {
 
   @override
   Future<void> init() async {
-    _gqlClient = await buildClient(params: params, getToken: getToken);
+    _gqlClient = await RemoteApiClientBase.buildClient(
+      params: params,
+      getToken: getAuthToken,
+    );
   }
 
   @override

@@ -28,6 +28,7 @@ dependencies:
   google_fonts:
   blurhash_dart:
   ed25519_edwards:
+  dart_jsonwebtoken:
   freezed_annotation:
 
   # Common

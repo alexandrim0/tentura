@@ -6,10 +6,13 @@ import 'package:injectable/injectable.dart';
 
 import 'package:tentura/data/database/database.dart';
 import 'package:tentura/data/service/local_secure_storage.dart';
+import 'package:tentura/data/service/remote_api_client/auth_link.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 import 'package:tentura/domain/entity/profile.dart';
 
 import '../../domain/exception.dart';
+import '../gql/_g/sign_in.req.gql.dart';
+import '../gql/_g/sign_up.req.gql.dart';
 
 @singleton
 class AuthRepository {
@@ -70,48 +73,94 @@ class AuthRepository {
       );
 
   Future<String> addAccount(String seed) async {
-    if (seed.isEmpty) throw const AuthSeedIsWrongException();
-
-    final id = await _remoteApiService.signIn(seed);
-
-    if (id.isEmpty) throw const AuthIdIsWrongException();
-
+    if (seed.isEmpty) {
+      throw const AuthSeedIsWrongException();
+    }
+    final id = await signIn(seed);
     await _addAccount(id, seed);
 
     return id;
   }
 
-  Future<String> signUp() async {
+  /// Returns id of actual account
+  Future<String> signUp({String? title, String? description}) async {
     final seed = base64UrlEncode(
       Uint8List(32)..fillRange(0, 32, Random.secure().nextInt(256)),
     );
-    final id = await _remoteApiService.signUp(seed);
+    _remoteApiService.setKeyPairFromSeed(seed);
+    final response = await _remoteApiService
+        .request(
+          GSignUpReq(
+            (r) =>
+                r
+                  ..context = const Context().withEntry(
+                    const HttpAuthHeaders.noAuth(),
+                  )
+                  ..vars.title = title ?? ''
+                  ..vars.description = description ?? ''
+                  ..vars.authRequestToken = _remoteApiService.authRequestToken,
+          ),
+        )
+        .firstWhere((e) => e.dataSource == DataSource.Link)
+        .then((r) => r.dataOrThrow().signUp);
 
-    if (id.isEmpty) throw const AuthIdIsWrongException();
+    if (response.subject.isEmpty) {
+      throw const AuthIdIsWrongException();
+    }
+    _remoteApiService.authToken = (
+      id: response.subject,
+      accessToken: response.access_token,
+      expiresAt: DateTime.timestamp().add(
+        Duration(seconds: response.expires_in),
+      ),
+    );
+    await _addAccount(response.subject, seed);
+    await _setCurrentAccountId(response.subject);
 
-    await _addAccount(id, seed);
-
-    await _setCurrentAccountId(id);
-
-    return id;
+    return response.subject;
   }
 
-  Future<void> signIn(String id, {bool isPremature = false}) async {
-    await _remoteApiService.signIn(
-      await _localSecureStorage.read(_getAccountKey(id)) ?? '',
+  Future<String> signIn(String id) async {
+    _remoteApiService.setKeyPairFromSeed(
+      await _localSecureStorage.read(_getAccountKey(id)) ??
+          (throw const AuthSeedIsWrongException()),
+    );
+    final response = await _remoteApiService
+        .request(
+          GSignInReq(
+            (r) =>
+                r
+                  ..context = const Context().withEntry(
+                    const HttpAuthHeaders.noAuth(),
+                  )
+                  ..vars.authRequestToken = _remoteApiService.authRequestToken,
+          ),
+        )
+        .firstWhere((e) => e.dataSource == DataSource.Link)
+        .then((r) => r.dataOrThrow().signIn);
+    if (response.subject.isEmpty) {
+      throw const AuthIdIsWrongException();
+    }
+    _remoteApiService.authToken = (
+      id: response.subject,
+      accessToken: response.access_token,
+      expiresAt: DateTime.timestamp().add(
+        Duration(seconds: response.expires_in),
+      ),
     );
     await _setCurrentAccountId(id);
+    return response.subject;
   }
 
   Future<void> signOut() async {
-    await _remoteApiService.signOut();
-
+    _remoteApiService.setKeyPairFromSeed(null);
     await _setCurrentAccountId(null);
+    // TBD: invalidate jwt on remote server also
   }
 
   /// Remove account only from local storage
   Future<void> removeAccount(String id) async {
-    await _remoteApiService.signOut();
+    await signOut();
 
     await _database.managers.accounts.filter((e) => e.id.equals(id)).delete();
 

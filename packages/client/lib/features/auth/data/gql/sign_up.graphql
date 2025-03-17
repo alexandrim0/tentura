@@ -1,0 +1,7 @@
+mutation SignUp($authRequestToken: String!, $title: String, $description: String) {
+  signUp(authRequestToken: $authRequestToken, title: $title, description: $description) {
+    access_token
+    expires_in
+    subject
+  }
+}
