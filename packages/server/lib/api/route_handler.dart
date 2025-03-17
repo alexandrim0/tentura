@@ -8,8 +8,6 @@ import 'controllers/events_controller.dart';
 import 'controllers/chat/chat_controller.dart';
 import 'controllers/graphql_controller.dart';
 import 'controllers/user/user_image_controller.dart';
-import 'controllers/user/user_login_controller.dart';
-import 'controllers/user/user_register_controller.dart';
 import 'controllers/shared/shared_view_controller.dart';
 import 'middleware/auth_middleware.dart';
 
@@ -22,8 +20,6 @@ Handler routeHandler() {
         ..get('/health', () => 'I`m fine!')
         ..get('/chat', chatController)
         ..get(kPathAppLinkView, sharedViewController)
-        ..post(kPathLogin, getIt<UserLoginController>().handler)
-        ..post(kPathRegister, getIt<UserRegisterController>().handler)
         ..post(
           kPathGraphQLEndpointV2,
           getIt<GraphqlController>().handler,

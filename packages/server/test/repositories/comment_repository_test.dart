@@ -10,7 +10,6 @@ import 'package:tentura_server/data/repository/comment_repository.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
 import 'package:tentura_server/utils/id.dart';
-import 'package:tentura_server/utils/jwt.dart';
 
 import '../consts.dart';
 import '../data.dart';
@@ -35,7 +34,7 @@ Future<void> main() async {
       user: UserEntity(
         id: generateId('U'),
         title: 'Test User',
-        publicKey: base64UrlEncode(publicKey.key.bytes).replaceAll('=', ''),
+        publicKey: base64UrlEncode(kPublicKey.key.bytes).replaceAll('=', ''),
       ),
     );
     final beacon = await getIt<BeaconRepository>().createBeacon(

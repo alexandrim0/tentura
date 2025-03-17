@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:test/test.dart';
-import 'package:faker/faker.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
 import 'package:tentura_server/consts.dart';
-import 'package:tentura_server/utils/id.dart';
-import 'package:tentura_server/utils/jwt.dart';
+
+import '../consts.dart';
 
 void main() {
   group('Read keys from PEM', () {
@@ -35,48 +33,34 @@ void main() {
   });
 
   group('Test of JWT utils', () {
-    test('extractAuthToken', () {
-      final jwt = faker.jwt.valid();
-      log('[$jwt]');
-
-      expect(
-        extractAuthTokenFromHeaders({kHeaderAuthorization: 'Bearer   $jwt  '}),
-        equals(jwt),
-      );
-
-      expect(
-        () => extractAuthTokenFromHeaders({kHeaderAuthorization: 'Bearer'}),
-        throwsA(isA<JWTInvalidException>()),
-      );
-    });
-
     test('issue / verify AuthRequest', () {
-      final authRequestToken = issueAuthRequestToken(publicKey);
+      final authRequestToken = issueAuthRequestToken(kPublicKey);
       final jwt = verifyAuthRequest(token: authRequestToken);
-      log(jwt.payload.toString());
+      print(jwt.payload);
 
       expect(
         (jwt.payload as Map)['pk'],
-        equals(base64UrlEncode(publicKey.key.bytes)),
+        equals(base64UrlEncode(kPublicKey.key.bytes)),
       );
-    });
-
-    test('issueJwt / verifyJwt', () {
-      final userId = generateId('U');
-      final authRequestToken =
-          issueJwt(subject: userId)['access_token']! as String;
-
-      final jwt = verifyJwt(token: authRequestToken);
-      log(jwt.payload.toString());
-
-      expect(jwt.subject, equals(userId));
     });
   });
 }
 
 String issueAuthRequestToken(EdDSAPublicKey publicKey) =>
     JWT({'pk': base64UrlEncode(publicKey.key.bytes)}).sign(
-      privateKey,
+      kPrivateKey,
       algorithm: JWTAlgorithm.EdDSA,
       expiresIn: const Duration(seconds: kAuthJwtExpiresIn),
     );
+
+JWT verifyAuthRequest({required String token}) {
+  final jwtDecoded = JWT.decode(token);
+
+  if (jwtDecoded.header?['alg'] != 'EdDSA') {
+    throw JWTInvalidException('Wrong JWT algo!');
+  }
+
+  final authRequestToken = (jwtDecoded.payload as Map)['pk'] as String;
+
+  return JWT.verify(token, EdDSAPublicKey(base64Decode(authRequestToken)));
+}

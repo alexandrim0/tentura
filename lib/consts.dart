@@ -22,12 +22,10 @@ const kAppTitle = 'Tentura';
 
 const kPathIcons = '/icons';
 
-const kPathLogin = '/api/user/login';
-const kPathRegister = '/api/user/register';
+const kPathAppLinkView = '/shared/view';
 const kPathImageUpload = '/api/user/image';
 const kPathGraphQLEndpoint = '/api/v1/graphql';
 const kPathGraphQLEndpointV2 = '/api/v2/graphql';
-const kPathAppLinkView = '/shared/view';
 
 const kUserAgent = kAppTitle;
 

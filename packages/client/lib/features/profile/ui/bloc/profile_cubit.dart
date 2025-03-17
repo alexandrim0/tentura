@@ -62,7 +62,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       await _profileRepository.delete(state.profile.id);
-      emit(ProfileState(status: StateIsNavigating(kPathLogin)));
+      emit(ProfileState(status: StateIsNavigating(kPathSignIn)));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }

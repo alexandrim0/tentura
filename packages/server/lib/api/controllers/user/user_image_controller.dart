@@ -6,32 +6,27 @@ import 'package:shelf_plus/shelf_plus.dart';
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/image_repository.dart';
+import 'package:tentura_server/domain/entity/jwt_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
 
-import 'user_controller.dart';
-
 @Injectable(order: 3)
-final class UserImageController extends UserController {
-  UserImageController(
-    this._imageRepository,
-    this._beaconRepository,
-    super.userRepository,
-  );
+final class UserImageController {
+  UserImageController(this._imageRepository, this._beaconRepository);
 
   final BeaconRepository _beaconRepository;
 
   final ImageRepository _imageRepository;
 
-  @override
   Future<Response> handler(Request request) async {
     if (request.mimeType != kContentTypeJpeg) {
       return Response.badRequest(body: 'Wrong MIME!');
     }
     var eTag = '';
+    final requestUserId = (request.context[JwtEntity.key]! as JwtEntity).sub;
 
     switch (request.url.queryParameters['id']) {
       case final String userId when userId.startsWith('U'):
-        if (userId != request.userId) {
+        if (userId != requestUserId) {
           return Response.unauthorized(null);
         }
         try {
@@ -48,14 +43,14 @@ final class UserImageController extends UserController {
           final beacon = await _beaconRepository.getBeaconById(
             beaconId: beaconId,
           );
-          if (beacon.author.id != request.userId) {
+          if (beacon.author.id != requestUserId) {
             return Response.unauthorized(null);
           }
           if (!beacon.hasPicture) {
             return Response.forbidden(null);
           }
           eTag = await _imageRepository.putBeaconImage(
-            authorId: request.userId,
+            authorId: requestUserId,
             beaconId: beaconId,
             bytes: request.read().map(Uint8List.fromList),
           );

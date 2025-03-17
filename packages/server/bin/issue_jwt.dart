@@ -1,12 +1,14 @@
-import 'dart:developer';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
-import 'package:tentura_server/utils/jwt.dart';
+import 'package:tentura_server/consts.dart';
 
 void main(List<String> args) {
-  log(
+  final kPrivateKey = EdDSAPrivateKey.fromPEM(
+    kJwtPrivateKey.replaceAll(r'\n', '\n'),
+  );
+  print(
     JWT({'sub': 'U3ea0a229ad85'}).sign(
-      privateKey,
+      kPrivateKey,
       algorithm: JWTAlgorithm.EdDSA,
       expiresIn: const Duration(days: 365),
     ),
