@@ -34,7 +34,6 @@ migrate_working_dir/
 .pub/
 /build/
 pubspec.lock
-pubspec_overrides.yaml
 
 # Symbolication related
 app.*.symbols

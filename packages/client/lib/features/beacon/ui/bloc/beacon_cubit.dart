@@ -57,9 +57,11 @@ class BeaconCubit extends Cubit<BeaconState> {
   Future<void> toggleEnabled(String beaconId) async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      await _beaconRepository.setEnabled(
-        !state.beacons.singleWhere((e) => e.id == beaconId).isEnabled,
-        id: beaconId,
+      final beaconIndex = state.beacons.indexWhere((e) => e.id == beaconId);
+      final beacon = state.beacons[beaconIndex];
+      await _beaconRepository.setEnabled(!beacon.isEnabled, id: beacon.id);
+      state.beacons[beaconIndex] = beacon.copyWith(
+        isEnabled: !beacon.isEnabled,
       );
       emit(state.copyWith(status: StateStatus.isSuccess));
     } catch (e) {
