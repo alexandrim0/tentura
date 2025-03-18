@@ -61,11 +61,10 @@ class RootRouter extends RootStackRouter {
       ],
       guards: [
         AutoRouteGuard.redirect(
-          (resolver) =>
-              _settingsCubit.state.introEnabled ? const IntroRoute() : null,
+          (_) => _settingsCubit.state.introEnabled ? const IntroRoute() : null,
         ),
         AutoRouteGuard.redirect(
-          (resolver) =>
+          (_) =>
               _authCubit.state.isNotAuthenticated
                   ? const AuthLoginRoute()
                   : null,
@@ -80,7 +79,7 @@ class RootRouter extends RootStackRouter {
       page: IntroRoute.page,
       guards: [
         AutoRouteGuard.redirect(
-          (resolver) =>
+          (_) =>
               _settingsCubit.state.introEnabled ? null : const AuthLoginRoute(),
         ),
       ],
@@ -93,12 +92,7 @@ class RootRouter extends RootStackRouter {
       page: AuthLoginRoute.page,
       guards: [
         AutoRouteGuard.redirect(
-          (resolver) =>
-              _authCubit.state.isAuthenticated
-                  ? (_authCubit.state.currentAccount.needEdit
-                      ? const ProfileEditRoute()
-                      : const ProfileRoute())
-                  : null,
+          (_) => _authCubit.state.isAuthenticated ? const ProfileRoute() : null,
         ),
       ],
     ),

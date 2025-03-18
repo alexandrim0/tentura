@@ -7,7 +7,7 @@ import '../models/event_model.dart';
 
 @Injectable(order: 3)
 final class EventsController extends BaseController {
-  const EventsController(this._beaconMutationCase);
+  const EventsController(super.env, this._beaconMutationCase);
 
   final BeaconMutationCase _beaconMutationCase;
 

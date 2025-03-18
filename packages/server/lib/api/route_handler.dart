@@ -5,10 +5,9 @@ import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/di/di.dart';
 
 import 'controllers/events_controller.dart';
-import 'controllers/chat/chat_controller.dart';
 import 'controllers/graphql_controller.dart';
-import 'controllers/user/user_image_controller.dart';
-import 'controllers/shared/shared_view_controller.dart';
+import 'controllers/upload_image_controller.dart';
+import 'controllers/shared_view_controller.dart';
 import 'middleware/auth_middleware.dart';
 
 Handler routeHandler() {
@@ -18,8 +17,7 @@ Handler routeHandler() {
         ..use(logRequests())
         ..use(corsHeaders(headers: _corsHeaders))
         ..get('/health', () => 'I`m fine!')
-        ..get('/chat', chatController)
-        ..get(kPathAppLinkView, sharedViewController)
+        ..get(kPathAppLinkView, getIt<SharedViewController>().handler)
         ..post(
           kPathGraphQLEndpointV2,
           getIt<GraphqlController>().handler,
@@ -30,9 +28,9 @@ Handler routeHandler() {
           getIt<EventsController>().handler,
           use: authMiddleware.verifyTenturaPassword,
         )
-        ..put(
+        ..post(
           kPathImageUpload,
-          getIt<UserImageController>().handler,
+          getIt<UploadImageController>().handler,
           use: authMiddleware.verifyBearerJwt,
         );
 

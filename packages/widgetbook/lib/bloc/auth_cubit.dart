@@ -7,13 +7,13 @@ import '_data.dart';
 @Singleton(as: AuthCubit)
 class AuthCubitMock extends Cubit<AuthState> implements AuthCubit {
   AuthCubitMock()
-      : super(AuthState(
-          accounts: [
-            profileAlice,
-          ],
+    : super(
+        AuthState(
+          accounts: [profileAlice],
           currentAccountId: profileAlice.id,
           updatedAt: DateTime.timestamp(),
-        ));
+        ),
+      );
 
   @override
   Future<void> addAccount(String? seed) async {}
@@ -40,7 +40,10 @@ class AuthCubitMock extends Cubit<AuthState> implements AuthCubit {
   Future<void> signOut() async {}
 
   @override
-  Future<void> signUp() async {}
+  Future<void> signUp({
+    required String title,
+    required String description,
+  }) async {}
 
   @override
   Future<void> dispose() async {}

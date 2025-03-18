@@ -62,7 +62,7 @@ abstract base class RemoteApiClientBase {
   );
 
   String get authRequestToken =>
-      JWT({'pk': base64Encode(_keyPair!.publicKey.key.bytes)}).sign(
+      JWT({'pk': base64UrlEncode(_keyPair!.publicKey.key.bytes)}).sign(
         _keyPair!.privateKey,
         algorithm: JWTAlgorithm.EdDSA,
         expiresIn: jwtExpiresIn,
@@ -119,12 +119,12 @@ abstract base class RemoteApiClientBase {
     throw TimeoutException('Timeout while refreshing token!');
   }
 
-  Future<http.Response> httpPut(
+  Future<http.Response> httpPost(
     Uri url, {
     Map<String, String>? headers,
     bool withAuthToken = true,
     Object? body,
-  }) async => _httpClient.put(
+  }) async => _httpClient.post(
     url,
     body: body,
     headers: {
@@ -216,7 +216,6 @@ mutation SignIn($authRequestToken: String!) {
                     kHeaderAuthorization: 'Bearer ${await getToken()}',
                   },
                 },
-
             socketMaker: WebSocketMaker.url(
               () =>
                   Uri.parse(

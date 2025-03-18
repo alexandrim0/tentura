@@ -3,22 +3,19 @@ import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/domain/exception.dart';
-import 'package:tentura_server/env.dart';
 
 import 'graphql/schema.dart';
 import '_base_controller.dart';
 
 @Injectable(order: 3)
 final class GraphqlController extends BaseController {
-  const GraphqlController(this._env);
-
-  final Env _env;
+  const GraphqlController(super.env);
 
   @override
   Future<Response> handler(Request request) async {
     try {
       final requestJson = await request.body.asJson as Map<String, dynamic>;
-      final response = await (_env.kDebugMode ? graphqlSchema : _graphqlSchema)
+      final response = await (env.kDebugMode ? graphqlSchema : _graphqlSchema)
           .parseAndExecute(
             operationName: requestJson['operationName'] as String?,
             requestJson['query'] as String? ?? '',
@@ -52,7 +49,9 @@ final class GraphqlController extends BaseController {
     } catch (e) {
       return Response.ok(
         jsonEncode({
-          'errors': [e.toString()],
+          'errors': [
+            {'message': e.toString()},
+          ],
         }),
       );
     }

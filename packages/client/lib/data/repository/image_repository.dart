@@ -50,7 +50,7 @@ class ImageRepository {
   Future<void> uploadImage({
     required Uint8List image,
     required String imageId,
-  }) => _remoteApiService.httpPut(
+  }) => _remoteApiService.httpPost(
     Uri.parse('$kServerName/$kPathImageUpload?id=$imageId'),
     headers: {kHeaderContentType: kContentTypeJpeg},
     body: image,

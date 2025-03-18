@@ -8,7 +8,7 @@ import 'package:tentura_server/data/model/beacon_model.dart';
 import 'package:tentura_server/data/model/user_model.dart';
 import 'package:tentura_server/data/service/image_service.dart';
 
-Future<void> main(List<String> args) async {
+Future<void> calculateBlurHashes() async {
   try {
     configureDependencies(Environment.prod);
   } catch (e) {
@@ -73,5 +73,4 @@ Future<void> main(List<String> args) async {
     'beacons: [${beacons.length}]',
   );
   await closeModules();
-  exit(0);
 }

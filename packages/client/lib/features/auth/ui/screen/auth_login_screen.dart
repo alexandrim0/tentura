@@ -5,6 +5,7 @@ import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import '../bloc/auth_cubit.dart';
+import '../dialog/account_add_dialog.dart';
 import '../widget/account_list_tile.dart';
 
 @RoutePage()
@@ -24,7 +25,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
     final authCubit = GetIt.I<AuthCubit>();
     return BlocBuilder<AuthCubit, AuthState>(
       bloc: authCubit,
-      buildWhen: (p, c) => c.isSuccess,
+      buildWhen: (_, c) => c.isSuccess,
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -52,22 +53,24 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                   ListView.separated(
                     shrinkWrap: true,
                     itemCount: state.accounts.length,
-                    itemBuilder: (context, i) {
+                    itemBuilder: (_, i) {
                       final account = state.accounts[i];
                       return AccountListTile(
                         key: ValueKey(account),
                         account: account,
                       );
                     },
-                    separatorBuilder: (context, i) => const Divider(),
+                    separatorBuilder: (_, _) => const Divider(),
                   ),
 
                 // Recover from seed (QR)
                 Padding(
                   padding: kPaddingAll,
                   child: OutlinedButton(
-                    onPressed: () async =>
-                        authCubit.addAccount(await QRScanDialog.show(context)),
+                    onPressed:
+                        () async => authCubit.addAccount(
+                          await QRScanDialog.show(context),
+                        ),
                     child: const Text('Recover from QR'),
                   ),
                 ),
@@ -84,10 +87,11 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
 
                 // Create new account
                 Padding(
-                  padding: kPaddingAll +
+                  padding:
+                      kPaddingAll +
                       const EdgeInsets.only(bottom: 60 - kSpacingMedium),
                   child: FilledButton(
-                    onPressed: authCubit.signUp,
+                    onPressed: () => AccountAddDialog.show(context),
                     child: const Text('Create new'),
                   ),
                 ),

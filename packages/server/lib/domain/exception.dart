@@ -3,14 +3,19 @@ import 'dart:convert';
 import 'enum.dart';
 
 base class ExceptionBase implements Exception {
-  const ExceptionBase({required this.code, required this.description});
+  const ExceptionBase({
+    required this.code,
+    required this.description,
+    this.path = '',
+  });
 
   final ExceptionCode code;
   final String description;
+  final String path;
 
   Map<String, Object> get toMap => {
-    'code': code.index + 1000,
-    'description': description,
+    'message': description,
+    'extensions': {'code': '${code.index + 1000}', 'path': path},
   };
 
   @override

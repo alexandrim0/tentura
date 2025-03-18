@@ -23,7 +23,7 @@ const kAppTitle = 'Tentura';
 const kPathIcons = '/icons';
 
 const kPathAppLinkView = '/shared/view';
-const kPathImageUpload = '/api/user/image';
+const kPathImageUpload = '/api/upload/image';
 const kPathGraphQLEndpoint = '/api/v1/graphql';
 const kPathGraphQLEndpointV2 = '/api/v2/graphql';
 

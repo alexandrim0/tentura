@@ -2,7 +2,7 @@ name: tentura_server
 description: Tentura server API
 publish_to: none
 
-version: 0.1.1
+version: 0.1.2
 
 environment:
   sdk: '>=3.7.2 <4.0.0'
@@ -22,6 +22,7 @@ dependencies:
   dart_jsonwebtoken:
   freezed_annotation:
 
+  args: ^2.7.0
   minio: ^3.5.7
   jaspr: ^0.17.0
   postgres: ^3.5.4
@@ -41,7 +42,7 @@ dev_dependencies:
 
   test: ^1.25.15
   jaspr_builder: ^0.17.0
-  build_web_compilers: ^4.1.1
+  build_web_compilers: ^4.1.3
 
 jaspr:
   mode: server

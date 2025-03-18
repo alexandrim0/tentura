@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura_root/utils/base64_padded.dart';
+
 import 'package:tentura/data/database/database.dart';
 import 'package:tentura/data/service/local_secure_storage.dart';
 import 'package:tentura/data/service/remote_api_client/auth_link.dart';
@@ -76,14 +78,18 @@ class AuthRepository {
     if (seed.isEmpty) {
       throw const AuthSeedIsWrongException();
     }
-    final id = await signIn(seed);
-    await _addAccount(id, seed);
+    final seedNormalized = base64Padded(base64UrlEncode(base64Decode(seed)));
+    final id = await _signIn(seedNormalized);
+    await _addAccount(id, seedNormalized);
 
     return id;
   }
 
   /// Returns id of actual account
-  Future<String> signUp({String? title, String? description}) async {
+  Future<String> signUp({
+    required String title,
+    required String description,
+  }) async {
     final seed = base64UrlEncode(
       Uint8List(32)..fillRange(0, 32, Random.secure().nextInt(256)),
     );
@@ -96,8 +102,8 @@ class AuthRepository {
                   ..context = const Context().withEntry(
                     const HttpAuthHeaders.noAuth(),
                   )
-                  ..vars.title = title ?? ''
-                  ..vars.description = description ?? ''
+                  ..vars.title = title
+                  ..vars.description = description
                   ..vars.authRequestToken = _remoteApiService.authRequestToken,
           ),
         )
@@ -114,43 +120,16 @@ class AuthRepository {
         Duration(seconds: response.expires_in),
       ),
     );
-    await _addAccount(response.subject, seed);
+    await _addAccount(response.subject, seed, title);
     await _setCurrentAccountId(response.subject);
 
     return response.subject;
   }
 
-  Future<String> signIn(String id) async {
-    _remoteApiService.setKeyPairFromSeed(
-      await _localSecureStorage.read(_getAccountKey(id)) ??
-          (throw const AuthSeedIsWrongException()),
-    );
-    final response = await _remoteApiService
-        .request(
-          GSignInReq(
-            (r) =>
-                r
-                  ..context = const Context().withEntry(
-                    const HttpAuthHeaders.noAuth(),
-                  )
-                  ..vars.authRequestToken = _remoteApiService.authRequestToken,
-          ),
-        )
-        .firstWhere((e) => e.dataSource == DataSource.Link)
-        .then((r) => r.dataOrThrow().signIn);
-    if (response.subject.isEmpty) {
-      throw const AuthIdIsWrongException();
-    }
-    _remoteApiService.authToken = (
-      id: response.subject,
-      accessToken: response.access_token,
-      expiresAt: DateTime.timestamp().add(
-        Duration(seconds: response.expires_in),
-      ),
-    );
-    await _setCurrentAccountId(id);
-    return response.subject;
-  }
+  Future<String> signIn(String id) async => _signIn(
+    await _localSecureStorage.read(_getAccountKey(id)) ??
+        (throw const AuthSeedIsWrongException()),
+  );
 
   Future<void> signOut() async {
     _remoteApiService.setKeyPairFromSeed(null);
@@ -178,6 +157,35 @@ class AuthRepository {
             o(title: Value(account.title), hasAvatar: Value(account.hasAvatar)),
       );
 
+  Future<String> _signIn(String seed) async {
+    _remoteApiService.setKeyPairFromSeed(seed);
+    final response = await _remoteApiService
+        .request(
+          GSignInReq(
+            (r) =>
+                r
+                  ..context = const Context().withEntry(
+                    const HttpAuthHeaders.noAuth(),
+                  )
+                  ..vars.authRequestToken = _remoteApiService.authRequestToken,
+          ),
+        )
+        .firstWhere((e) => e.dataSource == DataSource.Link)
+        .then((r) => r.dataOrThrow().signIn);
+    if (response.subject.isEmpty) {
+      throw const AuthIdIsWrongException();
+    }
+    _remoteApiService.authToken = (
+      id: response.subject,
+      accessToken: response.access_token,
+      expiresAt: DateTime.timestamp().add(
+        Duration(seconds: response.expires_in),
+      ),
+    );
+    await _setCurrentAccountId(response.subject);
+    return response.subject;
+  }
+
   Future<void> _setCurrentAccountId(String? id) async {
     await _localSecureStorage.write(
       _currentAccountKey,
@@ -187,10 +195,10 @@ class AuthRepository {
     log('Current User Id: $id');
   }
 
-  Future<void> _addAccount(String id, String seed) async {
+  Future<void> _addAccount(String id, String seed, [String? title]) async {
     await _localSecureStorage.write(_getAccountKey(id), seed);
     await _database.managers.accounts.create(
-      (o) => o(id: id),
+      (o) => title == null ? o(id: id) : o(id: id, title: Value(title)),
       mode: InsertMode.insert,
     );
   }

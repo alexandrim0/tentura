@@ -2,7 +2,7 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 0.13.5
+version: 0.13.6
 
 environment:
   sdk: '>=3.7.2 <4.0.0'
@@ -49,7 +49,7 @@ dependencies:
   gql_exec: ^1.0.0
   geocoding: ^3.0.0
   drift_dev: ^2.26.0
-  geolocator: ^13.0.2
+  geolocator: ^13.0.3
   share_plus: ^10.1.4
   image_picker: ^1.1.2
   url_launcher: ^6.3.1
