@@ -20,15 +20,15 @@ class HttpAuthHeaders extends ContextEntry {
 }
 
 class AuthLink extends Link {
-  const AuthLink(this._getToken);
+  const AuthLink(this.getToken);
 
-  final Future<String?> Function() _getToken;
+  final Future<String?> Function() getToken;
 
   @override
   Stream<Response> request(Request request, [NextLink? forward]) async* {
     assert(forward != null, 'NextLink forward is null!');
     final withAuth = request.context.entry<HttpAuthHeaders>()?.withAuth ?? true;
-    final token = withAuth ? await _getToken() : null;
+    final token = withAuth ? await getToken() : null;
     yield* token == null
         ? forward!(request)
         : forward!(
@@ -39,7 +39,7 @@ class AuthLink extends Link {
               (headers) => HttpLinkHeaders(
                 headers: {
                   ...?headers?.headers,
-                  if (withAuth) 'Authorization': 'Bearer $token',
+                  'Authorization': 'Bearer $token',
                 },
               ),
             ),

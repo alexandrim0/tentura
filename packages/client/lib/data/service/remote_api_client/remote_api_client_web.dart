@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'package:ferry/ferry.dart'
     show Client, OperationRequest, OperationResponse;
+import 'package:flutter/foundation.dart';
 
+import 'build_client.dart';
 import 'remote_api_client_base.dart';
 
-base class RemoteApiClient extends RemoteApiClientBase {
+abstract base class RemoteApiClient extends RemoteApiClientBase {
   RemoteApiClient({
-    required super.apiUrlBase,
-    required super.jwtExpiresIn,
+    required super.apiEndpointUrl,
+    required super.authJwtExpiresIn,
     required super.requestTimeout,
     required super.userAgent,
   });
@@ -16,15 +18,19 @@ base class RemoteApiClient extends RemoteApiClientBase {
 
   @override
   Future<void> init() async {
-    _gqlClient = await RemoteApiClientBase.buildClient(
-      params: params,
-      getToken: getAuthToken,
+    _gqlClient = await buildClient(
+      params: (
+        apiEndpointUrl: apiEndpointUrl,
+        userAgent: userAgent,
+        requestTimeout: requestTimeout,
+      ),
+      getToken: () async => (await getAuthToken()).accessToken,
     );
   }
 
   @override
+  @mustCallSuper
   Future<void> close() async {
-    await super.close();
     await _gqlClient.dispose();
   }
 

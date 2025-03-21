@@ -3,19 +3,20 @@ import 'dart:isolate';
 import 'package:ferry/ferry.dart'
     show Client, OperationRequest, OperationResponse;
 import 'package:ferry/ferry_isolate.dart';
+import 'package:flutter/foundation.dart';
 
-import 'package:tentura_root/consts.dart';
-
+import 'auth_box.dart';
+import 'build_client.dart';
 import 'remote_api_client_base.dart';
 
-typedef GetTokenRequest = ({DateTime getTokenRequestTimestamp});
+class GetTokenRequest {}
 
-typedef GetTokenResponse = ({String? token, Object? error});
+typedef GetTokenResponse = ({AuthToken? token, Object? error});
 
-base class RemoteApiClient extends RemoteApiClientBase {
+abstract base class RemoteApiClient extends RemoteApiClientBase {
   RemoteApiClient({
-    required super.apiUrlBase,
-    required super.jwtExpiresIn,
+    required super.apiEndpointUrl,
+    required super.authJwtExpiresIn,
     required super.requestTimeout,
     required super.userAgent,
   });
@@ -27,15 +28,29 @@ base class RemoteApiClient extends RemoteApiClientBase {
   @override
   Future<void> init() async {
     _gqlClient = await IsolateClient.create<ClientParams>(
-      _initClient,
-      params: params,
-      messageHandler: _messageHandler,
+      initClient,
+      params: (
+        apiEndpointUrl: apiEndpointUrl,
+        requestTimeout: requestTimeout,
+        userAgent: userAgent,
+      ),
+      messageHandler: (Object? message) async {
+        if (message is GetTokenRequest) {
+          try {
+            _replyPort.send((token: await getAuthToken(), error: null));
+          } catch (e) {
+            _replyPort.send((token: null, error: e));
+          }
+        } else if (message is SendPort) {
+          _replyPort = message;
+        }
+      },
     );
   }
 
   @override
+  @mustCallSuper
   Future<void> close() async {
-    await super.close();
     await _gqlClient.dispose();
   }
 
@@ -48,7 +63,11 @@ base class RemoteApiClient extends RemoteApiClientBase {
     forward,
   ]) => _gqlClient.request(request);
 
-  Future<Client> _initClient(ClientParams params, SendPort? sendPort) async {
+  static Future<Client> initClient(
+    ClientParams params,
+    SendPort? sendPort,
+  ) async {
+    AuthToken? token;
     final receivePort = ReceivePort();
     sendPort?.send(receivePort.sendPort);
     final tokenStream =
@@ -57,29 +76,24 @@ base class RemoteApiClient extends RemoteApiClientBase {
             .cast<GetTokenResponse>()
             .asBroadcastStream();
 
-    Future<String?> getAuthToken() async {
-      sendPort?.send((getTokenRequestTimestamp: DateTime.timestamp()));
-      final response = await tokenStream.first.timeout(
-        const Duration(seconds: kRequestTimeout),
-      );
-      return response.token;
-    }
-
-    return RemoteApiClientBase.buildClient(
+    return buildClient(
       params: params,
-      getToken: getAuthToken,
+      getToken: () async {
+        if (token != null && DateTime.timestamp().isBefore(token!.expiresAt)) {
+          return token!.accessToken;
+        } else {
+          sendPort?.send(GetTokenRequest());
+          final response = await tokenStream.first.timeout(
+            params.requestTimeout,
+          );
+          if (response.token != null) {
+            token = response.token;
+            return token!.accessToken;
+          } else {
+            throw Exception(response.error);
+          }
+        }
+      },
     );
-  }
-
-  Future<void> _messageHandler(Object? message) async {
-    if (message is GetTokenRequest) {
-      try {
-        _replyPort.send((token: await getAuthToken(), error: null));
-      } catch (e) {
-        _replyPort.send((token: null, error: e));
-      }
-    } else if (message is SendPort) {
-      _replyPort = message;
-    }
   }
 }

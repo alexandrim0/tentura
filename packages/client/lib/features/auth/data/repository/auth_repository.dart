@@ -22,7 +22,9 @@ class AuthRepository {
     this._database,
     this._remoteApiService,
     this._localSecureStorage,
-  );
+  ) {
+    _remoteApiService.authTokenFetcher = _authTokenFetcher;
+  }
 
   final Database _database;
 
@@ -78,7 +80,7 @@ class AuthRepository {
     if (seed.isEmpty) {
       throw const AuthSeedIsWrongException();
     }
-    final seedNormalized = base64Padded(base64UrlEncode(base64Decode(seed)));
+    final seedNormalized = base64UrlEncode(base64Decode(base64Padded(seed)));
     final id = await _signIn(seedNormalized);
     await _addAccount(id, seedNormalized);
 
@@ -93,7 +95,10 @@ class AuthRepository {
     final seed = base64UrlEncode(
       Uint8List(32)..fillRange(0, 32, Random.secure().nextInt(256)),
     );
-    _remoteApiService.setKeyPairFromSeed(seed);
+    final authRequestToken = _remoteApiService.setAuth(
+      seed,
+      returnAuthRequestToken: true,
+    );
     final response = await _remoteApiService
         .request(
           GSignUpReq(
@@ -104,35 +109,26 @@ class AuthRepository {
                   )
                   ..vars.title = title
                   ..vars.description = description
-                  ..vars.authRequestToken = _remoteApiService.authRequestToken,
+                  ..vars.authRequestToken = authRequestToken,
           ),
         )
         .firstWhere((e) => e.dataSource == DataSource.Link)
         .then((r) => r.dataOrThrow().signUp);
-
-    if (response.subject.isEmpty) {
-      throw const AuthIdIsWrongException();
-    }
-    _remoteApiService.authToken = (
-      id: response.subject,
-      accessToken: response.access_token,
-      expiresAt: DateTime.timestamp().add(
-        Duration(seconds: response.expires_in),
-      ),
-    );
     await _addAccount(response.subject, seed, title);
     await _setCurrentAccountId(response.subject);
 
     return response.subject;
   }
 
-  Future<String> signIn(String id) async => _signIn(
-    await _localSecureStorage.read(_getAccountKey(id)) ??
-        (throw const AuthSeedIsWrongException()),
-  );
+  Future<void> signIn(String id) async {
+    await _signIn(
+      await _localSecureStorage.read(_getAccountKey(id)) ??
+          (throw const AuthSeedIsWrongException()),
+    );
+  }
 
   Future<void> signOut() async {
-    _remoteApiService.setKeyPairFromSeed(null);
+    _remoteApiService.dropAuth();
     await _setCurrentAccountId(null);
     // TBD: invalidate jwt on remote server also
   }
@@ -158,32 +154,10 @@ class AuthRepository {
       );
 
   Future<String> _signIn(String seed) async {
-    _remoteApiService.setKeyPairFromSeed(seed);
-    final response = await _remoteApiService
-        .request(
-          GSignInReq(
-            (r) =>
-                r
-                  ..context = const Context().withEntry(
-                    const HttpAuthHeaders.noAuth(),
-                  )
-                  ..vars.authRequestToken = _remoteApiService.authRequestToken,
-          ),
-        )
-        .firstWhere((e) => e.dataSource == DataSource.Link)
-        .then((r) => r.dataOrThrow().signIn);
-    if (response.subject.isEmpty) {
-      throw const AuthIdIsWrongException();
-    }
-    _remoteApiService.authToken = (
-      id: response.subject,
-      accessToken: response.access_token,
-      expiresAt: DateTime.timestamp().add(
-        Duration(seconds: response.expires_in),
-      ),
-    );
-    await _setCurrentAccountId(response.subject);
-    return response.subject;
+    _remoteApiService.setAuth(seed);
+    final jwt = await _remoteApiService.getAuthToken();
+    await _setCurrentAccountId(jwt.userId);
+    return jwt.userId;
   }
 
   Future<void> _setCurrentAccountId(String? id) async {
@@ -208,4 +182,28 @@ class AuthRepository {
   static const _currentAccountKey = '$_repositoryKey:currentAccountId';
 
   static String _getAccountKey(String id) => '$_repositoryKey:Id:$id';
+
+  static Future<AuthToken> _authTokenFetcher(
+    RemoteApiService remoteApiService,
+    String authRequestToken,
+  ) => remoteApiService
+      .request(
+        GSignInReq(
+          (r) =>
+              r
+                ..context = const Context().withEntry(
+                  const HttpAuthHeaders.noAuth(),
+                )
+                ..vars.authRequestToken = authRequestToken,
+        ),
+      )
+      .firstWhere((e) => e.dataSource == DataSource.Link)
+      .then((r) => r.dataOrThrow().signIn)
+      .then(
+        (v) => (
+          userId: v.subject,
+          accessToken: v.access_token,
+          expiresAt: DateTime.timestamp().add(Duration(seconds: v.expires_in)),
+        ),
+      );
 }

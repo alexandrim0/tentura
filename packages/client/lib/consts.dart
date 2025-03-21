@@ -23,6 +23,7 @@ const kAssetAvatarPlaceholder = 'images/placeholder/avatar.jpg';
 const kAssetBeaconPlaceholder = 'images/placeholder/beacon.jpg';
 
 // Settings storage keys
+// TBD: replace with enum
 const kSettingsThemeMode = 'themeMode';
 const kSettingsIsIntroEnabledKey = 'isIntroEnabled';
 

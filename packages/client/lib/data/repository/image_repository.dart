@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:http/http.dart';
 import 'package:image/image.dart';
 import 'package:injectable/injectable.dart';
 import 'package:image_picker/image_picker.dart';
@@ -50,11 +51,18 @@ class ImageRepository {
   Future<void> uploadImage({
     required Uint8List image,
     required String imageId,
-  }) => _remoteApiService.httpPost(
-    Uri.parse('$kServerName/$kPathImageUpload?id=$imageId'),
-    headers: {kHeaderContentType: kContentTypeJpeg},
-    body: image,
-  );
+  }) async {
+    final jwt = await _remoteApiService.getAuthToken();
+    await post(
+      Uri.parse('$kServerName/$kPathImageUpload?id=$imageId'),
+      headers: {
+        kHeaderUserAgent: kUserAgent,
+        kHeaderContentType: kContentTypeJpeg,
+        kHeaderAuthorization: 'Bearer ${jwt.accessToken}',
+      },
+      body: image,
+    );
+  }
 
   static final _imagePicker = ImagePicker();
 }
