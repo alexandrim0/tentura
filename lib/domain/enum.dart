@@ -1,0 +1,1 @@
+enum AuthRequestIntent { signUp, signIn }

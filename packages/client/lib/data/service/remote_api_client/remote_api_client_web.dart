@@ -3,7 +3,9 @@ import 'package:ferry/ferry.dart'
     show Client, OperationRequest, OperationResponse;
 import 'package:flutter/foundation.dart';
 
+import 'auth_box.dart';
 import 'build_client.dart';
+import 'exception.dart';
 import 'remote_api_client_base.dart';
 
 abstract base class RemoteApiClient extends RemoteApiClientBase {
@@ -14,10 +16,14 @@ abstract base class RemoteApiClient extends RemoteApiClientBase {
     required super.userAgent,
   });
 
-  late final Client _gqlClient;
+  Client? _gqlClient;
 
   @override
-  Future<void> init() async {
+  Future<String?> setAuth({
+    required String seed,
+    required AuthTokenFetcher authTokenFetcher,
+    AuthRequestIntent? returnAuthRequestToken,
+  }) async {
     _gqlClient = await buildClient(
       params: (
         apiEndpointUrl: apiEndpointUrl,
@@ -26,12 +32,15 @@ abstract base class RemoteApiClient extends RemoteApiClientBase {
       ),
       getToken: () async => (await getAuthToken()).accessToken,
     );
+    return super.setAuth(seed: seed, authTokenFetcher: authTokenFetcher);
   }
 
   @override
   @mustCallSuper
   Future<void> close() async {
-    await _gqlClient.dispose();
+    await super.close();
+    await _gqlClient?.dispose();
+    _gqlClient = null;
   }
 
   @override
@@ -41,5 +50,7 @@ abstract base class RemoteApiClient extends RemoteApiClientBase {
       OperationRequest<TData, TVars>,
     )?
     forward,
-  ]) => _gqlClient.request(request);
+  ]) =>
+      _gqlClient?.request(request) ??
+      (throw const AuthenticationNoKeyException());
 }

@@ -4,11 +4,12 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura_root/domain/enum.dart';
 import 'package:tentura_root/utils/base64_padded.dart';
 
 import 'package:tentura/data/database/database.dart';
 import 'package:tentura/data/service/local_secure_storage.dart';
-import 'package:tentura/data/service/remote_api_client/auth_link.dart';
+import 'package:tentura/data/service/remote_api_client/credentials.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 import 'package:tentura/domain/entity/profile.dart';
 
@@ -22,9 +23,7 @@ class AuthRepository {
     this._database,
     this._remoteApiService,
     this._localSecureStorage,
-  ) {
-    _remoteApiService.authTokenFetcher = _authTokenFetcher;
-  }
+  );
 
   final Database _database;
 
@@ -95,9 +94,10 @@ class AuthRepository {
     final seed = base64UrlEncode(
       Uint8List(32)..fillRange(0, 32, Random.secure().nextInt(256)),
     );
-    final authRequestToken = _remoteApiService.setAuth(
-      seed,
-      returnAuthRequestToken: true,
+    final authRequestToken = await _remoteApiService.setAuth(
+      seed: seed,
+      authTokenFetcher: authTokenFetcher,
+      returnAuthRequestToken: AuthRequestIntent.signUp,
     );
     final response = await _remoteApiService
         .request(
@@ -115,9 +115,8 @@ class AuthRepository {
         .firstWhere((e) => e.dataSource == DataSource.Link)
         .then((r) => r.dataOrThrow().signUp);
     await _addAccount(response.subject, seed, title);
-    await _setCurrentAccountId(response.subject);
 
-    return response.subject;
+    return _signIn(seed);
   }
 
   Future<void> signIn(String id) async {
@@ -128,7 +127,7 @@ class AuthRepository {
   }
 
   Future<void> signOut() async {
-    _remoteApiService.dropAuth();
+    await _remoteApiService.close();
     await _setCurrentAccountId(null);
     // TBD: invalidate jwt on remote server also
   }
@@ -154,10 +153,13 @@ class AuthRepository {
       );
 
   Future<String> _signIn(String seed) async {
-    _remoteApiService.setAuth(seed);
-    final jwt = await _remoteApiService.getAuthToken();
-    await _setCurrentAccountId(jwt.userId);
-    return jwt.userId;
+    await _remoteApiService.setAuth(
+      seed: seed,
+      authTokenFetcher: authTokenFetcher,
+    );
+    final credentials = await _remoteApiService.getAuthToken();
+    await _setCurrentAccountId(credentials.userId);
+    return credentials.userId;
   }
 
   Future<void> _setCurrentAccountId(String? id) async {
@@ -177,17 +179,10 @@ class AuthRepository {
     );
   }
 
-  static const _repositoryKey = 'Auth';
-
-  static const _currentAccountKey = '$_repositoryKey:currentAccountId';
-
-  static String _getAccountKey(String id) => '$_repositoryKey:Id:$id';
-
-  static Future<AuthToken> _authTokenFetcher(
-    RemoteApiService remoteApiService,
+  static Future<Credentials> authTokenFetcher(
+    GqlFetcher fetcher,
     String authRequestToken,
-  ) => remoteApiService
-      .request(
+  ) => fetcher(
         GSignInReq(
           (r) =>
               r
@@ -200,10 +195,16 @@ class AuthRepository {
       .firstWhere((e) => e.dataSource == DataSource.Link)
       .then((r) => r.dataOrThrow().signIn)
       .then(
-        (v) => (
+        (v) => Credentials(
           userId: v.subject,
           accessToken: v.access_token,
           expiresAt: DateTime.timestamp().add(Duration(seconds: v.expires_in)),
         ),
       );
+
+  static const _repositoryKey = 'Auth';
+
+  static const _currentAccountKey = '$_repositoryKey:currentAccountId';
+
+  static String _getAccountKey(String id) => '$_repositoryKey:Id:$id';
 }

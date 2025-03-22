@@ -7,11 +7,13 @@ import 'package:flutter/foundation.dart';
 
 import 'auth_box.dart';
 import 'build_client.dart';
+import 'credentials.dart';
+import 'exception.dart';
 import 'remote_api_client_base.dart';
 
 class GetTokenRequest {}
 
-typedef GetTokenResponse = ({AuthToken? token, Object? error});
+typedef GetTokenResponse = ({Credentials? data, Object? error});
 
 abstract base class RemoteApiClient extends RemoteApiClientBase {
   RemoteApiClient({
@@ -21,12 +23,16 @@ abstract base class RemoteApiClient extends RemoteApiClientBase {
     required super.userAgent,
   });
 
-  late final SendPort _replyPort;
+  IsolateClient? _gqlClient;
 
-  late final IsolateClient _gqlClient;
+  SendPort? _replyPort;
 
   @override
-  Future<void> init() async {
+  Future<String?> setAuth({
+    required String seed,
+    required AuthTokenFetcher authTokenFetcher,
+    AuthRequestIntent? returnAuthRequestToken,
+  }) async {
     _gqlClient = await IsolateClient.create<ClientParams>(
       initClient,
       params: (
@@ -35,23 +41,31 @@ abstract base class RemoteApiClient extends RemoteApiClientBase {
         userAgent: userAgent,
       ),
       messageHandler: (Object? message) async {
-        if (message is GetTokenRequest) {
-          try {
-            _replyPort.send((token: await getAuthToken(), error: null));
-          } catch (e) {
-            _replyPort.send((token: null, error: e));
-          }
-        } else if (message is SendPort) {
-          _replyPort = message;
+        switch (message) {
+          case final GetTokenRequest _:
+            try {
+              _replyPort?.send((data: await getAuthToken(), error: null));
+            } catch (e) {
+              _replyPort?.send((data: null, error: e));
+            }
+
+          case final SendPort p:
+            _replyPort = p;
+
+          default:
         }
       },
     );
+    return super.setAuth(seed: seed, authTokenFetcher: authTokenFetcher);
   }
 
   @override
   @mustCallSuper
   Future<void> close() async {
-    await _gqlClient.dispose();
+    await super.close();
+    await _gqlClient?.dispose();
+    _gqlClient = null;
+    _replyPort = null;
   }
 
   @override
@@ -61,13 +75,15 @@ abstract base class RemoteApiClient extends RemoteApiClientBase {
       OperationRequest<TData, TVars>,
     )?
     forward,
-  ]) => _gqlClient.request(request);
+  ]) =>
+      _gqlClient?.request(request) ??
+      (throw const AuthenticationNoKeyException());
 
   static Future<Client> initClient(
     ClientParams params,
     SendPort? sendPort,
   ) async {
-    AuthToken? token;
+    Credentials? credentials;
     final receivePort = ReceivePort();
     sendPort?.send(receivePort.sendPort);
     final tokenStream =
@@ -79,16 +95,16 @@ abstract base class RemoteApiClient extends RemoteApiClientBase {
     return buildClient(
       params: params,
       getToken: () async {
-        if (token != null && DateTime.timestamp().isBefore(token!.expiresAt)) {
-          return token!.accessToken;
+        if (credentials?.hasValidToken ?? false) {
+          return credentials!.accessToken;
         } else {
           sendPort?.send(GetTokenRequest());
           final response = await tokenStream.first.timeout(
             params.requestTimeout,
           );
-          if (response.token != null) {
-            token = response.token;
-            return token!.accessToken;
+          if (response.data != null) {
+            credentials = response.data;
+            return credentials!.accessToken;
           } else {
             throw Exception(response.error);
           }
