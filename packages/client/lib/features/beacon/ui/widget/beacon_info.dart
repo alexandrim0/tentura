@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/beacon.dart';
+import 'package:localization/localization.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/beacon_image.dart';
@@ -119,7 +120,7 @@ class BeaconInfo extends StatelessWidget {
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
                     label:
                         kIsWeb
-                            ? const Text('Show on the map')
+                            ? Text(AppLocalizations.of(context)!.showOnMap)
                             : PlaceNameText(
                               coords: beacon.coordinates!,
                               style: theme.textTheme.bodySmall,

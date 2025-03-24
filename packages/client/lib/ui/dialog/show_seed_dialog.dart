@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:localization/localization.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/qr_code.dart';
@@ -54,20 +55,20 @@ class ShowSeedDialog extends StatelessWidget {
       // Buttons
       actions: [
         TextButton(
-          child: const Text('Copy to clipboard'),
+          child: Text(AppLocalizations.of(context)!.copyToClipboard),
           onPressed: () async {
             await Clipboard.setData(ClipboardData(text: seed));
             if (context.mounted) {
               showSnackBar(
                 context,
-                text: 'Seed copied to clipboard!',
+                text: AppLocalizations.of(context)!.seedCopied,
               );
             }
           },
         ),
         TextButton(
           onPressed: Navigator.of(context).pop,
-          child: const Text('Close'),
+          child: Text(AppLocalizations.of(context)!.buttonClose),
         ),
       ],
     );

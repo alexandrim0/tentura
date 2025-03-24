@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
+import 'package:localization/localization.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/profile_app_bar_title.dart';
@@ -34,13 +35,13 @@ class ProfileViewAppBar extends StatelessWidget {
                     if (profile.isFriend)
                       PopupMenuItem(
                         onTap: profileViewCubit.removeFriend,
-                        child: const Text('Remove from my field'),
+                        child: Text(AppLocalizations.of(context)!.removeFromMyField),
                       ),
 
                     // Complaint
                     PopupMenuItem(
                       onTap: () => screenCubit.showComplaint(profile.id),
-                      child: const Text('Complaint'),
+                      child: Text(AppLocalizations.of(context)!.buttonComplaint),
                     ),
                   ];
                 },

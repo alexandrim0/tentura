@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -25,7 +26,7 @@ class ChatSeparator extends StatelessWidget {
       padding: kPaddingAllS,
       child: Text(
         currentMessage.createdAt.day == DateTime.timestamp().day
-            ? 'Today'
+            ? AppLocalizations.of(context)!.chatLabelToday
             : dateFormatYMD(currentMessage.createdAt),
         style: theme.textTheme.bodySmall,
         textAlign: TextAlign.center,

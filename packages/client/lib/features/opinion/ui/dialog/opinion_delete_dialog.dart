@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 
 class OpinionDeleteDialog extends StatelessWidget {
   static Future<bool?> show(BuildContext context) =>
@@ -8,15 +9,15 @@ class OpinionDeleteDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-    title: const Text('Are you sure you want to delete this opinion?'),
+    title: Text(AppLocalizations.of(context)!.confirmOpinionRemoval),
     actions: [
       TextButton(
         onPressed: () => Navigator.of(context).pop(true),
-        child: const Text('Yes'),
+        child: Text(AppLocalizations.of(context)!.buttonYes),
       ),
       TextButton(
         onPressed: Navigator.of(context).pop,
-        child: const Text('Cancel'),
+        child: Text(AppLocalizations.of(context)!.buttonCancel),
       ),
     ],
   );

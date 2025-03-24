@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 
 class BeaconPublishDialog extends StatelessWidget {
   static Future<bool?> show(BuildContext context) => showDialog<bool>(
-        context: context,
-        builder: (_) => const BeaconPublishDialog(),
-      );
+    context: context,
+    builder: (_) => const BeaconPublishDialog(),
+  );
 
   const BeaconPublishDialog({super.key});
 
@@ -12,27 +13,21 @@ class BeaconPublishDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return AlertDialog.adaptive(
-      title: const Text(
-        'Are you sure you want to publish this beacon?',
-      ),
+      title: Text(AppLocalizations.of(context)!.confirmBeaconPublishing),
       titleTextStyle: textTheme.headlineLarge,
-      content: const Text(
-        'Once the bacon is published, '
-        'it will not be possible to make changes. '
-        'Are you sure you want to publish this bacon?',
-      ),
+      content: Text(AppLocalizations.of(context)!.confirmBeaconPublishingHint),
       contentTextStyle: textTheme.bodyMedium,
       actions: [
         // Yes
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Yes'),
+          child: Text(AppLocalizations.of(context)!.buttonYes),
         ),
 
         // Cancel
         TextButton(
           onPressed: Navigator.of(context).pop,
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.buttonCancel),
         ),
       ],
     );

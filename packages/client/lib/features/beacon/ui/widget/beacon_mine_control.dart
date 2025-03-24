@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/beacon.dart';
+import 'package:localization/localization.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 
@@ -45,8 +46,8 @@ class BeaconMineControl extends StatelessWidget {
                     beaconCubit.state.beacons
                             .singleWhere((e) => e.id == beacon.id)
                             .isEnabled
-                        ? 'Disable beacon'
-                        : 'Enable beacon',
+                        ? AppLocalizations.of(context)!.disableBeacon
+                        : AppLocalizations.of(context)!.enableBeacon,
                   ),
                   onTap: () async => beaconCubit.toggleEnabled(beacon.id),
                 ),
@@ -54,7 +55,7 @@ class BeaconMineControl extends StatelessWidget {
 
                 // Delete
                 PopupMenuItem<void>(
-                  child: const Text('Delete beacon'),
+                  child: Text(AppLocalizations.of(context)!.deleteBeacon),
                   onTap: () async {
                     if (await BeaconDeleteDialog.show(context) ?? false) {
                       await beaconCubit.delete(beacon.id);

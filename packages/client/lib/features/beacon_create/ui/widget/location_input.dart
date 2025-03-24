@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/coordinates.dart';
+import 'package:localization/localization.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
 
 import 'package:tentura/features/geo/ui/dialog/choose_location_dialog.dart';
@@ -22,7 +23,7 @@ class LocationInput extends StatelessWidget {
       readOnly: true,
       controller: controller,
       decoration: InputDecoration(
-        hintText: 'Add location',
+        hintText: AppLocalizations.of(context)!.addLocation,
         suffixIcon:
             BlocSelector<BeaconCreateCubit, BeaconCreateState, Coordinates?>(
           selector: (state) => state.coordinates,

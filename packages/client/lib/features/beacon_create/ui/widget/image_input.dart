@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/image_entity.dart';
+import 'package:localization/localization.dart';
 
 import '../bloc/beacon_create_cubit.dart';
 
@@ -19,7 +20,7 @@ class ImageInput extends StatelessWidget {
       readOnly: true,
       controller: controller,
       decoration: InputDecoration(
-        hintText: 'Attach image',
+        hintText: AppLocalizations.of(context)!.attachImage,
         suffixIcon:
             BlocSelector<BeaconCreateCubit, BeaconCreateState, ImageEntity?>(
           selector: (state) => state.image,

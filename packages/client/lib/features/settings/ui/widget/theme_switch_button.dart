@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 
 import '../bloc/settings_cubit.dart';
 
@@ -15,20 +16,20 @@ class ThemeSwitchButton extends StatelessWidget {
             (_, themeMode) => SegmentedButton<ThemeMode>(
               selected: <ThemeMode>{themeMode},
               showSelectedIcon: false,
-              segments: const [
+              segments: [
                 ButtonSegment<ThemeMode>(
-                  icon: Icon(Icons.brightness_7),
-                  tooltip: 'Light',
+                  icon: const Icon(Icons.brightness_7),
+                  tooltip: AppLocalizations.of(context)!.light,
                   value: ThemeMode.light,
                 ),
                 ButtonSegment<ThemeMode>(
-                  icon: Icon(Icons.brightness_auto_outlined),
-                  tooltip: 'System',
+                  icon: const Icon(Icons.brightness_auto_outlined),
+                  tooltip: AppLocalizations.of(context)!.system,
                   value: ThemeMode.system,
                 ),
                 ButtonSegment<ThemeMode>(
-                  icon: Icon(Icons.brightness_5),
-                  tooltip: 'Dark',
+                  icon: const Icon(Icons.brightness_5),
+                  tooltip: AppLocalizations.of(context)!.dark,
                   value: ThemeMode.dark,
                 ),
               ],

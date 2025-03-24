@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:localization/localization.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 
 import 'package:tentura/consts.dart';
@@ -36,7 +37,7 @@ class IntroScreen extends StatelessWidget {
             Padding(
               padding: kPaddingAll,
               child: Text(
-                'Build Your Network with Clarity',
+                AppLocalizations.of(context)!.introTitle,
                 textAlign: TextAlign.center,
                 style: textTheme.displayMedium,
               ),
@@ -46,9 +47,7 @@ class IntroScreen extends StatelessWidget {
             Padding(
               padding: kPaddingAll,
               child: Text(
-                'Each post reveals the connections you share. '
-                'Enjoy complete transparency and mastery over '
-                'your relationships',
+                AppLocalizations.of(context)!.introText,
                 textAlign: TextAlign.center,
                 style: textTheme.bodyLarge,
               ),
@@ -62,7 +61,7 @@ class IntroScreen extends StatelessWidget {
               child: FilledButton(
                 onPressed:
                     () async => GetIt.I<SettingsCubit>().setIntroEnabled(false),
-                child: const Text('Start'),
+                child: Text(AppLocalizations.of(context)!.buttonStart),
               ),
             ),
           ],

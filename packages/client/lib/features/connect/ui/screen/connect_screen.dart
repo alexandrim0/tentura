@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/app/router/root_router.dart';
+import 'package:localization/localization.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 
@@ -31,10 +32,9 @@ class _ConnectScreenState extends State<ConnectScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Padding(
+                Padding(
                   padding: kPaddingSmallT,
-                  child: Text(
-                    'If you have the Code, please write it here:',
+                  child: Text(AppLocalizations.of(context)!.writeCodeHere,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -53,14 +53,14 @@ class _ConnectScreenState extends State<ConnectScreen> {
                 Padding(
                   padding: kPaddingV,
                   child: FilledButton(
-                    child: const Text('Search'),
+                    child: Text(AppLocalizations.of(context)!.buttonSearch),
                     onPressed: () => _goWithCode(_inputController.text),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 32),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32),
                   child: Text(
-                    'or',
+                    AppLocalizations.of(context)!.labelOr,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -71,7 +71,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
                       final code = await QRScanDialog.show(context);
                       if (context.mounted) _goWithCode(code);
                     },
-                    child: const Text('Scan QR'),
+                    child: Text(AppLocalizations.of(context)!.buttonScanQR),
                   ),
                 ),
               ],
@@ -86,7 +86,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
       showSnackBar(
         context,
         isError: true,
-        text: 'Wrong code length!',
+        text: AppLocalizations.of(context)!.codeLengthError,
       );
     }
     switch (code[0]) {
@@ -103,7 +103,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
         showSnackBar(
           context,
           isError: true,
-          text: 'Wrong code prefix!',
+          text: AppLocalizations.of(context)!.codePrefixError,
         );
     }
   }

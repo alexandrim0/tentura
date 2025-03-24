@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 
 import '../../domain/entity/context_selection.dart';
 import '../bloc/context_cubit.dart';
@@ -21,13 +22,13 @@ class ContextDropDown extends StatelessWidget {
           dropdownColor: colorScheme.surface,
           isExpanded: true,
           items: [
-            const DropdownMenuItem(
-              value: ContextSelectionAdd(),
-              child: Text('Add new topic'),
+            DropdownMenuItem(
+              value: const ContextSelectionAdd(),
+              child: Text(AppLocalizations.of(context)!.addNewTopic),
             ),
-            const DropdownMenuItem(
-              value: ContextSelectionAll(),
-              child: Text('All topics'),
+            DropdownMenuItem(
+              value: const ContextSelectionAll(),
+              child: Text(AppLocalizations.of(context)!.allTopics),
             ),
             for (final e in state.contexts)
               DropdownMenuItem(

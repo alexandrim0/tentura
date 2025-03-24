@@ -5,6 +5,7 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/coordinates.dart';
+import 'package:localization/localization.dart';
 
 import '../../data/repository/geo_repository.dart';
 import '../../domain/entity/location.dart';
@@ -55,7 +56,7 @@ class _ChooseLocationDialogState extends State<ChooseLocationDialog> {
             centerTitle: true,
             forceMaterialTransparency: true,
             foregroundColor: Colors.black,
-            title: const Text('Tap to choose location'),
+            title: Text(AppLocalizations.of(context)!.tapToChooseLocation),
           ),
           extendBodyBehindAppBar: true,
           body: FlutterMap(

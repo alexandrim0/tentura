@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 
 class ContextAddDialog extends StatefulWidget {
   static Future<String?> show(BuildContext context) => showDialog<String>(
@@ -23,18 +24,18 @@ class _ContextAddDialogState extends State<ContextAddDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-        title: const Text('Add a new topic'),
+        title: Text(AppLocalizations.of(context)!.addNewTopic),
         content: TextField(
           controller: _controller,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
-            child: const Text('Ok'),
+            child: Text(AppLocalizations.of(context)!.buttonOk),
           ),
           TextButton(
             onPressed: Navigator.of(context).pop,
-            child: const Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.buttonCancel),
           ),
         ],
       );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -19,7 +20,7 @@ class OpinionList extends StatelessWidget {
               hasScrollBody: false,
               child: Center(
                 child: Text(
-                  'There are no opinions yet',
+                  AppLocalizations.of(context)!.noOpinions,
                   style: textTheme.bodyMedium,
                 ),
               ),

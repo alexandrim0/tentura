@@ -1,3 +1,4 @@
+import 'package:localization/localization.dart';
 import 'package:validatorless/validatorless.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: const Text('Submit Complaint'),
+      title: Text(AppLocalizations.of(context)!.submitComplaint),
       leading: const DeepBackButton(),
     ),
     body: Form(
@@ -61,20 +62,20 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
             builder: (context, type) {
               return DropdownButtonFormField<ComplaintType>(
                 value: type,
-                items: const [
+                items: [
                   DropdownMenuItem(
                     value: ComplaintType.violatesCsaePolicy,
-                    child: Text('Violates CSAE Policy'),
+                    child: Text(AppLocalizations.of(context)!.violatesCSAE),
                   ),
                   DropdownMenuItem(
                     value: ComplaintType.violatesPlatformRules,
-                    child: Text('Violates Platform Rules'),
+                    child: Text(AppLocalizations.of(context)!.violatesPlatformRules),
                   ),
                 ],
                 onChanged: _cubit.setType,
-                decoration: const InputDecoration(
-                  labelText: 'Complaint Type',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.labelComplaintType,
+                  border: const OutlineInputBorder(),
                 ),
                 dropdownColor: Theme.of(context).colorScheme.secondaryContainer,
               );
@@ -86,12 +87,12 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
             padding: kPaddingV,
             child: TextFormField(
               maxLines: 5,
-              decoration: const InputDecoration(
-                labelText: 'Details*',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.detailsRequired,
+                border: const OutlineInputBorder(),
                 alignLabelWithHint: true,
               ),
-              validator: Validatorless.required('Please provide details'),
+              validator: Validatorless.required(AppLocalizations.of(context)!.provideDetails),
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
               onChanged: _cubit.setDetails,
             ),
@@ -102,11 +103,11 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
             padding: kPaddingV,
             child: TextFormField(
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'Email for feedback (optional)',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.feedbackEmail,
+                border: const OutlineInputBorder(),
               ),
-              validator: Validatorless.email('Please enter a valid email'),
+              validator: Validatorless.email(AppLocalizations.of(context)!.emailValidationError),
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
               onChanged: _cubit.setEmail,
             ),
@@ -125,7 +126,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                   }
                 }
               },
-              child: const Text('SUBMIT COMPLAINT'),
+              child: Text(AppLocalizations.of(context)!.buttonSubmitComplaint),
             ),
           ),
         ],

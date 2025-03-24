@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:localization/localization.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -56,20 +57,20 @@ class ShareCodeDialog extends StatelessWidget {
       // Buttons
       actions: [
         TextButton(
-          child: const Text('Copy to clipboard'),
+          child: Text(AppLocalizations.of(context)!.copyToClipboard),
           onPressed: () async {
             await Clipboard.setData(ClipboardData(text: link));
             if (context.mounted) {
               showSnackBar(
                 context,
-                text: 'Seed copied to clipboard!',
+                text: AppLocalizations.of(context)!.seedCopied,
               );
             }
           },
         ),
         Builder(
           builder: (context) => TextButton(
-            child: const Text('Share Link'),
+            child: Text(AppLocalizations.of(context)!.shareLink),
             onPressed: () {
               final box = context.findRenderObject()! as RenderBox;
               Share.share(
@@ -81,7 +82,7 @@ class ShareCodeDialog extends StatelessWidget {
         ),
         TextButton(
           onPressed: Navigator.of(context).pop,
-          child: const Text('Close'),
+          child: Text(AppLocalizations.of(context)!.buttonClose),
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
+import 'package:localization/localization.dart';
 
 import '../bloc/beacon_create_cubit.dart';
 import '../dialog/beacon_publish_dialog.dart';
@@ -33,7 +34,7 @@ class PublishButton extends StatelessWidget {
                   }
                 }
               : null,
-          child: const Text('Publish'),
+          child: Text(AppLocalizations.of(context)!.buttonPublish),
         ),
       );
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 
 class ContextRemoveDialog extends StatelessWidget {
   static Future<bool?> show(
@@ -19,8 +20,8 @@ class ContextRemoveDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-        title: const Text('Are you sure?'),
-        content: Text('Topic $contextName will be removed from your list!'),
+        title: Text(AppLocalizations.of(context)!.labelConfirmation),
+        content: Text(AppLocalizations.of(context)!.topicRemovalMessage(contextName)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),

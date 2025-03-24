@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
+import 'package:localization/localization.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
@@ -40,7 +41,7 @@ class ProfileViewBody extends StatelessWidget {
                   onPressed:
                       () => context.read<ScreenCubit>().showGraph(profile.id),
                   icon: const Icon(TenturaIcons.graph),
-                  label: const Text('Show Connections'),
+                  label: Text(AppLocalizations.of(context)!.showConnections),
                 ),
               ),
 
@@ -51,7 +52,7 @@ class ProfileViewBody extends StatelessWidget {
                   onPressed:
                       () => context.read<ScreenCubit>().showBeacons(profile.id),
                   icon: const Icon(Icons.open_in_full),
-                  label: const Text('Show Beacons'),
+                  label: Text(AppLocalizations.of(context)!.showBeacons),
                 ),
               ),
 
@@ -61,7 +62,7 @@ class ProfileViewBody extends StatelessWidget {
                   child: FilledButton.icon(
                     onPressed: context.read<ProfileViewCubit>().addFriend,
                     icon: const Icon(Icons.people),
-                    label: const Text('Add to My Field'),
+                    label: Text(AppLocalizations.of(context)!.addToMyField),
                   ),
                 ),
 
@@ -69,7 +70,7 @@ class ProfileViewBody extends StatelessWidget {
               Padding(
                 padding: kPaddingV,
                 child: Text(
-                  'Community Feedback',
+                  AppLocalizations.of(context)!.communityFeedback,
                   style: textTheme.headlineMedium,
                 ),
               ),

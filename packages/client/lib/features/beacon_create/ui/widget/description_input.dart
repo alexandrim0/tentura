@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
+import 'package:localization/localization.dart';
 
 import '../bloc/beacon_create_cubit.dart';
 
@@ -12,8 +13,8 @@ class DescriptionInput extends StatelessWidget {
     final cubit = context.read<BeaconCreateCubit>();
     return TextFormField(
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      decoration: const InputDecoration(
-        hintText: 'Description',
+      decoration: InputDecoration(
+        hintText: AppLocalizations.of(context)!.labelDescription,
       ),
       keyboardType: TextInputType.multiline,
       maxLength: kDescriptionLength,
