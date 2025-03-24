@@ -47,4 +47,9 @@ class UserRepositoryMock implements UserRepository {
       picWidth: image.width,
     );
   }
+
+  @override
+  Future<void> deleteUserById({required String id}) async {
+    storageByPublicKey.removeWhere((_, e) => e.id == id);
+  }
 }

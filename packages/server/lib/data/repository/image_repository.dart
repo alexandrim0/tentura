@@ -43,7 +43,7 @@ class ImageRepository {
         : _localStorageService.saveStreamToFile(path, bytes);
   }
 
-  Future<void> removeBeaconImage({
+  Future<void> deleteBeaconImage({
     required String authorId,
     required String beaconId,
   }) {
@@ -61,5 +61,12 @@ class ImageRepository {
     return kIsRemoteStorageEnabled
         ? _remoteStorageService.putObject(path, bytes)
         : _localStorageService.saveStreamToFile(path, bytes);
+  }
+
+  Future<void> deleteUserImageAll({required String id}) {
+    final path = '$kImageServer/$kImagesPath/$id';
+    return kIsRemoteStorageEnabled
+        ? _remoteStorageService.removeObject(path)
+        : _localStorageService.deleteFile(path, recursive: true);
   }
 }

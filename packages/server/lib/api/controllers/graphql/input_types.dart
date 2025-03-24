@@ -1,5 +1,7 @@
 import 'package:graphql_schema2/graphql_schema2.dart';
 
+const kGlobalInputQueryContext = 'queryContext';
+
 const kInputTypeIdFieldName = 'id';
 final gqlInputTypeId = GraphQLFieldInput(
   kInputTypeIdFieldName,

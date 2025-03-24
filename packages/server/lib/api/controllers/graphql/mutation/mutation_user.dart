@@ -3,14 +3,13 @@ import 'package:graphql_schema2/graphql_schema2.dart';
 
 import 'package:tentura_server/domain/entity/jwt_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
-import 'package:tentura_server/domain/use_case/beacon_case.dart';
+import 'package:tentura_server/domain/use_case/user_case.dart';
 
 import '../input_types.dart';
 
-GraphQLObjectField<dynamic, dynamic> get beaconBeleteById => GraphQLObjectField(
-  'beacon_delete_by_id',
+GraphQLObjectField<dynamic, dynamic> get userDelete => GraphQLObjectField(
+  'delete_user',
   graphQLBoolean.nonNullable(),
-  arguments: [gqlInputTypeId],
   resolve: (_, args) async {
     final jwt = args[JwtEntity.key] as JwtEntity?;
 
@@ -18,9 +17,8 @@ GraphQLObjectField<dynamic, dynamic> get beaconBeleteById => GraphQLObjectField(
       throw const UnauthorizedException();
     }
 
-    return GetIt.I<BeaconCase>().deleteById(
-      beaconId: args[kInputTypeIdFieldName] as String,
-      userId: jwt.sub,
+    return GetIt.I<UserCase>().deleteById(
+      id: args[kInputTypeIdFieldName] as String,
     );
   },
 );

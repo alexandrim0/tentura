@@ -7,8 +7,8 @@ import '../entity/event_entity.dart';
 import '../enum.dart';
 
 @Injectable(order: 2)
-class BeaconMutationCase {
-  const BeaconMutationCase(this._beaconRepository, this._imageRepository);
+class BeaconCase {
+  const BeaconCase(this._beaconRepository, this._imageRepository);
 
   final BeaconRepository _beaconRepository;
 
@@ -23,7 +23,7 @@ class BeaconMutationCase {
       filterByUserId: userId,
     );
 
-    await _imageRepository.removeBeaconImage(
+    await _imageRepository.deleteBeaconImage(
       authorId: beacon.author.id,
       beaconId: beacon.id,
     );

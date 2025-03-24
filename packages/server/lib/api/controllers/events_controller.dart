@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura_server/domain/use_case/beacon_mutation_case.dart';
+import 'package:tentura_server/domain/use_case/beacon_case.dart';
 
 import '_base_controller.dart';
 import '../models/event_model.dart';
@@ -9,7 +9,7 @@ import '../models/event_model.dart';
 final class EventsController extends BaseController {
   const EventsController(super.env, this._beaconMutationCase);
 
-  final BeaconMutationCase _beaconMutationCase;
+  final BeaconCase _beaconMutationCase;
 
   @override
   Future<Response> handler(Request request) async {

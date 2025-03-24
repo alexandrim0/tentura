@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/consts.dart';
+import 'package:tentura_server/domain/entity/jwt_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
 
+import 'graphql/input_types.dart';
 import 'graphql/schema.dart';
 import '_base_controller.dart';
 
@@ -22,9 +24,8 @@ final class GraphqlController extends BaseController {
             variableValues:
                 (requestJson['variables'] as Map<String, dynamic>?) ?? {},
             globalVariables: {
-              'userId': request.context['userId'],
-              'userRole': request.context['userRole'],
-              'queryContext': request.headers[kHeaderQueryContext],
+              JwtEntity.key: request.context[JwtEntity.key] as JwtEntity?,
+              kGlobalInputQueryContext: request.headers[kHeaderQueryContext],
             },
           );
 

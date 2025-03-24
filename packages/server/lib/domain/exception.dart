@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'enum.dart';
+import 'exception_codes.dart';
 
 base class ExceptionBase implements Exception {
   const ExceptionBase({
@@ -9,13 +10,13 @@ base class ExceptionBase implements Exception {
     this.path = '',
   });
 
-  final ExceptionCode code;
+  final ExceptionCodes code;
   final String description;
   final String path;
 
   Map<String, Object> get toMap => {
     'message': description,
-    'extensions': {'code': '${code.index + 1000}', 'path': path},
+    'extensions': {'code': '${code.codeNumber}', 'path': path},
   };
 
   @override
@@ -25,7 +26,9 @@ base class ExceptionBase implements Exception {
 final class IdNotFoundException extends ExceptionBase {
   const IdNotFoundException({String id = '', String? description})
     : super(
-        code: ExceptionCode.authIdNotFoundException,
+        code: const AuthExceptionCodes(
+          AuthExceptionCode.authIdNotFoundException,
+        ),
         description: description ?? 'Id not found: [$id]',
       );
 }
@@ -33,7 +36,9 @@ final class IdNotFoundException extends ExceptionBase {
 final class IdWrongException extends ExceptionBase {
   const IdWrongException({String id = '', String? description})
     : super(
-        code: ExceptionCode.authIdNotFoundException,
+        code: const AuthExceptionCodes(
+          AuthExceptionCode.authIdNotFoundException,
+        ),
         description: description ?? 'Wrong Id: [$id]',
       );
 }
@@ -41,7 +46,9 @@ final class IdWrongException extends ExceptionBase {
 final class PemKeyWrongException extends ExceptionBase {
   const PemKeyWrongException({String key = '', String? description})
     : super(
-        code: ExceptionCode.authIdNotFoundException,
+        code: const AuthExceptionCodes(
+          AuthExceptionCode.authIdNotFoundException,
+        ),
         description: description ?? 'Wrong PEM keys: [$key]',
       );
 
@@ -52,7 +59,19 @@ final class PemKeyWrongException extends ExceptionBase {
 final class AuthorizationHeaderWrongException extends ExceptionBase {
   const AuthorizationHeaderWrongException()
     : super(
-        code: ExceptionCode.authAuthorizationHeaderWrongException,
+        code: const AuthExceptionCodes(
+          AuthExceptionCode.authAuthorizationHeaderWrongException,
+        ),
+        description: 'Wrong Authorization header',
+      );
+}
+
+final class UnauthorizedException extends ExceptionBase {
+  const UnauthorizedException()
+    : super(
+        code: const AuthExceptionCodes(
+          AuthExceptionCode.authAuthorizationHeaderWrongException,
+        ),
         description: 'Wrong Authorization header',
       );
 }

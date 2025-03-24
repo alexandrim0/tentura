@@ -78,4 +78,7 @@ class UserRepository {
       ),
     );
   }
+
+  Future<void> deleteUserById({required String id}) =>
+      _database.users.deleteOne(id);
 }

@@ -4,6 +4,7 @@ import 'package:graphql_server2/graphql_server2.dart';
 import 'custom_types.dart';
 import 'mutation/mutation_auth.dart';
 import 'mutation/mutation_beacon.dart';
+import 'mutation/mutation_user.dart';
 import 'query/query_version.dart';
 
 export 'package:graphql_schema2/graphql_schema2.dart';
@@ -24,6 +25,9 @@ GraphQL get graphqlSchema => GraphQL(
 
         // Beacon
         beaconBeleteById,
+
+        // User
+        userDelete,
       ]),
   ),
   customTypes: customTypes,

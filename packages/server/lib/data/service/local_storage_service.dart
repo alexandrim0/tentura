@@ -41,5 +41,6 @@ class LocalStorageService {
     return '';
   }
 
-  Future<void> deleteFile(String path) => File(path).delete();
+  Future<void> deleteFile(String path, {bool recursive = false}) =>
+      File(path).delete(recursive: recursive);
 }
