@@ -11,16 +11,12 @@ GraphQLObjectField<dynamic, dynamic> get beaconBeleteById => GraphQLObjectField(
   'beaconDeleteById',
   graphQLBoolean.nonNullable(),
   arguments: [gqlInputTypeId],
-  resolve: (_, args) async {
-    final jwt = args[JwtEntity.key] as JwtEntity?;
-
-    if (jwt == null) {
-      throw const UnauthorizedException();
-    }
-
-    return GetIt.I<BeaconCase>().deleteById(
-      beaconId: args[kInputTypeIdFieldName] as String,
-      userId: jwt.sub,
-    );
-  },
+  resolve:
+      (_, args) => switch (args[kGlobalInputQueryJwt]) {
+        final JwtEntity jwt => GetIt.I<BeaconCase>().deleteById(
+          beaconId: args[kInputTypeIdFieldName] as String,
+          userId: jwt.sub,
+        ),
+        _ => throw const UnauthorizedException(),
+      },
 );

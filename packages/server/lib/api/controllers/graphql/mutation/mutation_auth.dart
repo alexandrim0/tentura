@@ -16,7 +16,6 @@ GraphQLObjectField<dynamic, dynamic> get signIn => GraphQLObjectField(
     final jwt = await GetIt.I<AuthCase>().signIn(
       authRequestToken: args[kInputTypeAuthRequestToken] as String,
     );
-
     return jwt.asOauth2Map;
   },
 );
@@ -35,7 +34,6 @@ GraphQLObjectField<dynamic, dynamic> get signUp => GraphQLObjectField(
       description: args[kInputTypeDescriptionFieldName] as String?,
       title: args[kInputTypeTitleFieldName] as String?,
     );
-
     return jwt.asOauth2Map;
   },
 );
@@ -43,13 +41,9 @@ GraphQLObjectField<dynamic, dynamic> get signUp => GraphQLObjectField(
 GraphQLObjectField<dynamic, dynamic> get signOut => GraphQLObjectField(
   'signOut',
   graphQLBoolean.nonNullable(),
-  resolve: (_, args) {
-    final jwt = args[JwtEntity.key] as JwtEntity?;
-
-    if (jwt == null) {
-      throw const UnauthorizedException();
-    }
-
-    return true;
-  },
+  resolve:
+      (_, args) => switch (args[kGlobalInputQueryJwt]) {
+        final JwtEntity _ => true,
+        _ => throw const UnauthorizedException(),
+      },
 );

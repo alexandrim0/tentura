@@ -31,6 +31,21 @@ class UserRepositoryMock implements UserRepository {
       (throw IdNotFoundException(id: publicKey));
 
   @override
+  Future<void> updateUser({
+    required String id,
+    String? title,
+    String? description,
+    bool? hasImage,
+  }) async {
+    final user = await getUserById(id);
+    storageByPublicKey[user.publicKey] = user.copyWith(
+      title: title ?? user.title,
+      description: description ?? user.description,
+      hasPicture: hasImage ?? user.hasPicture,
+    );
+  }
+
+  @override
   Future<void> setUserImage({
     required String id,
     required Uint8List imageBytes,

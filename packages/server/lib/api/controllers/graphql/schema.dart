@@ -27,6 +27,7 @@ GraphQL get graphqlSchema => GraphQL(
         beaconBeleteById,
 
         // User
+        userUpdate,
         userDelete,
       ]),
   ),

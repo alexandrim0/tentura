@@ -58,6 +58,20 @@ class UserRepository {
     return (users.first as UserModel).asEntity;
   }
 
+  Future<void> updateUser({
+    required String id,
+    String? title,
+    String? description,
+    bool? hasImage,
+  }) => _database.users.updateOne(
+    UserUpdateRequest(
+      id: id,
+      title: title,
+      description: description,
+      hasPicture: hasImage,
+    ),
+  );
+
   Future<void> setUserImage({
     required String id,
     required Uint8List imageBytes,

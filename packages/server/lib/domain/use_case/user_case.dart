@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/data/repository/image_repository.dart';
@@ -11,8 +12,27 @@ class UserCase {
 
   final UserRepository _userRepository;
 
-  Future<void> deleteById({required String id}) async {
+  Future<bool> updateProfile({
+    required String id,
+    String? title,
+    String? description,
+    Stream<Uint8List>? imageBytes,
+  }) async {
+    if (imageBytes != null) {
+      await _imageRepository.putUserImage(userId: id, bytes: imageBytes);
+    }
+    await _userRepository.updateUser(
+      id: id,
+      title: title,
+      description: description,
+      hasImage: imageBytes != null,
+    );
+    return true;
+  }
+
+  Future<bool> deleteById({required String id}) async {
     await _userRepository.deleteUserById(id: id);
     await _imageRepository.deleteUserImageAll(id: id);
+    return true;
   }
 }

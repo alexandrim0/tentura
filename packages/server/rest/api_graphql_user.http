@@ -1,0 +1,81 @@
+### GQL deleteUser
+POST http://localhost:2080/api/v2/graphql
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation UserDelete {
+  userDelete
+}
+
+
+### GQL updateUser
+POST http://localhost:2080/api/v2/graphql
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation UserUpdate($title: String, $description: String) {
+  userUpdate(title: $title, description: $description)
+}
+
+{
+  "title": "A new one",
+  "description": "Empty description :-)"
+}
+
+
+### GQL updateUser (image)
+POST http://localhost:2080/api/v2/graphql
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: multipart/form-data; boundary=gc0p4Jq0M2Yt08jU534c0p
+
+--gc0p4Jq0M2Yt08jU534c0p
+Content-Disposition: form-data; name="json";
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation UserUpdate(
+  $title: String,
+  $description: String
+) {
+  userUpdate(title: $title, description: $description)
+}
+
+{
+  "title": "A new one",
+  "description": "Empty description :-)"
+}
+
+--gc0p4Jq0M2Yt08jU534c0p
+Content-Disposition: form-data; name="image"; filename="avatar.jpg"
+Content-Type: image/jpeg
+
+< ../../client/images/placeholder/avatar.jpg
+--gc0p4Jq0M2Yt08jU534c0p--
+
+
+### GQL updateUser (image)
+POST http://localhost:2080/api/v2/graphql
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: multipart/form-data; boundary=gc0p4Jq0M2Yt08jU534c0p
+
+
+--gc0p4Jq0M2Yt08jU534c0p
+Content-Disposition: form-data; name="json"
+Content-Type: application/json
+
+{
+  "query": "mutation UserUpdate($title: String, $description: String) {userUpdate(title: $title, description: $description)}",
+  "variables": {
+    "title": "A new one",
+    "description": "Empty description :-)"
+  }
+}
+
+--gc0p4Jq0M2Yt08jU534c0p
+Content-Disposition: form-data; name="image"; filename="avatar.jpg"
+Content-Type: image/jpeg
+
+< ../../client/images/placeholder/avatar.jpg
+--gc0p4Jq0M2Yt08jU534c0p--

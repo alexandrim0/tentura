@@ -1,6 +1,10 @@
 import 'package:graphql_schema2/graphql_schema2.dart';
 
+import 'package:tentura_server/consts.dart';
+
 const kGlobalInputQueryContext = 'queryContext';
+const kGlobalInputQueryImage = 'queryImage';
+const kGlobalInputQueryJwt = kContextJwtKey;
 
 const kInputTypeIdFieldName = 'id';
 final gqlInputTypeId = GraphQLFieldInput(
@@ -33,4 +37,10 @@ const kInputTypeAuthRequestToken = 'authRequestToken';
 final gqlInputTypeAuthRequestToken = GraphQLFieldInput(
   kInputTypeAuthRequestToken,
   graphQLNonEmptyString.nonNullable(),
+);
+
+const kInputTypeHasImageFieldName = 'hasImage';
+final gqlInputTypeHasImage = GraphQLFieldInput(
+  kInputTypeHasImageFieldName,
+  graphQLBoolean,
 );

@@ -1,0 +1,13 @@
+### GQL delete_beacon_by_id
+POST http://localhost:2080/api/v2/graphql
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation BeaconDeleteById($id: String!) {
+  beaconDeleteById(id: $id)
+}
+
+{
+  "id": "Bb9d31c168baf"
+}

@@ -1,1 +1,1 @@
-mutation UserDelete {deleteUser}
+mutation UserDelete {userDelete}

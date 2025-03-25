@@ -6,8 +6,6 @@ part 'jwt_entity.freezed.dart';
 
 @freezed
 class JwtEntity with _$JwtEntity {
-  static const key = 'jwt';
-
   const factory JwtEntity({
     /// public key
     @Default('') String pk,

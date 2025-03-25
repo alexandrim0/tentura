@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
+import 'package:shelf_multipart/shelf_multipart.dart';
 
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/domain/entity/jwt_entity.dart';
@@ -15,8 +17,30 @@ final class GraphqlController extends BaseController {
 
   @override
   Future<Response> handler(Request request) async {
+    late final Map<String, dynamic> requestJson;
+    Stream<Uint8List>? imageBytes;
+
+    if (request.formData() case final form?) {
+      await for (final formData in form.formData) {
+        switch (formData.name) {
+          case 'json':
+            requestJson =
+                jsonDecode(await formData.part.readString())
+                    as Map<String, dynamic>;
+            continue;
+
+          case 'image':
+            imageBytes = formData.part.cast<Uint8List>();
+
+            continue;
+          default:
+        }
+      }
+    } else {
+      requestJson = await request.body.asJson as Map<String, dynamic>;
+    }
+
     try {
-      final requestJson = await request.body.asJson as Map<String, dynamic>;
       final response = await (env.kDebugMode ? graphqlSchema : _graphqlSchema)
           .parseAndExecute(
             operationName: requestJson['operationName'] as String?,
@@ -24,8 +48,10 @@ final class GraphqlController extends BaseController {
             variableValues:
                 (requestJson['variables'] as Map<String, dynamic>?) ?? {},
             globalVariables: {
-              JwtEntity.key: request.context[JwtEntity.key] as JwtEntity?,
+              kGlobalInputQueryJwt:
+                  request.context[kGlobalInputQueryJwt] as JwtEntity?,
               kGlobalInputQueryContext: request.headers[kHeaderQueryContext],
+              kGlobalInputQueryImage: imageBytes,
             },
           );
 

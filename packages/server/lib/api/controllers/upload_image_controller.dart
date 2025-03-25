@@ -27,7 +27,7 @@ final class UploadImageController extends BaseController {
       return Response.badRequest(body: 'Wrong MIME!');
     }
     var eTag = '';
-    final requestUserId = (request.context[JwtEntity.key]! as JwtEntity).sub;
+    final requestUserId = (request.context[kContextJwtKey]! as JwtEntity).sub;
 
     switch (request.url.queryParameters['id']) {
       case final String userId when userId.startsWith('U'):

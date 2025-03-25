@@ -5,6 +5,7 @@ Content-Type: image/jpeg
 
 < ../../client/images/placeholder/avatar.jpg
 
+
 ###
 # Upload image remote
 PUT {{$dotenv BASE_URL}}/api/user/image_upload?id=U3ea0a229ad85

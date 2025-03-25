@@ -3,9 +3,13 @@ POST http://localhost:8080/v1/graphql
 Authorization: Bearer {{$dotenv TENTURA_JWT}}
 Content-Type: application/json
 X-Hasura-Query-Context: Fatum
+X-Request-Type: GraphQL
 
-{
-  "query": "query {echo_session(args: {zero: 0}) {user_id context_name}}"
+query {
+  echo_session(args: {zero: 0}) {
+    user_id
+    context_name
+  }
 }
 
 
@@ -13,60 +17,8 @@ X-Hasura-Query-Context: Fatum
 POST http://localhost:2080/api/v2/graphql
 Authorization: Bearer {{$dotenv TENTURA_JWT}}
 Content-Type: application/json
-X-Hasura-Query-Context: Fatum
+X-Request-Type: GraphQL
 
-{
-  "query": "query {version}"
-}
-
-
-### GQL test mutation
-POST http://localhost:2080/api/v2/graphql
-Authorization: Bearer {{$dotenv TENTURA_JWT}}
-Content-Type: application/json
-X-Hasura-Query-Context: Fatum
-
-{
-  "query": "mutation {logout}"
-}
-
-
-### GQL signIn
-POST http://localhost:2080/api/v2/graphql
-Content-Type: application/json
-
-{
-  "query": "mutation SignIn($authRequestToken: String!) {signIn(authRequestToken: $authRequestToken) {subject expires_in access_token}}",
-  "variables": {
-    "authRequestToken": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJwayI6IjJDbUliM0hvMmViNm04V0lvZzZLaXl6Q1kwNXNieVgwNFBpR2xINWJhRHc9IiwiaWF0IjoxNzQxODk0NDYxLCJleHAiOjIwNTI5MzQ0NjF9.NpwK4WT581zUZkWVXC-lzC3qhIGHywg4eZ7SuOKKl4mwQ8SomX-f8hMGgfE3wu4SBbGzrjxKkP4EIFnSYXdxBQ"
-  }
-}
-
-
-### GQL signUp
-POST http://localhost:2080/api/v2/graphql
-# POST https://dev.tentura.io/api/v1/graphql
-Content-Type: application/json
-
-{
-  "query": "mutation SignUp($authRequestToken: String!, $title: String, $description: String) {signUp(authRequestToken: $authRequestToken, title: $title, description: $description) {subject expires_in access_token}}",
-  "variables": {
-    "authRequestToken": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJwayI6IjJDbUliM0hvMmViNm04V0lvZzZLaXl6Q1kwNXNieVgwNFBpR2xINWJhRHc9IiwiaWF0IjoxNzQxODk0NDYxLCJleHAiOjIwNTI5MzQ0NjF9.NpwK4WT581zUZkWVXC-lzC3qhIGHywg4eZ7SuOKKl4mwQ8SomX-f8hMGgfE3wu4SBbGzrjxKkP4EIFnSYXdxBQ",
-    "description": "",
-    "title": ""
-  }
-}
-
-
-### GQL delete_beacon_by_id
-POST http://localhost:2080/api/v2/graphql
-Authorization: Bearer {{$dotenv TENTURA_JWT}}
-Content-Type: application/json
-X-Hasura-Query-Context: Fatum
-
-{
-  "query": "mutation BeaconDeleteById($id: String!) {delete_beacon_by_id(id: $id)}",
-  "variables": {
-    "id": "Bb9d31c168baf"
-  }
+query {
+  version
 }

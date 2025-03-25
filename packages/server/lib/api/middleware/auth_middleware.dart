@@ -2,7 +2,6 @@ import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import 'package:tentura_server/consts.dart';
-import 'package:tentura_server/domain/entity/jwt_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/domain/use_case/auth_case.dart';
 
@@ -14,7 +13,7 @@ class AuthMiddleware {
 
   ///
   /// Extract and verify bearer JWT.
-  /// If ok, save it in request.context[JwtEntity.key]
+  /// If ok, save it in request.context[kContextJwtKey]
   ///
   Middleware get verifyBearerJwt =>
       (innerHandler) => (request) async {
@@ -23,7 +22,7 @@ class AuthMiddleware {
             final jwt = _authCase.parseAndVerifyJwt(
               token: _extractAuthTokenFromHeaders(request.headers),
             );
-            return innerHandler(request.change(context: {JwtEntity.key: jwt}));
+            return innerHandler(request.change(context: {kContextJwtKey: jwt}));
           } catch (e) {
             final error = e.toString();
             print(error);
@@ -39,7 +38,7 @@ class AuthMiddleware {
   Middleware get verifyTenturaPassword =>
       (innerHandler) =>
           (request) =>
-              request.headers[kHeaderTenturaPassword] == kTenturaPassword
+              request.headers['X-Tentura-Password'] == kTenturaPassword
                   ? innerHandler(request)
                   : Response.unauthorized(null);
 
@@ -53,7 +52,7 @@ class AuthMiddleware {
             final jwt = _authCase.parseAndVerifyJwt(
               token: _extractAuthTokenFromHeaders(request.headers),
             );
-            return innerHandler(request.change(context: {JwtEntity.key: jwt}));
+            return innerHandler(request.change(context: {kContextJwtKey: jwt}));
           } catch (e) {
             print(e);
           }
