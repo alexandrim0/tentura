@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/use_case/string_input_validator.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import '../bloc/auth_cubit.dart';
@@ -32,7 +33,7 @@ class _AccountAddDialogState extends State<AccountAddDialog>
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-    title: Text('Create new Account', style: _textTheme.headlineMedium),
+    title: Text(I10n.of(context)!.createNewAccount, style: _textTheme.headlineMedium),
     content: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -42,9 +43,9 @@ class _AccountAddDialogState extends State<AccountAddDialog>
           child: TextFormField(
             autovalidateMode: AutovalidateMode.onUnfocus,
             controller: _titleController,
-            decoration: const InputDecoration(
-              labelText: 'Title',
-              hintText: 'Please, fill Title',
+            decoration: InputDecoration(
+              labelText: I10n.of(context)!.labelTitle,
+              hintText: I10n.of(context)!.pleaseFillTitle,
             ),
             maxLength: kTitleMaxLength,
             style: _textTheme.headlineLarge,
@@ -60,7 +61,7 @@ class _AccountAddDialogState extends State<AccountAddDialog>
             autovalidateMode: AutovalidateMode.onUnfocus,
             controller: _descriptionController,
             decoration: InputDecoration(
-              labelText: 'Description',
+              labelText: I10n.of(context)!.labelDescription,
               labelStyle: _textTheme.bodyMedium,
             ),
             keyboardType: TextInputType.multiline,
@@ -82,11 +83,11 @@ class _AccountAddDialogState extends State<AccountAddDialog>
           );
           if (context.mounted) Navigator.of(context).pop();
         },
-        child: const Text('Create'),
+        child: Text(I10n.of(context)!.buttonCreate),
       ),
       TextButton(
         onPressed: Navigator.of(context).pop,
-        child: const Text('Cancel'),
+        child: Text(I10n.of(context)!.buttonCancel),
       ),
     ],
   );

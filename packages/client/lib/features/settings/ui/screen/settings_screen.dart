@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import 'package:tentura/ui/dialog/show_seed_dialog.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -24,7 +25,7 @@ class SettingsScreen extends StatelessWidget implements AutoRouteWrapper {
   Widget build(BuildContext context) {
     final cubit = GetIt.I<SettingsCubit>();
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(I10n.of(context)!.labelSettings)),
       body: Padding(
         padding: kPaddingAll,
         child: Column(
@@ -36,7 +37,7 @@ class SettingsScreen extends StatelessWidget implements AutoRouteWrapper {
             // Seed
             ElevatedButton.icon(
               icon: const Icon(Icons.remove_red_eye_outlined),
-              label: const Text('Show Seed'),
+              label: Text(I10n.of(context)!.showSeed),
               onPressed: () async {
                 final (:id, :seed) = await cubit.getAccountSeed();
                 if (context.mounted) {
@@ -48,7 +49,7 @@ class SettingsScreen extends StatelessWidget implements AutoRouteWrapper {
             // Intro
             ElevatedButton.icon(
               icon: const Icon(Icons.reset_tv),
-              label: const Text('Show Intro Again'),
+              label: Text(I10n.of(context)!.showIntroAgain),
               onPressed: () => cubit.setIntroEnabled(true),
             ),
 
@@ -56,7 +57,7 @@ class SettingsScreen extends StatelessWidget implements AutoRouteWrapper {
             FilledButton.icon(
               onPressed: cubit.signOut,
               icon: const Icon(Icons.people),
-              label: const Text('Logout'),
+              label: Text(I10n.of(context)!.logout),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.error,
               ),

@@ -7,6 +7,7 @@ import 'package:tentura/features/beacon/ui/widget/beacon_tile_control.dart';
 import 'package:tentura/features/comment/ui/bloc/comment_cubit.dart';
 import 'package:tentura/features/comment/ui/widget/comment_tile.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -67,7 +68,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
                 // Complaint
                 PopupMenuItem(
                   onTap: () => context.read<ScreenCubit>().showComplaint(id),
-                  child: const Text('Complaint'),
+                  child: Text(I10n.of(context)!.buttonComplaint),
                 ),
               ];
             },
@@ -120,9 +121,8 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
               ),
 
               // Comments Section
-              const Text(
-                'Comments',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Text(I10n.of(context)!.labelComments,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
 
               // Comments list
@@ -141,7 +141,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
                     width: double.infinity,
                     child: FilledButton(
                       onPressed: beaconViewCubit.showAll,
-                      child: const Text('Show all comments'),
+                      child: Text(I10n.of(context)!.showAllComments),
                     ),
                   ),
                 ),
@@ -150,7 +150,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
         },
       ),
       bottomSheet: BottomTextInput(
-        hintText: 'Write a comment',
+        hintText: I10n.of(context)!.writeComment,
         onSend: beaconViewCubit.addComment,
       ),
     );

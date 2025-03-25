@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 class OpinionPublishDialog extends StatelessWidget {
   static Future<int?> show(BuildContext context) => showDialog(
@@ -10,19 +11,19 @@ class OpinionPublishDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-    title: const Text('Is this opinion is positive or negative?'),
+    title: Text(I10n.of(context)!.positiveOrNegativeOpinion),
     actions: [
       TextButton(
         onPressed: () => Navigator.of(context).pop(1),
-        child: const Text('Positive'),
+        child: Text(I10n.of(context)!.positiveOpinion),
       ),
       TextButton(
         onPressed: () => Navigator.of(context).pop(-1),
-        child: const Text('Negative'),
+        child: Text(I10n.of(context)!.negativeOpinion),
       ),
       TextButton(
         onPressed: Navigator.of(context).pop,
-        child: const Text('Cancel'),
+        child: Text(I10n.of(context)!.buttonCancel),
       ),
     ],
   );

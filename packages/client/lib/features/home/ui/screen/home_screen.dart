@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
@@ -80,21 +81,27 @@ class HomeScreen extends StatelessWidget implements AutoRouteWrapper {
         (context, tabsRouter) => NavigationBar(
           onDestinationSelected: tabsRouter.setActiveIndex,
           selectedIndex: tabsRouter.activeIndex,
-          destinations: const [
+          destinations: [
             NavigationDestination(
-              icon: Icon(TenturaIcons.home),
-              label: 'My field',
+              icon: const Icon(TenturaIcons.home),
+              label: I10n.of(context)!.myField,
             ),
             NavigationDestination(
-              icon: Icon(Icons.star_border),
-              label: 'Favorites',
+              icon: const Icon(Icons.star_border),
+              label: I10n.of(context)!.favorites,
             ),
             NavigationDestination(
-              icon: Icon(TenturaIcons.affiliation),
-              label: 'Connect',
+              icon: const Icon(TenturaIcons.affiliation),
+              label: I10n.of(context)!.connect,
             ),
-            NavigationDestination(icon: FriendsNavbarItem(), label: 'Friends'),
-            NavigationDestination(icon: ProfileNavBarItem(), label: 'Profile'),
+            NavigationDestination(
+              icon: const FriendsNavbarItem(),
+              label: I10n.of(context)!.friends,
+            ),
+            NavigationDestination(
+              icon: const ProfileNavBarItem(),
+              label: I10n.of(context)!.profile,
+            ),
           ],
         ),
     resizeToAvoidBottomInset: false,

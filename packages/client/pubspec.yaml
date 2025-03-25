@@ -14,8 +14,6 @@ dependencies:
   # From workspace
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
   http:
   intl:
   uuid:

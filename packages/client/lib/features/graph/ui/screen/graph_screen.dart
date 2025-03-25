@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -44,14 +45,14 @@ class GraphScreen extends StatelessWidget implements AutoRouteWrapper {
               return <PopupMenuEntry<void>>[
                 PopupMenuItem<void>(
                   onTap: cubit.jumpToEgo,
-                  child: const Text('Go to Ego'),
+                  child: Text(I10n.of(context)!.goToEgo),
                 ),
                 const PopupMenuDivider(),
                 PopupMenuItem<void>(
                   onTap: cubit.togglePositiveOnly,
                   child: cubit.state.positiveOnly
-                      ? const Text('Show negative')
-                      : const Text('Hide negative'),
+                      ? Text(I10n.of(context)!.showNegative)
+                      : Text(I10n.of(context)!.hideNegative),
                 ),
               ];
             },
@@ -59,7 +60,7 @@ class GraphScreen extends StatelessWidget implements AutoRouteWrapper {
         ],
 
         // Title
-        title: const Text('Graph view'),
+        title: Text(I10n.of(context)!.graphView),
 
         // Context selector
         // (hidden for now)

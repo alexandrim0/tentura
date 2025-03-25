@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import '../utils/screen_size.dart';
 
@@ -27,7 +28,7 @@ class _QRScanDialogState extends State<QRScanDialog> {
   Widget build(BuildContext context) => Dialog.fullscreen(
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Scan the QR Code'),
+            title: Text(I10n.of(context)!.scanQrCode),
             backgroundColor: Colors.transparent,
             foregroundColor: Colors.white,
           ),

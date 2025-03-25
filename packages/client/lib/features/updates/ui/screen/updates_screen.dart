@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -15,9 +16,9 @@ class UpdatesScreen extends StatelessWidget {
               onPressed: () => showSnackBar(
                 context,
                 isFloating: true,
-                text: 'Not implemented yet...',
+                text: I10n.of(context)!.notImplementedYet,
               ),
-              child: const Text('Mark all as read'),
+              child: Text(I10n.of(context)!.markAllAsRead),
             )
           ],
         ),
@@ -25,7 +26,7 @@ class UpdatesScreen extends StatelessWidget {
           child: Padding(
             padding: kPaddingH,
             child: Text(
-              'There is nothing here yet',
+              I10n.of(context)!.labelNothingHere,
               style: Theme.of(context).textTheme.displaySmall,
               textAlign: TextAlign.center,
             ),

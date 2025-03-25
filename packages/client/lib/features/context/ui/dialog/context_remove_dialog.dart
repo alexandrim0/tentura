@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 class ContextRemoveDialog extends StatelessWidget {
   static Future<bool?> show(
@@ -19,8 +20,8 @@ class ContextRemoveDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-        title: const Text('Are you sure?'),
-        content: Text('Topic $contextName will be removed from your list!'),
+        title: Text(I10n.of(context)!.labelConfirmation),
+        content: Text(I10n.of(context)!.topicRemovalMessage(contextName)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),

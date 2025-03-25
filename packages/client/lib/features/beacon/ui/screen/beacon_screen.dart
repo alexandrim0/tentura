@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tentura/consts.dart';
 
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
@@ -84,7 +85,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
             bloc: _cubit,
           ),
         ),
-        title: const Text('Beacons'),
+        title: Text(I10n.of(context)!.beaconsTitle),
       ),
       body: BlocBuilder<BeaconCubit, BeaconState>(
         bloc: _cubit,
@@ -93,7 +94,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
           return state.beacons.isEmpty
               ? Center(
                 child: Text(
-                  'There are no beacons yet',
+                  I10n.of(context)!.noBeaconsMessage,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               )

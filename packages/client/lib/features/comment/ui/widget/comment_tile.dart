@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/comment.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/rating_indicator.dart';
@@ -49,7 +50,7 @@ class CommentTile extends StatelessWidget {
                   children: [
                     // Title
                     Text(
-                      isMine ? 'Me' : comment.author.title,
+                      isMine ? I10n.of(context)!.labelMe : comment.author.title,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
 
@@ -75,7 +76,7 @@ class CommentTile extends StatelessWidget {
                           () => context.read<ScreenCubit>().showComplaint(
                             comment.id,
                           ),
-                      child: const Text('Complaint'),
+                      child: Text(I10n.of(context)!.buttonComplaint),
                     ),
                   ];
                 },
