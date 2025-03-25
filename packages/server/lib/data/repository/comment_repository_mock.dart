@@ -11,8 +11,10 @@ class CommentRepositoryMock implements CommentRepository {
   static final storageById = <String, CommentEntity>{};
 
   @override
-  Future<CommentEntity> createComment(CommentEntity comment) async =>
-      storageById[comment.id] = comment;
+  Future<CommentEntity> createComment(
+    CommentEntity comment, {
+    int ticker = 0,
+  }) async => storageById[comment.id] = comment;
 
   @override
   Future<CommentEntity> getCommentById(String id) async =>

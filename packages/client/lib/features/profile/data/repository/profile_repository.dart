@@ -7,6 +7,7 @@ import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 
 import '../../domain/exception.dart';
+import '../gql/_g/user_delete.req.gql.dart';
 import '../gql/_g/user_fetch_by_id.req.gql.dart';
 import '../gql/_g/user_update.req.gql.dart';
 
@@ -54,14 +55,16 @@ class ProfileRepository {
     _controller.add(RepositoryEventUpdate(response.toEntity));
   }
 
-  // TBD: via rpc
   Future<void> delete(String id) async {
-    // final response = await _remoteApiService
-    //     .request(GUserDeleteByIdReq((b) => b.vars.id = id))
-    //     .firstWhere((e) => e.dataSource == DataSource.Link)
-    //     .then((r) => r.dataOrThrow(label: _label).delete_user_by_pk);
-    // if (response == null) throw ProfileDeleteException(id);
-    _controller.add(RepositoryEventDelete(Profile(id: id)));
+    final isOk = await _remoteApiService
+        .request(GUserDeleteReq())
+        .firstWhere((e) => e.dataSource == DataSource.Link)
+        .then((r) => r.dataOrThrow(label: _label).deleteUser);
+    if (isOk) {
+      _controller.add(RepositoryEventDelete(Profile(id: id)));
+    } else {
+      throw ProfileDeleteException(id);
+    }
   }
 
   static const _label = 'Profile';

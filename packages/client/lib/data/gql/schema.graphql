@@ -1143,19 +1143,8 @@ input message_updates {
 
 """mutation root"""
 type mutation_root {
-  """
-  delete data from the table: "beacon"
-  """
-  delete_beacon(
-    """filter the rows which have to be deleted"""
-    where: beacon_bool_exp!
-  ): beacon_mutation_response
-  delete_beacon_by_id(id: String!): Boolean!
-
-  """
-  delete single row from the table: "beacon"
-  """
-  delete_beacon_by_pk(id: String!): beacon
+  beaconDeleteById(id: String!): Boolean!
+  deleteUser: Boolean!
 
   """
   delete data from the table: "beacon_pinned"

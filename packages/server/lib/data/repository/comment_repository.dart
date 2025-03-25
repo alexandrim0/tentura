@@ -13,7 +13,10 @@ class CommentRepository {
 
   final Database _database;
 
-  Future<CommentEntity> createComment(CommentEntity comment) async {
+  Future<CommentEntity> createComment(
+    CommentEntity comment, {
+    int ticker = 0,
+  }) async {
     await _database.comments.insertOne(
       CommentInsertRequest(
         id: comment.id,
@@ -21,6 +24,7 @@ class CommentRepository {
         beaconId: comment.beacon.id,
         content: comment.content,
         createdAt: comment.createdAt,
+        ticker: ticker,
       ),
     );
     return getCommentById(comment.id);

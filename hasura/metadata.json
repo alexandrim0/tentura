@@ -1,5 +1,5 @@
 {
-  "resource_version": 567,
+  "resource_version": 579,
   "metadata": {
     "version": 3,
     "sources": [
@@ -162,26 +162,10 @@
                 }
               }
             ],
-            "delete_permissions": [
-              {
-                "role": "user",
-                "permission": {
-                  "filter": {
-                    "user_id": {
-                      "_eq": "X-Hasura-User-Id"
-                    }
-                  }
-                },
-                "comment": ""
-              }
-            ],
             "event_triggers": [
               {
                 "name": "beacon_mutate",
                 "definition": {
-                  "delete": {
-                    "columns": "*"
-                  },
                   "enable_manual": true,
                   "insert": {
                     "columns": "*"
@@ -1253,21 +1237,7 @@
           "customization": {},
           "forward_client_headers": true
         },
-        "comment": "",
-        "permissions": [
-          {
-            "role": "anon",
-            "definition": {
-              "schema": "schema  { query: Query mutation: Mutation }\n\ntype AuthResponse { access_token: String!\n  expires_in: Int!\n  refresh_token: String\n  subject: String!\n  token_type: String!\n}\n\ntype Mutation { signIn(authRequestToken: String!): AuthResponse!\n  signUp(title: String, description: String, authRequestToken: String!): AuthResponse!\n}\n\ntype Query { version: String!\n}"
-            }
-          },
-          {
-            "role": "user",
-            "definition": {
-              "schema": "schema  { query: Query mutation: Mutation }\n\ntype AuthResponse { access_token: String!\n  expires_in: Int!\n  refresh_token: String\n  subject: String!\n  token_type: String!\n}\n\ntype Mutation { delete_beacon_by_id(id: String!): Boolean!\n  signIn(authRequestToken: String!): AuthResponse!\n  signOut: Boolean!\n  signUp(title: String, description: String, authRequestToken: String!): AuthResponse!\n}\n\ntype Query { version: String!\n}"
-            }
-          }
-        ]
+        "comment": ""
       }
     ]
   }

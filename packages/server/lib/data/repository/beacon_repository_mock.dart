@@ -15,7 +15,10 @@ class BeaconRepositoryMock implements BeaconRepository {
   final ImageService _imageService;
 
   @override
-  Future<BeaconEntity> createBeacon(BeaconEntity beacon) async =>
+  Future<BeaconEntity> createBeacon(
+    BeaconEntity beacon, {
+    int ticker = 0,
+  }) async =>
       storageById.containsKey(beacon.id)
           ? throw Exception('Key already exists [${beacon.id}]')
           : storageById[beacon.id] = beacon;

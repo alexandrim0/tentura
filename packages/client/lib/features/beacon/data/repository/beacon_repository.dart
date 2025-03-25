@@ -88,18 +88,17 @@ class BeaconRepository {
     return result;
   }
 
-  Future<void> delete(String id) => _remoteApiService
-      .request(GBeaconDeleteByIdReq((b) => b.vars.id = id))
-      .firstWhere((e) => e.dataSource == DataSource.Link)
-      .then((r) => r.dataOrThrow(label: _label).delete_beacon_by_pk)
-      .then(
-        (v) =>
-            v == null
-                ? BeaconDeleteException(id)
-                : _controller.add(
-                  RepositoryEventDelete(emptyBeacon.copyWith(id: id)),
-                ),
-      );
+  Future<void> delete(String id) async {
+    final isOk = await _remoteApiService
+        .request(GBeaconDeleteByIdReq((b) => b.vars.id = id))
+        .firstWhere((e) => e.dataSource == DataSource.Link)
+        .then((r) => r.dataOrThrow(label: _label).beaconDeleteById);
+    if (isOk) {
+      _controller.add(RepositoryEventDelete(emptyBeacon.copyWith(id: id)));
+    } else {
+      throw BeaconDeleteException(id);
+    }
+  }
 
   Future<void> setEnabled(bool isEnabled, {required String id}) =>
       _remoteApiService

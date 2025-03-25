@@ -39,13 +39,13 @@ class App extends StatelessWidget {
           darkTheme: themeDark,
           themeMode: themeMode,
           debugShowCheckedModeBanner: false,
-          onGenerateTitle: (context) => I10n.of(context)!.appTitle,
           routerConfig: router.config(
             deepLinkBuilder: router.deepLinkBuilder,
             deepLinkTransformer: router.deepLinkTransformer,
             navigatorObservers: () => [GetIt.I<SentryNavigatorObserver>()],
             reevaluateListenable: router.reevaluateListenable,
           ),
+          onGenerateTitle: (context) => I10n.of(context)!.appTitle,
           localizationsDelegates: I10n.localizationsDelegates,
           supportedLocales: I10n.supportedLocales,
           builder: (context, child) {

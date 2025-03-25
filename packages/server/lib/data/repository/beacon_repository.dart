@@ -17,7 +17,10 @@ class BeaconRepository {
 
   final ImageService _imageService;
 
-  Future<BeaconEntity> createBeacon(BeaconEntity beacon) async {
+  Future<BeaconEntity> createBeacon(
+    BeaconEntity beacon, {
+    int ticker = 0,
+  }) async {
     await _database.beacons.insertOne(
       BeaconInsertRequest(
         id: beacon.id,
@@ -35,6 +38,7 @@ class BeaconRepository {
         context: beacon.context,
         lat: beacon.coordinates?.latitude,
         long: beacon.coordinates?.longitude,
+        ticker: ticker,
       ),
     );
     return getBeaconById(beaconId: beacon.id);
