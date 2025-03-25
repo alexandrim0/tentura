@@ -40,3 +40,6 @@ pg_data/
 hasura/dump*
 /compose.override.yaml
 .env
+
+# I10N
+lib/i10n/*
