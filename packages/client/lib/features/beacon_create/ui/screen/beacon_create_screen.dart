@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
@@ -81,7 +81,7 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
       ),
       leading: const DeepBackButton(),
       centerTitle: true,
-      title: Text(AppLocalizations.of(context)!.createNewBeacon),
+      title: Text(I10n.of(context)!.createNewBeacon),
     ),
 
     // Input Form

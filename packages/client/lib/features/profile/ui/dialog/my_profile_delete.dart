@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -17,8 +17,8 @@ class MyProfileDeleteDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-    title: Text(AppLocalizations.of(context)!.confirmProfileRemoval),
-    content: Text(AppLocalizations.of(context)!.profileRemovalHint),
+    title: Text(I10n.of(context)!.confirmProfileRemoval),
+    content: Text(I10n.of(context)!.profileRemovalHint),
     actions: [
       TextButton(
         onPressed: () async {
@@ -33,11 +33,11 @@ class MyProfileDeleteDialog extends StatelessWidget {
           }
           if (context.mounted) Navigator.of(context).pop();
         },
-        child: Text(AppLocalizations.of(context)!.buttonDelete),
+        child: Text(I10n.of(context)!.buttonDelete),
       ),
       TextButton(
         onPressed: Navigator.of(context).pop,
-        child: Text(AppLocalizations.of(context)!.buttonCancel),
+        child: Text(I10n.of(context)!.buttonCancel),
       ),
     ],
   );

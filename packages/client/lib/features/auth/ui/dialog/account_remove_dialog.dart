@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import '../bloc/auth_cubit.dart';
 
@@ -22,7 +22,7 @@ class AccountRemoveDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-        content: Text(AppLocalizations.of(context)!.confirmAccountRemoval),
+        content: Text(I10n.of(context)!.confirmAccountRemoval),
         title: Text(id),
         actions: [
           TextButton(

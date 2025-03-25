@@ -1,12 +1,12 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-import 'app_localizations.dart';
+import 'I10n.dart';
 
 // ignore_for_file: type=lint
 
 /// The translations for English (`en`).
-class AppLocalizationsEn extends AppLocalizations {
-  AppLocalizationsEn([String locale = 'en']) : super(locale);
+class I10nEn extends I10n {
+  I10nEn([String locale = 'en']) : super(locale);
 
   @override
   String get appTitle => 'Tentura';
@@ -232,7 +232,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friends => 'Friends';
 
   @override
-  String get profile => 'Profile1';
+  String get profile => 'Profile';
 
   @override
   String get introTitle => 'Build Your Network with Clarity';

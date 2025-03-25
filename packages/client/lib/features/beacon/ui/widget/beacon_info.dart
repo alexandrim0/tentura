@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/beacon.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/beacon_image.dart';
@@ -120,7 +120,7 @@ class BeaconInfo extends StatelessWidget {
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
                     label:
                         kIsWeb
-                            ? Text(AppLocalizations.of(context)!.showOnMap)
+                            ? Text(I10n.of(context)!.showOnMap)
                             : PlaceNameText(
                               coords: beacon.coordinates!,
                               style: theme.textTheme.bodySmall,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
@@ -41,7 +41,7 @@ class ProfileViewBody extends StatelessWidget {
                   onPressed:
                       () => context.read<ScreenCubit>().showGraph(profile.id),
                   icon: const Icon(TenturaIcons.graph),
-                  label: Text(AppLocalizations.of(context)!.showConnections),
+                  label: Text(I10n.of(context)!.showConnections),
                 ),
               ),
 
@@ -52,7 +52,7 @@ class ProfileViewBody extends StatelessWidget {
                   onPressed:
                       () => context.read<ScreenCubit>().showBeacons(profile.id),
                   icon: const Icon(Icons.open_in_full),
-                  label: Text(AppLocalizations.of(context)!.showBeacons),
+                  label: Text(I10n.of(context)!.showBeacons),
                 ),
               ),
 
@@ -62,7 +62,7 @@ class ProfileViewBody extends StatelessWidget {
                   child: FilledButton.icon(
                     onPressed: context.read<ProfileViewCubit>().addFriend,
                     icon: const Icon(Icons.people),
-                    label: Text(AppLocalizations.of(context)!.addToMyField),
+                    label: Text(I10n.of(context)!.addToMyField),
                   ),
                 ),
 
@@ -70,7 +70,7 @@ class ProfileViewBody extends StatelessWidget {
               Padding(
                 padding: kPaddingV,
                 child: Text(
-                  AppLocalizations.of(context)!.communityFeedback,
+                  I10n.of(context)!.communityFeedback,
                   style: textTheme.headlineMedium,
                 ),
               ),

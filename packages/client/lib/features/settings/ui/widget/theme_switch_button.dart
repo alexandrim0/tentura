@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import '../bloc/settings_cubit.dart';
 
@@ -19,17 +19,17 @@ class ThemeSwitchButton extends StatelessWidget {
               segments: [
                 ButtonSegment<ThemeMode>(
                   icon: const Icon(Icons.brightness_7),
-                  tooltip: AppLocalizations.of(context)!.light,
+                  tooltip: I10n.of(context)!.light,
                   value: ThemeMode.light,
                 ),
                 ButtonSegment<ThemeMode>(
                   icon: const Icon(Icons.brightness_auto_outlined),
-                  tooltip: AppLocalizations.of(context)!.system,
+                  tooltip: I10n.of(context)!.system,
                   value: ThemeMode.system,
                 ),
                 ButtonSegment<ThemeMode>(
                   icon: const Icon(Icons.brightness_5),
-                  tooltip: AppLocalizations.of(context)!.dark,
+                  tooltip: I10n.of(context)!.dark,
                   value: ThemeMode.dark,
                 ),
               ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/app/router/root_router.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
@@ -84,23 +84,23 @@ class HomeScreen extends StatelessWidget implements AutoRouteWrapper {
           destinations: [
             NavigationDestination(
               icon: const Icon(TenturaIcons.home),
-              label: AppLocalizations.of(context)!.myField,
+              label: I10n.of(context)!.myField,
             ),
             NavigationDestination(
               icon: const Icon(Icons.star_border),
-              label: AppLocalizations.of(context)!.favorites,
+              label: I10n.of(context)!.favorites,
             ),
             NavigationDestination(
               icon: const Icon(TenturaIcons.affiliation),
-              label: AppLocalizations.of(context)!.connect,
+              label: I10n.of(context)!.connect,
             ),
             NavigationDestination(
               icon: const FriendsNavbarItem(),
-              label: AppLocalizations.of(context)!.friends,
+              label: I10n.of(context)!.friends,
             ),
             NavigationDestination(
               icon: const ProfileNavBarItem(),
-              label: AppLocalizations.of(context)!.profile,
+              label: I10n.of(context)!.profile,
             ),
           ],
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -92,7 +92,7 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
                 // Title
                 Padding(
                   padding: const EdgeInsets.only(right: kSpacingLarge),
-                  child: Text(AppLocalizations.of(context)!.rating),
+                  child: Text(I10n.of(context)!.rating),
                 ),
 
                 // Search Input
@@ -100,7 +100,7 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
                   child: TextFormField(
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.zero,
-                      hintText: AppLocalizations.of(context)!.searchBy,
+                      hintText: I10n.of(context)!.searchBy,
                       isCollapsed: true,
                       isDense: true,
                     ),

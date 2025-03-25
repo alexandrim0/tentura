@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import '../../domain/entity/context_selection.dart';
 import '../bloc/context_cubit.dart';
@@ -24,11 +24,11 @@ class ContextDropDown extends StatelessWidget {
           items: [
             DropdownMenuItem(
               value: const ContextSelectionAdd(),
-              child: Text(AppLocalizations.of(context)!.addNewTopic),
+              child: Text(I10n.of(context)!.addNewTopic),
             ),
             DropdownMenuItem(
               value: const ContextSelectionAll(),
-              child: Text(AppLocalizations.of(context)!.allTopics),
+              child: Text(I10n.of(context)!.allTopics),
             ),
             for (final e in state.contexts)
               DropdownMenuItem(

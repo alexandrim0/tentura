@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
@@ -21,7 +21,7 @@ class DateRangeInput extends StatelessWidget {
       readOnly: true,
       controller: controller,
       decoration: InputDecoration(
-        hintText: AppLocalizations.of(context)!.setDisplayPeriod,
+        hintText: I10n.of(context)!.setDisplayPeriod,
         suffixIcon:
             BlocSelector<BeaconCreateCubit, BeaconCreateState, DateTimeRange?>(
           selector: (state) => state.dateRange,
@@ -48,7 +48,7 @@ class DateRangeInput extends StatelessWidget {
           currentDate: now,
           lastDate: now.add(const Duration(days: 365)),
           initialEntryMode: DatePickerEntryMode.calendarOnly,
-          saveText: AppLocalizations.of(context)!.buttonOk,
+          saveText: I10n.of(context)!.buttonOk,
         );
         if (dateRange != null) {
           controller.text = '${dateFormatYMD(dateRange.start)} '

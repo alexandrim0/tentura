@@ -2,7 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 
 import 'package:tentura/consts.dart';
@@ -37,7 +37,7 @@ class IntroScreen extends StatelessWidget {
             Padding(
               padding: kPaddingAll,
               child: Text(
-                AppLocalizations.of(context)!.introTitle,
+                I10n.of(context)!.introTitle,
                 textAlign: TextAlign.center,
                 style: textTheme.displayMedium,
               ),
@@ -47,7 +47,7 @@ class IntroScreen extends StatelessWidget {
             Padding(
               padding: kPaddingAll,
               child: Text(
-                AppLocalizations.of(context)!.introText,
+                I10n.of(context)!.introText,
                 textAlign: TextAlign.center,
                 style: textTheme.bodyLarge,
               ),
@@ -61,7 +61,7 @@ class IntroScreen extends StatelessWidget {
               child: FilledButton(
                 onPressed:
                     () async => GetIt.I<SettingsCubit>().setIntroEnabled(false),
-                child: Text(AppLocalizations.of(context)!.buttonStart),
+                child: Text(I10n.of(context)!.buttonStart),
               ),
             ),
           ],

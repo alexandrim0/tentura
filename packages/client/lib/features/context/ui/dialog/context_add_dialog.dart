@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 class ContextAddDialog extends StatefulWidget {
   static Future<String?> show(BuildContext context) => showDialog<String>(
@@ -24,18 +24,18 @@ class _ContextAddDialogState extends State<ContextAddDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-        title: Text(AppLocalizations.of(context)!.addNewTopic),
+        title: Text(I10n.of(context)!.addNewTopic),
         content: TextField(
           controller: _controller,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
-            child: Text(AppLocalizations.of(context)!.buttonOk),
+            child: Text(I10n.of(context)!.buttonOk),
           ),
           TextButton(
             onPressed: Navigator.of(context).pop,
-            child: Text(AppLocalizations.of(context)!.buttonCancel),
+            child: Text(I10n.of(context)!.buttonCancel),
           ),
         ],
       );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/use_case/string_input_validator.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import '../bloc/auth_cubit.dart';
@@ -33,7 +33,7 @@ class _AccountAddDialogState extends State<AccountAddDialog>
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-    title: Text(AppLocalizations.of(context)!.createNewAccount, style: _textTheme.headlineMedium),
+    title: Text(I10n.of(context)!.createNewAccount, style: _textTheme.headlineMedium),
     content: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -44,8 +44,8 @@ class _AccountAddDialogState extends State<AccountAddDialog>
             autovalidateMode: AutovalidateMode.onUnfocus,
             controller: _titleController,
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.labelTitle,
-              hintText: AppLocalizations.of(context)!.pleaseFillTitle,
+              labelText: I10n.of(context)!.labelTitle,
+              hintText: I10n.of(context)!.pleaseFillTitle,
             ),
             maxLength: kTitleMaxLength,
             style: _textTheme.headlineLarge,
@@ -61,7 +61,7 @@ class _AccountAddDialogState extends State<AccountAddDialog>
             autovalidateMode: AutovalidateMode.onUnfocus,
             controller: _descriptionController,
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.labelDescription,
+              labelText: I10n.of(context)!.labelDescription,
               labelStyle: _textTheme.bodyMedium,
             ),
             keyboardType: TextInputType.multiline,
@@ -83,11 +83,11 @@ class _AccountAddDialogState extends State<AccountAddDialog>
           );
           if (context.mounted) Navigator.of(context).pop();
         },
-        child: Text(AppLocalizations.of(context)!.buttonCreate),
+        child: Text(I10n.of(context)!.buttonCreate),
       ),
       TextButton(
         onPressed: Navigator.of(context).pop,
-        child: Text(AppLocalizations.of(context)!.buttonCancel),
+        child: Text(I10n.of(context)!.buttonCancel),
       ),
     ],
   );

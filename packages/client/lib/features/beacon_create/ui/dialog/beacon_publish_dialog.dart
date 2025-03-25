@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 class BeaconPublishDialog extends StatelessWidget {
   static Future<bool?> show(BuildContext context) => showDialog<bool>(
@@ -13,21 +13,21 @@ class BeaconPublishDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return AlertDialog.adaptive(
-      title: Text(AppLocalizations.of(context)!.confirmBeaconPublishing),
+      title: Text(I10n.of(context)!.confirmBeaconPublishing),
       titleTextStyle: textTheme.headlineLarge,
-      content: Text(AppLocalizations.of(context)!.confirmBeaconPublishingHint),
+      content: Text(I10n.of(context)!.confirmBeaconPublishingHint),
       contentTextStyle: textTheme.bodyMedium,
       actions: [
         // Yes
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text(AppLocalizations.of(context)!.buttonYes),
+          child: Text(I10n.of(context)!.buttonYes),
         ),
 
         // Cancel
         TextButton(
           onPressed: Navigator.of(context).pop,
-          child: Text(AppLocalizations.of(context)!.buttonCancel),
+          child: Text(I10n.of(context)!.buttonCancel),
         ),
       ],
     );

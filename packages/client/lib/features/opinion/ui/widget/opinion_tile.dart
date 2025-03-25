@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/opinion.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
@@ -49,7 +49,7 @@ class OpinionTile extends StatelessWidget {
                 children: [
                   // Title
                   Text(
-                    isMine ? AppLocalizations.of(context)!.labelMe : opinion.author.title,
+                    isMine ? I10n.of(context)!.labelMe : opinion.author.title,
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
 
@@ -78,7 +78,7 @@ class OpinionTile extends StatelessWidget {
                             await opinionCubit.removeOpinionById(opinion.id);
                           }
                         },
-                        child: Text(AppLocalizations.of(context)!.deleteOpinion),
+                        child: Text(I10n.of(context)!.deleteOpinion),
                       )
                     else
                       // Complaint
@@ -87,7 +87,7 @@ class OpinionTile extends StatelessWidget {
                             () => context.read<ScreenCubit>().showComplaint(
                               opinion.id,
                             ),
-                        child: Text(AppLocalizations.of(context)!.buttonComplaint),
+                        child: Text(I10n.of(context)!.buttonComplaint),
                       ),
                   ],
             ),

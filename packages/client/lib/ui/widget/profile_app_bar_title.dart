@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tentura/domain/entity/profile.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 class ProfileAppBarTitle extends StatelessWidget {
   const ProfileAppBarTitle({required this.profile, super.key});
@@ -16,7 +16,7 @@ class ProfileAppBarTitle extends StatelessWidget {
       children: [
         // Title
         Text(
-          profile.title.isEmpty ? AppLocalizations.of(context)!.noName : profile.title,
+          profile.title.isEmpty ? I10n.of(context)!.noName : profile.title,
           style: textTheme.headlineMedium,
         ),
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 class OpinionDeleteDialog extends StatelessWidget {
   static Future<bool?> show(BuildContext context) =>
@@ -9,15 +9,15 @@ class OpinionDeleteDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-    title: Text(AppLocalizations.of(context)!.confirmOpinionRemoval),
+    title: Text(I10n.of(context)!.confirmOpinionRemoval),
     actions: [
       TextButton(
         onPressed: () => Navigator.of(context).pop(true),
-        child: Text(AppLocalizations.of(context)!.buttonYes),
+        child: Text(I10n.of(context)!.buttonYes),
       ),
       TextButton(
         onPressed: Navigator.of(context).pop,
-        child: Text(AppLocalizations.of(context)!.buttonCancel),
+        child: Text(I10n.of(context)!.buttonCancel),
       ),
     ],
   );

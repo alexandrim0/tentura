@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import '../bloc/beacon_create_cubit.dart';
 
@@ -14,7 +14,7 @@ class TitleInput extends StatelessWidget {
     return TextFormField(
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
-        hintText: AppLocalizations.of(context)!.beaconTitleRequired,
+        hintText: I10n.of(context)!.beaconTitleRequired,
       ),
       keyboardType: TextInputType.text,
       maxLength: kTitleMaxLength,

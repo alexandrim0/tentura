@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tentura/features/opinion/ui/bloc/opinion_cubit.dart';
 import 'package:tentura/features/opinion/ui/widget/opinion_list.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -86,9 +86,9 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
         bloc: opinionCubit,
         builder: (_, hasMyOpinion) {
           return hasMyOpinion
-              ? BottomTextInput(hintText: AppLocalizations.of(context)!.onlyOneOpinion)
+              ? BottomTextInput(hintText: I10n.of(context)!.onlyOneOpinion)
               : BottomTextInput(
-                hintText: AppLocalizations.of(context)!.writeOpinion,
+                hintText: I10n.of(context)!.writeOpinion,
                 onSend: (text) async {
                   await opinionCubit.addOpinion(
                     amount: await OpinionPublishDialog.show(context),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/dialog/show_seed_dialog.dart';
 import 'package:tentura/ui/dialog/share_code_dialog.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
@@ -26,7 +26,7 @@ class AccountListTile extends StatelessWidget {
             //
             // Share account code
             PopupMenuItem<void>(
-              child: Text(AppLocalizations.of(context)!.shareAccount),
+              child: Text(I10n.of(context)!.shareAccount),
               onTap:
                   () => ShareCodeDialog.show(
                     context,
@@ -41,7 +41,7 @@ class AccountListTile extends StatelessWidget {
 
             // Share account seed
             PopupMenuItem<void>(
-              child: Text(AppLocalizations.of(context)!.showSeed),
+              child: Text(I10n.of(context)!.showSeed),
               onTap: () async {
                 final seed = await GetIt.I<AuthCubit>().getSeedByAccountId(
                   account.id,
@@ -59,7 +59,7 @@ class AccountListTile extends StatelessWidget {
 
             // Remove account
             PopupMenuItem<void>(
-              child: Text(AppLocalizations.of(context)!.removeFromList),
+              child: Text(I10n.of(context)!.removeFromList),
               onTap: () => AccountRemoveDialog.show(context, id: account.id),
             ),
           ],

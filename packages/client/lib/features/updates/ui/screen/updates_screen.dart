@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -16,9 +16,9 @@ class UpdatesScreen extends StatelessWidget {
               onPressed: () => showSnackBar(
                 context,
                 isFloating: true,
-                text: AppLocalizations.of(context)!.notImplementedYet,
+                text: I10n.of(context)!.notImplementedYet,
               ),
-              child: Text(AppLocalizations.of(context)!.markAllAsRead),
+              child: Text(I10n.of(context)!.markAllAsRead),
             )
           ],
         ),
@@ -26,7 +26,7 @@ class UpdatesScreen extends StatelessWidget {
           child: Padding(
             padding: kPaddingH,
             child: Text(
-              AppLocalizations.of(context)!.labelNothingHere,
+              I10n.of(context)!.labelNothingHere,
               style: Theme.of(context).textTheme.displaySmall,
               textAlign: TextAlign.center,
             ),

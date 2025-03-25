@@ -2,7 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import '../bloc/friends_cubit.dart';
@@ -27,7 +27,7 @@ class FriendRemoveDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
         title: Text(
-          AppLocalizations.of(context)!.confirmFriendRemoval(profile.title),
+          I10n.of(context)!.confirmFriendRemoval(profile.title),
         ),
         actions: [
           // Remove
@@ -46,13 +46,13 @@ class FriendRemoveDialog extends StatelessWidget {
               }
               if (context.mounted) Navigator.of(context).pop();
             },
-            child: Text(AppLocalizations.of(context)!.buttonRemove),
+            child: Text(I10n.of(context)!.buttonRemove),
           ),
 
           // Cancel
           TextButton(
             onPressed: Navigator.of(context).pop,
-            child: Text(AppLocalizations.of(context)!.buttonCancel),
+            child: Text(I10n.of(context)!.buttonCancel),
           ),
         ],
       );

@@ -26,6 +26,10 @@ dependencies:
   ed25519_edwards: ^0.3.1
   dart_jsonwebtoken: ^3.2.0
   freezed_annotation: ^2.4.4
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   lints: ^5.1.1
@@ -35,3 +39,6 @@ dev_dependencies:
   json_serializable: ^6.9.0
   very_good_analysis: ^7.0.0
   injectable_generator: ^2.6.2
+
+flutter:
+  generate: true

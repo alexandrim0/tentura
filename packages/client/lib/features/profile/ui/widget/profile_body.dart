@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
@@ -45,7 +45,7 @@ class ProfileBody extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: () => screenCubit.showGraph(profile.id),
                   icon: const Icon(TenturaIcons.graph),
-                  label: Text(AppLocalizations.of(context)!.showConnections),
+                  label: Text(I10n.of(context)!.showConnections),
                 ),
               ),
 
@@ -55,7 +55,7 @@ class ProfileBody extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: () => screenCubit.showBeacons(profile.id),
                   icon: const Icon(Icons.open_in_full),
-                  label: Text(AppLocalizations.of(context)!.showBeacons),
+                  label: Text(I10n.of(context)!.showBeacons),
                 ),
               ),
 
@@ -69,7 +69,7 @@ class ProfileBody extends StatelessWidget {
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.settings),
                         label: Text(
-                          AppLocalizations.of(context)!.labelSettings,
+                          I10n.of(context)!.labelSettings,
                         ),
                         onPressed: screenCubit.showSettings,
                       ),
@@ -79,7 +79,7 @@ class ProfileBody extends StatelessWidget {
                     Expanded(
                       child: FilledButton.icon(
                         icon: const Icon(Icons.post_add),
-                        label: Text(AppLocalizations.of(context)!.newBeacon),
+                        label: Text(I10n.of(context)!.newBeacon),
                         onPressed: screenCubit.showBeaconCreate,
                       ),
                     ),
@@ -91,7 +91,7 @@ class ProfileBody extends StatelessWidget {
               Padding(
                 padding: kPaddingT,
                 child: Text(
-                  AppLocalizations.of(context)!.communityFeedback,
+                  I10n.of(context)!.communityFeedback,
                   style: textTheme.headlineMedium,
                 ),
               ),

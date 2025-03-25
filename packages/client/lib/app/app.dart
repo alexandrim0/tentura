@@ -5,7 +5,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:tentura/app/router/root_router.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/theme.dart';
 
@@ -39,15 +39,15 @@ class App extends StatelessWidget {
           darkTheme: themeDark,
           themeMode: themeMode,
           debugShowCheckedModeBanner: false,
-          onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+          onGenerateTitle: (context) => I10n.of(context)!.appTitle,
           routerConfig: router.config(
             deepLinkBuilder: router.deepLinkBuilder,
             deepLinkTransformer: router.deepLinkTransformer,
             navigatorObservers: () => [GetIt.I<SentryNavigatorObserver>()],
             reevaluateListenable: router.reevaluateListenable,
           ),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: I10n.localizationsDelegates,
+          supportedLocales: I10n.supportedLocales,
           builder: (context, child) {
             if (child == null) return const SizedBox();
             final media = MediaQuery.of(context);

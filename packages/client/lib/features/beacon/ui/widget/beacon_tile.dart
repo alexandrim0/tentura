@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/beacon.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/author_info.dart';
@@ -37,7 +37,7 @@ class BeaconTile extends StatelessWidget {
                         () => context.read<ScreenCubit>().showComplaint(
                           beacon.id,
                         ),
-                    child: Text(AppLocalizations.of(context)!.buttonComplaint),
+                    child: Text(I10n.of(context)!.buttonComplaint),
                   ),
                 ];
               },

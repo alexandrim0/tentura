@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 class OpinionPublishDialog extends StatelessWidget {
   static Future<int?> show(BuildContext context) => showDialog(
@@ -11,19 +11,19 @@ class OpinionPublishDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-    title: Text(AppLocalizations.of(context)!.positiveOrNegativeOpinion),
+    title: Text(I10n.of(context)!.positiveOrNegativeOpinion),
     actions: [
       TextButton(
         onPressed: () => Navigator.of(context).pop(1),
-        child: Text(AppLocalizations.of(context)!.positiveOpinion),
+        child: Text(I10n.of(context)!.positiveOpinion),
       ),
       TextButton(
         onPressed: () => Navigator.of(context).pop(-1),
-        child: Text(AppLocalizations.of(context)!.negativeOpinion),
+        child: Text(I10n.of(context)!.negativeOpinion),
       ),
       TextButton(
         onPressed: Navigator.of(context).pop,
-        child: Text(AppLocalizations.of(context)!.buttonCancel),
+        child: Text(I10n.of(context)!.buttonCancel),
       ),
     ],
   );

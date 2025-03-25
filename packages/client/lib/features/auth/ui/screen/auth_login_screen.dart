@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -31,7 +31,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: Text(AppLocalizations.of(context)!.chooseAccount,),
+            title: Text(I10n.of(context)!.chooseAccount,),
           ),
           body: SafeArea(
             minimum: kPaddingH,
@@ -42,7 +42,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                 if (state.accounts.isEmpty)
                   Padding(
                     padding: kPaddingAll,
-                    child: Text(AppLocalizations.of(context)!.alreadyHaveAccount,
+                    child: Text(I10n.of(context)!.alreadyHaveAccount,
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -69,7 +69,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                         () async => authCubit.addAccount(
                           await QRScanDialog.show(context),
                         ),
-                    child: Text(AppLocalizations.of(context)!.recoverFromQR),
+                    child: Text(I10n.of(context)!.recoverFromQR),
                   ),
                 ),
 
@@ -78,7 +78,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                   padding: kPaddingH,
                   child: OutlinedButton(
                     onPressed: authCubit.getSeedFromClipboard,
-                    child: Text(AppLocalizations.of(context)!.recoverFromClipboard),
+                    child: Text(I10n.of(context)!.recoverFromClipboard),
                   ),
                 ),
                 const Spacer(),
@@ -90,7 +90,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                       const EdgeInsets.only(bottom: 60 - kSpacingMedium),
                   child: FilledButton(
                     onPressed: () => AccountAddDialog.show(context),
-                    child: Text(AppLocalizations.of(context)!.createNewAccount),
+                    child: Text(I10n.of(context)!.createNewAccount),
                   ),
                 ),
               ],

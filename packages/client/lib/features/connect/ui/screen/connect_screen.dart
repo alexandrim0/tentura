@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/app/router/root_router.dart';
-import 'package:localization/localization.dart';
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 
@@ -34,7 +34,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
               children: [
                 Padding(
                   padding: kPaddingSmallT,
-                  child: Text(AppLocalizations.of(context)!.writeCodeHere,
+                  child: Text(I10n.of(context)!.writeCodeHere,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -53,14 +53,14 @@ class _ConnectScreenState extends State<ConnectScreen> {
                 Padding(
                   padding: kPaddingV,
                   child: FilledButton(
-                    child: Text(AppLocalizations.of(context)!.buttonSearch),
+                    child: Text(I10n.of(context)!.buttonSearch),
                     onPressed: () => _goWithCode(_inputController.text),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 32),
                   child: Text(
-                    AppLocalizations.of(context)!.labelOr,
+                    I10n.of(context)!.labelOr,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -71,7 +71,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
                       final code = await QRScanDialog.show(context);
                       if (context.mounted) _goWithCode(code);
                     },
-                    child: Text(AppLocalizations.of(context)!.buttonScanQR),
+                    child: Text(I10n.of(context)!.buttonScanQR),
                   ),
                 ),
               ],
@@ -86,7 +86,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
       showSnackBar(
         context,
         isError: true,
-        text: AppLocalizations.of(context)!.codeLengthError,
+        text: I10n.of(context)!.codeLengthError,
       );
     }
     switch (code[0]) {
@@ -103,7 +103,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
         showSnackBar(
           context,
           isError: true,
-          text: AppLocalizations.of(context)!.codePrefixError,
+          text: I10n.of(context)!.codePrefixError,
         );
     }
   }
