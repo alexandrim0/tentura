@@ -56,7 +56,11 @@ abstract base class RemoteApiClient extends RemoteApiClientBase {
         }
       },
     );
-    return super.setAuth(seed: seed, authTokenFetcher: authTokenFetcher);
+    return super.setAuth(
+      seed: seed,
+      authTokenFetcher: authTokenFetcher,
+      returnAuthRequestToken: returnAuthRequestToken,
+    );
   }
 
   @override
