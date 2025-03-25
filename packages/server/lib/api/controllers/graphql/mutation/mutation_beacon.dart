@@ -8,7 +8,7 @@ import 'package:tentura_server/domain/use_case/beacon_case.dart';
 import '../input_types.dart';
 
 GraphQLObjectField<dynamic, dynamic> get beaconBeleteById => GraphQLObjectField(
-  'beacon_delete_by_id',
+  'beaconDeleteById',
   graphQLBoolean.nonNullable(),
   arguments: [gqlInputTypeId],
   resolve: (_, args) async {

@@ -31,4 +31,6 @@ abstract class Comment {
   Beacon get beacon;
 
   User get user;
+
+  int get ticker;
 }

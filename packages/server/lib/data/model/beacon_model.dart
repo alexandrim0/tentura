@@ -61,6 +61,8 @@ abstract class Beacon {
 
   int get picWidth;
 
+  int get ticker;
+
   @UseConverter(DateTimeRangeConverter())
   DateTimeRange? get timerange;
 

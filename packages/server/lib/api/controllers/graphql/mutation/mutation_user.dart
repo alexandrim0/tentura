@@ -8,7 +8,7 @@ import 'package:tentura_server/domain/use_case/user_case.dart';
 import '../input_types.dart';
 
 GraphQLObjectField<dynamic, dynamic> get userDelete => GraphQLObjectField(
-  'delete_user',
+  'deleteUser',
   graphQLBoolean.nonNullable(),
   resolve: (_, args) async {
     final jwt = args[JwtEntity.key] as JwtEntity?;
