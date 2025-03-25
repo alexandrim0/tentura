@@ -15,6 +15,7 @@ import 'package:tentura/domain/entity/profile.dart';
 
 import '../../domain/exception.dart';
 import '../gql/_g/sign_in.req.gql.dart';
+import '../gql/_g/sign_out.req.gql.dart';
 import '../gql/_g/sign_up.req.gql.dart';
 
 @singleton
@@ -127,6 +128,9 @@ class AuthRepository {
   }
 
   Future<void> signOut() async {
+    await _remoteApiService
+        .request(GSignOutReq())
+        .firstWhere((e) => e.dataSource == DataSource.Link);
     await _remoteApiService.close();
     await _setCurrentAccountId(null);
     // TBD: invalidate jwt on remote server also

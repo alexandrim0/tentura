@@ -1,0 +1,1 @@
+mutation SignOut {signOut}
