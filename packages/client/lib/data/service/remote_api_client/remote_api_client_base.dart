@@ -32,9 +32,6 @@ abstract class RemoteApiClientBase {
 
   AuthBox? _authBox;
 
-  String? get authSignUpRequestToken =>
-      _authBox?.getAuthRequestToken(AuthRequestIntent.signUp);
-
   /// Returns Auth Request JWT
   @mustCallSuper
   Future<String?> setAuth({
@@ -46,7 +43,7 @@ abstract class RemoteApiClientBase {
     _authBox = AuthBox.fromSeed(seed: seed, authTokenFetcher: authTokenFetcher);
     return returnAuthRequestToken == null
         ? null
-        : _authBox?.getAuthRequestToken(returnAuthRequestToken);
+        : _authBox!.getAuthRequestToken(returnAuthRequestToken);
   }
 
   @mustCallSuper

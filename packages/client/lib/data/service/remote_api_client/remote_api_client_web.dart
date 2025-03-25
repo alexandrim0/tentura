@@ -32,7 +32,11 @@ abstract base class RemoteApiClient extends RemoteApiClientBase {
       ),
       getToken: () async => (await getAuthToken()).accessToken,
     );
-    return super.setAuth(seed: seed, authTokenFetcher: authTokenFetcher);
+    return super.setAuth(
+      seed: seed,
+      authTokenFetcher: authTokenFetcher,
+      returnAuthRequestToken: returnAuthRequestToken,
+    );
   }
 
   @override
