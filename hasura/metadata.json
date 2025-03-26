@@ -1,5 +1,5 @@
 {
-  "resource_version": 579,
+  "resource_version": 9,
   "metadata": {
     "version": 3,
     "sources": [
@@ -176,7 +176,31 @@
                   "num_retries": 2,
                   "timeout_sec": 60
                 },
-                "webhook": "{{EVENT_BASE_URL}}/beacon_mutate",
+                "webhook": "{{EVENT_BASE_URL}}",
+                "headers": [
+                  {
+                    "name": "X-Tentura-Password",
+                    "value_from_env": "TENTURA_PASSWORD"
+                  }
+                ]
+              },
+              {
+                "name": "user_mutate",
+                "definition": {
+                  "enable_manual": true,
+                  "update": {
+                    "columns": [
+                      "has_picture",
+                      "blur_hash"
+                    ]
+                  }
+                },
+                "retry_conf": {
+                  "interval_sec": 10,
+                  "num_retries": 2,
+                  "timeout_sec": 60
+                },
+                "webhook": "{{EVENT_BASE_URL}}",
                 "headers": [
                   {
                     "name": "X-Tentura-Password",

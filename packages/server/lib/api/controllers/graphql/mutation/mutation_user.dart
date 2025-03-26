@@ -11,7 +11,11 @@ import '../input_types.dart';
 GraphQLObjectField<dynamic, dynamic> get userUpdate => GraphQLObjectField(
   'userUpdate',
   graphQLBoolean.nonNullable(),
-  arguments: [gqlInputTypeTitle, gqlInputTypeDescription, gqlInputTypeHasImage],
+  arguments: [
+    gqlInputTypeTitle,
+    gqlInputTypeDescription,
+    gqlInputTypeDropImage,
+  ],
   resolve:
       (_, args) => switch (args[kGlobalInputQueryJwt]) {
         final JwtEntity jwt => GetIt.I<UserCase>().updateProfile(

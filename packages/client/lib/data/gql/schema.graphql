@@ -1144,7 +1144,6 @@ input message_updates {
 """mutation root"""
 type mutation_root {
   beaconDeleteById(id: String!): Boolean!
-  deleteUser: Boolean!
 
   """
   delete data from the table: "beacon_pinned"
@@ -1628,6 +1627,8 @@ type mutation_root {
     """filter the rows returned"""
     where: edge_bool_exp
   ): [edge!]!
+  userDelete: Boolean!
+  userUpdate(description: String, dropImage: Boolean, title: String): Boolean!
 }
 
 """

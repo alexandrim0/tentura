@@ -32,6 +32,7 @@ dependencies:
   graphql_server2: ^6.3.0
   shelf_multipart: ^2.0.1
   shelf_cors_headers: ^0.1.5
+  # neat_periodic_task: ^2.0.1
 
 dev_dependencies:
   lints:

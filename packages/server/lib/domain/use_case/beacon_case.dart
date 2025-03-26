@@ -5,9 +5,10 @@ import 'package:tentura_server/data/repository/image_repository.dart';
 
 import '../entity/event_entity.dart';
 import '../enum.dart';
+import 'image_case_mixin.dart';
 
 @Injectable(order: 2)
-class BeaconCase {
+class BeaconCase with ImageCaseMixin {
   const BeaconCase(this._beaconRepository, this._imageRepository);
 
   final BeaconRepository _beaconRepository;
@@ -37,14 +38,19 @@ class BeaconCase {
       case HasuraOperation.insert:
       case HasuraOperation.manual:
         final beacon = event.newData!;
-        if (beacon['has_picture'] == true) {
+        if (beacon['has_picture'] == true && beacon['blur_hash'] == '') {
           final beaconId = beacon['id']! as String;
-          await _beaconRepository.updateBeaconBlurHash(
-            beaconId: beaconId,
-            imageBytes: await _imageRepository.getBeaconImage(
+          final image = decodeImage(
+            await _imageRepository.getBeaconImage(
               authorId: beacon['user_id']! as String,
               beaconId: beaconId,
             ),
+          );
+          await _beaconRepository.updateBeaconImageDetails(
+            beaconId: beaconId,
+            blurHash: calculateBlurHash(image),
+            imageHeight: image.height,
+            imageWidth: image.width,
           );
         }
 

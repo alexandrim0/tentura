@@ -24,7 +24,7 @@ Future<void> main(List<String> args) async {
       ..parse(args);
 
     if (args.contains(kBlurKeyName)) {
-      await calculateBlurHashes();
+      await const BlurHashCalculator().calculateBlurHashes();
     } else if (args.contains(kKeysKeyName)) {
       await normalizeKeys();
     }

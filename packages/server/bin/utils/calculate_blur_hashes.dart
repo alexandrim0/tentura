@@ -6,71 +6,74 @@ import 'package:tentura_server/di/di.dart';
 import 'package:tentura_server/domain/enum.dart';
 import 'package:tentura_server/data/model/beacon_model.dart';
 import 'package:tentura_server/data/model/user_model.dart';
-import 'package:tentura_server/data/service/image_service.dart';
+import 'package:tentura_server/domain/use_case/image_case_mixin.dart';
 
-Future<void> calculateBlurHashes() async {
-  try {
-    configureDependencies(Environment.prod);
-  } catch (e) {
-    print(e);
-  }
-  final imageService = getIt<ImageService>();
-  final database = getIt<Database>();
-  final beacons = <File>[];
-  final users = <File>[];
+class BlurHashCalculator with ImageCaseMixin {
+  const BlurHashCalculator();
 
-  try {
-    for (final f
-        in Directory(
-          kImageFolderPath,
-        ).listSync(recursive: true).whereType<File>()) {
-      f.uri.pathSegments.last == 'avatar.jpg' ? users.add(f) : beacons.add(f);
-    }
-  } catch (e) {
-    print(e);
-  }
-
-  for (final u in users) {
+  Future<void> calculateBlurHashes() async {
     try {
-      final id = u.uri.pathSegments[u.uri.pathSegments.length - 2];
-      final image = imageService.decodeImage(await u.readAsBytes());
-      final blurHash = imageService.calculateBlurHash(image);
-      await database.users.updateOne(
-        UserUpdateRequest(
-          id: id,
-          hasPicture: true,
-          blurHash: blurHash,
-          picHeight: image.height,
-          picWidth: image.width,
-        ),
-      );
+      configureDependencies(Environment.prod);
     } catch (e) {
       print(e);
     }
-  }
+    final database = getIt<Database>();
+    final beacons = <File>[];
+    final users = <File>[];
 
-  for (final b in beacons) {
     try {
-      final beaconId = b.uri.pathSegments.last.split('.').first;
-      final image = imageService.decodeImage(await b.readAsBytes());
-      final blurHash = imageService.calculateBlurHash(image);
-      await database.beacons.updateOne(
-        BeaconUpdateRequest(
-          id: beaconId,
-          hasPicture: true,
-          blurHash: blurHash,
-          picHeight: image.height,
-          picWidth: image.width,
-        ),
-      );
+      for (final f
+          in Directory(
+            kImageFolderPath,
+          ).listSync(recursive: true).whereType<File>()) {
+        f.uri.pathSegments.last == 'avatar.jpg' ? users.add(f) : beacons.add(f);
+      }
     } catch (e) {
       print(e);
     }
-  }
 
-  print(
-    'users: [${users.length}], '
-    'beacons: [${beacons.length}]',
-  );
-  await closeModules();
+    for (final u in users) {
+      try {
+        final id = u.uri.pathSegments[u.uri.pathSegments.length - 2];
+        final image = decodeImage(await u.readAsBytes());
+        final blurHash = calculateBlurHash(image);
+        await database.users.updateOne(
+          UserUpdateRequest(
+            id: id,
+            hasPicture: true,
+            blurHash: blurHash,
+            picHeight: image.height,
+            picWidth: image.width,
+          ),
+        );
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    for (final b in beacons) {
+      try {
+        final beaconId = b.uri.pathSegments.last.split('.').first;
+        final image = decodeImage(await b.readAsBytes());
+        final blurHash = calculateBlurHash(image);
+        await database.beacons.updateOne(
+          BeaconUpdateRequest(
+            id: beaconId,
+            hasPicture: true,
+            blurHash: blurHash,
+            picHeight: image.height,
+            picWidth: image.width,
+          ),
+        );
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    print(
+      'users: [${users.length}], '
+      'beacons: [${beacons.length}]',
+    );
+    await closeModules();
+  }
 }

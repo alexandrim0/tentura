@@ -1,7 +1,5 @@
-import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura_server/data/service/image_service.dart';
 import 'package:tentura_server/domain/exception.dart';
 
 import 'beacon_repository.dart';
@@ -10,9 +8,7 @@ import 'beacon_repository.dart';
 class BeaconRepositoryMock implements BeaconRepository {
   static final storageById = <String, BeaconEntity>{};
 
-  BeaconRepositoryMock(this._imageService);
-
-  final ImageService _imageService;
+  const BeaconRepositoryMock();
 
   @override
   Future<BeaconEntity> createBeacon(
@@ -41,15 +37,17 @@ class BeaconRepositoryMock implements BeaconRepository {
       storageById.removeWhere((key, value) => value.id == id);
 
   @override
-  Future<void> updateBeaconBlurHash({
+  Future<void> updateBeaconImageDetails({
     required String beaconId,
-    required Uint8List imageBytes,
+    required String blurHash,
+    required int imageHeight,
+    required int imageWidth,
   }) async => storageById.update(
     beaconId,
     (beacon) => beacon.copyWith(
-      blurHash: _imageService.calculateBlurHash(
-        _imageService.decodeImage(imageBytes),
-      ),
+      blurHash: blurHash,
+      picHeight: imageHeight,
+      picWidth: imageWidth,
     ),
   );
 }

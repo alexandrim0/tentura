@@ -1,14 +1,10 @@
 import 'dart:typed_data';
 import 'package:image/image.dart' as img;
-import 'package:injectable/injectable.dart';
 import 'package:blurhash_dart/blurhash_dart.dart';
 
 import 'package:tentura_server/consts.dart';
 
-@injectable
-class ImageService {
-  const ImageService();
-
+mixin ImageCaseMixin {
   img.Image decodeImage(Uint8List imageBytes) =>
       img.decodeImage(imageBytes) ??
       (throw const FormatException('Cant decode image'));

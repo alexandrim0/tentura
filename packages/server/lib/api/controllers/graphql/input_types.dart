@@ -39,8 +39,8 @@ final gqlInputTypeAuthRequestToken = GraphQLFieldInput(
   graphQLNonEmptyString.nonNullable(),
 );
 
-const kInputTypeHasImageFieldName = 'hasImage';
-final gqlInputTypeHasImage = GraphQLFieldInput(
-  kInputTypeHasImageFieldName,
+const kInputTypeDropImageFieldName = 'dropImage';
+final gqlInputTypeDropImage = GraphQLFieldInput(
+  kInputTypeDropImageFieldName,
   graphQLBoolean,
 );

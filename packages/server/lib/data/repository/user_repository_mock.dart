@@ -1,8 +1,6 @@
-import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/domain/exception.dart';
-import 'package:tentura_server/data/service/image_service.dart';
 
 import 'user_repository.dart';
 
@@ -10,9 +8,7 @@ import 'user_repository.dart';
 class UserRepositoryMock implements UserRepository {
   static final storageByPublicKey = <String, UserEntity>{};
 
-  UserRepositoryMock(this._imageService);
-
-  final ImageService _imageService;
+  const UserRepositoryMock();
 
   @override
   Future<UserEntity> createUser({required UserEntity user}) async =>
@@ -36,30 +32,18 @@ class UserRepositoryMock implements UserRepository {
     String? title,
     String? description,
     bool? hasImage,
+    String? blurHash,
+    int? imageHeight,
+    int? imageWidth,
   }) async {
     final user = await getUserById(id);
     storageByPublicKey[user.publicKey] = user.copyWith(
       title: title ?? user.title,
       description: description ?? user.description,
       hasPicture: hasImage ?? user.hasPicture,
-    );
-  }
-
-  @override
-  Future<void> setUserImage({
-    required String id,
-    required Uint8List imageBytes,
-  }) async {
-    final entry =
-        storageByPublicKey.entries.where((e) => e.value.id == id).firstOrNull ??
-        (throw IdNotFoundException(id: id));
-    final image = _imageService.decodeImage(imageBytes);
-    final blurHash = _imageService.calculateBlurHash(image);
-    storageByPublicKey[entry.key] = entry.value.copyWith(
-      blurHash: blurHash,
-      hasPicture: true,
-      picHeight: image.height,
-      picWidth: image.width,
+      blurHash: blurHash ?? user.blurHash,
+      picHeight: imageHeight ?? user.picHeight,
+      picWidth: imageWidth ?? user.picWidth,
     );
   }
 

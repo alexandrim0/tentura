@@ -59,7 +59,7 @@ class ProfileRepository {
     final isOk = await _remoteApiService
         .request(GUserDeleteReq())
         .firstWhere((e) => e.dataSource == DataSource.Link)
-        .then((r) => r.dataOrThrow(label: _label).deleteUser);
+        .then((r) => r.dataOrThrow(label: _label).userDelete);
     if (isOk) {
       _controller.add(RepositoryEventDelete(Profile(id: id)));
     } else {

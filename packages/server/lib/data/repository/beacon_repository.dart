@@ -1,9 +1,7 @@
-import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 import 'package:stormberry/stormberry.dart';
 
 import 'package:tentura_server/data/model/beacon_model.dart';
-import 'package:tentura_server/data/service/image_service.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
 
@@ -11,11 +9,9 @@ export 'package:tentura_server/domain/entity/beacon_entity.dart';
 
 @Injectable(env: [Environment.dev, Environment.prod], order: 1)
 class BeaconRepository {
-  BeaconRepository(this._database, this._imageService);
+  const BeaconRepository(this._database);
 
   final Database _database;
-
-  final ImageService _imageService;
 
   Future<BeaconEntity> createBeacon(
     BeaconEntity beacon, {
@@ -62,15 +58,17 @@ class BeaconRepository {
     return (beaconModel as BeaconModel).asEntity;
   }
 
-  Future<void> updateBeaconBlurHash({
+  Future<void> updateBeaconImageDetails({
     required String beaconId,
-    required Uint8List imageBytes,
+    required String blurHash,
+    required int imageHeight,
+    required int imageWidth,
   }) => _database.beacons.updateOne(
     BeaconUpdateRequest(
-      blurHash: _imageService.calculateBlurHash(
-        _imageService.decodeImage(imageBytes),
-      ),
       id: beaconId,
+      blurHash: blurHash,
+      picHeight: imageHeight,
+      picWidth: imageWidth,
     ),
   );
 
