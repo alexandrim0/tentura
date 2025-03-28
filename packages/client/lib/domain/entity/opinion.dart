@@ -7,7 +7,7 @@ import 'scorable.dart';
 part 'opinion.freezed.dart';
 
 @freezed
-class Opinion with _$Opinion implements Scorable {
+abstract class Opinion with _$Opinion implements Scorable {
   const factory Opinion({
     required String id,
     required int amount,

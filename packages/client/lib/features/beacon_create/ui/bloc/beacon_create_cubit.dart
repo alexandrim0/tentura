@@ -20,83 +20,62 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState>
   BeaconCreateCubit({
     ImageRepository? imageRepository,
     BeaconRepository? beaconRepository,
-  })  : _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
-        _imageRepository = imageRepository ?? GetIt.I<ImageRepository>(),
-        super(const BeaconCreateState());
+  }) : _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
+       _imageRepository = imageRepository ?? GetIt.I<ImageRepository>(),
+       super(const BeaconCreateState());
 
   final BeaconRepository _beaconRepository;
 
   final ImageRepository _imageRepository;
 
-  void setTitle(String value) => emit(state.copyWith(
-        title: value,
-      ));
+  void setTitle(String value) => emit(state.copyWith(title: value));
 
-  void setDescription(String value) => emit(state.copyWith(
-        description: value,
-      ));
+  void setDescription(String value) => emit(state.copyWith(description: value));
 
-  void setDateRange(DateTimeRange? value) => emit(state.copyWith(
-        dateRange: value,
-      ));
+  void setDateRange(DateTimeRange? value) =>
+      emit(state.copyWith(dateRange: value));
 
-  void setLocation(Coordinates? value) => emit(state.copyWith(
-        coordinates: value,
-      ));
+  void setLocation(Coordinates? value) =>
+      emit(state.copyWith(coordinates: value));
 
   Future<void> pickImage() async {
     try {
       final image = await _imageRepository.pickImage();
       if (image != null) {
-        emit(state.copyWith(
-          image: image,
-        ));
+        emit(state.copyWith(image: image));
       }
     } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
-      ));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
-  void clearImage() => emit(state.copyWith(
-        image: null,
-      ));
+  void clearImage() => emit(state.copyWith(image: null));
 
-  Future<void> publish({
-    required String context,
-  }) async {
-    emit(state.copyWith(
-      status: StateStatus.isLoading,
-    ));
+  Future<void> publish({required String context}) async {
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final now = DateTime.timestamp();
-      final result = await _beaconRepository.create(Beacon(
-        blurhash: state.image?.blurHash ?? '',
-        imageHeight: state.image?.height ?? 0,
-        imageWidth: state.image?.width ?? 0,
-        hasPicture: state.image != null,
-        coordinates: state.coordinates,
-        description: state.description,
-        dateRange: state.dateRange,
-        title: state.title,
-        context: context,
-        createdAt: now,
-        updatedAt: now,
-      ));
+      final result = await _beaconRepository.create(
+        Beacon(
+          hasPicture: state.image != null,
+          coordinates: state.coordinates,
+          description: state.description,
+          dateRange: state.dateRange,
+          title: state.title,
+          context: context,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
       if (state.image != null) {
         await _imageRepository.uploadImage(
-          image: state.image!.imageBytes,
+          image: state.image!,
           imageId: result.id,
         );
       }
-      emit(state.copyWith(
-        status: StateIsNavigating.back(),
-      ));
+      emit(state.copyWith(status: StateIsNavigating.back()));
     } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
-      ));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 }

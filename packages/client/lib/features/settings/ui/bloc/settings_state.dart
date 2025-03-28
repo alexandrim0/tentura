@@ -7,7 +7,7 @@ export 'package:tentura/ui/bloc/state_base.dart';
 part 'settings_state.freezed.dart';
 
 @freezed
-class SettingsState extends StateBase with _$SettingsState {
+abstract class SettingsState extends StateBase with _$SettingsState {
   const factory SettingsState({
     @Default('en') String locale,
     @Default(true) bool introEnabled,

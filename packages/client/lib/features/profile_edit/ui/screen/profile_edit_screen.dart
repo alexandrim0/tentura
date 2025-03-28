@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:tentura/consts.dart';
-import 'package:tentura/domain/entity/image_entity.dart';
 import 'package:tentura_root/i10n/I10n.dart';
+
+import 'package:tentura/consts.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 
@@ -44,7 +44,10 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
       appBar: AppBar(
         actions: [
           // Save Button
-          TextButton(onPressed: cubit.save, child: Text(I10n.of(context)!.buttonSave)),
+          TextButton(
+            onPressed: cubit.save,
+            child: Text(I10n.of(context)!.buttonSave),
+          ),
         ],
       ),
       resizeToAvoidBottomInset: false,
@@ -53,20 +56,23 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
       body: Column(
         children: [
           // Avatar
-          BlocSelector<ProfileEditCubit, ProfileEditState, ImageEntity?>(
-            selector: (state) => state.image,
-            builder: (_, image) {
+          BlocBuilder<ProfileEditCubit, ProfileEditState>(
+            buildWhen: (p, c) => p.image != c.image,
+            builder: (_, state) {
               return Stack(
                 children: [
-                  if (image == null)
+                  if (state.image == null)
                     // Original Avatar
-                    AvatarRated.big(profile: cubit.profile, withRating: false)
+                    AvatarRated.big(
+                      profile: cubit.state.original,
+                      withRating: false,
+                    )
                   else
                     SizedBox.square(
                       dimension: AvatarRated.sizeBig,
                       child: ClipOval(
                         child:
-                            image.imageBytes.isEmpty
+                            state.hasNoImage
                                 // Placeholder
                                 ? Image.asset(
                                   kAssetAvatarPlaceholder,
@@ -75,7 +81,7 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
                                 )
                                 // New Avatar
                                 : Image.memory(
-                                  image.imageBytes,
+                                  state.image!.imageBytes,
                                   fit: BoxFit.cover,
                                 ),
                       ),
@@ -85,18 +91,18 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
                     bottom: 0,
                     right: 0,
                     child:
-                        image == null || image.imageBytes.isNotEmpty
-                            // Remove Picture Button
-                            ? IconButton.filledTonal(
-                              iconSize: AvatarRated.sizeSmall,
-                              icon: const Icon(Icons.highlight_remove_outlined),
-                              onPressed: cubit.clearImage,
-                            )
+                        state.canAddImage
                             // Upload Picture Button
-                            : IconButton.filledTonal(
+                            ? IconButton.filledTonal(
                               iconSize: AvatarRated.sizeSmall,
                               icon: const Icon(Icons.add_a_photo_outlined),
                               onPressed: cubit.pickImage,
+                            )
+                            // Remove Picture Button
+                            : IconButton.filledTonal(
+                              iconSize: AvatarRated.sizeSmall,
+                              icon: const Icon(Icons.highlight_remove_outlined),
+                              onPressed: cubit.clearImage,
                             ),
                   ),
                 ],

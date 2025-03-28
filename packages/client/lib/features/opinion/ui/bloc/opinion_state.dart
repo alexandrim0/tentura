@@ -7,7 +7,7 @@ export 'package:tentura/ui/bloc/state_base.dart';
 part 'opinion_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class OpinionState extends StateBase with _$OpinionState {
+abstract class OpinionState extends StateBase with _$OpinionState {
   const factory OpinionState({
     required String objectId,
     required Profile myProfile,

@@ -8,7 +8,7 @@ import 'likable.dart';
 part 'profile.freezed.dart';
 
 @freezed
-class Profile with _$Profile implements Likable {
+abstract class Profile with _$Profile implements Likable {
   const factory Profile({
     @Default('') String id,
     @Default('') String title,

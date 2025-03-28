@@ -5,7 +5,7 @@ import '../enum.dart';
 part 'jwt_entity.freezed.dart';
 
 @freezed
-class JwtEntity with _$JwtEntity {
+abstract class JwtEntity with _$JwtEntity {
   const factory JwtEntity({
     /// public key
     @Default('') String pk,

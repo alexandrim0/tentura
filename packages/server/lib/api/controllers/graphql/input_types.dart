@@ -3,7 +3,7 @@ import 'package:graphql_schema2/graphql_schema2.dart';
 import 'package:tentura_server/consts.dart';
 
 const kGlobalInputQueryContext = 'queryContext';
-const kGlobalInputQueryImage = 'queryImage';
+const kGlobalInputQueryFile = 'queryFile';
 const kGlobalInputQueryJwt = kContextJwtKey;
 
 const kInputTypeIdFieldName = 'id';
@@ -43,4 +43,20 @@ const kInputTypeDropImageFieldName = 'dropImage';
 final gqlInputTypeDropImage = GraphQLFieldInput(
   kInputTypeDropImageFieldName,
   graphQLBoolean,
+);
+
+const kInputTypeImage = 'image';
+final gqlInputTypeImage = GraphQLFieldInput(
+  kInputTypeImage,
+  graphQLUpload,
+  defaultValue: <String, dynamic>{},
+);
+
+const kInputObjectTypeUpload = 'Upload';
+final graphQLUpload = GraphQLInputObjectType(
+  kInputObjectTypeUpload,
+  inputFields: [
+    GraphQLInputObjectField('filename', graphQLString),
+    GraphQLInputObjectField('type', graphQLString),
+  ],
 );

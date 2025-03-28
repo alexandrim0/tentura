@@ -5,7 +5,7 @@ export 'package:tentura/ui/bloc/state_base.dart';
 part 'context_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class ContextState extends StateBase with _$ContextState {
+abstract class ContextState extends StateBase with _$ContextState {
   const factory ContextState({
     @Default('') String selected,
     @Default({}) Set<String> contexts,

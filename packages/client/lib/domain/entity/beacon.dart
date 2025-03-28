@@ -11,7 +11,7 @@ import 'profile.dart';
 part 'beacon.freezed.dart';
 
 @freezed
-class Beacon with _$Beacon implements Likable {
+abstract class Beacon with _$Beacon implements Likable {
   const factory Beacon({
     required DateTime createdAt,
     required DateTime updatedAt,

@@ -4,7 +4,7 @@ import 'package:tentura/ui/bloc/state_base.dart';
 part 'auth_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class AuthState extends StateBase with _$AuthState {
+abstract class AuthState extends StateBase with _$AuthState {
   const factory AuthState({
     required DateTime updatedAt,
     @Default('') String currentAccountId,
@@ -18,7 +18,8 @@ class AuthState extends StateBase with _$AuthState {
 
   bool get isNotAuthenticated => currentAccountId.isEmpty;
 
-  Profile get currentAccount => currentAccountId.isEmpty
-      ? const Profile()
-      : accounts.singleWhere((e) => e.id == currentAccountId);
+  Profile get currentAccount =>
+      currentAccountId.isEmpty
+          ? const Profile()
+          : accounts.singleWhere((e) => e.id == currentAccountId);
 }

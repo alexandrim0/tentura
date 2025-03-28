@@ -17,27 +17,36 @@ final class GraphqlController extends BaseController {
 
   @override
   Future<Response> handler(Request request) async {
-    late final Map<String, dynamic> requestJson;
-    Stream<Uint8List>? imageBytes;
+    final requestJson = <String, dynamic>{};
+    Stream<Uint8List>? fileBytes;
 
     if (request.formData() case final form?) {
       await for (final formData in form.formData) {
         switch (formData.name) {
-          case 'json':
-            requestJson =
-                jsonDecode(await formData.part.readString())
-                    as Map<String, dynamic>;
-            continue;
+          case 'operations':
+            requestJson.addAll(
+              jsonDecode(await formData.part.readString())
+                  as Map<String, dynamic>,
+            );
 
-          case 'image':
-            imageBytes = formData.part.cast<Uint8List>();
+          case 'map':
+            requestJson['filesMeta'] = jsonDecode(
+              await formData.part.readString(),
+            );
 
-            continue;
+          case '0':
+            fileBytes = formData.part.cast<Uint8List>();
+
           default:
+            throw GraphQLException([
+              GraphQLExceptionError(
+                'Got unsupported part named [${formData.name}]',
+              ),
+            ]);
         }
       }
     } else {
-      requestJson = await request.body.asJson as Map<String, dynamic>;
+      requestJson.addAll(await request.body.asJson as Map<String, dynamic>);
     }
 
     try {
@@ -51,7 +60,7 @@ final class GraphqlController extends BaseController {
               kGlobalInputQueryJwt:
                   request.context[kGlobalInputQueryJwt] as JwtEntity?,
               kGlobalInputQueryContext: request.headers[kHeaderQueryContext],
-              kGlobalInputQueryImage: imageBytes,
+              kGlobalInputQueryFile: fileBytes,
             },
           );
 

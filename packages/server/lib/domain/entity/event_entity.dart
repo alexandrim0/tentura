@@ -5,7 +5,7 @@ import 'package:tentura_server/domain/enum.dart';
 part 'event_entity.freezed.dart';
 
 @freezed
-class EventEntity with _$EventEntity {
+abstract class EventEntity with _$EventEntity {
   const factory EventEntity({
     required String id,
     required String table,

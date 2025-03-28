@@ -31,7 +31,7 @@ Authorization: Bearer {{$dotenv TENTURA_JWT}}
 Content-Type: multipart/form-data; boundary=gc0p4Jq0M2Yt08jU534c0p
 
 --gc0p4Jq0M2Yt08jU534c0p
-Content-Disposition: form-data; name="json";
+Content-Disposition: form-data; name="operations";
 Content-Type: application/json
 X-Request-Type: GraphQL
 
@@ -48,7 +48,7 @@ mutation UserUpdate(
 }
 
 --gc0p4Jq0M2Yt08jU534c0p
-Content-Disposition: form-data; name="image"; filename="avatar.jpg"
+Content-Disposition: form-data; name="0"; filename="avatar.jpg"
 Content-Type: image/jpeg
 
 < ../../client/images/placeholder/avatar.jpg
@@ -62,11 +62,11 @@ Content-Type: multipart/form-data; boundary=gc0p4Jq0M2Yt08jU534c0p
 
 
 --gc0p4Jq0M2Yt08jU534c0p
-Content-Disposition: form-data; name="json"
+Content-Disposition: form-data; name="operations"
 Content-Type: application/json
 
 {
-  "query": "mutation UserUpdate($title: String, $description: String) {userUpdate(title: $title, description: $description)}",
+  "query": "mutation UserUpdate($title: String, $description: String, $dropImage: Boolean = false, $image: Upload = {}) {userUpdate(title: $title, description: $description, dropImage: $dropImage, image: $image)}",
   "variables": {
     "title": "A new one",
     "description": "Empty description :-)"
@@ -74,7 +74,7 @@ Content-Type: application/json
 }
 
 --gc0p4Jq0M2Yt08jU534c0p
-Content-Disposition: form-data; name="image"; filename="avatar.jpg"
+Content-Disposition: form-data; name="0"; filename="avatar.jpg"
 Content-Type: image/jpeg
 
 < ../../client/images/placeholder/avatar.jpg

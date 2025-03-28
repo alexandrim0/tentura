@@ -18,7 +18,7 @@ typedef AuthTokenFetcher =
     Future<Credentials> Function(GqlFetcher fetcher, String authRequestToken);
 
 @freezed
-class AuthBox with _$AuthBox {
+abstract class AuthBox with _$AuthBox {
   const factory AuthBox({
     required EdDSAPublicKey publicKey,
     required EdDSAPrivateKey privateKey,

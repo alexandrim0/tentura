@@ -5,6 +5,7 @@ import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/di/di.dart';
 
 import 'controllers/events_controller.dart';
+import 'controllers/graphiql_controller.dart';
 import 'controllers/graphql_controller.dart';
 import 'controllers/upload_image_controller.dart';
 import 'controllers/shared_view_controller.dart';
@@ -17,6 +18,7 @@ Handler routeHandler() {
         ..use(logRequests())
         ..use(corsHeaders(headers: _corsHeaders))
         ..get('/health', () => 'I`m fine!')
+        ..get('/graphiql', getIt<GraphiqlController>().handler)
         ..get(kPathAppLinkView, getIt<SharedViewController>().handler)
         ..post(
           kPathGraphQLEndpointV2,

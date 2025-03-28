@@ -6,7 +6,7 @@ export 'package:tentura/ui/bloc/state_base.dart';
 part 'my_field_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class MyFieldState extends StateBase with _$MyFieldState {
+abstract class MyFieldState extends StateBase with _$MyFieldState {
   const factory MyFieldState({
     @Default('') String context,
     @Default([]) List<Beacon> beacons,

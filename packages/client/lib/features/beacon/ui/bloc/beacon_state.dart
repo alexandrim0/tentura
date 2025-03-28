@@ -4,7 +4,7 @@ import 'package:tentura/ui/bloc/state_base.dart';
 part 'beacon_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class BeaconState extends StateBase with _$BeaconState {
+abstract class BeaconState extends StateBase with _$BeaconState {
   const factory BeaconState({
     required bool isMine,
     required String profileId,

@@ -10,7 +10,7 @@ import 'user_entity.dart';
 part 'beacon_entity.freezed.dart';
 
 @freezed
-class BeaconEntity with _$BeaconEntity {
+abstract class BeaconEntity with _$BeaconEntity {
   static String get newId => generateId('B');
 
   const factory BeaconEntity({

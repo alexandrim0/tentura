@@ -8,7 +8,7 @@ import 'user_entity.dart';
 part 'comment_entity.freezed.dart';
 
 @freezed
-class CommentEntity with _$CommentEntity {
+abstract class CommentEntity with _$CommentEntity {
   static String get newId => generateId('C');
 
   const factory CommentEntity({

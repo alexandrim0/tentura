@@ -4,7 +4,7 @@ import 'package:tentura/ui/bloc/state_base.dart';
 part 'profile_state.freezed.dart';
 
 @freezed
-class ProfileState extends StateBase with _$ProfileState {
+abstract class ProfileState extends StateBase with _$ProfileState {
   const factory ProfileState({
     @Default(Profile()) Profile profile,
     @Default(StateIsSuccess()) StateStatus status,

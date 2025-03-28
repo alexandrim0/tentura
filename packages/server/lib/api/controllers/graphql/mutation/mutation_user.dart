@@ -15,6 +15,7 @@ GraphQLObjectField<dynamic, dynamic> get userUpdate => GraphQLObjectField(
     gqlInputTypeTitle,
     gqlInputTypeDescription,
     gqlInputTypeDropImage,
+    gqlInputTypeImage,
   ],
   resolve:
       (_, args) => switch (args[kGlobalInputQueryJwt]) {
@@ -22,7 +23,8 @@ GraphQLObjectField<dynamic, dynamic> get userUpdate => GraphQLObjectField(
           id: jwt.sub,
           title: args[kInputTypeTitleFieldName] as String?,
           description: args[kInputTypeDescriptionFieldName] as String?,
-          imageBytes: args[kGlobalInputQueryImage] as Stream<Uint8List>?,
+          imageBytes: args[kGlobalInputQueryFile] as Stream<Uint8List>?,
+          dropImage: args[kInputTypeDropImageFieldName] as bool?,
         ),
         _ => throw const UnauthorizedException(),
       },

@@ -1,0 +1,13 @@
+mutation ProfileUpdate(
+  $title: String,
+  $description: String,
+  $dropImage: Boolean = false
+  $image: Upload = {}
+) {
+  userUpdate(
+    title: $title,
+    description: $description,
+    dropImage: $dropImage,
+    image: $image
+  )
+}

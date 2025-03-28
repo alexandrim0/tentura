@@ -6,7 +6,7 @@ import 'package:tentura/ui/bloc/state_base.dart';
 part 'beacon_view_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class BeaconViewState extends StateBase with _$BeaconViewState {
+abstract class BeaconViewState extends StateBase with _$BeaconViewState {
   const factory BeaconViewState({
     required Beacon beacon,
     @Default('') String focusCommentId,

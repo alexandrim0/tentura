@@ -6,7 +6,7 @@ import '../../domain/entity/chat_message.dart';
 part 'chat_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class ChatState extends StateBase with _$ChatState {
+abstract class ChatState extends StateBase with _$ChatState {
   const factory ChatState({
     required Profile me,
     required Profile friend,

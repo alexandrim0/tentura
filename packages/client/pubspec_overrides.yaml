@@ -1,3 +1,5 @@
 dependency_overrides:
   adaptive_number:
     git: https://github.com/alexandrim0/adaptive_number_dart.git
+
+  freezed_annotation: ^3.0.0

@@ -6,7 +6,7 @@ import 'package:tentura_server/utils/id.dart';
 part 'user_entity.freezed.dart';
 
 @freezed
-class UserEntity with _$UserEntity {
+abstract class UserEntity with _$UserEntity {
   static String get newId => generateId('U');
 
   const factory UserEntity({

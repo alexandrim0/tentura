@@ -37,6 +37,10 @@ targets:
               name: DateTimeRange
               import: "package:flutter/material.dart"
 
+            Upload:
+              name: MultipartFile
+              import: 'package:http/http.dart'
+
       ferry_generator|serializer_builder:
         enabled: true
         options:
@@ -51,12 +55,19 @@ targets:
               name: DateTimeRange
               import: "package:flutter/material.dart"
 
+            Upload:
+              name: MultipartFile
+              import: 'package:http/http.dart'
+
           custom_serializers:
             - import: "package:tentura/data/gql/timestamptz_serializer.dart"
               name: TimestamptzSerializer
 
             - import: "package:tentura/data/gql/tstzrange_serializer.dart"
               name: TstzrangeSerializer
+
+            - import: "package:tentura/data/gql/upload_serializer.dart"
+              name: UploadSerializer
 
       build_web_compilers:entrypoint:
         generate_for:

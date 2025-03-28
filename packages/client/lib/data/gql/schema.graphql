@@ -1474,34 +1474,6 @@ type mutation_root {
   ): [message_mutation_response]
 
   """
-  update data of the table: "user"
-  """
-  update_user(
-    """sets the columns of the filtered rows to the given values"""
-    _set: user_set_input
-
-    """filter the rows which have to be updated"""
-    where: user_bool_exp!
-  ): user_mutation_response
-
-  """
-  update single row of the table: "user"
-  """
-  update_user_by_pk(
-    """sets the columns of the filtered rows to the given values"""
-    _set: user_set_input
-    pk_columns: user_pk_columns_input!
-  ): user
-
-  """
-  update multiples rows of table: "user"
-  """
-  update_user_many(
-    """updates to execute, in order"""
-    updates: [user_updates!]!
-  ): [user_mutation_response]
-
-  """
   update data of the table: "vote_beacon"
   """
   update_vote_beacon(
@@ -1628,7 +1600,7 @@ type mutation_root {
     where: edge_bool_exp
   ): [edge!]!
   userDelete: Boolean!
-  userUpdate(description: String, dropImage: Boolean, title: String): Boolean!
+  userUpdate(description: String, dropImage: Boolean, image: Upload = {}, title: String): Boolean!
 }
 
 """
@@ -2957,6 +2929,11 @@ input updates_args {
   prefix: String
 }
 
+input Upload {
+  filename: String
+  type: String
+}
+
 """
 columns and relationships of "user"
 """
@@ -3249,17 +3226,6 @@ enum user_context_update_column {
   _PLACEHOLDER
 }
 
-"""
-response of any mutation on the table "user"
-"""
-type user_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [user!]!
-}
-
 """Ordering options when selecting data from "user"."""
 input user_order_by {
   beacon_pinneds_aggregate: beacon_pinned_aggregate_order_by
@@ -3281,11 +3247,6 @@ input user_order_by {
   vote_beacons_aggregate: vote_beacon_aggregate_order_by
   vote_comments_aggregate: vote_comment_aggregate_order_by
   vote_users_aggregate: vote_user_aggregate_order_by
-}
-
-"""primary key columns input for table: user"""
-input user_pk_columns_input {
-  id: String!
 }
 
 """
@@ -3324,15 +3285,6 @@ enum user_select_column {
 }
 
 """
-input type for updating data in table "user"
-"""
-input user_set_input {
-  description: String
-  has_picture: Boolean
-  title: String
-}
-
-"""
 Streaming cursor of the table "user"
 """
 input user_stream_cursor_input {
@@ -3355,14 +3307,6 @@ input user_stream_cursor_value_input {
   public_key: String
   title: String
   updated_at: timestamptz
-}
-
-input user_updates {
-  """sets the columns of the filtered rows to the given values"""
-  _set: user_set_input
-
-  """filter the rows which have to be updated"""
-  where: user_bool_exp!
 }
 
 scalar uuid

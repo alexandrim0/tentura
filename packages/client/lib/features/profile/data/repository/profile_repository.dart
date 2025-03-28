@@ -1,15 +1,18 @@
 import 'dart:async';
+import 'package:http/http.dart' show MultipartFile;
+import 'package:http_parser/http_parser.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/data/model/user_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
+import 'package:tentura/domain/entity/image_entity.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 
 import '../../domain/exception.dart';
-import '../gql/_g/user_delete.req.gql.dart';
+import '../gql/_g/profile_delete.req.gql.dart';
+import '../gql/_g/profile_update.req.gql.dart';
 import '../gql/_g/user_fetch_by_id.req.gql.dart';
-import '../gql/_g/user_update.req.gql.dart';
 
 @singleton
 class ProfileRepository {
@@ -35,29 +38,43 @@ class ProfileRepository {
     return response;
   }
 
-  Future<void> update(Profile profile) async {
-    final response = await _remoteApiService
+  Future<void> update(
+    Profile profile, {
+    bool dropImage = false,
+    ImageEntity? image,
+  }) async {
+    final multipartFile =
+        image == null
+            ? null
+            : MultipartFile.fromBytes(
+              'image',
+              image.imageBytes,
+              contentType: MediaType.parse(image.mimeType),
+              filename: image.fileName,
+            );
+    final isOk = await _remoteApiService
         .request(
-          GUserUpdateReq(
-            (b) =>
-                b.vars
-                  ..id = profile.id
-                  ..title = profile.title
-                  ..description = profile.description
-                  ..has_picture = profile.hasAvatar,
-          ),
+          GProfileUpdateReq((b) {
+            b.fetchPolicy = FetchPolicy.NoCache;
+            b.vars
+              ..title = profile.title
+              ..description = profile.description
+              ..dropImage = dropImage
+              ..image = multipartFile;
+          }),
         )
         .firstWhere((e) => e.dataSource == DataSource.Link)
-        .then(
-          (r) => r.dataOrThrow(label: _label).update_user_by_pk as UserModel?,
-        );
-    if (response == null) throw ProfileUpdateException(profile.id);
-    _controller.add(RepositoryEventUpdate(response.toEntity));
+        .then((r) => r.dataOrThrow(label: _label).userUpdate);
+    if (isOk) {
+      _controller.add(RepositoryEventUpdate(profile));
+    } else {
+      throw ProfileUpdateException(profile.id);
+    }
   }
 
   Future<void> delete(String id) async {
     final isOk = await _remoteApiService
-        .request(GUserDeleteReq())
+        .request(GProfileDeleteReq())
         .firstWhere((e) => e.dataSource == DataSource.Link)
         .then((r) => r.dataOrThrow(label: _label).userDelete);
     if (isOk) {
