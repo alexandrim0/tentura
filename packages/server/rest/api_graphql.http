@@ -1,5 +1,5 @@
 # GQL test request local
-POST http://localhost:8080/v1/graphql
+POST {{base_url}}/{{gql_path}}
 Authorization: Bearer {{$dotenv TENTURA_JWT}}
 Content-Type: application/json
 X-Hasura-Query-Context: Fatum
@@ -14,7 +14,7 @@ query {
 
 
 ### GQL test query
-POST http://localhost:2080/api/v2/graphql
+POST {{base_url}}/{{gqlV2_path}}
 Authorization: Bearer {{$dotenv TENTURA_JWT}}
 Content-Type: application/json
 X-Request-Type: GraphQL

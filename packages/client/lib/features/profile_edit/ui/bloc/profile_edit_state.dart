@@ -1,5 +1,4 @@
 import 'package:tentura/domain/entity/image_entity.dart';
-
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
@@ -11,7 +10,7 @@ abstract class ProfileEditState extends StateBase with _$ProfileEditState {
     required Profile original,
     required String title,
     required String description,
-    ImageEntity? image,
+    @Default(null) ImageEntity? image,
     @Default(StateIsSuccess()) StateStatus status,
   }) = _ProfileEditState;
 
@@ -21,8 +20,9 @@ abstract class ProfileEditState extends StateBase with _$ProfileEditState {
 
   bool get hasNoImage => image == null;
 
-  bool get canAddImage =>
-      image == null || (original.hasNoAvatar && image == null);
+  bool get canAddImage => image == null;
+
+  bool get canDropImage => image != null;
 
   bool get hasChanges =>
       image != null ||

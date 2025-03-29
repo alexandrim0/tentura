@@ -40,6 +40,8 @@ class ProfileRepository {
 
   Future<void> update(
     Profile profile, {
+    String? title,
+    String? description,
     bool dropImage = false,
     ImageEntity? image,
   }) async {
@@ -57,8 +59,8 @@ class ProfileRepository {
           GProfileUpdateReq((b) {
             b.fetchPolicy = FetchPolicy.NoCache;
             b.vars
-              ..title = profile.title
-              ..description = profile.description
+              ..title = title
+              ..description = description
               ..dropImage = dropImage
               ..image = multipartFile;
           }),
@@ -66,7 +68,15 @@ class ProfileRepository {
         .firstWhere((e) => e.dataSource == DataSource.Link)
         .then((r) => r.dataOrThrow(label: _label).userUpdate);
     if (isOk) {
-      _controller.add(RepositoryEventUpdate(profile));
+      _controller.add(
+        RepositoryEventUpdate(
+          profile.copyWith(
+            title: title ?? profile.title,
+            description: description ?? profile.description,
+            hasAvatar: !dropImage || image != null || profile.hasAvatar,
+          ),
+        ),
+      );
     } else {
       throw ProfileUpdateException(profile.id);
     }

@@ -91,18 +91,18 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
                     bottom: 0,
                     right: 0,
                     child:
-                        state.canAddImage
-                            // Upload Picture Button
-                            ? IconButton.filledTonal(
-                              iconSize: AvatarRated.sizeSmall,
-                              icon: const Icon(Icons.add_a_photo_outlined),
-                              onPressed: cubit.pickImage,
-                            )
+                        state.canDropImage
                             // Remove Picture Button
-                            : IconButton.filledTonal(
+                            ? IconButton.filledTonal(
                               iconSize: AvatarRated.sizeSmall,
                               icon: const Icon(Icons.highlight_remove_outlined),
                               onPressed: cubit.clearImage,
+                            )
+                            // Upload Picture Button
+                            : IconButton.filledTonal(
+                              iconSize: AvatarRated.sizeSmall,
+                              icon: const Icon(Icons.add_a_photo_outlined),
+                              onPressed: cubit.pickImage,
                             ),
                   ),
                 ],

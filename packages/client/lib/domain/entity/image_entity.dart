@@ -11,4 +11,10 @@ abstract class ImageEntity with _$ImageEntity {
     @Default('') String fileName,
     @Default('image/jpeg') String mimeType,
   }) = _ImageEntity;
+
+  factory ImageEntity.empty() => ImageEntity(imageBytes: Uint8List(0));
+
+  const ImageEntity._();
+
+  bool get isEmpty => imageBytes.isEmpty;
 }

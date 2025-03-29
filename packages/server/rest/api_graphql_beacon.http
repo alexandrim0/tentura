@@ -1,5 +1,7 @@
+#
 ### GQL delete_beacon_by_id
-POST http://localhost:2080/api/v2/graphql
+#
+POST {{base_url}}/{{gqlV2_path}}
 Authorization: Bearer {{$dotenv TENTURA_JWT}}
 Content-Type: application/json
 X-Request-Type: GraphQL

@@ -1,5 +1,5 @@
 {
-  "resource_version": 9,
+  "resource_version": 25,
   "metadata": {
     "version": 3,
     "sources": [
@@ -160,53 +160,6 @@
                   },
                   "check": null
                 }
-              }
-            ],
-            "event_triggers": [
-              {
-                "name": "beacon_mutate",
-                "definition": {
-                  "enable_manual": true,
-                  "insert": {
-                    "columns": "*"
-                  }
-                },
-                "retry_conf": {
-                  "interval_sec": 10,
-                  "num_retries": 2,
-                  "timeout_sec": 60
-                },
-                "webhook": "{{EVENT_BASE_URL}}",
-                "headers": [
-                  {
-                    "name": "X-Tentura-Password",
-                    "value_from_env": "TENTURA_PASSWORD"
-                  }
-                ]
-              },
-              {
-                "name": "user_mutate",
-                "definition": {
-                  "enable_manual": true,
-                  "update": {
-                    "columns": [
-                      "has_picture",
-                      "blur_hash"
-                    ]
-                  }
-                },
-                "retry_conf": {
-                  "interval_sec": 10,
-                  "num_retries": 2,
-                  "timeout_sec": 60
-                },
-                "webhook": "{{EVENT_BASE_URL}}",
-                "headers": [
-                  {
-                    "name": "X-Tentura-Password",
-                    "value_from_env": "TENTURA_PASSWORD"
-                  }
-                ]
               }
             ]
           },
@@ -824,24 +777,6 @@
                   ],
                   "filter": {},
                   "limit": 10
-                }
-              }
-            ],
-            "update_permissions": [
-              {
-                "role": "user",
-                "permission": {
-                  "columns": [
-                    "description",
-                    "title",
-                    "has_picture"
-                  ],
-                  "filter": {
-                    "id": {
-                      "_eq": "X-Hasura-User-Id"
-                    }
-                  },
-                  "check": {}
                 }
               }
             ]

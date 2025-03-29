@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 
 import 'package:tentura/data/repository/image_repository.dart';
+import 'package:tentura/domain/entity/image_entity.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/use_case/string_input_validator.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
@@ -27,6 +28,7 @@ class ProfileEditCubit extends Cubit<ProfileEditState>
            original: profile,
            title: profile.title,
            description: profile.description,
+           image: profile.hasAvatar ? ImageEntity.empty() : null,
          ),
        );
 
@@ -56,17 +58,14 @@ class ProfileEditCubit extends Cubit<ProfileEditState>
     if (state.hasNoChanges) {
       return;
     }
-    final profileUpdated = state.original.copyWith(
-      title: state.title,
-      description: state.description,
-      hasAvatar: state.hasImage || state.original.hasAvatar,
-    );
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       await _profileRepository.update(
-        profileUpdated,
-        image: state.image,
+        state.original,
+        title: state.title,
+        description: state.description,
         dropImage: state.original.hasAvatar && state.hasNoImage,
+        image: state.image,
       );
       emit(state.copyWith(status: StateIsNavigating.back()));
     } catch (e) {
