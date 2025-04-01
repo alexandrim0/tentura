@@ -7,7 +7,7 @@ import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/domain/entity/jwt_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
 
-import 'graphql/input_types.dart';
+import 'graphql/input/_input_types.dart';
 import 'graphql/schema.dart';
 import '_base_controller.dart';
 

@@ -1,11 +1,13 @@
 import 'package:graphql_schema2/graphql_schema2.dart';
 
-import 'input_types.dart';
+import 'input/_input_types.dart';
 
 List<GraphQLType<dynamic, dynamic>> get customTypes => [
+  InputFieldUpload.type,
+  InputFieldTimerange.type,
+  InputFieldCoordinates.type,
   gqlTypeAuthResponse,
   gqlTypeBeaconId,
-  graphQLUpload,
 ];
 
 final gqlTypeAuthResponse = GraphQLObjectType('AuthResponse', null)

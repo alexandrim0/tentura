@@ -33,6 +33,22 @@ ALTER SCHEMA public OWNER TO pg_database_owner;
 COMMENT ON SCHEMA public IS 'standard public schema';
 
 
+--
+-- Name: beacon_before_insert(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.beacon_before_insert() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.user_id RETURNING counter INTO NEW.ticker;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.beacon_before_insert() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -72,16 +88,26 @@ ALTER TABLE public.beacon OWNER TO postgres;
 
 CREATE FUNCTION public.beacon_get_is_pinned(beacon_row public.beacon, hasura_session json) RETURNS boolean
     LANGUAGE sql STABLE
-    AS $$
-
-SELECT COALESCE(
-
-(SELECT true AS "is_pinned" FROM beacon_pinned WHERE
-
-  user_id = (hasura_session ->> 'x-hasura-user-id')::TEXT AND beacon_id = beacon_row.id),
-
-  false);
-
+    AS $$
+
+
+
+SELECT COALESCE(
+
+
+
+(SELECT true AS "is_pinned" FROM beacon_pinned WHERE
+
+
+
+  user_id = (hasura_session ->> 'x-hasura-user-id')::TEXT AND beacon_id = beacon_row.id),
+
+
+
+  false);
+
+
+
 $$;
 
 
@@ -93,8 +119,10 @@ ALTER FUNCTION public.beacon_get_is_pinned(beacon_row public.beacon, hasura_sess
 
 CREATE FUNCTION public.beacon_get_my_vote(beacon_row public.beacon, hasura_session json) RETURNS integer
     LANGUAGE sql IMMUTABLE
-    AS $$
-SELECT COALESCE((SELECT amount FROM vote_beacon WHERE subject = (hasura_session ->> 'x-hasura-user-id')::TEXT AND object = beacon_row.id), 0);
+    AS $$
+
+SELECT COALESCE((SELECT amount FROM vote_beacon WHERE subject = (hasura_session ->> 'x-hasura-user-id')::TEXT AND object = beacon_row.id), 0);
+
 $$;
 
 
@@ -120,21 +148,48 @@ ALTER VIEW public.mutual_score OWNER TO postgres;
 
 CREATE FUNCTION public.beacon_get_scores(beacon_row public.beacon, hasura_session json) RETURNS SETOF public.mutual_score
     LANGUAGE sql IMMUTABLE
-    AS $$
-SELECT
-  src,
-  dst,
-  score_cluster_of_src AS src_score,
-  score_cluster_of_dst AS dst_score
-FROM mr_node_score(
-  hasura_session ->> 'x-hasura-user-id',
-  beacon_row.id,
-  hasura_session ->> 'x-hasura-query-context'
-);
+    AS $$
+
+SELECT
+
+  src,
+
+  dst,
+
+  score_cluster_of_src AS src_score,
+
+  score_cluster_of_dst AS dst_score
+
+FROM mr_node_score(
+
+  hasura_session ->> 'x-hasura-user-id',
+
+  beacon_row.id,
+
+  hasura_session ->> 'x-hasura-query-context'
+
+);
+
 $$;
 
 
 ALTER FUNCTION public.beacon_get_scores(beacon_row public.beacon, hasura_session json) OWNER TO postgres;
+
+--
+-- Name: comment_before_insert(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.comment_before_insert() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.user_id RETURNING counter INTO NEW.ticker;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.comment_before_insert() OWNER TO postgres;
 
 --
 -- Name: comment; Type: TABLE; Schema: public; Owner: postgres
@@ -159,10 +214,14 @@ ALTER TABLE public.comment OWNER TO postgres;
 
 CREATE FUNCTION public.comment_get_my_vote(comment_row public.comment, hasura_session json) RETURNS integer
     LANGUAGE sql STABLE
-    AS $$
-
-  SELECT COALESCE((SELECT amount FROM vote_comment WHERE subject = (hasura_session ->> 'x-hasura-user-id')::TEXT AND object = comment_row.id), 0);
-
+    AS $$
+
+
+
+  SELECT COALESCE((SELECT amount FROM vote_comment WHERE subject = (hasura_session ->> 'x-hasura-user-id')::TEXT AND object = comment_row.id), 0);
+
+
+
 $$;
 
 
@@ -174,18 +233,30 @@ ALTER FUNCTION public.comment_get_my_vote(comment_row public.comment, hasura_ses
 
 CREATE FUNCTION public.comment_get_scores(comment_row public.comment, hasura_session json) RETURNS SETOF public.mutual_score
     LANGUAGE sql IMMUTABLE
-    AS $$
-SELECT
-  src,
-  dst,
-  score_cluster_of_src AS src_score,
-  score_cluster_of_dst AS dst_score
-FROM mr_node_score(
-    hasura_session ->> 'x-hasura-user-id',
-    comment_row.id,
-    hasura_session ->> 'x-hasura-query-context'
-    
-);
+    AS $$
+
+SELECT
+
+  src,
+
+  dst,
+
+  score_cluster_of_src AS src_score,
+
+  score_cluster_of_dst AS dst_score
+
+FROM mr_node_score(
+
+    hasura_session ->> 'x-hasura-user-id',
+
+    comment_row.id,
+
+    hasura_session ->> 'x-hasura-query-context'
+
+    
+
+);
+
 $$;
 
 
@@ -197,21 +268,36 @@ ALTER FUNCTION public.comment_get_scores(comment_row public.comment, hasura_sess
 
 CREATE FUNCTION public.graph(focus text, context text, positive_only boolean, hasura_session json) RETURNS SETOF public.mutual_score
     LANGUAGE sql STABLE
-    AS $$
-SELECT
-  src,
-  dst,
-  score_cluster_of_ego AS src_score,
-  score_cluster_of_dst AS dst_score
-FROM
-  mr_graph(
-    hasura_session ->> 'x-hasura-user-id',
-    focus,
-    context,
-    positive_only,
-    0,
-    100
-  );
+    AS $$
+
+SELECT
+
+  src,
+
+  dst,
+
+  score_cluster_of_ego AS src_score,
+
+  score_cluster_of_dst AS dst_score
+
+FROM
+
+  mr_graph(
+
+    hasura_session ->> 'x-hasura-user-id',
+
+    focus,
+
+    context,
+
+    positive_only,
+
+    0,
+
+    100
+
+  );
+
 $$;
 
 
@@ -223,86 +309,166 @@ ALTER FUNCTION public.graph(focus text, context text, positive_only boolean, has
 
 CREATE FUNCTION public.meritrank_init() RETURNS integer
     LANGUAGE plpgsql STABLE
-    AS $$
-DECLARE
-  _count integer := 0;
-  _total integer := 0;
-  _beacon record;
-  _comment record;
-  _opinion record;
-BEGIN
-  -- Edges User -> User (vote)
-  SELECT count(*) INTO STRICT _count FROM (
-    SELECT mr_put_edge(edge.src, edge.dst, edge.amount, '', edge.ticker) FROM (
-      SELECT vote_user.subject AS src,
-        vote_user.object AS dst,
-        vote_user.amount AS amount,
-        vote_user.ticker
-      FROM vote_user
-    ) AS edge);
-  _total := _total + _count;
-
-  -- Edges Author <-> Beacon
-  FOR _beacon IN SELECT id, user_id, context, ticker FROM "beacon" LOOP
-    -- Beacon -> Author
-    PERFORM mr_put_edge(_beacon.id, _beacon.user_id, 1, _beacon.context, 0);
-    -- Author -> Beacon
-    PERFORM mr_put_edge(_beacon.user_id, _beacon.id, 1, _beacon.context, _beacon.ticker);
-    _total := _total + 2;
-  END LOOP;
-
-  -- Edges User -> Beacon (vote)
-  SELECT count(*) INTO STRICT _count FROM (
-    SELECT mr_put_edge(edge.src, edge.dst, edge.amount, edge.context, edge.ticker) FROM (
-      SELECT vote_beacon.subject AS src,
-        vote_beacon.object AS dst,
-        vote_beacon.amount AS amount,
-        beacon.context AS context,
-        vote_beacon.ticker
-      FROM vote_beacon JOIN beacon ON beacon.id = vote_beacon.object
-    ) AS edge);
-  _total := _total + _count;
-
-  -- Edges Author <-> Comment
-  FOR _comment IN SELECT "comment".id, "comment".user_id, context, "comment".ticker FROM "comment" JOIN "beacon" ON "comment".beacon_id = "beacon".id LOOP
-    -- Comment -> Author
-    PERFORM mr_put_edge(_comment.id, _comment.user_id, 1, _comment.context, 0);
-    -- Author -> Comment
-    PERFORM mr_put_edge(_comment.user_id, _comment.id, 1, _comment.context, _comment.ticker);
-    _total := _total + 2;
-  END LOOP;
-
-  -- Edges User -> Comment (vote)
-  SELECT count(*) INTO STRICT _count FROM (
-    SELECT mr_put_edge(edge.src, edge.dst, edge.amount, edge.context, edge.ticker) FROM (
-      SELECT vote_comment.subject AS src,
-        vote_comment.object AS dst,
-        vote_comment.amount AS amount,
-        beacon.context AS context,
-        vote_comment.ticker
-      FROM vote_comment JOIN "comment" ON "comment".id = vote_comment.object JOIN beacon ON beacon.id = "comment".beacon_id
-    ) AS edge);
-  _total := _total + _count;
-
-  -- Edges for Opinion
-  FOR _opinion IN SELECT id, subject, object, amount, ticker FROM "opinion" LOOP
-    -- Author -> Opinion
-    PERFORM mr_put_edge(_opinion.subject, _opinion.id, (abs(_opinion.amount))::double precision, '', _opinion.ticker);
-    -- Opinion -> Author
-    PERFORM mr_put_edge(_opinion.id, _opinion.subject, (1)::double precision, '', _opinion.ticker);
-    -- Opinion -> User
-    PERFORM mr_put_edge(_opinion.id, _opinion.object, (sign(_opinion.amount))::double precision, '', _opinion.ticker);
-    _total := _total + 3;
-  END LOOP;
-
-  -- Read Updates Filters
-  SELECT count(*) INTO STRICT _count FROM (
-    SELECT mr_set_new_edges_filter(user_id, filter) FROM user_updates
-  );
-  _total := _total + _count;
-
-  RETURN _total;
-END;
+    AS $$
+
+DECLARE
+
+  _count integer := 0;
+
+  _total integer := 0;
+
+  _beacon record;
+
+  _comment record;
+
+  _opinion record;
+
+BEGIN
+
+  -- Edges User -> User (vote)
+
+  SELECT count(*) INTO STRICT _count FROM (
+
+    SELECT mr_put_edge(edge.src, edge.dst, edge.amount, '', edge.ticker) FROM (
+
+      SELECT vote_user.subject AS src,
+
+        vote_user.object AS dst,
+
+        vote_user.amount AS amount,
+
+        vote_user.ticker
+
+      FROM vote_user
+
+    ) AS edge);
+
+  _total := _total + _count;
+
+
+
+  -- Edges Author <-> Beacon
+
+  FOR _beacon IN SELECT id, user_id, context, ticker FROM "beacon" LOOP
+
+    -- Beacon -> Author
+
+    PERFORM mr_put_edge(_beacon.id, _beacon.user_id, 1, _beacon.context, 0);
+
+    -- Author -> Beacon
+
+    PERFORM mr_put_edge(_beacon.user_id, _beacon.id, 1, _beacon.context, _beacon.ticker);
+
+    _total := _total + 2;
+
+  END LOOP;
+
+
+
+  -- Edges User -> Beacon (vote)
+
+  SELECT count(*) INTO STRICT _count FROM (
+
+    SELECT mr_put_edge(edge.src, edge.dst, edge.amount, edge.context, edge.ticker) FROM (
+
+      SELECT vote_beacon.subject AS src,
+
+        vote_beacon.object AS dst,
+
+        vote_beacon.amount AS amount,
+
+        beacon.context AS context,
+
+        vote_beacon.ticker
+
+      FROM vote_beacon JOIN beacon ON beacon.id = vote_beacon.object
+
+    ) AS edge);
+
+  _total := _total + _count;
+
+
+
+  -- Edges Author <-> Comment
+
+  FOR _comment IN SELECT "comment".id, "comment".user_id, context, "comment".ticker FROM "comment" JOIN "beacon" ON "comment".beacon_id = "beacon".id LOOP
+
+    -- Comment -> Author
+
+    PERFORM mr_put_edge(_comment.id, _comment.user_id, 1, _comment.context, 0);
+
+    -- Author -> Comment
+
+    PERFORM mr_put_edge(_comment.user_id, _comment.id, 1, _comment.context, _comment.ticker);
+
+    _total := _total + 2;
+
+  END LOOP;
+
+
+
+  -- Edges User -> Comment (vote)
+
+  SELECT count(*) INTO STRICT _count FROM (
+
+    SELECT mr_put_edge(edge.src, edge.dst, edge.amount, edge.context, edge.ticker) FROM (
+
+      SELECT vote_comment.subject AS src,
+
+        vote_comment.object AS dst,
+
+        vote_comment.amount AS amount,
+
+        beacon.context AS context,
+
+        vote_comment.ticker
+
+      FROM vote_comment JOIN "comment" ON "comment".id = vote_comment.object JOIN beacon ON beacon.id = "comment".beacon_id
+
+    ) AS edge);
+
+  _total := _total + _count;
+
+
+
+  -- Edges for Opinion
+
+  FOR _opinion IN SELECT id, subject, object, amount, ticker FROM "opinion" LOOP
+
+    -- Author -> Opinion
+
+    PERFORM mr_put_edge(_opinion.subject, _opinion.id, (abs(_opinion.amount))::double precision, '', _opinion.ticker);
+
+    -- Opinion -> Author
+
+    PERFORM mr_put_edge(_opinion.id, _opinion.subject, (1)::double precision, '', _opinion.ticker);
+
+    -- Opinion -> User
+
+    PERFORM mr_put_edge(_opinion.id, _opinion.object, (sign(_opinion.amount))::double precision, '', _opinion.ticker);
+
+    _total := _total + 3;
+
+  END LOOP;
+
+
+
+  -- Read Updates Filters
+
+  SELECT count(*) INTO STRICT _count FROM (
+
+    SELECT mr_set_new_edges_filter(user_id, filter) FROM user_updates
+
+  );
+
+  _total := _total + _count;
+
+
+
+  RETURN _total;
+
+END;
+
 $$;
 
 
@@ -314,25 +480,44 @@ ALTER FUNCTION public.meritrank_init() OWNER TO postgres;
 
 CREATE FUNCTION public.my_field(context text, hasura_session json) RETURNS SETOF public.mutual_score
     LANGUAGE sql IMMUTABLE
-    AS $$
-SELECT
-  src,
-  dst,
-  score_cluster_of_src AS src_score,
-  score_cluster_of_dst AS dst_score
-FROM
-  mr_scores(
-    hasura_session ->> 'x-hasura-user-id',
-    true,
-    context,
-    'B',
-    null,
-    null,
-    '0',
-    null,
-    0,
-    100
-  );
+    AS $$
+
+SELECT
+
+  src,
+
+  dst,
+
+  score_cluster_of_src AS src_score,
+
+  score_cluster_of_dst AS dst_score
+
+FROM
+
+  mr_scores(
+
+    hasura_session ->> 'x-hasura-user-id',
+
+    true,
+
+    context,
+
+    'B',
+
+    null,
+
+    null,
+
+    '0',
+
+    null,
+
+    0,
+
+    100
+
+  );
+
 $$;
 
 
@@ -344,22 +529,18 @@ ALTER FUNCTION public.my_field(context text, hasura_session json) OWNER TO postg
 
 CREATE FUNCTION public.notify_meritrank_beacon_mutation() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-DECLARE
-    _counter integer;
-BEGIN
-    IF (TG_OP = 'INSERT') THEN
-        UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.user_id RETURNING counter INTO _counter;
-        PERFORM mr_put_edge(NEW.id, NEW.user_id, 1::double precision, NEW.context, 0);
-        PERFORM mr_put_edge(NEW.user_id, NEW.id, 1::double precision, NEW.context, _counter);
-        NEW.ticker = _counter;
-        RETURN NEW;
-    ELSIF (TG_OP = 'DELETE') THEN
-        PERFORM mr_delete_edge(OLD.id, OLD.user_id, OLD.context);
-        PERFORM mr_delete_edge(OLD.user_id, OLD.id, OLD.context);
-        RETURN OLD;
-    END IF;
-END;
+    AS $$
+BEGIN
+    IF (TG_OP = 'INSERT') THEN
+        PERFORM mr_put_edge(NEW.id, NEW.user_id, 1::double precision, NEW.context, 0);
+        PERFORM mr_put_edge(NEW.user_id, NEW.id, 1::double precision, NEW.context, NEW.ticker);
+        RETURN NEW;
+    ELSIF (TG_OP = 'DELETE') THEN
+        PERFORM mr_delete_edge(OLD.id, OLD.user_id, OLD.context);
+        PERFORM mr_delete_edge(OLD.user_id, OLD.id, OLD.context);
+        RETURN OLD;
+    END IF;
+END;
 $$;
 
 
@@ -371,24 +552,21 @@ ALTER FUNCTION public.notify_meritrank_beacon_mutation() OWNER TO postgres;
 
 CREATE FUNCTION public.notify_meritrank_comment_mutation() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-DECLARE
-    context text;
-    _counter integer;
-BEGIN
-    SELECT beacon.context INTO context FROM beacon WHERE beacon.id = NEW.beacon_id;
-    IF (TG_OP = 'INSERT') THEN
-        UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.user_id RETURNING counter INTO _counter;
-        PERFORM mr_put_edge(NEW.id, NEW.user_id, 1::double precision, context, 0);
-        PERFORM mr_put_edge(NEW.user_id, NEW.id, 1::double precision, context, _counter);
-        NEW.ticker = _counter;
-        RETURN NEW;
-    ELSIF (TG_OP = 'DELETE') THEN
-        PERFORM mr_delete_edge(OLD.id, OLD.user_id, context);
-        PERFORM mr_delete_edge(OLD.user_id, OLD.id, context);
-        RETURN OLD;
-    END IF;
-END;
+    AS $$
+DECLARE
+    context text;
+BEGIN
+    SELECT beacon.context INTO context FROM beacon WHERE beacon.id = NEW.beacon_id;
+    IF (TG_OP = 'INSERT') THEN
+        PERFORM mr_put_edge(NEW.id, NEW.user_id, 1::double precision, context, 0);
+        PERFORM mr_put_edge(NEW.user_id, NEW.id, 1::double precision, context, NEW.ticker);
+        RETURN NEW;
+    ELSIF (TG_OP = 'DELETE') THEN
+        PERFORM mr_delete_edge(OLD.id, OLD.user_id, context);
+        PERFORM mr_delete_edge(OLD.user_id, OLD.id, context);
+        RETURN OLD;
+    END IF;
+END;
 $$;
 
 
@@ -400,24 +578,20 @@ ALTER FUNCTION public.notify_meritrank_comment_mutation() OWNER TO postgres;
 
 CREATE FUNCTION public.notify_meritrank_opinion_mutation() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-DECLARE
-    _counter integer;
-BEGIN
-  IF (TG_OP = 'INSERT') THEN
-    UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.subject RETURNING counter INTO _counter;
-    PERFORM mr_put_edge(NEW.subject, NEW.id, (abs(NEW.amount))::double precision, '', _counter);
-    PERFORM mr_put_edge(NEW.id, NEW.subject, (1)::double precision, '', _counter);
-    PERFORM mr_put_edge(NEW.id, NEW.object, (sign(NEW.amount))::double precision, '', _counter);
-    NEW.ticker = _counter;
-    RETURN NEW;
-  ELSIF (TG_OP = 'DELETE') THEN
-    PERFORM mr_delete_edge(OLD.subject, OLD.id);
-    PERFORM mr_delete_edge(OLD.id, OLD.subject);
-    PERFORM mr_delete_edge(OLD.id, OLD.object);
-    RETURN OLD;
-  END IF;
-END;
+    AS $$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+    PERFORM mr_put_edge(NEW.subject, NEW.id, (abs(NEW.amount))::double precision, '', NEW.ticker);
+    PERFORM mr_put_edge(NEW.id, NEW.subject, (1)::double precision, '', NEW.ticker);
+    PERFORM mr_put_edge(NEW.id, NEW.object, (sign(NEW.amount))::double precision, '', NEW.ticker);
+    RETURN NEW;
+  ELSIF (TG_OP = 'DELETE') THEN
+    PERFORM mr_delete_edge(OLD.subject, OLD.id);
+    PERFORM mr_delete_edge(OLD.id, OLD.subject);
+    PERFORM mr_delete_edge(OLD.id, OLD.object);
+    RETURN OLD;
+  END IF;
+END;
 $$;
 
 
@@ -429,22 +603,19 @@ ALTER FUNCTION public.notify_meritrank_opinion_mutation() OWNER TO postgres;
 
 CREATE FUNCTION public.notify_meritrank_vote_beacon_mutation() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-DECLARE
-    context text;
-    _counter integer;
-BEGIN
-    SELECT beacon.context INTO STRICT context FROM beacon WHERE beacon.id = NEW.object;
-    IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
-        UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.subject RETURNING counter INTO _counter;
-        PERFORM mr_put_edge(NEW.subject, NEW.object, (NEW.amount)::double precision, context, _counter);
-        NEW.ticker = _counter;
-        RETURN NEW;
-    ELSIF (TG_OP = 'DELETE') THEN
-        PERFORM mr_delete_edge(OLD.subject, OLD.object, context);
-        RETURN OLD;
-    END IF;
-END;
+    AS $$
+DECLARE
+    _context text;
+BEGIN
+    SELECT beacon.context INTO STRICT _context FROM beacon WHERE beacon.id = NEW.object;
+    IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
+        PERFORM mr_put_edge(NEW.subject, NEW.object, (NEW.amount)::double precision, _context, NEW.ticker);
+        RETURN NEW;
+    ELSIF (TG_OP = 'DELETE') THEN
+        PERFORM mr_delete_edge(OLD.subject, OLD.object, _context);
+        RETURN OLD;
+    END IF;
+END;
 $$;
 
 
@@ -456,24 +627,21 @@ ALTER FUNCTION public.notify_meritrank_vote_beacon_mutation() OWNER TO postgres;
 
 CREATE FUNCTION public.notify_meritrank_vote_comment_mutation() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-DECLARE
-    context text;
-    beacon_id text;
-    _counter integer;
-BEGIN
-    SELECT comment.beacon_id INTO beacon_id FROM comment WHERE comment.id = NEW.object;
-    SELECT beacon.context INTO context FROM beacon WHERE beacon.id = beacon_id;
-    IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
-        UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.subject RETURNING counter INTO _counter;
-        PERFORM mr_put_edge(NEW.subject, NEW.object, (NEW.amount)::double precision, context, _counter);
-        NEW.ticker = _counter;
-        RETURN NEW;
-    ELSIF (TG_OP = 'DELETE') THEN
-        PERFORM mr_delete_edge(OLD.subject, OLD.object, context);
-        RETURN OLD;
-    END IF;
-END;
+    AS $$
+DECLARE
+    _context text;
+    beacon_id text;
+BEGIN
+    SELECT comment.beacon_id INTO beacon_id FROM comment WHERE comment.id = NEW.object;
+    SELECT beacon.context INTO _context FROM beacon WHERE beacon.id = beacon_id;
+    IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
+        PERFORM mr_put_edge(NEW.subject, NEW.object, (NEW.amount)::double precision, _context, NEW.ticker);
+        RETURN NEW;
+    ELSIF (TG_OP = 'DELETE') THEN
+        PERFORM mr_delete_edge(OLD.subject, OLD.object, _context);
+        RETURN OLD;
+    END IF;
+END;
 $$;
 
 
@@ -485,20 +653,16 @@ ALTER FUNCTION public.notify_meritrank_vote_comment_mutation() OWNER TO postgres
 
 CREATE FUNCTION public.notify_meritrank_vote_user_mutation() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-DECLARE
-    _counter integer;
-BEGIN
-    IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
-        UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.subject RETURNING counter INTO _counter;
-        PERFORM mr_put_edge(NEW.subject, NEW.object, (NEW.amount)::double precision, ''::text, _counter);
-        NEW.ticker = _counter;
-        RETURN NEW;
-    ELSIF (TG_OP = 'DELETE') THEN
-        PERFORM mr_delete_edge(OLD.subject, OLD.object, ''::text);
-        RETURN OLD;
-    END IF;
-END;
+    AS $$
+BEGIN
+    IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
+        PERFORM mr_put_edge(NEW.subject, NEW.object, (NEW.amount)::double precision, ''::text, NEW.ticker);
+        RETURN NEW;
+    ELSIF (TG_OP = 'DELETE') THEN
+        PERFORM mr_delete_edge(OLD.subject, OLD.object, ''::text);
+        RETURN OLD;
+    END IF;
+END;
 $$;
 
 
@@ -510,19 +674,32 @@ ALTER FUNCTION public.notify_meritrank_vote_user_mutation() OWNER TO postgres;
 
 CREATE FUNCTION public.on_public_user_update() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-DECLARE
-  _new record;
-BEGIN
-  _new := NEW;
-  _new."updated_at" = NOW();
-  IF NEW.has_picture = false THEN
-    _new.blur_hash = '';
-    _new.pic_height = 0;
-    _new.pic_width = 0;
-  END IF;
-  RETURN _new;
-END;
+    AS $$
+
+DECLARE
+
+  _new record;
+
+BEGIN
+
+  _new := NEW;
+
+  _new."updated_at" = NOW();
+
+  IF NEW.has_picture = false THEN
+
+    _new.blur_hash = '';
+
+    _new.pic_height = 0;
+
+    _new.pic_width = 0;
+
+  END IF;
+
+  RETURN _new;
+
+END;
+
 $$;
 
 
@@ -534,15 +711,36 @@ ALTER FUNCTION public.on_public_user_update() OWNER TO postgres;
 
 CREATE FUNCTION public.on_user_created() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-BEGIN
-  INSERT INTO user_vsids VALUES (NEW.id, DEFAULT, DEFAULT);
-  RETURN NEW;
-END;
+    AS $$
+
+BEGIN
+
+  INSERT INTO user_vsids VALUES (NEW.id, DEFAULT, DEFAULT);
+
+  RETURN NEW;
+
+END;
+
 $$;
 
 
 ALTER FUNCTION public.on_user_created() OWNER TO postgres;
+
+--
+-- Name: opinion_before_insert(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.opinion_before_insert() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.subject RETURNING counter INTO NEW.ticker;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.opinion_before_insert() OWNER TO postgres;
 
 --
 -- Name: opinion; Type: TABLE; Schema: public; Owner: postgres
@@ -569,28 +767,50 @@ ALTER TABLE public.opinion OWNER TO postgres;
 
 CREATE FUNCTION public.opinion_get_scores(opinion_row public.opinion, hasura_session json) RETURNS SETOF public.mutual_score
     LANGUAGE sql STABLE
-    AS $$
-
-SELECT
-
-  src,
-
-  dst,
-
-  score_cluster_of_src AS src_score,
-
-  score_cluster_of_dst AS dst_score
-
-FROM mr_node_score(
-
-    hasura_session ->> 'x-hasura-user-id',
-
-    opinion_row.id,
-
-    null
-
-);
-
+    AS $$
+
+
+
+SELECT
+
+
+
+  src,
+
+
+
+  dst,
+
+
+
+  score_cluster_of_src AS src_score,
+
+
+
+  score_cluster_of_dst AS dst_score
+
+
+
+FROM mr_node_score(
+
+
+
+    hasura_session ->> 'x-hasura-user-id',
+
+
+
+    opinion_row.id,
+
+
+
+    null
+
+
+
+);
+
+
+
 $$;
 
 
@@ -602,16 +822,26 @@ ALTER FUNCTION public.opinion_get_scores(opinion_row public.opinion, hasura_sess
 
 CREATE FUNCTION public.rating(context text, hasura_session json) RETURNS SETOF public.mutual_score
     LANGUAGE sql IMMUTABLE
-    AS $$
-SELECT
-    src,
-    dst,
-    score_cluster_of_src AS src_score,
-    score_cluster_of_dst AS dst_score
-FROM mr_mutual_scores(
-    hasura_session->>'x-hasura-user-id',
-    context
-);
+    AS $$
+
+SELECT
+
+    src,
+
+    dst,
+
+    score_cluster_of_src AS src_score,
+
+    score_cluster_of_dst AS dst_score
+
+FROM mr_mutual_scores(
+
+    hasura_session->>'x-hasura-user-id',
+
+    context
+
+);
+
 $$;
 
 
@@ -623,14 +853,22 @@ ALTER FUNCTION public.rating(context text, hasura_session json) OWNER TO postgre
 
 CREATE FUNCTION public.set_current_timestamp_updated_at() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-DECLARE
-  _new record;
-BEGIN
-  _new := NEW;
-  _new."updated_at" = NOW();
-  RETURN _new;
-END;
+    AS $$
+
+DECLARE
+
+  _new record;
+
+BEGIN
+
+  _new := NEW;
+
+  _new."updated_at" = NOW();
+
+  RETURN _new;
+
+END;
+
 $$;
 
 
@@ -655,25 +893,44 @@ ALTER VIEW public.edge OWNER TO postgres;
 
 CREATE FUNCTION public.updates(prefix text, hasura_session json) RETURNS SETOF public.edge
     LANGUAGE sql
-    AS $$
-WITH new_edges AS (
-  SELECT
-    *
-  FROM
-    mr_fetch_new_edges(hasura_session ->> 'x-hasura-user-id', prefix)
-),
-new_filter AS (
-  INSERT INTO
-    user_updates
-  VALUES(
-      hasura_session ->> 'x-hasura-user-id',
-      mr_get_new_edges_filter(hasura_session ->> 'x-hasura-user-id')
-    ) ON CONFLICT DO NOTHING
-)
-SELECT
-  *
-FROM
-  new_edges;
+    AS $$
+
+WITH new_edges AS (
+
+  SELECT
+
+    *
+
+  FROM
+
+    mr_fetch_new_edges(hasura_session ->> 'x-hasura-user-id', prefix)
+
+),
+
+new_filter AS (
+
+  INSERT INTO
+
+    user_updates
+
+  VALUES(
+
+      hasura_session ->> 'x-hasura-user-id',
+
+      mr_get_new_edges_filter(hasura_session ->> 'x-hasura-user-id')
+
+    ) ON CONFLICT DO NOTHING
+
+)
+
+SELECT
+
+  *
+
+FROM
+
+  new_edges;
+
 $$;
 
 
@@ -707,8 +964,10 @@ ALTER TABLE public."user" OWNER TO postgres;
 
 CREATE FUNCTION public.user_get_my_vote(user_row public."user", hasura_session json) RETURNS integer
     LANGUAGE sql STABLE
-    AS $$
-SELECT COALESCE((SELECT amount FROM vote_user WHERE subject = (hasura_session ->> 'x-hasura-user-id')::TEXT AND object = user_row.id), 0);
+    AS $$
+
+SELECT COALESCE((SELECT amount FROM vote_user WHERE subject = (hasura_session ->> 'x-hasura-user-id')::TEXT AND object = user_row.id), 0);
+
 $$;
 
 
@@ -720,21 +979,80 @@ ALTER FUNCTION public.user_get_my_vote(user_row public."user", hasura_session js
 
 CREATE FUNCTION public.user_get_scores(user_row public."user", hasura_session json) RETURNS SETOF public.mutual_score
     LANGUAGE sql IMMUTABLE
-    AS $$
-SELECT
-  src,
-  dst,
-  score_cluster_of_src AS src_score,
-  score_cluster_of_dst AS dst_score
-FROM mr_node_score(
-    hasura_session ->> 'x-hasura-user-id',
-    user_row.id,
-    hasura_session ->> 'x-hasura-query-context'
-)
+    AS $$
+
+SELECT
+
+  src,
+
+  dst,
+
+  score_cluster_of_src AS src_score,
+
+  score_cluster_of_dst AS dst_score
+
+FROM mr_node_score(
+
+    hasura_session ->> 'x-hasura-user-id',
+
+    user_row.id,
+
+    hasura_session ->> 'x-hasura-query-context'
+
+)
+
 $$;
 
 
 ALTER FUNCTION public.user_get_scores(user_row public."user", hasura_session json) OWNER TO postgres;
+
+--
+-- Name: vote_beacon_before_insert(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.vote_beacon_before_insert() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.subject RETURNING counter INTO NEW.ticker;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.vote_beacon_before_insert() OWNER TO postgres;
+
+--
+-- Name: vote_comment_before_insert(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.vote_comment_before_insert() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.subject RETURNING counter INTO NEW.ticker;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.vote_comment_before_insert() OWNER TO postgres;
+
+--
+-- Name: vote_user_before_insert(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.vote_user_before_insert() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  UPDATE user_vsids SET counter = counter + 1 WHERE user_id = NEW.subject RETURNING counter INTO NEW.ticker;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.vote_user_before_insert() OWNER TO postgres;
 
 --
 -- Name: beacon_pinned; Type: TABLE; Schema: public; Owner: postgres
@@ -987,27 +1305,6 @@ CREATE INDEX message_by_subject ON public.message USING btree (subject);
 
 
 --
--- Name: beacon notify_hasura_beacon_mutate_INSERT; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER "notify_hasura_beacon_mutate_INSERT" AFTER INSERT ON public.beacon FOR EACH ROW EXECUTE FUNCTION hdb_catalog."notify_hasura_beacon_mutate_INSERT"();
-
-
---
--- Name: beacon notify_hasura_user_mutate_UPDATE; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER "notify_hasura_user_mutate_UPDATE" AFTER UPDATE ON public.beacon FOR EACH ROW EXECUTE FUNCTION hdb_catalog."notify_hasura_user_mutate_UPDATE"();
-
-
---
--- Name: user notify_hasura_user_mutate_UPDATE; Type: TRIGGER; Schema: public; Owner: postgres
---
-
-CREATE TRIGGER "notify_hasura_user_mutate_UPDATE" AFTER UPDATE ON public."user" FOR EACH ROW EXECUTE FUNCTION hdb_catalog."notify_hasura_user_mutate_UPDATE"();
-
-
---
 -- Name: beacon notify_meritrank_beacon_mutation; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1061,6 +1358,48 @@ CREATE TRIGGER on_public_user_update BEFORE UPDATE ON public."user" FOR EACH ROW
 --
 
 CREATE TRIGGER on_user_created AFTER INSERT ON public."user" FOR EACH ROW EXECUTE FUNCTION public.on_user_created();
+
+
+--
+-- Name: beacon public_beacon_before_insert; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER public_beacon_before_insert BEFORE INSERT ON public.beacon FOR EACH ROW EXECUTE FUNCTION public.beacon_before_insert();
+
+
+--
+-- Name: comment public_comment_before_insert; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER public_comment_before_insert BEFORE INSERT ON public.comment FOR EACH ROW EXECUTE FUNCTION public.comment_before_insert();
+
+
+--
+-- Name: opinion public_opinion_before_insert; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER public_opinion_before_insert BEFORE INSERT ON public.opinion FOR EACH ROW EXECUTE FUNCTION public.opinion_before_insert();
+
+
+--
+-- Name: vote_beacon public_vote_beacon_before_insert; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER public_vote_beacon_before_insert BEFORE INSERT ON public.vote_beacon FOR EACH ROW EXECUTE FUNCTION public.vote_beacon_before_insert();
+
+
+--
+-- Name: vote_comment public_vote_comment_before_insert; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER public_vote_comment_before_insert BEFORE INSERT ON public.vote_comment FOR EACH ROW EXECUTE FUNCTION public.vote_comment_before_insert();
+
+
+--
+-- Name: vote_user public_vote_user_before_insert; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER public_vote_user_before_insert BEFORE INSERT ON public.vote_user FOR EACH ROW EXECUTE FUNCTION public.vote_user_before_insert();
 
 
 --

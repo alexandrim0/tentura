@@ -6,15 +6,15 @@ import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/domain/use_case/auth_case.dart';
 
 import '../custom_types.dart';
-import '../input_types.dart';
+import '../input/_input_types.dart';
 
 GraphQLObjectField<dynamic, dynamic> get signIn => GraphQLObjectField(
   'signIn',
   gqlTypeAuthResponse.nonNullable(),
-  arguments: [gqlInputTypeAuthRequestToken],
+  arguments: [InputFieldAuthRequestToken.fieldNonNullable],
   resolve: (_, args) async {
     final jwt = await GetIt.I<AuthCase>().signIn(
-      authRequestToken: args[kInputTypeAuthRequestToken] as String,
+      authRequestToken: InputFieldAuthRequestToken.fromArgsNonNullable(args),
     );
     return jwt.asOauth2Map;
   },
@@ -24,15 +24,13 @@ GraphQLObjectField<dynamic, dynamic> get signUp => GraphQLObjectField(
   'signUp',
   gqlTypeAuthResponse.nonNullable(),
   arguments: [
-    gqlInputTypeTitle,
-    gqlInputTypeDescription,
-    gqlInputTypeAuthRequestToken,
+    InputFieldTitle.fieldNonNullable,
+    InputFieldAuthRequestToken.fieldNonNullable,
   ],
   resolve: (_, args) async {
     final jwt = await GetIt.I<AuthCase>().signUp(
-      authRequestToken: args[kInputTypeAuthRequestToken] as String,
-      description: args[kInputTypeDescriptionFieldName] as String?,
-      title: args[kInputTypeTitleFieldName] as String?,
+      authRequestToken: InputFieldAuthRequestToken.fromArgsNonNullable(args),
+      title: InputFieldTitle.fromArgsNonNullable(args),
     );
     return jwt.asOauth2Map;
   },

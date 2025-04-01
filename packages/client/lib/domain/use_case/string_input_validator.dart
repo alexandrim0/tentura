@@ -12,7 +12,7 @@ mixin StringInputValidator {
   }
 
   String? descriptionValidator(String? description) {
-    if (description != null && description.length > kDescriptionLength) {
+    if (description != null && description.length > kDescriptionMaxLength) {
       return 'Description too long';
     }
     return null;

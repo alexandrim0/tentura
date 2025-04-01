@@ -2,9 +2,10 @@ import 'dart:typed_data';
 import 'package:image/image.dart' as img;
 import 'package:blurhash_dart/blurhash_dart.dart';
 
-import 'package:tentura_server/consts.dart';
-
 mixin ImageCaseMixin {
+  static const kMaxNumCompX = 8;
+  static const kMinNumCompX = 6;
+
   img.Image decodeImage(Uint8List imageBytes) =>
       img.decodeImage(imageBytes) ??
       (throw const FormatException('Cant decode image'));

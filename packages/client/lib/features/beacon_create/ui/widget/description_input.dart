@@ -13,11 +13,9 @@ class DescriptionInput extends StatelessWidget {
     final cubit = context.read<BeaconCreateCubit>();
     return TextFormField(
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      decoration: InputDecoration(
-        hintText: I10n.of(context)!.labelDescription,
-      ),
+      decoration: InputDecoration(hintText: I10n.of(context)!.labelDescription),
       keyboardType: TextInputType.multiline,
-      maxLength: kDescriptionLength,
+      maxLength: kDescriptionMaxLength,
       maxLines: null,
       onChanged: cubit.setDescription,
       onTapOutside: (_) => FocusScope.of(context).unfocus(),

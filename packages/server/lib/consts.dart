@@ -4,15 +4,7 @@ import 'package:tentura_root/consts.dart' as tentura;
 
 export 'package:tentura_root/consts.dart' hide kImageServer, kServerName;
 
-// Numbers
-
-// blurHash
-const kMaxNumCompX = 8;
-const kMinNumCompX = 6;
-
 // Strings
-const kPathEvents = '/hasura/events';
-
 const kContextJwtKey = 'contextJwt';
 
 // Make [environment] as mutable for testing purposes only!

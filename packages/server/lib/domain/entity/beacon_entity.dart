@@ -19,7 +19,7 @@ abstract class BeaconEntity with _$BeaconEntity {
     required UserEntity author,
     required DateTime createdAt,
     required DateTime updatedAt,
-    @Default(false) bool isEnabled,
+    @Default(true) bool isEnabled,
     @Default(false) bool hasPicture,
     @Default('') String description,
     @Default('') String blurHash,
@@ -29,6 +29,30 @@ abstract class BeaconEntity with _$BeaconEntity {
     LatLng? coordinates,
     String? context,
   }) = _BeaconEntity;
+
+  factory BeaconEntity.aNew({
+    required String title,
+    required UserEntity author,
+    bool hasPicture = false,
+    String description = '',
+    DateTimeRange? timerange,
+    LatLng? coordinates,
+    String? context,
+  }) {
+    final now = DateTime.timestamp();
+    return BeaconEntity(
+      id: newId,
+      title: title,
+      author: author,
+      createdAt: now,
+      updatedAt: now,
+      context: context,
+      timerange: timerange,
+      coordinates: coordinates,
+      description: description,
+      hasPicture: hasPicture,
+    );
+  }
 
   const BeaconEntity._();
 

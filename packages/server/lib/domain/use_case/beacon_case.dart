@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+import 'package:latlong2/latlong.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura_root/domain/entity/date_time_range.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/image_repository.dart';
+import 'package:tentura_server/domain/entity/user_entity.dart';
 
 import '../entity/event_entity.dart';
 import '../enum.dart';
@@ -14,6 +18,42 @@ class BeaconCase with ImageCaseMixin {
   final BeaconRepository _beaconRepository;
 
   final ImageRepository _imageRepository;
+
+  Future<BeaconEntity> create({
+    required String userId,
+    required String title,
+    String? context,
+    String? description,
+    Stream<Uint8List>? imageBytes,
+    ({double lat, double long})? coordinates,
+    ({DateTime? from, DateTime? to})? timeRange,
+  }) async {
+    final beacon = await _beaconRepository.createBeacon(
+      BeaconEntity.aNew(
+        title: title,
+        context: context,
+        description: description ?? '',
+        hasPicture: imageBytes != null,
+        timerange:
+            timeRange == null
+                ? null
+                : DateTimeRange(start: timeRange.from, end: timeRange.to),
+        coordinates:
+            coordinates == null
+                ? null
+                : LatLng(coordinates.lat, coordinates.long),
+        author: UserEntity(id: userId),
+      ),
+    );
+    if (imageBytes != null) {
+      await _imageRepository.putBeaconImage(
+        authorId: userId,
+        beaconId: beacon.id,
+        bytes: imageBytes,
+      );
+    }
+    return beacon;
+  }
 
   Future<bool> deleteById({
     required String beaconId,

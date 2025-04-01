@@ -44,8 +44,7 @@ class AuthCase {
 
   Future<JwtEntity> signUp({
     required String authRequestToken,
-    String? description,
-    String? title,
+    required String title,
   }) async {
     final jwt = _verifyAuthRequest(token: authRequestToken);
 
@@ -53,8 +52,7 @@ class AuthCase {
       user: UserEntity(
         id: UserEntity.newId,
         publicKey: (jwt.payload as Map)['pk'] as String,
-        description: description ?? '',
-        title: title ?? '',
+        title: title,
       ),
     );
 

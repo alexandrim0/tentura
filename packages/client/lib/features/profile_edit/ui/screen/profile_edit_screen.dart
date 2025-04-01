@@ -146,7 +146,7 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
                             ? (constraints.maxHeight / painter.height).floor()
                             : 1,
                     minLines: 1,
-                    maxLength: kDescriptionLength,
+                    maxLength: kDescriptionMaxLength,
                     keyboardType: TextInputType.multiline,
                     initialValue: cubit.state.description,
                     autovalidateMode: AutovalidateMode.onUnfocus,

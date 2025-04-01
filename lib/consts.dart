@@ -6,7 +6,7 @@ const kTitleMinLength = 3;
 
 const kTitleMaxLength = 32;
 
-const kDescriptionLength = 2_048;
+const kDescriptionMaxLength = 2_048;
 
 const kRatingSector = 100 / 4;
 
