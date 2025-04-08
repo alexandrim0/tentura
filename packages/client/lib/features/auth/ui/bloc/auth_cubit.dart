@@ -95,10 +95,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> signUp({
-    required String title,
-    required String description,
-  }) async {
+  Future<void> signUp({required String title}) async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       emit(
@@ -107,11 +104,7 @@ class AuthCubit extends Cubit<AuthState> {
               state.accounts
                 ..add(
                   Profile(
-                    id: await _authRepository.signUp(
-                      description: description,
-                      title: title,
-                    ),
-                    description: description,
+                    id: await _authRepository.signUp(title: title),
                     title: title,
                   ),
                 )

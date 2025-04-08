@@ -1,31 +1,19 @@
-# import '/data/gql/beacon_model.graphql'
-
 mutation BeaconCreate(
   $title: String!,
-  $description: String!,
-  $lat: float8,
-  $long: float8,
-  $context: String,
-  $timerange: tstzrange,
-  $has_picture: Boolean = false,
-  $blur_hash: String = "",
-  $pic_height: Int = 0,
-  $pic_width: Int = 0
+  $context: String = "",
+  $description: String = "",
+  $coordinates: Coordinates = {},
+  $dateRange: DateRange = {},
+  $image: Upload = {}
+) {
+  beaconCreate(
+    title: $title,
+    description: $description,
+    coordinates: $coordinates,
+    dateRange: $dateRange,
+    context: $context,
+    image: $image
   ) {
-  insert_beacon_one(
-    object: {
-      lat: $lat,
-      long: $long,
-      title: $title,
-      context: $context,
-      timerange: $timerange,
-      description: $description,
-      has_picture: $has_picture,
-      blur_hash: $blur_hash,
-      pic_height: $pic_height,
-      pic_width: $pic_width
-    }
-  ) {
-    ...BeaconModel
+    id
   }
 }

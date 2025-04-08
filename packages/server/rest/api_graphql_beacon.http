@@ -1,5 +1,5 @@
 #
-### GQL delete_beacon_by_id
+### GQL beaconDeleteById
 #
 POST {{base_url}}/{{gqlV2_path}}
 Authorization: Bearer {{$dotenv TENTURA_JWT}}
@@ -12,4 +12,41 @@ mutation BeaconDeleteById($id: String!) {
 
 {
   "id": "Bb9d31c168baf"
+}
+
+#
+### GQL beaconCreate
+#
+POST {{base_url}}/{{gqlV2_path}}
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation BeaconCreate(
+  $title: String!,
+  $context: String = "",
+  $description: String = "",
+  $coordinates: Coordinates = {},
+  $dateRange: DateRange = {},
+  $image: Upload = {}
+) {
+  beaconCreate(
+    title: $title,
+    description: $description,
+    coordinates: $coordinates,
+    dateRange: $dateRange,
+    context: $context,
+    image: $image
+  ) {
+    id
+  }
+}
+
+{
+  "title": "From rest",
+  "description": "Just for test",
+  "dateRange": {
+    "start": "2025-04-05T00:00:00.000",
+    "end": "2025-04-05T00:00:00.000"
+  }
 }

@@ -1,11 +1,10 @@
+import 'dart:async';
 import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/data/repository/image_repository.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
 
-import '../entity/event_entity.dart';
-import '../enum.dart';
 import 'image_case_mixin.dart';
 
 @Injectable(order: 2)
@@ -16,7 +15,7 @@ class UserCase with ImageCaseMixin {
 
   final UserRepository _userRepository;
 
-  Future<bool> updateProfile({
+  Future<UserEntity> updateProfile({
     required String id,
     String? title,
     String? description,
@@ -45,6 +44,7 @@ class UserCase with ImageCaseMixin {
         imageHeight: 0,
         imageWidth: 0,
       );
+      unawaited(updateBlurHash(userId: id));
     } else {
       await _userRepository.updateUser(
         id: id,
@@ -52,7 +52,7 @@ class UserCase with ImageCaseMixin {
         description: description,
       );
     }
-    return true;
+    return UserEntity(id: id);
   }
 
   Future<bool> deleteById({required String id}) async {
@@ -61,27 +61,18 @@ class UserCase with ImageCaseMixin {
     return true;
   }
 
-  Future<void> updateBlurhash({required String id}) async {
-    final image = decodeImage(await _imageRepository.getUserImage(userId: id));
-    await _userRepository.updateUser(
-      id: id,
-      blurHash: calculateBlurHash(image),
-      imageHeight: image.height,
-      imageWidth: image.width,
-    );
-  }
-
-  Future<void> handleEvent(EventEntity event) async {
-    switch (event.operation) {
-      case HasuraOperation.manual:
-      case HasuraOperation.update:
-        final profile = event.newData!;
-        if (profile['has_picture'] == true && profile['blur_hash'] == '') {
-          await updateBlurhash(id: profile['id']! as String);
-        }
-
-      case HasuraOperation.delete:
-      case HasuraOperation.insert:
+  Future<void> updateBlurHash({required String userId}) async {
+    try {
+      final imageBytes = await _imageRepository.getUserImage(userId: userId);
+      final image = decodeImage(imageBytes);
+      await _userRepository.updateUser(
+        id: userId,
+        blurHash: calculateBlurHash(image),
+        imageHeight: image.height,
+        imageWidth: image.width,
+      );
+    } catch (e) {
+      print(e);
     }
   }
 }

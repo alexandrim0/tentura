@@ -5,26 +5,29 @@ import 'package:tentura_server/domain/entity/jwt_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/domain/use_case/user_case.dart';
 
+import '../custom_types.dart';
 import '../input/_input_types.dart';
 
 GraphQLObjectField<dynamic, dynamic> get userUpdate => GraphQLObjectField(
   'userUpdate',
-  graphQLBoolean.nonNullable(),
+  gqlTypeProfile.nonNullable(),
   arguments: [
     InputFieldTitle.field,
-    InputFieldDescription.field,
     InputFieldDropImage.field,
-    InputFieldUpload.field,
+    InputFieldDescription.field,
+    InputFieldUpload.fieldImage,
   ],
   resolve:
       (_, args) => switch (args[kGlobalInputQueryJwt]) {
-        final JwtEntity jwt => GetIt.I<UserCase>().updateProfile(
-          id: jwt.sub,
-          title: InputFieldTitle.fromArgs(args),
-          description: InputFieldDescription.fromArgs(args),
-          imageBytes: InputFieldUpload.fromArgs(args),
-          dropImage: InputFieldDropImage.fromArgs(args),
-        ),
+        final JwtEntity jwt => GetIt.I<UserCase>()
+            .updateProfile(
+              id: jwt.sub,
+              title: InputFieldTitle.fromArgs(args),
+              description: InputFieldDescription.fromArgs(args),
+              imageBytes: InputFieldUpload.fromArgs(args),
+              dropImage: InputFieldDropImage.fromArgs(args),
+            )
+            .then((v) => v.asJson),
         _ => throw const UnauthorizedException(),
       },
 );

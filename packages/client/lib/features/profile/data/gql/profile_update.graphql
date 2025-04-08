@@ -1,7 +1,7 @@
 mutation ProfileUpdate(
   $title: String,
   $description: String,
-  $dropImage: Boolean = false
+  $dropImage: Boolean = false,
   $image: Upload = {}
 ) {
   userUpdate(
@@ -9,5 +9,7 @@ mutation ProfileUpdate(
     description: $description,
     dropImage: $dropImage,
     image: $image
-  )
+  ) {
+    id
+  }
 }

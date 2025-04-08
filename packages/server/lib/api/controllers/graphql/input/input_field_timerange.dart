@@ -1,25 +1,26 @@
 part of '_input_types.dart';
 
 abstract class InputFieldTimerange {
-  static final field = GraphQLFieldInput(_fieldKey, type);
+  static final field = GraphQLFieldInput(
+    _fieldKey,
+    type,
+    defaultValue: <String, dynamic>{},
+  );
 
   static final type = GraphQLInputObjectType(
-    'TimeRange',
+    'DateRange',
     inputFields: [
-      GraphQLInputObjectField('from', graphQLDate),
-      GraphQLInputObjectField('to', graphQLDate),
+      GraphQLInputObjectField('start', graphQLString),
+      GraphQLInputObjectField('end', graphQLString),
     ],
   );
 
-  static ({DateTime? from, DateTime? to})? fromArgs(Map<String, dynamic> args) {
-    final field = args[_fieldKey] as Map<String, dynamic>?;
-    if (field == null) {
-      return null;
-    }
-    final from = DateTime.tryParse((field['from'] ?? '') as String);
-    final to = DateTime.tryParse((field['to'] ?? '') as String);
-    return (from: from, to: to);
-  }
+  static DateRange? fromArgs(Map<String, dynamic> args) =>
+      switch (args[_fieldKey]) {
+        final Map<String, dynamic> field when field.isNotEmpty =>
+          DateRange.fromJson(field),
+        _ => null,
+      };
 
-  static const _fieldKey = 'timeRange';
+  static const _fieldKey = 'dateRange';
 }

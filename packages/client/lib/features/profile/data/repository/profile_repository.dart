@@ -28,8 +28,9 @@ class ProfileRepository {
   Future<void> dispose() => _controller.close();
 
   Future<Profile> fetch(String id) async {
+    final request = GUserFetchByIdReq((b) => b.vars.id = id);
     final response = await _remoteApiService
-        .request(GUserFetchByIdReq((b) => b.vars.id = id))
+        .request(request)
         .firstWhere((e) => e.dataSource == DataSource.Link)
         .then((r) => r.dataOrThrow(label: _label).user_by_pk)
         .then((r) => (r as UserModel?)?.toEntity);
@@ -45,41 +46,35 @@ class ProfileRepository {
     bool dropImage = false,
     ImageEntity? image,
   }) async {
-    final multipartFile =
-        image == null
-            ? null
-            : MultipartFile.fromBytes(
-              'image',
-              image.imageBytes,
-              contentType: MediaType.parse(image.mimeType),
-              filename: image.fileName,
-            );
-    final isOk = await _remoteApiService
-        .request(
-          GProfileUpdateReq((b) {
-            b.fetchPolicy = FetchPolicy.NoCache;
-            b.vars
-              ..title = title
-              ..description = description
-              ..dropImage = dropImage
-              ..image = multipartFile;
-          }),
-        )
+    final request = GProfileUpdateReq((b) {
+      b.fetchPolicy = FetchPolicy.NoCache;
+      b.vars
+        ..title = title
+        ..description = description
+        ..dropImage = dropImage
+        ..image =
+            image == null
+                ? null
+                : MultipartFile.fromBytes(
+                  'image',
+                  image.imageBytes,
+                  contentType: MediaType.parse(image.mimeType),
+                  filename: image.fileName,
+                );
+    });
+    await _remoteApiService
+        .request(request)
         .firstWhere((e) => e.dataSource == DataSource.Link)
-        .then((r) => r.dataOrThrow(label: _label).userUpdate);
-    if (isOk) {
-      _controller.add(
-        RepositoryEventUpdate(
-          profile.copyWith(
-            title: title ?? profile.title,
-            description: description ?? profile.description,
-            hasAvatar: !dropImage || image != null || profile.hasAvatar,
-          ),
+        .then((r) => r.dataOrThrow(label: _label));
+    _controller.add(
+      RepositoryEventUpdate(
+        profile.copyWith(
+          title: title ?? profile.title,
+          description: description ?? profile.description,
+          hasAvatar: !dropImage || image != null || profile.hasAvatar,
         ),
-      );
-    } else {
-      throw ProfileUpdateException(profile.id);
-    }
+      ),
+    );
   }
 
   Future<void> delete(String id) async {

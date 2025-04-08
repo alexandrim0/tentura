@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 import 'package:graphql_schema2/graphql_schema2.dart';
 
+import 'package:tentura_root/domain/entity/coordinates.dart';
+import 'package:tentura_root/domain/entity/date_range.dart';
 import 'package:tentura_server/consts.dart';
 
 part 'input_field_auth_request_token.dart';

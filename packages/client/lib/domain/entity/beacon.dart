@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' show DateTimeRange;
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:tentura/consts.dart';
+import 'package:tentura_root/domain/entity/date_range.dart';
 
 import 'coordinates.dart';
 import 'likable.dart';
@@ -16,7 +16,7 @@ abstract class Beacon with _$Beacon implements Likable {
     required DateTime createdAt,
     required DateTime updatedAt,
     Coordinates? coordinates,
-    DateTimeRange? dateRange,
+    DateRange? dateRange,
     @Default('') String id,
     @Default('') String title,
     @Default('') String context,

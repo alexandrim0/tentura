@@ -1,7 +1,11 @@
 part of '_input_types.dart';
 
 abstract class InputFieldCoordinates {
-  static final field = GraphQLFieldInput(_fieldKey, type);
+  static final field = GraphQLFieldInput(
+    _fieldKey,
+    type,
+    defaultValue: <String, dynamic>{},
+  );
 
   static final type = GraphQLInputObjectType(
     'Coordinates',
@@ -11,18 +15,14 @@ abstract class InputFieldCoordinates {
     ],
   );
 
-  static ({double lat, double long})? fromArgs(Map<String, dynamic> args) {
-    final field = args[_fieldKey] as Map<String, dynamic>?;
-    if (field == null) {
-      return null;
-    }
-    final lat = field['lat'] as double?;
-    final long = field['long'] as double?;
-    if (lat == null || long == null) {
-      return null;
-    }
-    return (lat: lat, long: long);
-  }
+  static Coordinates? fromArgs(Map<String, dynamic> args) =>
+      switch (args[_fieldKey]) {
+        final Map<String, dynamic> field when field.isNotEmpty => Coordinates(
+          lat: field['lat']! as double,
+          long: field['long']! as double,
+        ),
+        _ => null,
+      };
 
   static const _fieldKey = 'coordinates';
 }

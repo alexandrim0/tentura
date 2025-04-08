@@ -17,6 +17,25 @@
             ],
         },
         {
+            "name": "tentura-web (local)",
+            "request": "launch",
+            "cwd": "packages/client",
+            "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+                "--dart-define",
+                "SERVER_NAME=https://localhost",
+                "--dart-define",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
+                "--web-browser-flag=--ignore-certificate-errors",
+            ]
+        },
+        {
             "name": "tentura-web (debug)",
             "request": "launch",
             "cwd": "packages/client",

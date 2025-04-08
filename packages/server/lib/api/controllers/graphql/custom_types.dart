@@ -7,7 +7,8 @@ List<GraphQLType<dynamic, dynamic>> get customTypes => [
   InputFieldTimerange.type,
   InputFieldCoordinates.type,
   gqlTypeAuthResponse,
-  gqlTypeBeaconId,
+  gqlTypeProfile,
+  gqlTypeBeacon,
 ];
 
 final gqlTypeAuthResponse = GraphQLObjectType('AuthResponse', null)
@@ -19,5 +20,8 @@ final gqlTypeAuthResponse = GraphQLObjectType('AuthResponse', null)
     field('refresh_token', graphQLString),
   ]);
 
-final gqlTypeBeaconId = GraphQLObjectType('Beacon', null)
+final gqlTypeBeacon = GraphQLObjectType('Beacon', null)
+  ..fields.addAll([field('id', graphQLString.nonNullable())]);
+
+final gqlTypeProfile = GraphQLObjectType('User', null)
   ..fields.addAll([field('id', graphQLString.nonNullable())]);

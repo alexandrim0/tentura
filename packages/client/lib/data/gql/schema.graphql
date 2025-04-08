@@ -128,6 +128,10 @@ type beacon {
   ): [vote_beacon!]!
 }
 
+type Beacon {
+  id: String!
+}
+
 """
 order by aggregate values of table "beacon"
 """
@@ -187,35 +191,6 @@ input beacon_bool_exp {
 }
 
 """
-unique or primary key constraints on table "beacon"
-"""
-enum beacon_constraint {
-  """
-  unique or primary key constraint on columns "id"
-  """
-  beacon_pkey
-}
-
-"""
-input type for inserting data into table "beacon"
-"""
-input beacon_insert_input {
-  beacon_pinneds: beacon_pinned_arr_rel_insert_input
-  blur_hash: String
-  comments: comment_arr_rel_insert_input
-  context: String
-  description: String
-  has_picture: Boolean
-  lat: float8
-  long: float8
-  pic_height: Int
-  pic_width: Int
-  timerange: tstzrange
-  title: String
-  vote_beacons: vote_beacon_arr_rel_insert_input
-}
-
-"""
 order by max() on columns of table "beacon"
 """
 input beacon_max_order_by {
@@ -260,25 +235,6 @@ type beacon_mutation_response {
 
   """data from the rows affected by the mutation"""
   returning: [beacon!]!
-}
-
-"""
-input type for inserting object relation for remote table "beacon"
-"""
-input beacon_obj_rel_insert_input {
-  data: beacon_insert_input!
-
-  """upsert condition"""
-  on_conflict: beacon_on_conflict
-}
-
-"""
-on_conflict condition type for table "beacon"
-"""
-input beacon_on_conflict {
-  constraint: beacon_constraint!
-  update_columns: [beacon_update_column!]! = []
-  where: beacon_bool_exp
 }
 
 """Ordering options when selecting data from "beacon"."""
@@ -330,16 +286,6 @@ input beacon_pinned_aggregate_order_by {
 }
 
 """
-input type for inserting array relation for remote table "beacon_pinned"
-"""
-input beacon_pinned_arr_rel_insert_input {
-  data: [beacon_pinned_insert_input!]!
-
-  """upsert condition"""
-  on_conflict: beacon_pinned_on_conflict
-}
-
-"""
 Boolean expression to filter rows from the table "beacon_pinned". All fields are combined with a logical 'AND'.
 """
 input beacon_pinned_bool_exp {
@@ -366,7 +312,6 @@ enum beacon_pinned_constraint {
 input type for inserting data into table "beacon_pinned"
 """
 input beacon_pinned_insert_input {
-  beacon: beacon_obj_rel_insert_input
   beacon_id: String
 }
 
@@ -582,14 +527,6 @@ input beacon_sum_order_by {
   pic_width: order_by
 }
 
-"""
-update columns of table "beacon"
-"""
-enum beacon_update_column {
-  """column name"""
-  enabled
-}
-
 input beacon_updates {
   """sets the columns of the filtered rows to the given values"""
   _set: beacon_set_input
@@ -712,16 +649,6 @@ input comment_aggregate_order_by {
 }
 
 """
-input type for inserting array relation for remote table "comment"
-"""
-input comment_arr_rel_insert_input {
-  data: [comment_insert_input!]!
-
-  """upsert condition"""
-  on_conflict: comment_on_conflict
-}
-
-"""
 Boolean expression to filter rows from the table "comment". All fields are combined with a logical 'AND'.
 """
 input comment_bool_exp {
@@ -754,7 +681,6 @@ enum comment_constraint {
 input type for inserting data into table "comment"
 """
 input comment_insert_input {
-  beacon: beacon_obj_rel_insert_input
   beacon_id: String
   content: String
   vote_comments: vote_comment_arr_rel_insert_input
@@ -874,6 +800,11 @@ enum comment_update_column {
   _PLACEHOLDER
 }
 
+input Coordinates {
+  lat: Float
+  long: Float
+}
+
 """ordering argument of a cursor"""
 enum cursor_ordering {
   """ascending ordering of the cursor"""
@@ -881,6 +812,11 @@ enum cursor_ordering {
 
   """descending ordering of the cursor"""
   DESC
+}
+
+input DateRange {
+  end: String
+  start: String
 }
 
 """
@@ -1143,6 +1079,7 @@ input message_updates {
 
 """mutation root"""
 type mutation_root {
+  beaconCreate(context: String, coordinates: Coordinates = {}, dateRange: DateRange = {}, description: String, image: Upload = {}, title: String!): Beacon!
   beaconDeleteById(id: String!): Boolean!
 
   """
@@ -1222,28 +1159,6 @@ type mutation_root {
   delete single row from the table: "vote_user"
   """
   delete_vote_user_by_pk(object: String!, subject: String!): vote_user
-
-  """
-  insert data into the table: "beacon"
-  """
-  insert_beacon(
-    """the rows to be inserted"""
-    objects: [beacon_insert_input!]!
-
-    """upsert condition"""
-    on_conflict: beacon_on_conflict
-  ): beacon_mutation_response
-
-  """
-  insert a single row into the table: "beacon"
-  """
-  insert_beacon_one(
-    """the row to be inserted"""
-    object: beacon_insert_input!
-
-    """upsert condition"""
-    on_conflict: beacon_on_conflict
-  ): beacon
 
   """
   insert data into the table: "beacon_pinned"
@@ -1422,7 +1337,7 @@ type mutation_root {
   ): vote_user
   signIn(authRequestToken: String!): AuthResponse!
   signOut: Boolean!
-  signUp(authRequestToken: String!, description: String, title: String): AuthResponse!
+  signUp(authRequestToken: String!, title: String!): AuthResponse!
 
   """
   update data of the table: "beacon"
@@ -1600,7 +1515,7 @@ type mutation_root {
     where: edge_bool_exp
   ): [edge!]!
   userDelete: Boolean!
-  userUpdate(description: String, dropImage: Boolean, image: Upload = {}, title: String): Boolean!
+  userUpdate(description: String, dropImage: Boolean, image: Upload = {}, title: String): User!
 }
 
 """
@@ -3100,6 +3015,10 @@ type user {
   ): [vote_user!]!
 }
 
+type User {
+  id: String!
+}
+
 """
 Boolean expression to filter rows from the table "user". All fields are combined with a logical 'AND'.
 """
@@ -3361,16 +3280,6 @@ input vote_beacon_aggregate_order_by {
 }
 
 """
-input type for inserting array relation for remote table "vote_beacon"
-"""
-input vote_beacon_arr_rel_insert_input {
-  data: [vote_beacon_insert_input!]!
-
-  """upsert condition"""
-  on_conflict: vote_beacon_on_conflict
-}
-
-"""
 order by avg() on columns of table "vote_beacon"
 """
 input vote_beacon_avg_order_by {
@@ -3415,7 +3324,6 @@ input type for inserting data into table "vote_beacon"
 """
 input vote_beacon_insert_input {
   amount: Int
-  beacon: beacon_obj_rel_insert_input
   object: String
 }
 

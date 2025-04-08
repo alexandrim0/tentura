@@ -40,10 +40,7 @@ class AuthCubitMock extends Cubit<AuthState> implements AuthCubit {
   Future<void> signOut() async {}
 
   @override
-  Future<void> signUp({
-    required String title,
-    required String description,
-  }) async {}
+  Future<void> signUp({required String title}) async {}
 
   @override
   Future<void> dispose() async {}

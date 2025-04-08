@@ -1,5 +1,5 @@
 {
-  "resource_version": 25,
+  "resource_version": 26,
   "metadata": {
     "version": 3,
     "sources": [
@@ -90,30 +90,6 @@
                   },
                   "session_argument": "hasura_session"
                 }
-              }
-            ],
-            "insert_permissions": [
-              {
-                "role": "user",
-                "permission": {
-                  "check": {},
-                  "set": {
-                    "user_id": "x-hasura-User-Id"
-                  },
-                  "columns": [
-                    "blur_hash",
-                    "context",
-                    "description",
-                    "has_picture",
-                    "lat",
-                    "long",
-                    "pic_height",
-                    "pic_width",
-                    "timerange",
-                    "title"
-                  ]
-                },
-                "comment": ""
               }
             ],
             "select_permissions": [
@@ -1196,7 +1172,21 @@
           "customization": {},
           "forward_client_headers": true
         },
-        "comment": ""
+        "comment": "",
+        "remote_relationships": [
+          {
+            "relationships": [],
+            "type_name": "Beacon"
+          },
+          {
+            "relationships": [],
+            "type_name": "Profile"
+          },
+          {
+            "relationships": [],
+            "type_name": "User"
+          }
+        ]
       }
     ]
   }

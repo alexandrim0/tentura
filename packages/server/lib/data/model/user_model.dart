@@ -19,16 +19,7 @@ extension type const UserModel(UserView i) implements UserView {
   );
 }
 
-@Model(
-  tableName: 'user',
-  indexes: [
-    TableIndex(
-      name: 'user_public_key_key',
-      columns: ['public_key'],
-      unique: true,
-    ),
-  ],
-)
+@Model(tableName: 'user')
 abstract class User {
   @PrimaryKey()
   String get id;

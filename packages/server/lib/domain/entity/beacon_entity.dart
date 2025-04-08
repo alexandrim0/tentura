@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:latlong2/latlong.dart';
 
-import 'package:tentura_root/domain/entity/date_time_range.dart';
+import 'package:tentura_root/domain/entity/coordinates.dart';
+import 'package:tentura_root/domain/entity/date_range.dart';
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/utils/id.dart';
 
@@ -25,8 +25,8 @@ abstract class BeaconEntity with _$BeaconEntity {
     @Default('') String blurHash,
     @Default(0) int picHeight,
     @Default(0) int picWidth,
-    DateTimeRange? timerange,
-    LatLng? coordinates,
+    DateRange? timerange,
+    Coordinates? coordinates,
     String? context,
   }) = _BeaconEntity;
 
@@ -35,8 +35,8 @@ abstract class BeaconEntity with _$BeaconEntity {
     required UserEntity author,
     bool hasPicture = false,
     String description = '',
-    DateTimeRange? timerange,
-    LatLng? coordinates,
+    DateRange? timerange,
+    Coordinates? coordinates,
     String? context,
   }) {
     final now = DateTime.timestamp();
@@ -60,4 +60,6 @@ abstract class BeaconEntity with _$BeaconEntity {
       hasPicture
           ? '$kImageServer/$kImagesPath/${author.id}/$id.$kImageExt'
           : kImageServer + kBeaconPlaceholderUrl;
+
+  Map<String, Object> get asJson => {'id': id};
 }

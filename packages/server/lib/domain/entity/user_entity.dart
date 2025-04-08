@@ -22,6 +22,8 @@ abstract class UserEntity with _$UserEntity {
 
   const UserEntity._();
 
+  Map<String, Object> get asJson => {'id': id};
+
   String get imageUrl =>
       hasPicture
           ? '$kImageServer/$kImagesPath/$id/avatar.$kImageExt'

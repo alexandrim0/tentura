@@ -20,20 +20,21 @@ class AccountAddDialog extends StatefulWidget {
 class _AccountAddDialogState extends State<AccountAddDialog>
     with StringInputValidator {
   final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
 
   late final _textTheme = Theme.of(context).textTheme;
 
   @override
   void dispose() {
     _titleController.dispose();
-    _descriptionController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-    title: Text(I10n.of(context)!.createNewAccount, style: _textTheme.headlineMedium),
+    title: Text(
+      I10n.of(context)!.createNewAccount,
+      style: _textTheme.headlineMedium,
+    ),
     content: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -53,34 +54,12 @@ class _AccountAddDialogState extends State<AccountAddDialog>
             onTapOutside: (_) => FocusScope.of(context).unfocus(),
           ),
         ),
-
-        // User Description
-        Padding(
-          padding: kPaddingAll,
-          child: TextFormField(
-            autovalidateMode: AutovalidateMode.onUnfocus,
-            controller: _descriptionController,
-            decoration: InputDecoration(
-              labelText: I10n.of(context)!.labelDescription,
-              labelStyle: _textTheme.bodyMedium,
-            ),
-            keyboardType: TextInputType.multiline,
-            maxLines: 5,
-            minLines: 1,
-            style: _textTheme.bodyMedium,
-            validator: descriptionValidator,
-            onTapOutside: (_) => FocusScope.of(context).unfocus(),
-          ),
-        ),
       ],
     ),
     actions: [
       TextButton(
         onPressed: () async {
-          await GetIt.I<AuthCubit>().signUp(
-            description: _descriptionController.text,
-            title: _titleController.text,
-          );
+          await GetIt.I<AuthCubit>().signUp(title: _titleController.text);
           if (context.mounted) Navigator.of(context).pop();
         },
         child: Text(I10n.of(context)!.buttonCreate),

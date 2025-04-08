@@ -24,6 +24,7 @@ GraphQL get graphqlSchema => GraphQL(
         signOut,
 
         // Beacon
+        beaconCreate,
         beaconBeleteById,
 
         // User

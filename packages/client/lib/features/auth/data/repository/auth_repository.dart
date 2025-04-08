@@ -88,10 +88,7 @@ class AuthRepository {
   }
 
   /// Returns id of actual account
-  Future<String> signUp({
-    required String title,
-    required String description,
-  }) async {
+  Future<String> signUp({required String title}) async {
     final seed = base64UrlEncode(
       Uint8List(32)..fillRange(0, 32, Random.secure().nextInt(256)),
     );
@@ -100,19 +97,14 @@ class AuthRepository {
       authTokenFetcher: authTokenFetcher,
       returnAuthRequestToken: AuthRequestIntent.signUp,
     );
+    final request = GSignUpReq((b) {
+      b.context = const Context().withEntry(const HttpAuthHeaders.noAuth());
+      b.vars
+        ..title = title
+        ..authRequestToken = authRequestToken;
+    });
     final response = await _remoteApiService
-        .request(
-          GSignUpReq(
-            (r) =>
-                r
-                  ..context = const Context().withEntry(
-                    const HttpAuthHeaders.noAuth(),
-                  )
-                  ..vars.title = title
-                  ..vars.description = description
-                  ..vars.authRequestToken = authRequestToken,
-          ),
-        )
+        .request(request)
         .firstWhere((e) => e.dataSource == DataSource.Link)
         .then((r) => r.dataOrThrow().signUp);
     await _addAccount(response.subject, seed, title);
@@ -186,25 +178,24 @@ class AuthRepository {
   static Future<Credentials> authTokenFetcher(
     GqlFetcher fetcher,
     String authRequestToken,
-  ) => fetcher(
-        GSignInReq(
-          (r) =>
-              r
-                ..context = const Context().withEntry(
-                  const HttpAuthHeaders.noAuth(),
-                )
-                ..vars.authRequestToken = authRequestToken,
-        ),
-      )
-      .firstWhere((e) => e.dataSource == DataSource.Link)
-      .then((r) => r.dataOrThrow().signIn)
-      .then(
-        (v) => Credentials(
-          userId: v.subject,
-          accessToken: v.access_token,
-          expiresAt: DateTime.timestamp().add(Duration(seconds: v.expires_in)),
-        ),
-      );
+  ) {
+    final request = GSignInReq((b) {
+      b.context = const Context().withEntry(const HttpAuthHeaders.noAuth());
+      b.vars.authRequestToken = authRequestToken;
+    });
+    return fetcher(request)
+        .firstWhere((e) => e.dataSource == DataSource.Link)
+        .then((r) => r.dataOrThrow().signIn)
+        .then(
+          (v) => Credentials(
+            userId: v.subject,
+            accessToken: v.access_token,
+            expiresAt: DateTime.timestamp().add(
+              Duration(seconds: v.expires_in),
+            ),
+          ),
+        );
+  }
 
   static const _repositoryKey = 'Auth';
 

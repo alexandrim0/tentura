@@ -23,18 +23,16 @@ class ContextCubit extends Cubit<ContextState> {
     bool fromCache = true,
     AuthRepository? authRepository,
     ContextRepository? contextRepository,
-  })  : _authRepository = authRepository ?? GetIt.I<AuthRepository>(),
-        _contextRepository = contextRepository ?? GetIt.I<ContextRepository>(),
-        super(const ContextState()) {
+  }) : _authRepository = authRepository ?? GetIt.I<AuthRepository>(),
+       _contextRepository = contextRepository ?? GetIt.I<ContextRepository>(),
+       super(const ContextState()) {
     _contextChanges.resume();
     fetch(fromCache: fromCache);
   }
 
   @factoryMethod
-  ContextCubit.global(
-    this._authRepository,
-    this._contextRepository,
-  ) : super(const ContextState()) {
+  ContextCubit.global(this._authRepository, this._contextRepository)
+    : super(const ContextState()) {
     _authChanges.resume();
     _contextChanges.resume();
   }
@@ -43,30 +41,36 @@ class ContextCubit extends Cubit<ContextState> {
 
   final ContextRepository _contextRepository;
 
-  late final _authChanges = _authRepository.currentAccountChanges().listen(
-    (id) async {
-      if (id.isNotEmpty) await fetch(fromCache: false);
-    },
-    cancelOnError: false,
-  );
+  late final _authChanges = _authRepository.currentAccountChanges().listen((
+    id,
+  ) async {
+    if (id.isNotEmpty) await fetch(fromCache: false);
+  }, cancelOnError: false);
 
   late final _contextChanges = _contextRepository.changes.listen(
     (event) => switch (event) {
-      final RepositoryEventCreate<ContextEntity> entity => emit(ContextState(
+      final RepositoryEventCreate<ContextEntity> entity => emit(
+        ContextState(
           contexts: state.contexts..add(entity.value.name),
           selected: state.selected,
-        )),
-      final RepositoryEventDelete<ContextEntity> entity => emit(ContextState(
+        ),
+      ),
+      final RepositoryEventDelete<ContextEntity> entity => emit(
+        ContextState(
           contexts: state.contexts..remove(entity.id),
           selected: state.selected == entity.id ? '' : state.selected,
-        )),
+        ),
+      ),
       RepositoryEventUpdate<ContextEntity>() => null,
       RepositoryEventFetch<ContextEntity>() => null,
     },
     cancelOnError: false,
-    onError: (Object? e) => emit(state.copyWith(
-      status: StateHasError(e ?? const ContextUnknownException()),
-    )),
+    onError:
+        (Object? e) => emit(
+          state.copyWith(
+            status: StateHasError(e ?? const ContextUnknownException()),
+          ),
+        ),
   );
 
   @disposeMethod
@@ -77,54 +81,37 @@ class ContextCubit extends Cubit<ContextState> {
   }
 
   Future<void> fetch({bool fromCache = true}) async {
-    emit(state.copyWith(
-      status: StateStatus.isLoading,
-    ));
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final contexts = await _contextRepository.fetch(fromCache: fromCache);
-      emit(ContextState(
-        contexts: contexts.toSet(),
-        selected: state.selected,
-      ));
+      emit(ContextState(contexts: contexts.toSet(), selected: state.selected));
     } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
-      ));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
   String select(String contextName) {
-    emit(ContextState(
-      contexts: state.contexts,
-      selected: contextName,
-    ));
+    emit(ContextState(contexts: state.contexts, selected: contextName));
     return contextName;
   }
 
-  Future<void> add(
-    String? contextName, {
-    bool select = true,
-  }) async {
-    if (contextName == null || state.contexts.contains(contextName)) {
+  Future<void> add(String? contextName, {bool select = true}) async {
+    if (contextName == null) {
       return;
+    } else if (state.contexts.contains(contextName)) {
+      this.select(contextName);
     }
-    emit(state.copyWith(
-      status: StateStatus.isLoading,
-    ));
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
       await _contextRepository.add(contextName);
       if (select) emit(state.copyWith(selected: contextName));
     } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
-      ));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 
   Future<void> delete(String contextName) async {
-    emit(state.copyWith(
-      status: StateStatus.isLoading,
-    ));
+    emit(state.copyWith(status: StateStatus.isLoading));
     try {
       await _contextRepository.delete(
         userId: await _authRepository.getCurrentAccountId(),
@@ -134,9 +121,7 @@ class ContextCubit extends Cubit<ContextState> {
         emit(state.copyWith(selected: ''));
       }
     } catch (e) {
-      emit(state.copyWith(
-        status: StateHasError(e),
-      ));
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 }

@@ -1,10 +1,10 @@
-import 'package:latlong2/latlong.dart';
-import 'package:stormberry/stormberry.dart' hide DateTimeRange;
+import 'package:stormberry/stormberry.dart' hide DateRange;
 
-import 'package:tentura_root/domain/entity/date_time_range.dart';
+import 'package:tentura_root/domain/entity/coordinates.dart';
+import 'package:tentura_root/domain/entity/date_range.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
 
-import '../service/converter/datetime_range_converter.dart';
+import '../service/converter/date_range_converter.dart';
 import '../service/converter/timestamptz_converter.dart';
 import 'user_model.dart';
 
@@ -24,7 +24,10 @@ extension type const BeaconModel(BeaconView i) implements BeaconView {
     createdAt: createdAt,
     updatedAt: updatedAt,
     timerange: timerange,
-    coordinates: lat == null || long == null ? null : LatLng(lat!, long!),
+    coordinates:
+        lat == null || long == null
+            ? null
+            : Coordinates(lat: lat!, long: long!),
     author: (user as UserModel).asEntity,
   );
 }
@@ -63,8 +66,8 @@ abstract class Beacon {
 
   int get ticker;
 
-  @UseConverter(DateTimeRangeConverter())
-  DateTimeRange? get timerange;
+  @UseConverter(DateRangeConverter())
+  DateRange? get timerange;
 
   @UseConverter(TimestamptzConverter())
   DateTime get createdAt;

@@ -34,8 +34,8 @@ targets:
               name: DateTime
 
             tstzrange:
-              name: DateTimeRange
-              import: "package:flutter/material.dart"
+              name: DateRange
+              import: "package:tentura_root/domain/entity/date_range.dart"
 
             Upload:
               name: MultipartFile
@@ -48,23 +48,26 @@ targets:
           output_dir: "_g"
 
           type_overrides:
+            Date:
+              name: DateTime
+
             timestamptz:
               name: DateTime
 
             tstzrange:
-              name: DateTimeRange
-              import: "package:flutter/material.dart"
+              name: DateRange
+              import: "package:tentura_root/domain/entity/date_range.dart"
 
             Upload:
               name: MultipartFile
               import: 'package:http/http.dart'
 
           custom_serializers:
-            - import: "package:tentura/data/gql/timestamptz_serializer.dart"
-              name: TimestamptzSerializer
-
             - import: "package:tentura/data/gql/tstzrange_serializer.dart"
               name: TstzrangeSerializer
+
+            - import: "package:tentura/data/gql/timestamptz_serializer.dart"
+              name: TimestamptzSerializer
 
             - import: "package:tentura/data/gql/upload_serializer.dart"
               name: UploadSerializer
