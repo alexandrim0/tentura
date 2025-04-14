@@ -11,6 +11,7 @@
 				"--wasm",
 				"--pwa-strategy",
 				"none",
+				"--source-maps",
 				"--dart-define-from-file=.env",
 			],
 			"group": {
