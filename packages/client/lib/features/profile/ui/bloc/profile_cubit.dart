@@ -74,9 +74,12 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   void _onProfileChanges(RepositoryEvent<Profile> event) => switch (event) {
-    RepositoryEventUpdate<Profile>(value: final profile)
+    RepositoryEventFetch<Profile>(value: final profile)
         when profile.id == state.profile.id =>
       emit(ProfileState(profile: profile)),
+    RepositoryEventUpdate<Profile>(value: final profile) => emit(
+      ProfileState(profile: profile),
+    ),
     _ => null,
   };
 }

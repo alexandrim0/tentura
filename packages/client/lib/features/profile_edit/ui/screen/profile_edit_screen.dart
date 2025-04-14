@@ -44,9 +44,14 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
       appBar: AppBar(
         actions: [
           // Save Button
-          TextButton(
-            onPressed: cubit.save,
-            child: Text(I10n.of(context)!.buttonSave),
+          BlocSelector<ProfileEditCubit, ProfileEditState, bool>(
+            selector: (state) => state.hasChanges,
+            builder: (context, hasChanges) {
+              return TextButton(
+                onPressed: hasChanges ? cubit.save : null,
+                child: Text(I10n.of(context)!.buttonSave),
+              );
+            },
           ),
         ],
       ),
@@ -57,11 +62,13 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
         children: [
           // Avatar
           BlocBuilder<ProfileEditCubit, ProfileEditState>(
-            buildWhen: (p, c) => p.image != c.image,
+            buildWhen: (p, c) {
+              return p.image != c.image || p.willDropImage != c.willDropImage;
+            },
             builder: (_, state) {
               return Stack(
                 children: [
-                  if (state.image == null)
+                  if (state.hasNoImage && state.canDropImage)
                     // Original Avatar
                     AvatarRated.big(
                       profile: cubit.state.original,
@@ -72,7 +79,7 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
                       dimension: AvatarRated.sizeBig,
                       child: ClipOval(
                         child:
-                            state.hasNoImage
+                            state.hasNoImage || state.willDropImage
                                 // Placeholder
                                 ? Image.asset(
                                   kAssetAvatarPlaceholder,

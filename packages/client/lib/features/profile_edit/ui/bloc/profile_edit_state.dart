@@ -10,8 +10,10 @@ abstract class ProfileEditState extends StateBase with _$ProfileEditState {
     required Profile original,
     required String title,
     required String description,
-    @Default(null) ImageEntity? image,
+    @Default(false) bool canDropImage,
+    @Default(false) bool willDropImage,
     @Default(StateIsSuccess()) StateStatus status,
+    ImageEntity? image,
   }) = _ProfileEditState;
 
   const ProfileEditState._();
@@ -20,14 +22,9 @@ abstract class ProfileEditState extends StateBase with _$ProfileEditState {
 
   bool get hasNoImage => image == null;
 
-  bool get canAddImage => image == null;
-
-  bool get canDropImage => image != null;
-
   bool get hasChanges =>
-      image != null ||
+      hasImage ||
+      willDropImage ||
       original.title != title ||
       original.description != description;
-
-  bool get hasNoChanges => !hasChanges;
 }

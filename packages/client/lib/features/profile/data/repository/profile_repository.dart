@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:http/http.dart' show MultipartFile;
 import 'package:http_parser/http_parser.dart';
 import 'package:injectable/injectable.dart';
+import 'package:tentura/consts.dart';
 
 import 'package:tentura/data/model/user_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
@@ -72,6 +73,8 @@ class ProfileRepository {
           title: title ?? profile.title,
           description: description ?? profile.description,
           hasAvatar: !dropImage || image != null || profile.hasAvatar,
+          blurhash:
+              dropImage || image != null ? kAvatarPlaceholderBlurhash : '',
         ),
       ),
     );

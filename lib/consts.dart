@@ -50,3 +50,7 @@ const kServerName = String.fromEnvironment('SERVER_NAME');
 
 /// First part of FQDN: `https://image.server.name`
 const kImageServer = String.fromEnvironment('IMAGE_SERVER');
+
+const kAvatarPlaceholderBlurhash =
+    ':QPjJjoL?bxu~qRjD%xuM{j[%MayIUj[t7j[~qa{xuWBD%of%MWBRjj[j[ayxuj[M{ay?bj[IT'
+    'WBayofayWBxuayRjofofWBWBj[Rjj[t7ayRjayRjofs:fQfQfRWBj[ofay';
