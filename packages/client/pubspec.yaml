@@ -6,7 +6,7 @@ version: 0.14.4
 
 environment:
   sdk: '>=3.7.2 <4.0.0'
-  flutter: ^3.29.2
+  flutter: ^3.29.3
 
 resolution: workspace
 
@@ -57,7 +57,7 @@ dependencies:
   gql_error_link: ^1.0.0
   gql_dedupe_link: ^2.0.3
   gql_websocket_link: ^2.0.1
-  mobile_scanner: ^7.0.0-beta.8
+  mobile_scanner: ^7.0.0-beta.9
   flutter_secure_storage: ^10.0.0-beta.4
 
   # UI related
@@ -104,3 +104,4 @@ sentry:
   upload_source_maps: true
   upload_sources: true
   ignore_missing: true
+  project: tentura

@@ -8,6 +8,7 @@ import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/comment_repository.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
 import 'package:tentura_server/api/view/shared_view/shared_view_document.dart';
+import 'package:tentura_server/domain/use_case/opinion_case.dart';
 
 import '_base_controller.dart';
 
@@ -23,11 +24,12 @@ final class SharedViewController extends BaseController {
         await renderComponent(
           SharedViewDocument(
             entity: switch (ogId?[0]) {
-              'U' => await getIt<UserRepository>().getUserById(ogId!),
               'B' => await getIt<BeaconRepository>().getBeaconById(
                 beaconId: ogId!,
               ),
               'C' => await getIt<CommentRepository>().getCommentById(ogId!),
+              'O' => await getIt<OpinionCase>().getOpinionById(ogId!),
+              'U' => await getIt<UserRepository>().getUserById(ogId!),
               _ => throw IdWrongException(id: ogId!),
             },
           ),
