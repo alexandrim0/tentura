@@ -2,22 +2,21 @@ import 'package:flutter/material.dart';
 
 import 'package:tentura_root/i10n/I10n.dart';
 
-import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 
-import '../bloc/beacon_cubit.dart';
-import '../dialog/beacon_delete_dialog.dart';
+import 'package:tentura/features/beacon/ui/dialog/beacon_delete_dialog.dart';
+
+import '../bloc/beacon_view_cubit.dart';
 
 class BeaconMineControl extends StatelessWidget {
-  const BeaconMineControl({required this.beacon, super.key});
-
-  final Beacon beacon;
+  const BeaconMineControl({super.key});
 
   @override
   Widget build(BuildContext context) {
     final i10n = I10n.of(context)!;
-    final beaconCubit = context.read<BeaconCubit>();
+    final beaconViewCubit = context.read<BeaconViewCubit>();
+    final beacon = beaconViewCubit.state.beacon;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -39,25 +38,23 @@ class BeaconMineControl extends StatelessWidget {
               (context) => [
                 // Enable / Disable
                 PopupMenuItem<void>(
+                  onTap: beaconViewCubit.toggleEnabled,
                   child: Text(
-                    beaconCubit.state.beacons
-                            .singleWhere((e) => e.id == beacon.id)
-                            .isEnabled
+                    beaconViewCubit.state.beacon.isEnabled
                         ? i10n.disableBeacon
                         : i10n.enableBeacon,
                   ),
-                  onTap: () async => beaconCubit.toggleEnabled(beacon.id),
                 ),
                 const PopupMenuDivider(),
 
                 // Delete
                 PopupMenuItem<void>(
-                  child: Text(i10n.deleteBeacon),
                   onTap: () async {
                     if (await BeaconDeleteDialog.show(context) ?? false) {
-                      await beaconCubit.delete(beacon.id);
+                      await beaconViewCubit.delete(beacon.id);
                     }
                   },
+                  child: Text(i10n.deleteBeacon),
                 ),
               ],
         ),

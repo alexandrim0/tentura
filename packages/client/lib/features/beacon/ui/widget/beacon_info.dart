@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura_root/i10n/I10n.dart';
+
+import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/beacon_image.dart';

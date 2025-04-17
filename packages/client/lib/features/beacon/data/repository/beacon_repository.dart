@@ -36,12 +36,14 @@ class BeaconRepository {
   Future<Iterable<Beacon>> fetchBeacons({
     required String profileId,
     required int offset,
+    bool isEnabled = true,
     int limit = kFetchWindowSize,
   }) async {
     final request = GBeaconsFetchByUserIdReq(
       (b) =>
           b.vars
             ..user_id = profileId
+            ..enabled = isEnabled
             ..offset = offset
             ..limit = limit,
     );

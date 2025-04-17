@@ -95,16 +95,19 @@ class ContextCubit extends Cubit<ContextState> {
     return contextName;
   }
 
-  Future<void> add(String? contextName, {bool select = true}) async {
+  Future<void> add(String? contextName) async {
     if (contextName == null) {
       return;
     } else if (state.contexts.contains(contextName)) {
-      this.select(contextName);
+      select(contextName);
+      return;
     }
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       await _contextRepository.add(contextName);
-      if (select) emit(state.copyWith(selected: contextName));
+      emit(
+        state.copyWith(selected: contextName, status: StateStatus.isSuccess),
+      );
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }

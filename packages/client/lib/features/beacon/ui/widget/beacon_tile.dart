@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura_root/i10n/I10n.dart';
+
+import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/author_info.dart';
@@ -53,11 +54,7 @@ class BeaconTile extends StatelessWidget {
         padding: kPaddingSmallV,
         child:
             isMine
-                ? BeaconMineControl(
-                  key: ValueKey(beacon.id),
-                  goBackOnDelete: false,
-                  beacon: beacon,
-                )
+                ? BeaconMineControl(key: ValueKey(beacon.id), beacon: beacon)
                 : BeaconTileControl(beacon: beacon),
       ),
     ],
