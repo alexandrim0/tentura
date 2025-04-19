@@ -72,6 +72,10 @@
   "@buttonSearch": {
     "context": "Utils"
   },
+  "buttonPaste": "Paste from Clipboard",
+  "@buttonPaste": {
+    "context": "Utils"
+  },
   "buttonScanQR": "Scan QR",
   "@buttonScanQR": {
     "context": "Utils"

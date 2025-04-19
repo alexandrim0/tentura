@@ -72,6 +72,10 @@
   "@buttonSearch": {
     "context": "Utils"
   },
+  "buttonPaste": "вставить из буфера",
+  "@buttonPaste": {
+    "context": "Utils"
+  },
   "buttonScanQR": "Сканировать QR",
   "@buttonScanQR": {
     "context": "Utils"
