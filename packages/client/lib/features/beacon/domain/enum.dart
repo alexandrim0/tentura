@@ -1,0 +1,1 @@
+enum BeaconFilter { enabled, disabled }

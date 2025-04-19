@@ -76,6 +76,8 @@
   "@buttonScanQR": {
     "context": "Utils"
   },
+
+
   "createNewAccount": "Create new Account",
   "@createNewAccount": {
     "context": "AccountAddDialog, AuthLoginScreen"
@@ -120,8 +122,18 @@
   "@confirmBeaconRemoval": {
     "context": "BeaconDeleteDialog"
   },
+
+
   "beaconsTitle": "Beacons",
   "@beaconsTitle": {
+    "context": "BeaconScreen"
+  },
+  "beaconsFilterEnabled": "Enabled",
+  "@beaconsFilterEnabled": {
+    "context": "BeaconScreen"
+  },
+  "beaconsFilterDisabled": "Disabled",
+  "@beaconsFilterDisabled": {
     "context": "BeaconScreen"
   },
   "noBeaconsMessage": "There are no beacons yet",
@@ -176,6 +188,8 @@
   "@attachImage": {
     "context": "LocationInput"
   },
+
+  
   "labelComments": "Comments",
   "@labelComments": {
     "context": "Comments"

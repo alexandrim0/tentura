@@ -76,6 +76,8 @@
   "@buttonScanQR": {
     "context": "Utils"
   },
+
+
   "createNewAccount": "Создать аккаунт",
   "@createNewAccount": {
     "context": "AccountAddDialog, AuthLoginScreen"
@@ -120,15 +122,25 @@
   "@confirmBeaconRemoval": {
     "context": "BeaconDeleteDialog"
   },
+
+
   "beaconsTitle": "Маяки",
   "@beaconsTitle": {
+    "context": "BeaconScreen"
+  },
+  "beaconsFilterEnabled": "Активные",
+  "@beaconsFilterEnabled": {
+    "context": "BeaconScreen"
+  },
+  "beaconsFilterDisabled": "Скрытые",
+  "@beaconsFilterDisabled": {
     "context": "BeaconScreen"
   },
   "noBeaconsMessage": "Мяков пока нет",
   "@noBeaconsMessage": {
     "context": "BeaconScreen"
   },
-  "disableBeacon": "Отключить маяк",
+  "disableBeacon": "Скрыть маяк",
   "@disableBeacon": {
     "context": "BeaconMineControl"
   },
@@ -176,6 +188,8 @@
   "@attachImage": {
     "context": "LocationInput"
   },
+
+  
   "labelComments": "Комментарии",
   "@labelComments": {
     "context": "Comments"
