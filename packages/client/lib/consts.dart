@@ -1,3 +1,5 @@
+import 'package:tentura_root/consts.dart' as r;
+
 export 'package:tentura_root/consts.dart';
 
 const kMaxLines = 3;
@@ -34,11 +36,11 @@ const kPathConnect = '/connect';
 const kPathSettings = '/settings';
 const kPathComplaint = '/complaint';
 const kPathBeaconNew = '/beacon/new';
-const kPathBeaconView = '/beacon/view';
+const kPathBeaconView = r.kPathBeaconView;
 const kPathBeaconViewAll = '/beacon/all';
 const kPathProfileChat = '/profile/chat';
 const kPathProfileEdit = '/profile/edit';
-const kPathProfileView = '/profile/view';
+const kPathProfileView = r.kPathProfileView;
 
 const kComplaintEmail = String.fromEnvironment(
   'COMPLAINT_EMAIL',

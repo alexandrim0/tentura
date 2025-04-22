@@ -198,9 +198,10 @@ class RootRouter extends RootStackRouter {
     uri.path == kPathAppLinkView
         ? uri.replace(
           path: switch (uri.queryParameters['id']) {
-            final String id when id.startsWith('U') => kPathProfileView,
             final String id when id.startsWith('B') => kPathBeaconView,
             final String id when id.startsWith('C') => kPathBeaconView,
+            final String id when id.startsWith('U') => kPathProfileView,
+            final String id when id.startsWith('O') => kPathProfileView,
             _ => kPathConnect,
           },
         )
