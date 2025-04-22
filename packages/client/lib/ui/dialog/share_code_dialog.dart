@@ -12,27 +12,21 @@ class ShareCodeDialog extends StatelessWidget {
     BuildContext context, {
     required String header,
     required Uri link,
-  }) =>
-      showDialog(
-        context: context,
-        builder: (context) => ShareCodeDialog(
-          header: header,
-          link: link.toString(),
-        ),
-      );
+  }) => showDialog(
+    context: context,
+    builder:
+        (context) => ShareCodeDialog(header: header, link: link.toString()),
+  );
+
+  const ShareCodeDialog({required this.header, required this.link, super.key});
 
   final String header;
   final String link;
 
-  const ShareCodeDialog({
-    required this.header,
-    required this.link,
-    super.key,
-  });
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final i10n = I10n.of(context)!;
     return AlertDialog.adaptive(
       alignment: Alignment.center,
       actionsAlignment: MainAxisAlignment.spaceBetween,
@@ -50,39 +44,38 @@ class ShareCodeDialog extends StatelessWidget {
       ),
 
       // QRCode
-      content: QrCode(
-        data: header,
-      ),
+      content: QrCode(data: header),
 
       // Buttons
       actions: [
         TextButton(
-          child: Text(I10n.of(context)!.copyToClipboard),
+          child: Text(i10n.copyToClipboard),
           onPressed: () async {
             await Clipboard.setData(ClipboardData(text: link));
             if (context.mounted) {
-              showSnackBar(
-                context,
-                text: I10n.of(context)!.seedCopied,
-              );
+              showSnackBar(context, text: i10n.seedCopied);
             }
           },
         ),
         Builder(
-          builder: (context) => TextButton(
-            child: Text(I10n.of(context)!.shareLink),
-            onPressed: () {
-              final box = context.findRenderObject()! as RenderBox;
-              Share.share(
-                link,
-                sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
-              );
-            },
-          ),
+          builder:
+              (context) => TextButton(
+                child: Text(i10n.shareLink),
+                onPressed: () {
+                  final box = context.findRenderObject()! as RenderBox;
+                  SharePlus.instance.share(
+                    ShareParams(
+                      uri: Uri.parse(link),
+                      sharePositionOrigin:
+                          box.localToGlobal(Offset.zero) & box.size,
+                    ),
+                  );
+                },
+              ),
         ),
         TextButton(
           onPressed: Navigator.of(context).pop,
-          child: Text(I10n.of(context)!.buttonClose),
+          child: Text(i10n.buttonClose),
         ),
       ],
     );
