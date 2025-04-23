@@ -51,7 +51,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     if (state.profile.id.isEmpty) return;
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final profile = await _profileRepository.fetch(state.profile.id);
+      final profile = await _profileRepository.fetchById(state.profile.id);
       emit(ProfileState(profile: profile));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));

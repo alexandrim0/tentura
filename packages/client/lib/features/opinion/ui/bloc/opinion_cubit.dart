@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 
 import 'package:tentura/consts.dart';
+import 'package:tentura/domain/entity/opinion.dart';
 import 'package:tentura/domain/entity/profile.dart';
 
 import '../../data/repository/opinion_repository.dart';
@@ -12,14 +13,19 @@ export 'opinion_state.dart';
 
 class OpinionCubit extends Cubit<OpinionState> {
   OpinionCubit({
-    required String objectId,
+    required String userId,
     required Profile myProfile,
+    List<Opinion>? opinions,
     OpinionRepository? opinionRepository,
   }) : _opinionRepository = opinionRepository ?? GetIt.I<OpinionRepository>(),
        super(
-         OpinionState(myProfile: myProfile, objectId: objectId, opinions: []),
+         OpinionState(
+           myProfile: myProfile,
+           objectId: userId,
+           opinions: opinions ?? [],
+         ),
        ) {
-    fetch();
+    if (opinions?.isEmpty ?? true) fetch();
   }
 
   final OpinionRepository _opinionRepository;
@@ -34,7 +40,6 @@ class OpinionCubit extends Cubit<OpinionState> {
       final opinions = await _opinionRepository.fetchByUserId(
           userId: state.objectId,
           offset: 0,
-          limit: 50,
         )
         ..sort((a, b) => a.score.compareTo(b.score));
       emit(state.copyWith(opinions: opinions, status: StateStatus.isSuccess));

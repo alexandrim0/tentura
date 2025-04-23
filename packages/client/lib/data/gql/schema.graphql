@@ -1737,6 +1737,9 @@ type opinion {
     where: mutual_score_bool_exp
   ): [mutual_score!]
   subject: String!
+
+  """An object relationship"""
+  user: user!
 }
 
 """
@@ -1754,6 +1757,7 @@ input opinion_bool_exp {
   object: String_comparison_exp
   scores: mutual_score_bool_exp
   subject: String_comparison_exp
+  user: user_bool_exp
 }
 
 """
@@ -1810,6 +1814,7 @@ input opinion_order_by {
   object: order_by
   scores_aggregate: mutual_score_aggregate_order_by
   subject: order_by
+  user: user_order_by
 }
 
 """

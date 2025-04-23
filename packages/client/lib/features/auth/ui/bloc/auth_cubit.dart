@@ -79,7 +79,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final accountId = await _authRepository.addAccount(seed);
-      final account = await _profileRepository.fetch(accountId);
+      final account = await _profileRepository.fetchById(accountId);
       await _authRepository.updateAccount(account);
       emit(
         AuthState(

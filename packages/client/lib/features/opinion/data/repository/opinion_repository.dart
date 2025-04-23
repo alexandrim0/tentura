@@ -1,11 +1,13 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/data/model/opinion_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 import 'package:tentura/domain/entity/opinion.dart';
 
 import '../../domain/exception.dart';
 import '../gql/_g/opinion_create.req.gql.dart';
+import '../gql/_g/opinion_fetch_by_id.req.gql.dart';
 import '../gql/_g/opinion_remove_by_id.req.gql.dart';
 import '../gql/_g/opinions_fetch_by_user_id.req.gql.dart';
 
@@ -15,10 +17,22 @@ class OpinionRepository {
 
   final RemoteApiService _remoteApiService;
 
+  Future<Opinion> fetchById(String id) async {
+    final result = await _remoteApiService
+        .request(GOpinionFetchByIdReq((b) => b.vars.id = id))
+        .firstWhere((e) => e.dataSource == DataSource.Link)
+        .then((r) => r.dataOrThrow(label: _label).opinion_by_pk);
+    if (result == null) {
+      throw OpinionFetchException('Opinion with id [$id] not found');
+    } else {
+      return (result as OpinionModel).toEntity;
+    }
+  }
+
   Future<List<Opinion>> fetchByUserId({
     required String userId,
     required int offset,
-    required int limit,
+    int limit = kFetchWindowSize,
   }) => _remoteApiService
       .request(
         GOpinionsFetchByUserIdReq(

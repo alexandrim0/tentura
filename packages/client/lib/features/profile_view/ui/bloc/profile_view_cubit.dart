@@ -20,7 +20,7 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
   }) : _profileRepository = profileRepository ?? GetIt.I<ProfileRepository>(),
        _likeRemoteRepository =
            likeRemoteRepository ?? GetIt.I<LikeRemoteRepository>(),
-       super(ProfileViewState(profile: Profile(id: id))) {
+       super(_idToState(id)) {
     fetch();
   }
 
@@ -34,7 +34,7 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
       emit(
         state.copyWith(
           status: StateStatus.isSuccess,
-          profile: await _profileRepository.fetch(state.profile.id),
+          profile: await _profileRepository.fetchById(state.profile.id),
         ),
       );
     } catch (e) {
@@ -75,4 +75,10 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
       emit(state.copyWith(status: StateHasError(e)));
     }
   }
+
+  static ProfileViewState _idToState(String id) => switch (id) {
+    _ when id.startsWith('O') => ProfileViewState(focusOpinionId: id),
+    _ when id.startsWith('U') => ProfileViewState(profile: Profile(id: id)),
+    _ => ProfileViewState(status: StateHasError('Wrong id: $id')),
+  };
 }
