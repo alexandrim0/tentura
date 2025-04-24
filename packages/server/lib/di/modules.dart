@@ -18,6 +18,7 @@ abstract class RegisterModule {
         ),
       ],
       settings: PoolSettings(
+        maxConnectionAge: Duration(seconds: kMaxConnectionAge),
         maxConnectionCount: kMaxConnectionCount,
         sslMode: SslMode.disable,
       ),

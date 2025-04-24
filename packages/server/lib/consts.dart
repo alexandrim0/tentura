@@ -41,6 +41,9 @@ final kPgUsername = environment['POSTGRES_USERNAME'] ?? 'postgres';
 
 final kPgPassword = environment['POSTGRES_PASSWORD'] ?? 'password';
 
+final kMaxConnectionAge =
+    int.tryParse(environment['POSTGRES_MAXCONNAGE'] ?? '') ?? 600;
+
 final kMaxConnectionCount =
     int.tryParse(environment['POSTGRES_MAXCONN'] ?? '') ?? 25;
 

@@ -55,7 +55,6 @@ services:
       - 'HASURA_GRAPHQL_JWT_SECRET={"type":"Ed25519", "key":"${JWT_PUBLIC_PEM}", "claims_map": {"x-hasura-allowed-roles": ["user", "admin"], "x-hasura-default-role": "user", "x-hasura-user-id": {"path": "$$.sub"}}}'
       - 'HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=streaming_subscriptions,remove_empty_subscription_responses'
       - 'TENTURA_GRAPHQL_URL=http://localhost:2080/api/v2/graphql'
-      - 'EVENT_BASE_URL=http://localhost:2080/hasura/events'
 
   postgres:
     extends:
