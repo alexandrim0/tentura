@@ -104,6 +104,28 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
               padding: kPaddingH,
               sliver: OpinionList(key: ValueKey(id)),
             ),
+
+            // Show All Button
+            SliverPadding(
+              padding: kPaddingSmallV,
+              sliver: BlocSelector<OpinionCubit, OpinionState, bool>(
+                selector:
+                    (state) => state.hasReachedMax || state.opinions.isEmpty,
+                builder:
+                    (context, showAll) =>
+                        showAll
+                            ? const SliverToBoxAdapter()
+                            : SliverToBoxAdapter(
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: FilledButton(
+                                  onPressed: opinionCubit.showAll,
+                                  child: Text(i10n.showAllComments),
+                                ),
+                              ),
+                            ),
+              ),
+            ),
           ],
         ),
       ),

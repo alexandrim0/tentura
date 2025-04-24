@@ -12,6 +12,7 @@ abstract class OpinionState extends StateBase with _$OpinionState {
     required String objectId,
     required Profile myProfile,
     required List<Opinion> opinions,
+    @Default(false) bool hasReachedMax,
     @Default(StateIsSuccess()) StateStatus status,
   }) = _OpinionState;
 

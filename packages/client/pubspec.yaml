@@ -2,7 +2,7 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 0.14.7
+version: 0.14.8
 
 environment:
   sdk: '>=3.7.2 <4.0.0'
@@ -57,7 +57,7 @@ dependencies:
   gql_error_link: ^1.0.0
   gql_dedupe_link: ^2.0.3
   gql_websocket_link: ^2.0.1
-  mobile_scanner: ^7.0.0-beta.9
+  mobile_scanner: ^7.0.0-rc.2
   flutter_secure_storage: ^10.0.0-beta.4
 
   # UI related

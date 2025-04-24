@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura/domain/entity/profile.dart';
+import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/profile_app_bar_title.dart';
@@ -23,6 +24,7 @@ class ProfileViewAppBar extends StatelessWidget {
           (_, profile) => SliverAppBar(
             floating: true,
             snap: true,
+            leading: const DeepBackButton(),
             title: ProfileAppBarTitle(profile: profile),
             actions: [
               // Share
