@@ -17,6 +17,14 @@ class UserRepositoryMock implements UserRepository {
           : storageByPublicKey[user.publicKey] = user;
 
   @override
+  Future<UserEntity> inviteUser({
+    required UserEntity user,
+    required String inviteId,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
   Future<UserEntity> getUserById(String id) async =>
       storageByPublicKey.values.where((e) => e.id == id).firstOrNull ??
       (throw IdNotFoundException(id: id));

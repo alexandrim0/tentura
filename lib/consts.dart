@@ -16,6 +16,8 @@ const kAuthJwtExpiresIn = 30;
 
 const kRequestTimeout = 15;
 
+const kInvitationDefaultTTL = 24 * 7;
+
 // Strings
 
 const kAppTitle = 'Tentura';

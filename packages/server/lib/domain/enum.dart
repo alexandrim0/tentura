@@ -9,5 +9,6 @@ enum AuthExceptionCode {
   authIdNotFoundException,
   authPemKeyWrongException,
   authUnauthorizedException,
+  authInvitationWrongException,
   authAuthorizationHeaderWrongException,
 }

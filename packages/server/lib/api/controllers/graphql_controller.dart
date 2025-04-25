@@ -50,7 +50,9 @@ final class GraphqlController extends BaseController {
     }
 
     try {
-      final response = await (env.kDebugMode ? graphqlSchema : _graphqlSchema)
+      final response = await (env.isDebugModeOn
+              ? graphqlSchema
+              : _graphqlSchema)
           .parseAndExecute(
             operationName: requestJson['operationName'] as String?,
             requestJson['query'] as String? ?? '',

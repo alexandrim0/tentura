@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:stormberry/stormberry.dart';
 
+import 'package:tentura_server/data/model/invitation_model.dart';
 import 'package:tentura_server/data/model/user_model.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
@@ -30,6 +31,33 @@ class UserRepository {
       ),
     );
     return getUserById(user.id);
+  }
+
+  Future<UserEntity> inviteUser({
+    required UserEntity user,
+    required String inviteId,
+  }) async {
+    final now = DateTime.timestamp();
+    return _database.runTx<UserEntity>((session) async {
+      await session.users.insertOne(
+        UserInsertRequest(
+          id: user.id,
+          title: user.title,
+          publicKey: user.publicKey,
+          description: user.description,
+          hasPicture: user.hasPicture,
+          picHeight: user.picHeight,
+          picWidth: user.picWidth,
+          blurHash: user.blurHash,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      await _database.invitations.updateOne(
+        InvitationUpdateRequest(id: inviteId, invitedId: user.id),
+      );
+      return (_database.users.queryUser(user.id) as UserModel).asEntity;
+    });
   }
 
   Future<UserEntity> getUserById(String id) async => switch (await _database

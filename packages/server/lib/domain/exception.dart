@@ -75,3 +75,13 @@ final class UnauthorizedException extends ExceptionBase {
         description: 'Wrong Authorization header',
       );
 }
+
+final class InvitationWrongException extends ExceptionBase {
+  const InvitationWrongException()
+    : super(
+        code: const AuthExceptionCodes(
+          AuthExceptionCode.authInvitationWrongException,
+        ),
+        description: 'Wrong invitation code',
+      );
+}
