@@ -1,5 +1,5 @@
 {
-  "resource_version": 26,
+  "resource_version": 64,
   "metadata": {
     "version": 3,
     "sources": [
@@ -375,6 +375,77 @@
           },
           {
             "table": {
+              "name": "invitation",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "invited",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "invited_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "user",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "issuer",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "user_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "user",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "check": {},
+                  "set": {
+                    "user_id": "x-hasura-User-Id"
+                  },
+                  "columns": []
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "invited_id",
+                    "user_id",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
               "name": "message",
               "schema": "public"
             },
@@ -505,6 +576,21 @@
                 }
               },
               {
+                "name": "opinion",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "dst": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "opinion",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
                 "name": "user",
                 "using": {
                   "manual_configuration": {
@@ -555,6 +641,12 @@
                       "schema": "public"
                     }
                   }
+                }
+              },
+              {
+                "name": "user",
+                "using": {
+                  "foreign_key_constraint_on": "object"
                 }
               }
             ],
@@ -1072,6 +1164,21 @@
           {
             "function": {
               "name": "my_field",
+              "schema": "public"
+            },
+            "configuration": {
+              "custom_root_fields": {},
+              "session_argument": "hasura_session"
+            },
+            "permissions": [
+              {
+                "role": "user"
+              }
+            ]
+          },
+          {
+            "function": {
+              "name": "opinions",
               "schema": "public"
             },
             "configuration": {
