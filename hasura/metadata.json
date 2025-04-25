@@ -1,5 +1,5 @@
 {
-  "resource_version": 64,
+  "resource_version": 65,
   "metadata": {
     "version": 3,
     "sources": [
@@ -438,6 +438,28 @@
                     "user_id": {
                       "_eq": "X-Hasura-User-Id"
                     }
+                  }
+                },
+                "comment": ""
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "filter": {
+                    "_and": [
+                      {
+                        "user_id": {
+                          "_eq": "X-Hasura-User-Id"
+                        }
+                      },
+                      {
+                        "invited_id": {
+                          "_is_null": true
+                        }
+                      }
+                    ]
                   }
                 },
                 "comment": ""

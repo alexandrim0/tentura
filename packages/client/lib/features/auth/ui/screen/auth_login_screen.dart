@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:tentura_root/i10n/I10n.dart';
 
+import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -23,16 +23,14 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
+    final i10n = I10n.of(context)!;
     final authCubit = GetIt.I<AuthCubit>();
     return BlocBuilder<AuthCubit, AuthState>(
       bloc: authCubit,
       buildWhen: (_, c) => c.isSuccess,
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: Text(I10n.of(context)!.chooseAccount,),
-          ),
+          appBar: AppBar(centerTitle: true, title: Text(i10n.chooseAccount)),
           body: SafeArea(
             minimum: kPaddingH,
             child: Column(
@@ -42,7 +40,8 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                 if (state.accounts.isEmpty)
                   Padding(
                     padding: kPaddingAll,
-                    child: Text(I10n.of(context)!.alreadyHaveAccount,
+                    child: Text(
+                      i10n.alreadyHaveAccount,
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -69,7 +68,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                         () async => authCubit.addAccount(
                           await QRScanDialog.show(context),
                         ),
-                    child: Text(I10n.of(context)!.recoverFromQR),
+                    child: Text(i10n.recoverFromQR),
                   ),
                 ),
 
@@ -78,7 +77,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                   padding: kPaddingH,
                   child: OutlinedButton(
                     onPressed: authCubit.getSeedFromClipboard,
-                    child: Text(I10n.of(context)!.recoverFromClipboard),
+                    child: Text(i10n.recoverFromClipboard),
                   ),
                 ),
                 const Spacer(),
@@ -90,7 +89,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                       const EdgeInsets.only(bottom: 60 - kSpacingMedium),
                   child: FilledButton(
                     onPressed: () => AccountAddDialog.show(context),
-                    child: Text(I10n.of(context)!.createNewAccount),
+                    child: Text(i10n.createNewAccount),
                   ),
                 ),
               ],

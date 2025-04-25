@@ -931,6 +931,138 @@ input Int_comparison_exp {
   _nin: [Int!]
 }
 
+"""
+columns and relationships of "invitation"
+"""
+type invitation {
+  created_at: timestamptz!
+  id: String!
+
+  """An object relationship"""
+  invited: user
+  invited_id: String
+
+  """An object relationship"""
+  issuer: user
+  updated_at: timestamptz!
+  user_id: String!
+}
+
+"""
+Boolean expression to filter rows from the table "invitation". All fields are combined with a logical 'AND'.
+"""
+input invitation_bool_exp {
+  _and: [invitation_bool_exp!]
+  _not: invitation_bool_exp
+  _or: [invitation_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  id: String_comparison_exp
+  invited: user_bool_exp
+  invited_id: String_comparison_exp
+  issuer: user_bool_exp
+  updated_at: timestamptz_comparison_exp
+  user_id: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "invitation"
+"""
+enum invitation_constraint {
+  """
+  unique or primary key constraint on columns "invited_id"
+  """
+  invitation_invited_id_key
+
+  """
+  unique or primary key constraint on columns "id"
+  """
+  invitation_pkey
+}
+
+"""
+input type for inserting data into table "invitation"
+"""
+input invitation_insert_input
+
+"""
+response of any mutation on the table "invitation"
+"""
+type invitation_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [invitation!]!
+}
+
+"""
+on_conflict condition type for table "invitation"
+"""
+input invitation_on_conflict {
+  constraint: invitation_constraint!
+  update_columns: [invitation_update_column!]! = []
+  where: invitation_bool_exp
+}
+
+"""Ordering options when selecting data from "invitation"."""
+input invitation_order_by {
+  created_at: order_by
+  id: order_by
+  invited: user_order_by
+  invited_id: order_by
+  issuer: user_order_by
+  updated_at: order_by
+  user_id: order_by
+}
+
+"""
+select columns of table "invitation"
+"""
+enum invitation_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  invited_id
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  user_id
+}
+
+"""
+Streaming cursor of the table "invitation"
+"""
+input invitation_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: invitation_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input invitation_stream_cursor_value_input {
+  created_at: timestamptz
+  id: String
+  invited_id: String
+  updated_at: timestamptz
+  user_id: String
+}
+
+"""
+placeholder for update columns of table "invitation" (current role has no relevant permissions)
+"""
+enum invitation_update_column {
+  """placeholder (do not use)"""
+  _PLACEHOLDER
+}
+
 scalar json
 
 """
@@ -1109,6 +1241,19 @@ type mutation_root {
   delete_comment_by_pk(id: String!): comment
 
   """
+  delete data from the table: "invitation"
+  """
+  delete_invitation(
+    """filter the rows which have to be deleted"""
+    where: invitation_bool_exp!
+  ): invitation_mutation_response
+
+  """
+  delete single row from the table: "invitation"
+  """
+  delete_invitation_by_pk(id: String!): invitation
+
+  """
   delete data from the table: "message"
   """
   delete_message(
@@ -1203,6 +1348,28 @@ type mutation_root {
     """upsert condition"""
     on_conflict: comment_on_conflict
   ): comment
+
+  """
+  insert data into the table: "invitation"
+  """
+  insert_invitation(
+    """the rows to be inserted"""
+    objects: [invitation_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: invitation_on_conflict
+  ): invitation_mutation_response
+
+  """
+  insert a single row into the table: "invitation"
+  """
+  insert_invitation_one(
+    """the row to be inserted"""
+    object: invitation_insert_input!
+
+    """upsert condition"""
+    on_conflict: invitation_on_conflict
+  ): invitation
 
   """
   insert data into the table: "message"
@@ -1529,6 +1696,9 @@ type mutual_score {
   comment: comment
   dst: String
   dst_score: float8
+
+  """An object relationship"""
+  opinion: opinion
   src: String
   src_score: float8
 
@@ -1572,6 +1742,7 @@ input mutual_score_bool_exp {
   comment: comment_bool_exp
   dst: String_comparison_exp
   dst_score: float8_comparison_exp
+  opinion: opinion_bool_exp
   src: String_comparison_exp
   src_score: float8_comparison_exp
   user: user_bool_exp
@@ -1603,6 +1774,7 @@ input mutual_score_order_by {
   comment: comment_order_by
   dst: order_by
   dst_score: order_by
+  opinion: opinion_order_by
   src: order_by
   src_score: order_by
   user: user_order_by
@@ -1869,6 +2041,12 @@ enum opinion_update_column {
   _PLACEHOLDER
 }
 
+input opinions_args {
+  limit_: Int
+  object: String
+  offset_: Int
+}
+
 """column ordering options"""
 enum order_by {
   """in ascending order, nulls last"""
@@ -2006,6 +2184,29 @@ type query_root {
   ): [mutual_score!]!
 
   """
+  fetch data from the table: "invitation"
+  """
+  invitation(
+    """distinct select on columns"""
+    distinct_on: [invitation_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [invitation_order_by!]
+
+    """filter the rows returned"""
+    where: invitation_bool_exp
+  ): [invitation!]!
+
+  """fetch data from the table: "invitation" using primary key columns"""
+  invitation_by_pk(id: String!): invitation
+
+  """
   fetch data from the table: "message"
   """
   message(
@@ -2095,6 +2296,31 @@ type query_root {
 
   """fetch data from the table: "opinion" using primary key columns"""
   opinion_by_pk(id: String!): opinion
+
+  """
+  execute function "opinions" which returns "mutual_score"
+  """
+  opinions(
+    """
+    input parameters for function "opinions"
+    """
+    args: opinions_args!
+
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
 
   """
   execute function "rating" which returns "mutual_score"
@@ -2467,6 +2693,43 @@ type subscription_root {
   ): [mutual_score!]!
 
   """
+  fetch data from the table: "invitation"
+  """
+  invitation(
+    """distinct select on columns"""
+    distinct_on: [invitation_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [invitation_order_by!]
+
+    """filter the rows returned"""
+    where: invitation_bool_exp
+  ): [invitation!]!
+
+  """fetch data from the table: "invitation" using primary key columns"""
+  invitation_by_pk(id: String!): invitation
+
+  """
+  fetch data from the table in a streaming manner: "invitation"
+  """
+  invitation_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [invitation_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: invitation_bool_exp
+  ): [invitation!]!
+
+  """
   fetch data from the table: "message"
   """
   message(
@@ -2598,6 +2861,31 @@ type subscription_root {
     """filter the rows returned"""
     where: opinion_bool_exp
   ): [opinion!]!
+
+  """
+  execute function "opinions" which returns "mutual_score"
+  """
+  opinions(
+    """
+    input parameters for function "opinions"
+    """
+    args: opinions_args!
+
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
 
   """
   execute function "rating" which returns "mutual_score"
