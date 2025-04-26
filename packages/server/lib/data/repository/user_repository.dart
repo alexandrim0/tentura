@@ -40,52 +40,59 @@ class UserRepository {
     required UserEntity user,
     required String inviteId,
   }) async {
-    await _database.runTx<void>((session) async {
-      final invitation = await _database.invitations.queryInvitation(inviteId);
+    await _database.runTx<void>(
+      (session) async {
+        final invitation = await _database.invitations.queryInvitation(
+          inviteId,
+        );
 
-      if (invitation == null ||
-          invitation.invited != null ||
-          invitation.createdAt
-              .add(_env.invitationTTL)
-              .isAfter(DateTime.timestamp())) {
-        throw const InvitationWrongException();
-      }
+        if (invitation == null ||
+            invitation.invited != null ||
+            invitation.createdAt
+                .add(_env.invitationTTL)
+                .isAfter(DateTime.timestamp())) {
+          throw const InvitationWrongException();
+        }
 
-      final now = DateTime.timestamp();
-      await session.users.insertOne(
-        UserInsertRequest(
-          id: user.id,
-          title: user.title,
-          publicKey: user.publicKey,
-          description: user.description,
-          hasPicture: user.hasPicture,
-          picHeight: user.picHeight,
-          picWidth: user.picWidth,
-          blurHash: user.blurHash,
-          createdAt: now,
-          updatedAt: now,
-        ),
-      );
-      await _database.invitations.updateOne(
-        InvitationUpdateRequest(id: inviteId, invitedId: user.id),
-      );
-      await _database.voteUsers.insertMany([
-        VoteUserInsertRequest(
-          subjectId: user.id,
-          objectId: inviteId,
-          amount: 1,
-          createdAt: now,
-          updatedAt: now,
-        ),
-        VoteUserInsertRequest(
-          subjectId: inviteId,
-          objectId: user.id,
-          amount: 1,
-          createdAt: now,
-          updatedAt: now,
-        ),
-      ]);
-    });
+        final now = DateTime.timestamp();
+        await session.users.insertOne(
+          UserInsertRequest(
+            id: user.id,
+            title: user.title,
+            publicKey: user.publicKey,
+            description: user.description,
+            hasPicture: user.hasPicture,
+            picHeight: user.picHeight,
+            picWidth: user.picWidth,
+            blurHash: user.blurHash,
+            createdAt: now,
+            updatedAt: now,
+          ),
+        );
+        await _database.invitations.updateOne(
+          InvitationUpdateRequest(id: inviteId, invitedId: user.id),
+        );
+        await _database.voteUsers.insertMany([
+          VoteUserInsertRequest(
+            subjectId: user.id,
+            objectId: inviteId,
+            amount: 1,
+            createdAt: now,
+            updatedAt: now,
+          ),
+          VoteUserInsertRequest(
+            subjectId: inviteId,
+            objectId: user.id,
+            amount: 1,
+            createdAt: now,
+            updatedAt: now,
+          ),
+        ]);
+      },
+      settings: TransactionSettings(
+        isolationLevel: IsolationLevel.serializable,
+      ),
+    );
   }
 
   Future<UserEntity> getUserById(String id) async => switch (await _database
