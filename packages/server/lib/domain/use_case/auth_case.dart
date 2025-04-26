@@ -6,7 +6,6 @@ import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/env.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
-import 'package:tentura_server/data/repository/invitation_repository.dart';
 import 'package:tentura_server/domain/exception.dart';
 
 import '../entity/jwt_entity.dart';
@@ -14,13 +13,11 @@ import '../enum.dart';
 
 @Injectable(order: 2)
 class AuthCase {
-  AuthCase(this._env, this._userRepository, this._invitationRepository);
+  AuthCase(this._env, this._userRepository);
 
   final Env _env;
 
   final UserRepository _userRepository;
-
-  final InvitationRepository _invitationRepository;
 
   ///
   /// Parse and verify JWT issued before and signed with server private key
@@ -52,44 +49,27 @@ class AuthCase {
   }) async {
     final jwt = _verifyAuthRequest(token: authRequestToken);
     final payload = jwt.payload as Map<String, dynamic>;
+    final newUser = UserEntity(
+      id: UserEntity.newId,
+      publicKey: payload['pk']! as String,
+      title: title,
+    );
 
     if (_env.isNeedInvite) {
-      final inviteId = payload['inv'] as String?;
-      if (inviteId == null) {
-        throw const IdWrongException(
-          description: 'Invite attribute not found!',
-        );
-      }
-
-      final invitation = await _invitationRepository.getById(inviteId);
-      if (invitation.invited != null ||
-          invitation.createdAt
-              .add(_env.invitationTTL)
-              .isAfter(DateTime.timestamp())) {
-        throw const InvitationWrongException();
-      }
-
-      final user = await _userRepository.inviteUser(
-        inviteId: inviteId,
-        user: UserEntity(
-          id: UserEntity.newId,
-          publicKey: payload['pk']! as String,
-          title: title,
+      final _ = switch (payload['inv']) {
+        final String inviteId => await _userRepository.inviteUser(
+          inviteId: inviteId,
+          user: newUser,
         ),
-      );
-
-      return _issueJwt(subject: user.id);
+        _ =>
+          throw const IdWrongException(
+            description: 'Invite attribute not found!',
+          ),
+      };
     } else {
-      final user = await _userRepository.createUser(
-        user: UserEntity(
-          id: UserEntity.newId,
-          publicKey: payload['pk']! as String,
-          title: title,
-        ),
-      );
-
-      return _issueJwt(subject: user.id);
+      await _userRepository.createUser(user: newUser);
     }
+    return _issueJwt(subject: newUser.id);
   }
 
   JWT _verifyAuthRequest({required String token}) {

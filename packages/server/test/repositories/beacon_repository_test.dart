@@ -29,13 +29,12 @@ Future<void> main() async {
 
   test('createBeacon', () async {
     final now = DateTime.timestamp();
-    final user = await getIt<UserRepository>().createUser(
-      user: UserEntity(
-        id: generateId('U'),
-        title: 'Test User',
-        publicKey: base64UrlEncode(kPublicKey.key.bytes).replaceAll('=', ''),
-      ),
+    final user = UserEntity(
+      id: generateId('U'),
+      title: 'Test User',
+      publicKey: base64UrlEncode(kPublicKey.key.bytes).replaceAll('=', ''),
     );
+    await getIt<UserRepository>().createUser(user: user);
     final beacon = await getIt<BeaconRepository>().createBeacon(
       BeaconEntity(
         id: generateId('B'),
