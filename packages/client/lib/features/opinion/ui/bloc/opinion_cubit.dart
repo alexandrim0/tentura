@@ -11,6 +11,8 @@ export 'package:flutter_bloc/flutter_bloc.dart';
 
 export 'opinion_state.dart';
 
+typedef Ids = ({String profileId, Opinion? opinion});
+
 class OpinionCubit extends Cubit<OpinionState> {
   OpinionCubit({
     required String userId,
@@ -30,23 +32,31 @@ class OpinionCubit extends Cubit<OpinionState> {
 
   final OpinionRepository _opinionRepository;
 
-  void showProfile(String id) => emit(
-    state.copyWith(status: StateIsNavigating('$kPathProfileView?id=$id')),
-  );
+  Future<void> fetch({bool clear = false}) async {
+    if (state.isLoading || state.hasReachedMax) return;
 
-  Future<void> fetch() async {
-    emit(state.copyWith(status: StateStatus.isLoading));
+    if (clear) {
+      emit(
+        state.copyWith(
+          opinions: [],
+          status: StateStatus.isLoading,
+          hasReachedMax: false,
+        ),
+      );
+    } else {
+      emit(state.copyWith(status: StateStatus.isLoading));
+    }
+
     try {
       final opinions = await _opinionRepository.fetchByUserId(
+        offset: state.opinions.length,
         userId: state.objectId,
-        offset: 0,
       );
       state.opinions
         ..addAll(opinions)
         ..sort((a, b) => a.score.compareTo(b.score));
       emit(
         state.copyWith(
-          opinions: opinions,
           status: StateStatus.isSuccess,
           hasReachedMax: opinions.length < kFetchListOffset,
         ),
@@ -55,8 +65,6 @@ class OpinionCubit extends Cubit<OpinionState> {
       emit(state.copyWith(status: StateHasError(e)));
     }
   }
-
-  Future<void> showAll() async {}
 
   Future<void> addOpinion({required String text, required int? amount}) async {
     if (amount == null) return;
@@ -83,6 +91,17 @@ class OpinionCubit extends Cubit<OpinionState> {
       emit(state.copyWith(status: StateStatus.isSuccess));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
+    }
+  }
+
+  static Future<Ids> checkIfIdIsOpinion(String id) async {
+    if (id.startsWith('U')) {
+      return (profileId: id, opinion: null);
+    } else if (id.startsWith('O')) {
+      final result = await GetIt.I<OpinionRepository>().fetchById(id);
+      return (profileId: result.objectId, opinion: result);
+    } else {
+      throw Exception('Wrong id prefix [$id]');
     }
   }
 }

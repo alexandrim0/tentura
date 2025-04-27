@@ -13,10 +13,12 @@ class OpinionList extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = I10n.of(context)!;
     final textTheme = Theme.of(context).textTheme;
+    final opinionCubit = context.read<OpinionCubit>();
     return BlocBuilder<OpinionCubit, OpinionState>(
+      bloc: opinionCubit,
       buildWhen: (_, c) => c.isSuccess,
       builder:
-          (context, state) =>
+          (_, state) =>
               state.opinions.isEmpty
                   ? SliverFillRemaining(
                     hasScrollBody: false,
@@ -29,6 +31,10 @@ class OpinionList extends StatelessWidget {
                     itemCount: state.opinions.length,
                     itemBuilder: (_, i) {
                       final opinion = state.opinions[i];
+                      if (i == state.opinions.length - 1 &&
+                          !state.hasReachedMax) {
+                        opinionCubit.fetch();
+                      }
                       return OpinionTile(
                         key: ValueKey(opinion),
                         isMine: state.checkIfIsMine(opinion),

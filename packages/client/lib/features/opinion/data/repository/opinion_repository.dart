@@ -25,7 +25,7 @@ class OpinionRepository {
     if (result == null) {
       throw OpinionFetchException('Opinion with id [$id] not found');
     } else {
-      return (result as OpinionModel).toEntity;
+      return (result as OpinionModel).asEntity;
     }
   }
 
@@ -44,8 +44,10 @@ class OpinionRepository {
         ),
       )
       .firstWhere((e) => e.dataSource == DataSource.Link)
-      .then((r) => r.dataOrThrow(label: _label).opinion)
-      .then((v) => v.map((e) => (e as OpinionModel).toEntity).toList());
+      .then((r) => r.dataOrThrow(label: _label).opinions)
+      .then(
+        (v) => v.map((e) => (e.opinion! as OpinionModel).asEntity).toList(),
+      );
 
   Future<Opinion> createOpinion({
     required String content,
@@ -65,7 +67,7 @@ class OpinionRepository {
       .then((r) => r.dataOrThrow(label: _label).insert_opinion_one)
       .then(
         (v) =>
-            (v as OpinionModel?)?.toEntity ??
+            (v as OpinionModel?)?.asEntity ??
             (throw const OpinionCreateException()),
       );
 

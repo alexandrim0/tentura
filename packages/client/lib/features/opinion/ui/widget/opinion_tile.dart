@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/domain/entity/opinion.dart';
 import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura/domain/entity/opinion.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
@@ -19,6 +19,7 @@ class OpinionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i10n = I10n.of(context)!;
     return Column(
       children: [
         // Header
@@ -27,12 +28,11 @@ class OpinionTile extends StatelessWidget {
           children: [
             // Avatar
             GestureDetector(
-              onTap:
-                  isMine
-                      ? null
-                      : () => context.read<ScreenCubit>().showProfile(
-                        opinion.author.id,
-                      ),
+              onTap: () {
+                if (!isMine) {
+                  context.read<ScreenCubit>().showProfile(opinion.author.id);
+                }
+              },
               child: Padding(
                 padding: const EdgeInsets.only(right: kSpacingMedium),
                 child: AvatarRated.small(
@@ -49,7 +49,7 @@ class OpinionTile extends StatelessWidget {
                 children: [
                   // Title
                   Text(
-                    isMine ? I10n.of(context)!.labelMe : opinion.author.title,
+                    isMine ? i10n.labelMe : opinion.author.title,
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
 
@@ -78,7 +78,7 @@ class OpinionTile extends StatelessWidget {
                             await opinionCubit.removeOpinionById(opinion.id);
                           }
                         },
-                        child: Text(I10n.of(context)!.deleteOpinion),
+                        child: Text(i10n.deleteOpinion),
                       )
                     else
                       // Complaint
@@ -87,7 +87,7 @@ class OpinionTile extends StatelessWidget {
                             () => context.read<ScreenCubit>().showComplaint(
                               opinion.id,
                             ),
-                        child: Text(I10n.of(context)!.buttonComplaint),
+                        child: Text(i10n.buttonComplaint),
                       ),
                   ],
             ),
