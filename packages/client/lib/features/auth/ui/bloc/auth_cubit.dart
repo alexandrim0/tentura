@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
@@ -9,6 +10,7 @@ import 'package:tentura/ui/bloc/state_base.dart';
 import 'package:tentura/features/profile/data/repository/profile_repository.dart';
 
 import '../../data/repository/auth_repository.dart';
+import '../../domain/exception.dart';
 import 'auth_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
@@ -95,7 +97,18 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> signUp({required String title}) async {
+  Future<void> signUp({
+    required String title,
+    required String invitationCode,
+  }) async {
+    if (kNeedInviteCode && invitationCode.isEmpty) {
+      emit(
+        state.copyWith(
+          status: StateHasError(const InvitationCodeIsWrongException()),
+        ),
+      );
+    }
+
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       emit(
@@ -104,7 +117,10 @@ class AuthCubit extends Cubit<AuthState> {
               state.accounts
                 ..add(
                   Profile(
-                    id: await _authRepository.signUp(title: title),
+                    id: await _authRepository.signUp(
+                      invitationCode: invitationCode,
+                      title: title,
+                    ),
                     title: title,
                   ),
                 )

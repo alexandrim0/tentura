@@ -82,6 +82,32 @@
   },
 
 
+  "invitationCodeTooShort": "Code too short",
+  "@invitationCodeTooShort": {
+    "context": "CommonErrors"
+  },
+  "invitationCodeTooLong": "Code too long",
+  "@invitationCodeTooLong": {
+    "context": "CommonErrors"
+  },
+  "invitationCodeWrongFormat": "Wrong Code format",
+  "@invitationCodeWrongFormat": {
+    "context": "CommonErrors"
+  },
+  "titleTooShort": "Title too short",
+  "@titleTooShort": {
+    "context": "CommonErrors"
+  },
+  "titleTooLong": "Title too long",
+  "@titleTooLong": {
+    "context": "CommonErrors"
+  },
+  "descriptionTooLong": "Description too long",
+  "@descriptionTooLong": {
+    "context": "CommonErrors"
+  },
+
+
   "createNewAccount": "Create new Account",
   "@createNewAccount": {
     "context": "AccountAddDialog, AuthLoginScreen"
@@ -89,6 +115,14 @@
   "pleaseFillTitle": "Please fill title",
   "@pleaseFillTitle": {
     "context": "AccountAddDialog, ProfileEditScreen"
+  },
+  "labelInvitationCode": "Invitation Code",
+  "@labelInvitationCode": {
+    "context": "AccountAddDialog"
+  },
+  "pleaseEnterCode": "Please enter Invitation Code",
+  "@pleaseEnterCode": {
+    "context": "AccountAddDialog"
   },
   "confirmAccountRemoval": "Are you sure you want to remove this account?",
   "@confirmAccountRemoval": {

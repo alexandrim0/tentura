@@ -52,4 +52,6 @@ const kOsmUrlTemplate = String.fromEnvironment(
   defaultValue: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
 );
 
+const kNeedInviteCode = bool.fromEnvironment('NEED_INVITE_CODE');
+
 const kAssetPackage = bool.fromEnvironment('IS_IMPORTED') ? 'tentura' : null;

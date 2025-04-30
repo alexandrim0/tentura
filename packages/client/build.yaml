@@ -71,15 +71,3 @@ targets:
 
             - import: "package:tentura/data/gql/upload_serializer.dart"
               name: UploadSerializer
-
-      build_web_compilers:entrypoint:
-        generate_for:
-          - web/**.dart
-        options:
-          compiler: dart2js
-        dev_options:
-          dart2js_args:
-            - --no-minify
-        release_options:
-          dart2js_args:
-            - -O4

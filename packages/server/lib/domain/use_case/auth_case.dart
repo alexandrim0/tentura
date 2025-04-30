@@ -3,6 +3,8 @@ import 'package:uuid/uuid.dart';
 import 'package:injectable/injectable.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
+import 'package:tentura_root/domain/entity/auth_request_intent.dart';
+
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/env.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
@@ -25,7 +27,8 @@ class AuthCase {
   JwtEntity parseAndVerifyJwt({required String token}) {
     final jwt = JWT.verify(token, _env.publicKey);
     final payload = jwt.payload as Map<String, Object?>;
-    final roleList = (payload['roles'] as String? ?? '').split(',');
+    final roleList = (payload[AuthRequestIntent.keyRoles] as String? ?? '')
+        .split(',');
 
     // TBD: add all other claims
     return JwtEntity(
@@ -37,7 +40,7 @@ class AuthCase {
   Future<JwtEntity> signIn({required String authRequestToken}) async {
     final jwt = _verifyAuthRequest(token: authRequestToken);
     final user = await _userRepository.getUserByPublicKey(
-      (jwt.payload as Map)['pk'] as String,
+      (jwt.payload as Map)[AuthRequestIntent.keyPublicKey] as String,
     );
 
     return _issueJwt(subject: user.id);
@@ -51,12 +54,12 @@ class AuthCase {
     final payload = jwt.payload as Map<String, dynamic>;
     final newUser = UserEntity(
       id: UserEntity.newId,
-      publicKey: payload['pk']! as String,
+      publicKey: payload[AuthRequestIntent.keyPublicKey]! as String,
       title: title,
     );
 
     if (_env.isNeedInvite) {
-      final _ = switch (payload['inv']) {
+      final _ = switch (payload[AuthRequestIntentSignUp.keyCode]) {
         final String inviteId => await _userRepository.inviteUser(
           inviteId: inviteId,
           user: newUser,
@@ -83,7 +86,10 @@ class AuthCase {
       token,
       EdDSAPublicKey(
         base64Decode(
-          base64.normalize((jwtDecoded.payload as Map)['pk']! as String),
+          base64.normalize(
+            (jwtDecoded.payload as Map)[AuthRequestIntent.keyPublicKey]!
+                as String,
+          ),
         ),
       ),
     );
@@ -99,7 +105,7 @@ class AuthCase {
       exp: kJwtExpiresIn,
       roles: roles,
       rawToken: JWT(
-        {'roles': roles.join(',')},
+        {AuthRequestIntent.keyRoles: roles.join(',')},
         jwtId: jwtId,
         subject: subject,
         issuer: kServerName,

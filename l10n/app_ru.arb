@@ -4,7 +4,7 @@
   "@appTitle": {
     "context": "App"
   },
-  "labelTitle": "Заголовок",
+  "labelTitle": "Название",
   "@labelTitle": {
     "context": "Utils"
   },
@@ -72,7 +72,7 @@
   "@buttonSearch": {
     "context": "Utils"
   },
-  "buttonPaste": "вставить из буфера",
+  "buttonPaste": "Вставить из буфера",
   "@buttonPaste": {
     "context": "Utils"
   },
@@ -82,11 +82,45 @@
   },
 
 
+  "invitationCodeTooShort": "Код слишком короткий",
+  "@invitationCodeTooShort": {
+    "context": "CommonErrors"
+  },
+  "invitationCodeTooLong": "Код слишком длинный",
+  "@invitationCodeTooLong": {
+    "context": "CommonErrors"
+  },
+  "invitationCodeWrongFormat": "Неправильный формат кода",
+  "@invitationCodeWrongFormat": {
+    "context": "CommonErrors"
+  },
+  "titleTooShort": "Название слишком короткое",
+  "@titleTooShort": {
+    "context": "CommonErrors"
+  },
+  "titleTooLong": "Название слишком длинное",
+  "@titleTooLong": {
+    "context": "CommonErrors"
+  },
+  "descriptionTooLong": "Описание слишком длинное",
+  "@descriptionTooLong": {
+    "context": "CommonErrors"
+  },
+
+
   "createNewAccount": "Создать аккаунт",
   "@createNewAccount": {
     "context": "AccountAddDialog, AuthLoginScreen"
   },
-  "pleaseFillTitle": "Пожалуйста, укажите заголовок",
+  "labelInvitationCode": "Код приглашения",
+  "@labelInvitationCode": {
+    "context": "AccountAddDialog"
+  },
+  "pleaseEnterCode": "Введите код приглашения",
+  "@pleaseEnterCode": {
+    "context": "AccountAddDialog"
+  },
+  "pleaseFillTitle": "Пожалуйста, укажите название",
   "@pleaseFillTitle": {
     "context": "AccountAddDialog, ProfileEditScreen"
   },

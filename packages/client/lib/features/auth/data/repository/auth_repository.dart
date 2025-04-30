@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura_root/domain/enum.dart';
+import 'package:tentura_root/domain/entity/auth_request_intent.dart';
 import 'package:tentura_root/utils/base64_padded.dart';
 
 import 'package:tentura/data/database/database.dart';
@@ -88,14 +88,19 @@ class AuthRepository {
   }
 
   /// Returns id of actual account
-  Future<String> signUp({required String title}) async {
+  Future<String> signUp({
+    required String title,
+    required String invitationCode,
+  }) async {
     final seed = base64UrlEncode(
       Uint8List(32)..fillRange(0, 32, Random.secure().nextInt(256)),
     );
     final authRequestToken = await _remoteApiService.setAuth(
       seed: seed,
       authTokenFetcher: authTokenFetcher,
-      returnAuthRequestToken: AuthRequestIntent.signUp,
+      returnAuthRequestToken: AuthRequestIntentSignUp(
+        invitationCode: invitationCode,
+      ),
     );
     final request = GSignUpReq((b) {
       b.context = const Context().withEntry(const HttpAuthHeaders.noAuth());

@@ -1,6 +1,6 @@
 arb-dir: l10n
-output-dir: lib/i10n
+output-class: I10n
+output-dir: lib/l10n
 template-arb-file: app_en.arb
 output-localization-file: I10n.dart
-output-class: I10n
 synthetic-package: false
