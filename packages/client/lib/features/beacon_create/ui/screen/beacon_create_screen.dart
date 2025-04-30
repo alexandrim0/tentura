@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:tentura_root/i10n/I10n.dart';
+
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
@@ -51,6 +52,8 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
   final _locationController = TextEditingController();
   final _dateRangeController = TextEditingController();
 
+  late final _l10n = L10n.of(context)!;
+
   @override
   void dispose() {
     _imageController.dispose();
@@ -81,7 +84,7 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
       ),
       leading: const DeepBackButton(),
       centerTitle: true,
-      title: Text(I10n.of(context)!.createNewBeacon),
+      title: Text(_l10n.createNewBeacon),
     ),
 
     // Input Form

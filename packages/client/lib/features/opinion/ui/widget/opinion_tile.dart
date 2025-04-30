@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
+
 import 'package:tentura/domain/entity/opinion.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -19,7 +20,7 @@ class OpinionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = I10n.of(context)!;
+    final l10n = L10n.of(context)!;
     return Column(
       children: [
         // Header
@@ -49,7 +50,7 @@ class OpinionTile extends StatelessWidget {
                 children: [
                   // Title
                   Text(
-                    isMine ? i10n.labelMe : opinion.author.title,
+                    isMine ? l10n.labelMe : opinion.author.title,
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
 
@@ -78,7 +79,7 @@ class OpinionTile extends StatelessWidget {
                             await opinionCubit.removeOpinionById(opinion.id);
                           }
                         },
-                        child: Text(i10n.deleteOpinion),
+                        child: Text(l10n.deleteOpinion),
                       )
                     else
                       // Complaint
@@ -87,7 +88,7 @@ class OpinionTile extends StatelessWidget {
                             () => context.read<ScreenCubit>().showComplaint(
                               opinion.id,
                             ),
-                        child: Text(i10n.buttonComplaint),
+                        child: Text(l10n.buttonComplaint),
                       ),
                   ],
             ),

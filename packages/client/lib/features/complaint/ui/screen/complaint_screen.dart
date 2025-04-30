@@ -1,8 +1,9 @@
-import 'package:tentura_root/i10n/I10n.dart';
 import 'package:validatorless/validatorless.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -43,12 +44,14 @@ class ComplaintScreen extends StatefulWidget implements AutoRouteWrapper {
 class _ComplaintScreenState extends State<ComplaintScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  late final _l10n = L10n.of(context)!;
+
   late final _cubit = context.read<ComplaintCubit>();
 
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: Text(I10n.of(context)!.submitComplaint),
+      title: Text(_l10n.submitComplaint),
       leading: const DeepBackButton(),
     ),
     body: Form(
@@ -65,16 +68,16 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                 items: [
                   DropdownMenuItem(
                     value: ComplaintType.violatesCsaePolicy,
-                    child: Text(I10n.of(context)!.violatesCSAE),
+                    child: Text(_l10n.violatesCSAE),
                   ),
                   DropdownMenuItem(
                     value: ComplaintType.violatesPlatformRules,
-                    child: Text(I10n.of(context)!.violatesPlatformRules),
+                    child: Text(_l10n.violatesPlatformRules),
                   ),
                 ],
                 onChanged: _cubit.setType,
                 decoration: InputDecoration(
-                  labelText: I10n.of(context)!.labelComplaintType,
+                  labelText: _l10n.labelComplaintType,
                   border: const OutlineInputBorder(),
                 ),
                 dropdownColor: Theme.of(context).colorScheme.secondaryContainer,
@@ -88,11 +91,11 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
             child: TextFormField(
               maxLines: 5,
               decoration: InputDecoration(
-                labelText: I10n.of(context)!.detailsRequired,
+                labelText: _l10n.detailsRequired,
                 border: const OutlineInputBorder(),
                 alignLabelWithHint: true,
               ),
-              validator: Validatorless.required(I10n.of(context)!.provideDetails),
+              validator: Validatorless.required(_l10n.provideDetails),
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
               onChanged: _cubit.setDetails,
             ),
@@ -104,10 +107,10 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
             child: TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                labelText: I10n.of(context)!.feedbackEmail,
+                labelText: _l10n.feedbackEmail,
                 border: const OutlineInputBorder(),
               ),
-              validator: Validatorless.email(I10n.of(context)!.emailValidationError),
+              validator: Validatorless.email(_l10n.emailValidationError),
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
               onChanged: _cubit.setEmail,
             ),
@@ -126,7 +129,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                   }
                 }
               },
-              child: Text(I10n.of(context)!.buttonSubmitComplaint),
+              child: Text(_l10n.buttonSubmitComplaint),
             ),
           ),
         ],

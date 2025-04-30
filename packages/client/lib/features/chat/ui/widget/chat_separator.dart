@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tentura_root/i10n/I10n.dart';
+
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -18,6 +19,7 @@ class ChatSeparator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = L10n.of(context)!;
 
     if (currentMessage.createdAt.day == nextMessage.createdAt.day) {
       return const SizedBox(height: kSpacingSmall);
@@ -26,7 +28,7 @@ class ChatSeparator extends StatelessWidget {
       padding: kPaddingAllS,
       child: Text(
         currentMessage.createdAt.day == DateTime.timestamp().day
-            ? I10n.of(context)!.chatLabelToday
+            ? l10n.chatLabelToday
             : dateFormatYMD(currentMessage.createdAt),
         style: theme.textTheme.bodySmall,
         textAlign: TextAlign.center,

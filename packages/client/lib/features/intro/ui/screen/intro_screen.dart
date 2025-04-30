@@ -2,8 +2,9 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tentura_root/i10n/I10n.dart';
 import 'package:vector_graphics/vector_graphics.dart';
+
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -16,6 +17,7 @@ class IntroScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       body: SafeArea(
@@ -37,7 +39,7 @@ class IntroScreen extends StatelessWidget {
             Padding(
               padding: kPaddingAll,
               child: Text(
-                I10n.of(context)!.introTitle,
+                l10n.introTitle,
                 textAlign: TextAlign.center,
                 style: textTheme.displayMedium,
               ),
@@ -47,7 +49,7 @@ class IntroScreen extends StatelessWidget {
             Padding(
               padding: kPaddingAll,
               child: Text(
-                I10n.of(context)!.introText,
+                l10n.introText,
                 textAlign: TextAlign.center,
                 style: textTheme.bodyLarge,
               ),
@@ -61,7 +63,7 @@ class IntroScreen extends StatelessWidget {
               child: FilledButton(
                 onPressed:
                     () async => GetIt.I<SettingsCubit>().setIntroEnabled(false),
-                child: Text(I10n.of(context)!.buttonStart),
+                child: Text(l10n.buttonStart),
               ),
             ),
           ],

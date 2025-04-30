@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tentura_root/i10n/I10n.dart';
+
+import 'package:tentura_root/l10n/l10n.dart';
 
 class BeaconDeleteDialog extends StatelessWidget {
   static Future<bool?> show(BuildContext context) =>
@@ -8,20 +9,23 @@ class BeaconDeleteDialog extends StatelessWidget {
   const BeaconDeleteDialog({super.key});
 
   @override
-  Widget build(BuildContext context) => AlertDialog.adaptive(
-    title: Text(I10n.of(context)!.confirmBeaconRemoval),
-    actions: [
-      // Delete
-      TextButton(
-        onPressed: () => Navigator.of(context).pop(true),
-        child: Text(I10n.of(context)!.buttonDelete),
-      ),
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
+    return AlertDialog.adaptive(
+      title: Text(l10n.confirmBeaconRemoval),
+      actions: [
+        // Delete
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(l10n.buttonDelete),
+        ),
 
-      // Cancel
-      TextButton(
-        onPressed: Navigator.of(context).pop,
-        child: Text(I10n.of(context)!.buttonCancel),
-      ),
-    ],
-  );
+        // Cancel
+        TextButton(
+          onPressed: Navigator.of(context).pop,
+          child: Text(l10n.buttonCancel),
+        ),
+      ],
+    );
+  }
 }

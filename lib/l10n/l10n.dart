@@ -5,24 +5,24 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'I10n_en.dart';
-import 'I10n_ru.dart';
+import 'l10n_en.dart';
+import 'l10n_ru.dart';
 
 // ignore_for_file: type=lint
 
-/// Callers can lookup localized strings with an instance of I10n
-/// returned by `I10n.of(context)`.
+/// Callers can lookup localized strings with an instance of L10n
+/// returned by `L10n.of(context)`.
 ///
-/// Applications need to include `I10n.delegate()` in their app's
+/// Applications need to include `L10n.delegate()` in their app's
 /// `localizationDelegates` list, and the locales they support in the app's
 /// `supportedLocales` list. For example:
 ///
 /// ```dart
-/// import 'l10n/I10n.dart';
+/// import 'l10n/l10n.dart';
 ///
 /// return MaterialApp(
-///   localizationsDelegates: I10n.localizationsDelegates,
-///   supportedLocales: I10n.supportedLocales,
+///   localizationsDelegates: L10n.localizationsDelegates,
+///   supportedLocales: L10n.supportedLocales,
 ///   home: MyApplicationHome(),
 /// );
 /// ```
@@ -59,18 +59,18 @@ import 'I10n_ru.dart';
 /// Select and expand the newly-created Localizations item then, for each
 /// locale your application supports, add a new item and select the locale
 /// you wish to add from the pop-up menu in the Value field. This list should
-/// be consistent with the languages listed in the I10n.supportedLocales
+/// be consistent with the languages listed in the L10n.supportedLocales
 /// property.
-abstract class I10n {
-  I10n(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+abstract class L10n {
+  L10n(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
-  static I10n? of(BuildContext context) {
-    return Localizations.of<I10n>(context, I10n);
+  static L10n? of(BuildContext context) {
+    return Localizations.of<L10n>(context, L10n);
   }
 
-  static const LocalizationsDelegate<I10n> delegate = _I10nDelegate();
+  static const LocalizationsDelegate<L10n> delegate = _L10nDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -804,32 +804,32 @@ abstract class I10n {
   String get shareLink;
 }
 
-class _I10nDelegate extends LocalizationsDelegate<I10n> {
-  const _I10nDelegate();
+class _L10nDelegate extends LocalizationsDelegate<L10n> {
+  const _L10nDelegate();
 
   @override
-  Future<I10n> load(Locale locale) {
-    return SynchronousFuture<I10n>(lookupI10n(locale));
+  Future<L10n> load(Locale locale) {
+    return SynchronousFuture<L10n>(lookupL10n(locale));
   }
 
   @override
   bool isSupported(Locale locale) => <String>['en', 'ru'].contains(locale.languageCode);
 
   @override
-  bool shouldReload(_I10nDelegate old) => false;
+  bool shouldReload(_L10nDelegate old) => false;
 }
 
-I10n lookupI10n(Locale locale) {
+L10n lookupL10n(Locale locale) {
 
 
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return I10nEn();
-    case 'ru': return I10nRu();
+    case 'en': return L10nEn();
+    case 'ru': return L10nRu();
   }
 
   throw FlutterError(
-    'I10n.delegate failed to load unsupported locale "$locale". This is likely '
+    'L10n.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
     'that was used.'

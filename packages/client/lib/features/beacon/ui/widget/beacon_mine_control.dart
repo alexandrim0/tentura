@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
@@ -16,7 +16,7 @@ class BeaconMineControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = I10n.of(context)!;
+    final l10n = L10n.of(context)!;
     final beaconCubit = context.read<BeaconCubit>();
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -43,8 +43,8 @@ class BeaconMineControl extends StatelessWidget {
                     beaconCubit.state.beacons
                             .singleWhere((e) => e.id == beacon.id)
                             .isEnabled
-                        ? i10n.disableBeacon
-                        : i10n.enableBeacon,
+                        ? l10n.disableBeacon
+                        : l10n.enableBeacon,
                   ),
                   onTap: () async => beaconCubit.toggleEnabled(beacon.id),
                 ),
@@ -52,7 +52,7 @@ class BeaconMineControl extends StatelessWidget {
 
                 // Delete
                 PopupMenuItem<void>(
-                  child: Text(i10n.deleteBeacon),
+                  child: Text(l10n.deleteBeacon),
                   onTap: () async {
                     if (await BeaconDeleteDialog.show(context) ?? false) {
                       await beaconCubit.delete(beacon.id);

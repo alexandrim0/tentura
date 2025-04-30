@@ -2,7 +2,7 @@ import 'package:nil/nil.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/features/beacon/ui/widget/beacon_info.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_tile_control.dart';
@@ -57,7 +57,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = I10n.of(context)!;
+    final l10n = L10n.of(context)!;
     final screenCubit = context.read<ScreenCubit>();
     final beaconViewCubit = context.read<BeaconViewCubit>();
     return Scaffold(
@@ -78,7 +78,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
                                 // Complaint
                                 PopupMenuItem(
                                   onTap: () => screenCubit.showComplaint(id),
-                                  child: Text(i10n.buttonComplaint),
+                                  child: Text(l10n.buttonComplaint),
                                 ),
                               ],
                         ),
@@ -128,7 +128,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
 
               // Comments Section
               Text(
-                i10n.labelComments,
+                l10n.labelComments,
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -151,7 +151,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
                     width: double.infinity,
                     child: FilledButton(
                       onPressed: beaconViewCubit.showAll,
-                      child: Text(i10n.showAllComments),
+                      child: Text(l10n.showAllComments),
                     ),
                   ),
                 ),
@@ -160,7 +160,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
         },
       ),
       bottomSheet: BottomTextInput(
-        hintText: i10n.writeComment,
+        hintText: l10n.writeComment,
         onSend: beaconViewCubit.addComment,
       ),
     );

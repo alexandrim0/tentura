@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
@@ -54,7 +54,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
 
   late final _cubit = context.read<BeaconCubit>();
 
-  late final _i10n = I10n.of(context)!;
+  late final _l10n = L10n.of(context)!;
 
   @override
   void initState() {
@@ -78,7 +78,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      title: Text(_i10n.beaconsTitle),
+      title: Text(_l10n.beaconsTitle),
       actions: [
         BlocSelector<BeaconCubit, BeaconState, BeaconFilter>(
           selector: (state) => state.filter,
@@ -90,11 +90,11 @@ class _BeaconScreenState extends State<BeaconScreen> {
                   items: [
                     DropdownMenuItem(
                       value: BeaconFilter.enabled,
-                      child: Text(_i10n.beaconsFilterEnabled),
+                      child: Text(_l10n.beaconsFilterEnabled),
                     ),
                     DropdownMenuItem(
                       value: BeaconFilter.disabled,
-                      child: Text(_i10n.beaconsFilterDisabled),
+                      child: Text(_l10n.beaconsFilterDisabled),
                     ),
                   ],
                   onChanged: _cubit.toggleFilter,
@@ -121,7 +121,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
               state.beacons.isEmpty
                   ? Center(
                     child: Text(
-                      _i10n.noBeaconsMessage,
+                      _l10n.noBeaconsMessage,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   )

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/app/router/root_router.dart';
@@ -19,7 +19,7 @@ class ConnectScreen extends StatefulWidget {
 class _ConnectScreenState extends State<ConnectScreen> {
   final _inputController = TextEditingController();
 
-  late final _i10n = I10n.of(context)!;
+  late final _l10n = L10n.of(context)!;
 
   @override
   void dispose() {
@@ -38,7 +38,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
           children: [
             Padding(
               padding: kPaddingSmallT,
-              child: Text(_i10n.writeCodeHere, textAlign: TextAlign.center),
+              child: Text(_l10n.writeCodeHere, textAlign: TextAlign.center),
             ),
 
             // Input
@@ -68,14 +68,14 @@ class _ConnectScreenState extends State<ConnectScreen> {
             Padding(
               padding: kPaddingV,
               child: FilledButton(
-                child: Text(_i10n.buttonSearch),
+                child: Text(_l10n.buttonSearch),
                 onPressed: () => _goWithCode(_inputController.text),
               ),
             ),
 
             Padding(
               padding: const EdgeInsets.symmetric(vertical: kSpacingSmall),
-              child: Text(_i10n.labelOr, textAlign: TextAlign.center),
+              child: Text(_l10n.labelOr, textAlign: TextAlign.center),
             ),
 
             // Button (paste)
@@ -83,13 +83,13 @@ class _ConnectScreenState extends State<ConnectScreen> {
               padding: kPaddingV,
               child: FilledButton(
                 onPressed: _getCodeFromClipboard,
-                child: Text(_i10n.buttonPaste),
+                child: Text(_l10n.buttonPaste),
               ),
             ),
 
             Padding(
               padding: const EdgeInsets.symmetric(vertical: kSpacingSmall),
-              child: Text(_i10n.labelOr, textAlign: TextAlign.center),
+              child: Text(_l10n.labelOr, textAlign: TextAlign.center),
             ),
 
             // Button (scan qr)
@@ -100,7 +100,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
                   final code = await QRScanDialog.show(context);
                   if (context.mounted) _goWithCode(code);
                 },
-                child: Text(_i10n.buttonScanQR),
+                child: Text(_l10n.buttonScanQR),
               ),
             ),
           ],
@@ -127,7 +127,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
   void _goWithCode(String? code) {
     if (code == null || code.isEmpty) return;
     if (code.length != kIdLength) {
-      showSnackBar(context, isError: true, text: _i10n.codeLengthError);
+      showSnackBar(context, isError: true, text: _l10n.codeLengthError);
     }
     switch (code[0]) {
       case 'U':
@@ -140,7 +140,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
         context.pushRoute(BeaconViewRoute(id: code));
 
       default:
-        showSnackBar(context, isError: true, text: _i10n.codePrefixError);
+        showSnackBar(context, isError: true, text: _l10n.codePrefixError);
     }
   }
 }

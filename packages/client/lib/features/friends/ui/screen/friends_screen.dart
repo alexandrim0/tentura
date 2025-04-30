@@ -1,7 +1,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:tentura_root/i10n/I10n.dart';
+
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -16,6 +17,7 @@ class FriendsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final friendsCubit = GetIt.I<FriendsCubit>();
+    final l10n = L10n.of(context)!;
     return SafeArea(
       child: BlocBuilder<FriendsCubit, FriendsState>(
         bloc: friendsCubit,
@@ -24,30 +26,29 @@ class FriendsScreen extends StatelessWidget {
           late final friends = state.friends.values.toList();
           return RefreshIndicator.adaptive(
             onRefresh: friendsCubit.fetch,
-            child: state.friends.isEmpty
-
-                // Empty state
-                ? Center(
-                    child: Text(
-                      I10n.of(context)!.labelNothingHere,
-                      style: Theme.of(context).textTheme.displaySmall,
-                      textAlign: TextAlign.center,
+            child:
+                state.friends.isEmpty
+                    // Empty state
+                    ? Center(
+                      child: Text(
+                        l10n.labelNothingHere,
+                        style: Theme.of(context).textTheme.displaySmall,
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                    // Friends List
+                    : ListView.separated(
+                      padding: kPaddingAll,
+                      itemCount: friends.length,
+                      itemBuilder: (context, i) {
+                        final profile = friends[i];
+                        return ChatPeerListTile(
+                          key: ValueKey(profile),
+                          profile: profile,
+                        );
+                      },
+                      separatorBuilder: (context, i) => const Divider(),
                     ),
-                  )
-
-                // Friends List
-                : ListView.separated(
-                    padding: kPaddingAll,
-                    itemCount: friends.length,
-                    itemBuilder: (context, i) {
-                      final profile = friends[i];
-                      return ChatPeerListTile(
-                        key: ValueKey(profile),
-                        profile: profile,
-                      );
-                    },
-                    separatorBuilder: (context, i) => const Divider(),
-                  ),
           );
         },
       ),

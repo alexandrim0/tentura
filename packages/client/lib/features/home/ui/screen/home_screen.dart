@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:tentura_root/l10n/l10n.dart';
+
 import 'package:tentura/app/router/root_router.dart';
-import 'package:tentura_root/i10n/I10n.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
@@ -76,41 +77,44 @@ class HomeScreen extends StatelessWidget implements AutoRouteWrapper {
   );
 
   @override
-  Widget build(BuildContext context) => AutoTabsScaffold(
-    bottomNavigationBuilder:
-        (context, tabsRouter) => NavigationBar(
-          onDestinationSelected: tabsRouter.setActiveIndex,
-          selectedIndex: tabsRouter.activeIndex,
-          destinations: [
-            NavigationDestination(
-              icon: const Icon(TenturaIcons.home),
-              label: I10n.of(context)!.myField,
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.star_border),
-              label: I10n.of(context)!.favorites,
-            ),
-            NavigationDestination(
-              icon: const Icon(TenturaIcons.affiliation),
-              label: I10n.of(context)!.connect,
-            ),
-            NavigationDestination(
-              icon: const FriendsNavbarItem(),
-              label: I10n.of(context)!.friends,
-            ),
-            NavigationDestination(
-              icon: const ProfileNavBarItem(),
-              label: I10n.of(context)!.profile,
-            ),
-          ],
-        ),
-    resizeToAvoidBottomInset: false,
-    routes: const [
-      MyFieldRoute(),
-      FavoritesRoute(),
-      ConnectRoute(),
-      FriendsRoute(),
-      ProfileRoute(),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
+    return AutoTabsScaffold(
+      bottomNavigationBuilder:
+          (_, tabsRouter) => NavigationBar(
+            onDestinationSelected: tabsRouter.setActiveIndex,
+            selectedIndex: tabsRouter.activeIndex,
+            destinations: [
+              NavigationDestination(
+                icon: const Icon(TenturaIcons.home),
+                label: l10n.myField,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.star_border),
+                label: l10n.favorites,
+              ),
+              NavigationDestination(
+                icon: const Icon(TenturaIcons.affiliation),
+                label: l10n.connect,
+              ),
+              NavigationDestination(
+                icon: const FriendsNavbarItem(),
+                label: l10n.friends,
+              ),
+              NavigationDestination(
+                icon: const ProfileNavBarItem(),
+                label: l10n.profile,
+              ),
+            ],
+          ),
+      resizeToAvoidBottomInset: false,
+      routes: const [
+        MyFieldRoute(),
+        FavoritesRoute(),
+        ConnectRoute(),
+        FriendsRoute(),
+        ProfileRoute(),
+      ],
+    );
+  }
 }

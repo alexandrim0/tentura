@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
@@ -14,7 +14,7 @@ class BeaconMineControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = I10n.of(context)!;
+    final l10n = L10n.of(context)!;
     final beaconViewCubit = context.read<BeaconViewCubit>();
     final beacon = beaconViewCubit.state.beacon;
     return Row(
@@ -41,8 +41,8 @@ class BeaconMineControl extends StatelessWidget {
                   onTap: beaconViewCubit.toggleEnabled,
                   child: Text(
                     beaconViewCubit.state.beacon.isEnabled
-                        ? i10n.disableBeacon
-                        : i10n.enableBeacon,
+                        ? l10n.disableBeacon
+                        : l10n.enableBeacon,
                   ),
                 ),
                 const PopupMenuDivider(),
@@ -54,7 +54,7 @@ class BeaconMineControl extends StatelessWidget {
                       await beaconViewCubit.delete(beacon.id);
                     }
                   },
-                  child: Text(i10n.deleteBeacon),
+                  child: Text(l10n.deleteBeacon),
                 ),
               ],
         ),

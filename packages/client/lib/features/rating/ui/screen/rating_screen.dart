@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:tentura_root/i10n/I10n.dart';
+
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -16,28 +17,25 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (_) => RatingCubit(),
-          ),
-          BlocProvider(
-            create: (_) => ContextCubit(),
-          ),
-        ],
-        child: MultiBlocListener(
-          listeners: [
-            BlocListener<ContextCubit, ContextState>(
-              listenWhen: (p, c) => p.selected != c.selected,
-              listener: (context, state) =>
+    providers: [
+      BlocProvider(create: (_) => RatingCubit()),
+      BlocProvider(create: (_) => ContextCubit()),
+    ],
+    child: MultiBlocListener(
+      listeners: [
+        BlocListener<ContextCubit, ContextState>(
+          listenWhen: (p, c) => p.selected != c.selected,
+          listener:
+              (context, state) =>
                   context.read<RatingCubit>().fetch(state.selected),
-            ),
-            const BlocListener<RatingCubit, RatingState>(
-              listener: commonScreenBlocListener,
-            ),
-          ],
-          child: this,
         ),
-      );
+        const BlocListener<RatingCubit, RatingState>(
+          listener: commonScreenBlocListener,
+        ),
+      ],
+      child: this,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -46,18 +44,20 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
       buildWhen: (p, c) => c.isSuccess || c.isLoading,
       builder: (context, state) {
         if (state.isLoading) {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
+          return const Center(child: CircularProgressIndicator.adaptive());
         }
+        final l10n = L10n.of(context)!;
         final isDarkMode = Theme.of(context).brightness == Brightness.dark;
         final filter = state.searchFilter;
-        final items = filter.isEmpty
-            ? state.items
-            : state.items
-                .where(
-                    (e) => e.title.toLowerCase().contains(filter.toLowerCase()))
-                .toList();
+        final items =
+            filter.isEmpty
+                ? state.items
+                : state.items
+                    .where(
+                      (e) =>
+                          e.title.toLowerCase().contains(filter.toLowerCase()),
+                    )
+                    .toList();
 
         return Scaffold(
           appBar: AppBar(
@@ -73,17 +73,19 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
               // Toggle sorting by value
               IconButton(
                 onPressed: cubit.toggleSortingByAsc,
-                icon: state.isSortedByAsc
-                    ? const Icon(Icons.keyboard_arrow_up_rounded)
-                    : const Icon(Icons.keyboard_arrow_down_rounded),
+                icon:
+                    state.isSortedByAsc
+                        ? const Icon(Icons.keyboard_arrow_up_rounded)
+                        : const Icon(Icons.keyboard_arrow_down_rounded),
               ),
 
               // Toggle sorting by ego
               IconButton(
                 onPressed: cubit.toggleSortingByEgo,
-                icon: state.isSortedByEgo
-                    ? const Icon(Icons.keyboard_arrow_right_rounded)
-                    : const Icon(Icons.keyboard_arrow_left_rounded),
+                icon:
+                    state.isSortedByEgo
+                        ? const Icon(Icons.keyboard_arrow_right_rounded)
+                        : const Icon(Icons.keyboard_arrow_left_rounded),
               ),
             ],
 
@@ -92,7 +94,7 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
                 // Title
                 Padding(
                   padding: const EdgeInsets.only(right: kSpacingLarge),
-                  child: Text(I10n.of(context)!.rating),
+                  child: Text(l10n.rating),
                 ),
 
                 // Search Input
@@ -100,7 +102,7 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
                   child: TextFormField(
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.zero,
-                      hintText: I10n.of(context)!.searchBy,
+                      hintText: l10n.searchBy,
                       isCollapsed: true,
                       isDense: true,
                     ),
@@ -117,9 +119,7 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
               preferredSize: Size.fromHeight(48),
               child: Padding(
                 padding: kPaddingH,
-                child: ContextDropDown(
-                  key: Key('RatingContextSelector'),
-                ),
+                child: ContextDropDown(key: Key('RatingContextSelector')),
               ),
             ),
           ),
@@ -129,11 +129,12 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
             padding: kPaddingH + kPaddingT,
             itemCount: items.length,
             separatorBuilder: (context, i) => const Divider(),
-            itemBuilder: (context, i) => RatingListTile(
-              key: ValueKey(items[i]),
-              isDarkMode: isDarkMode,
-              profile: items[i],
-            ),
+            itemBuilder:
+                (context, i) => RatingListTile(
+                  key: ValueKey(items[i]),
+                  isDarkMode: isDarkMode,
+                  profile: items[i],
+                ),
           ),
         );
       },

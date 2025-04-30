@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tentura/domain/enum.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/consts.dart';
+import 'package:tentura/domain/enum.dart';
 import 'package:tentura/domain/use_case/string_input_validator.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -25,7 +25,7 @@ class _AccountAddDialogState extends State<AccountAddDialog>
 
   final _titleController = TextEditingController();
 
-  late final _i10n = I10n.of(context)!;
+  late final _l10n = L10n.of(context)!;
 
   late final _textTheme = Theme.of(context).textTheme;
 
@@ -38,7 +38,7 @@ class _AccountAddDialogState extends State<AccountAddDialog>
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-    title: Text(_i10n.createNewAccount, style: _textTheme.headlineMedium),
+    title: Text(_l10n.createNewAccount, style: _textTheme.headlineMedium),
     content: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -50,19 +50,19 @@ class _AccountAddDialogState extends State<AccountAddDialog>
               autovalidateMode: AutovalidateMode.onUnfocus,
               controller: _codeController,
               decoration: InputDecoration(
-                hintText: _i10n.pleaseEnterCode,
-                labelText: _i10n.labelInvitationCode,
+                hintText: _l10n.pleaseEnterCode,
+                labelText: _l10n.labelInvitationCode,
               ),
               maxLength: kTitleMaxLength,
               style: _textTheme.headlineLarge,
               validator:
                   (String? code) => switch (invitationCodeValidator(code)) {
                     StringInputValidatorErrors.tooShort =>
-                      _i10n.invitationCodeTooShort,
+                      _l10n.invitationCodeTooShort,
                     StringInputValidatorErrors.tooLong =>
-                      _i10n.invitationCodeTooLong,
+                      _l10n.invitationCodeTooLong,
                     StringInputValidatorErrors.wrongFormat =>
-                      _i10n.invitationCodeWrongFormat,
+                      _l10n.invitationCodeWrongFormat,
                     _ => null,
                   },
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -76,8 +76,8 @@ class _AccountAddDialogState extends State<AccountAddDialog>
             autovalidateMode: AutovalidateMode.onUnfocus,
             controller: _titleController,
             decoration: InputDecoration(
-              hintText: _i10n.pleaseFillTitle,
-              labelText: _i10n.labelTitle,
+              hintText: _l10n.pleaseFillTitle,
+              labelText: _l10n.labelTitle,
             ),
             maxLength: kTitleMaxLength,
             style: _textTheme.headlineLarge,
@@ -96,11 +96,11 @@ class _AccountAddDialogState extends State<AccountAddDialog>
           );
           if (context.mounted) Navigator.of(context).pop();
         },
-        child: Text(_i10n.buttonCreate),
+        child: Text(_l10n.buttonCreate),
       ),
       TextButton(
         onPressed: Navigator.of(context).pop,
-        child: Text(_i10n.buttonCancel),
+        child: Text(_l10n.buttonCancel),
       ),
     ],
   );

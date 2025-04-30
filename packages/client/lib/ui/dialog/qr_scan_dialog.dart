@@ -2,16 +2,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:tentura_root/i10n/I10n.dart';
+
+import 'package:tentura_root/l10n/l10n.dart';
 
 import '../utils/screen_size.dart';
 
 class QRScanDialog extends StatefulWidget {
   static Future<String?> show(BuildContext context) => showDialog<String>(
-        context: context,
-        useSafeArea: false,
-        builder: (context) => const QRScanDialog(),
-      );
+    context: context,
+    useSafeArea: false,
+    builder: (context) => const QRScanDialog(),
+  );
 
   const QRScanDialog({super.key});
 
@@ -20,36 +21,35 @@ class QRScanDialog extends StatefulWidget {
 }
 
 class _QRScanDialogState extends State<QRScanDialog> {
+  late final _l10n = L10n.of(context)!;
+
   late final _scanWindow = _getScanWindow();
 
   var _hasResult = false;
 
   @override
   Widget build(BuildContext context) => Dialog.fullscreen(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(I10n.of(context)!.scanQrCode),
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-          ),
-          extendBodyBehindAppBar: true,
-          body: kIsWeb
-              ? MobileScanner(
-                  onDetect: _handleBarcode,
-                )
+    child: Scaffold(
+      appBar: AppBar(
+        title: Text(_l10n.scanQrCode),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
+      ),
+      extendBodyBehindAppBar: true,
+      body:
+          kIsWeb
+              ? MobileScanner(onDetect: _handleBarcode)
               : Stack(
-                  children: [
-                    MobileScanner(
-                      onDetect: _handleBarcode,
-                      scanWindow: kIsWeb ? null : _scanWindow,
-                    ),
-                    CustomPaint(
-                      painter: _ScannerOverlay(frame: _scanWindow),
-                    ),
-                  ],
-                ),
-        ),
-      );
+                children: [
+                  MobileScanner(
+                    onDetect: _handleBarcode,
+                    scanWindow: kIsWeb ? null : _scanWindow,
+                  ),
+                  CustomPaint(painter: _ScannerOverlay(frame: _scanWindow)),
+                ],
+              ),
+    ),
+  );
 
   Rect _getScanWindow() {
     final size = MediaQuery.of(context).size;
@@ -80,15 +80,17 @@ class _ScannerOverlay extends CustomPainter {
 
   final Rect frame;
 
-  final _framePaint = Paint()
-    ..color = Colors.white
-    ..strokeCap = StrokeCap.round
-    ..strokeWidth = 8;
+  final _framePaint =
+      Paint()
+        ..color = Colors.white
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 8;
 
-  final _maskPaint = Paint()
-    ..color = Colors.deepPurple.withValues(alpha: 0.5)
-    ..style = PaintingStyle.fill
-    ..blendMode = BlendMode.dstOut;
+  final _maskPaint =
+      Paint()
+        ..color = Colors.deepPurple.withValues(alpha: 0.5)
+        ..style = PaintingStyle.fill
+        ..blendMode = BlendMode.dstOut;
 
   late final _maskPath = Path.combine(
     PathOperation.difference,
@@ -118,14 +120,15 @@ class _ScannerOverlay extends CustomPainter {
   bool shouldRepaint(_) => false;
 
   @override
-  void paint(Canvas canvas, Size size) => canvas
-    ..drawPath(_maskPath, _maskPaint)
-    ..drawLine(_leftTop, _leftTopH, _framePaint)
-    ..drawLine(_leftTop, _leftTopV, _framePaint)
-    ..drawLine(_rightTop, _rightTopH, _framePaint)
-    ..drawLine(_rightTop, _rightTopV, _framePaint)
-    ..drawLine(_leftBottom, _leftBottomH, _framePaint)
-    ..drawLine(_leftBottom, _leftBottomV, _framePaint)
-    ..drawLine(_rightBottom, _rightBottomH, _framePaint)
-    ..drawLine(_rightBottom, _rightBottomV, _framePaint);
+  void paint(Canvas canvas, Size size) =>
+      canvas
+        ..drawPath(_maskPath, _maskPaint)
+        ..drawLine(_leftTop, _leftTopH, _framePaint)
+        ..drawLine(_leftTop, _leftTopV, _framePaint)
+        ..drawLine(_rightTop, _rightTopH, _framePaint)
+        ..drawLine(_rightTop, _rightTopV, _framePaint)
+        ..drawLine(_leftBottom, _leftBottomH, _framePaint)
+        ..drawLine(_leftBottom, _leftBottomV, _framePaint)
+        ..drawLine(_rightBottom, _rightBottomH, _framePaint)
+        ..drawLine(_rightBottom, _rightBottomV, _framePaint);
 }

@@ -1,7 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
+
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/bottom_text_input.dart';
@@ -67,7 +68,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = I10n.of(context)!;
+    final l10n = L10n.of(context)!;
     final opinionCubit = context.read<OpinionCubit>();
     return Scaffold(
       body: RefreshIndicator.adaptive(
@@ -103,9 +104,9 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
         builder:
             (_, hasMyOpinion) =>
                 hasMyOpinion
-                    ? BottomTextInput(hintText: i10n.onlyOneOpinion)
+                    ? BottomTextInput(hintText: l10n.onlyOneOpinion)
                     : BottomTextInput(
-                      hintText: i10n.writeOpinion,
+                      hintText: l10n.writeOpinion,
                       onSend:
                           (text) async => opinionCubit.addOpinion(
                             amount: await OpinionPublishDialog.show(context),

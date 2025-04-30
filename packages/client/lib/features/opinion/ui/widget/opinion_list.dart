@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
+
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import '../bloc/opinion_cubit.dart';
@@ -11,7 +12,7 @@ class OpinionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = I10n.of(context)!;
+    final l10n = L10n.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final opinionCubit = context.read<OpinionCubit>();
     return BlocBuilder<OpinionCubit, OpinionState>(

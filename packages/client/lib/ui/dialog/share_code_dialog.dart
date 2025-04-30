@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:tentura_root/i10n/I10n.dart';
+
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -26,7 +27,7 @@ class ShareCodeDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final i10n = I10n.of(context)!;
+    final l10n = L10n.of(context)!;
     return AlertDialog.adaptive(
       alignment: Alignment.center,
       actionsAlignment: MainAxisAlignment.spaceBetween,
@@ -49,18 +50,18 @@ class ShareCodeDialog extends StatelessWidget {
       // Buttons
       actions: [
         TextButton(
-          child: Text(i10n.copyToClipboard),
+          child: Text(l10n.copyToClipboard),
           onPressed: () async {
             await Clipboard.setData(ClipboardData(text: link));
             if (context.mounted) {
-              showSnackBar(context, text: i10n.seedCopied);
+              showSnackBar(context, text: l10n.seedCopied);
             }
           },
         ),
         Builder(
           builder:
               (context) => TextButton(
-                child: Text(i10n.shareLink),
+                child: Text(l10n.shareLink),
                 onPressed: () {
                   final box = context.findRenderObject()! as RenderBox;
                   SharePlus.instance.share(
@@ -75,7 +76,7 @@ class ShareCodeDialog extends StatelessWidget {
         ),
         TextButton(
           onPressed: Navigator.of(context).pop,
-          child: Text(i10n.buttonClose),
+          child: Text(l10n.buttonClose),
         ),
       ],
     );

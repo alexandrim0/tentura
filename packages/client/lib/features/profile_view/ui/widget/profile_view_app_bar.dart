@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
+
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
@@ -15,6 +16,7 @@ class ProfileViewAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
     final screenCubit = context.read<ScreenCubit>();
     final profileViewCubit = context.read<ProfileViewCubit>();
     return BlocSelector<ProfileViewCubit, ProfileViewState, Profile>(
@@ -37,13 +39,13 @@ class ProfileViewAppBar extends StatelessWidget {
                     if (profile.isFriend)
                       PopupMenuItem(
                         onTap: profileViewCubit.removeFriend,
-                        child: Text(I10n.of(context)!.removeFromMyField),
+                        child: Text(l10n.removeFromMyField),
                       ),
 
                     // Complaint
                     PopupMenuItem(
                       onTap: () => screenCubit.showComplaint(profile.id),
-                      child: Text(I10n.of(context)!.buttonComplaint),
+                      child: Text(l10n.buttonComplaint),
                     ),
                   ];
                 },

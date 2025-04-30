@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
@@ -30,6 +30,7 @@ class BeaconInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = L10n.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -121,7 +122,7 @@ class BeaconInfo extends StatelessWidget {
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
                     label:
                         kIsWeb
-                            ? Text(I10n.of(context)!.showOnMap)
+                            ? Text(l10n.showOnMap)
                             : PlaceNameText(
                               coords: beacon.coordinates!,
                               style: theme.textTheme.bodySmall,

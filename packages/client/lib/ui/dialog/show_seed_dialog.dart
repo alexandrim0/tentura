@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tentura_root/i10n/I10n.dart';
+
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/qr_code.dart';
@@ -10,14 +11,10 @@ class ShowSeedDialog extends StatelessWidget {
     BuildContext context, {
     required String accountId,
     required String seed,
-  }) =>
-      showDialog(
-        context: context,
-        builder: (context) => ShowSeedDialog(
-          accountId: accountId,
-          seed: seed,
-        ),
-      );
+  }) => showDialog(
+    context: context,
+    builder: (context) => ShowSeedDialog(accountId: accountId, seed: seed),
+  );
 
   const ShowSeedDialog({
     required this.accountId,
@@ -31,6 +28,7 @@ class ShowSeedDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = L10n.of(context)!;
     return AlertDialog.adaptive(
       alignment: Alignment.center,
       actionsAlignment: MainAxisAlignment.spaceBetween,
@@ -48,27 +46,22 @@ class ShowSeedDialog extends StatelessWidget {
       ),
 
       // QRCode
-      content: QrCode(
-        data: seed,
-      ),
+      content: QrCode(data: seed),
 
       // Buttons
       actions: [
         TextButton(
-          child: Text(I10n.of(context)!.copyToClipboard),
+          child: Text(l10n.copyToClipboard),
           onPressed: () async {
             await Clipboard.setData(ClipboardData(text: seed));
             if (context.mounted) {
-              showSnackBar(
-                context,
-                text: I10n.of(context)!.seedCopied,
-              );
+              showSnackBar(context, text: l10n.seedCopied);
             }
           },
         ),
         TextButton(
           onPressed: Navigator.of(context).pop,
-          child: Text(I10n.of(context)!.buttonClose),
+          child: Text(l10n.buttonClose),
         ),
       ],
     );

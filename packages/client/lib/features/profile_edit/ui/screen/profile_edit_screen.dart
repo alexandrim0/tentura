@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -37,6 +37,7 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final cubit = context.read<ProfileEditCubit>();
     return Scaffold(
@@ -49,7 +50,7 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
             builder: (context, hasChanges) {
               return TextButton(
                 onPressed: hasChanges ? cubit.save : null,
-                child: Text(I10n.of(context)!.buttonSave),
+                child: Text(l10n.buttonSave),
               );
             },
           ),
@@ -123,8 +124,8 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
             child: TextFormField(
               autovalidateMode: AutovalidateMode.onUnfocus,
               decoration: InputDecoration(
-                labelText: I10n.of(context)!.labelTitle,
-                hintText: I10n.of(context)!.pleaseFillTitle,
+                labelText: l10n.labelTitle,
+                hintText: l10n.pleaseFillTitle,
               ),
               initialValue: cubit.state.title,
               maxLength: kTitleMaxLength,
@@ -158,7 +159,7 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
                     initialValue: cubit.state.description,
                     autovalidateMode: AutovalidateMode.onUnfocus,
                     decoration: InputDecoration(
-                      labelText: I10n.of(context)!.labelDescription,
+                      labelText: l10n.labelDescription,
                       labelStyle: textTheme.bodyMedium,
                     ),
                     style: textStyle,

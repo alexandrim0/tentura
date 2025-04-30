@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:tentura_root/i10n/I10n.dart';
+import 'package:tentura_root/l10n/l10n.dart';
+
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/deep_back_button.dart';
 
@@ -30,14 +31,14 @@ class GraphScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
-    final i10n = I10n.of(context)!;
+    final l10n = L10n.of(context)!;
     final cubit = context.read<GraphCubit>();
     return Scaffold(
       appBar: AppBar(
         leading: const DeepBackButton(),
 
         // Title
-        title: Text(i10n.graphView),
+        title: Text(l10n.graphView),
 
         // Menu :
         actions: [
@@ -46,15 +47,15 @@ class GraphScreen extends StatelessWidget implements AutoRouteWrapper {
                 (_) => <PopupMenuEntry<void>>[
                   PopupMenuItem<void>(
                     onTap: cubit.jumpToEgo,
-                    child: Text(i10n.goToEgo),
+                    child: Text(l10n.goToEgo),
                   ),
                   const PopupMenuDivider(),
                   PopupMenuItem<void>(
                     onTap: cubit.togglePositiveOnly,
                     child:
                         cubit.state.positiveOnly
-                            ? Text(i10n.showNegative)
-                            : Text(i10n.hideNegative),
+                            ? Text(l10n.showNegative)
+                            : Text(l10n.hideNegative),
                   ),
                 ],
           ),
