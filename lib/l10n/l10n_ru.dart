@@ -123,6 +123,9 @@ class L10nRu extends L10n {
   String get removeFromList => 'Убрать из списка';
 
   @override
+  String get invitationScreenTitle => 'Приглашения';
+
+  @override
   String get confirmBeaconRemoval => 'Вы уверены, что хотите удалить этот маяк?';
 
   @override

@@ -39,15 +39,15 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
     final cubit = context.read<RatingCubit>();
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return BlocBuilder<RatingCubit, RatingState>(
       buildWhen: (p, c) => c.isSuccess || c.isLoading,
       builder: (context, state) {
         if (state.isLoading) {
           return const Center(child: CircularProgressIndicator.adaptive());
         }
-        final l10n = L10n.of(context)!;
-        final isDarkMode = Theme.of(context).brightness == Brightness.dark;
         final filter = state.searchFilter;
         final items =
             filter.isEmpty
@@ -126,15 +126,17 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
 
           // Rating List
           body: ListView.separated(
-            padding: kPaddingH + kPaddingT,
             itemCount: items.length,
-            separatorBuilder: (context, i) => const Divider(),
-            itemBuilder:
-                (context, i) => RatingListTile(
-                  key: ValueKey(items[i]),
-                  isDarkMode: isDarkMode,
-                  profile: items[i],
-                ),
+            itemBuilder: (_, i) {
+              final profile = items[i];
+              return RatingListTile(
+                key: ValueKey(profile),
+                isDarkMode: isDarkMode,
+                profile: profile,
+              );
+            },
+            padding: kPaddingH + kPaddingT,
+            separatorBuilder: separatorBuilder,
           ),
         );
       },

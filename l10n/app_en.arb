@@ -156,12 +156,18 @@
   "@removeFromList": {
     "context": "AccountListTile"
   },
+
+
+  "invitationScreenTitle": "Invitations",
+  "@invitationScreenTitle": {
+    "context": "InvitationScreen"
+  },
+
+  
   "confirmBeaconRemoval": "Are you sure you want to delete this beacon?",
   "@confirmBeaconRemoval": {
     "context": "BeaconDeleteDialog"
   },
-
-
   "beaconsTitle": "Beacons",
   "@beaconsTitle": {
     "context": "BeaconScreen"

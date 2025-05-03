@@ -1,0 +1,15 @@
+query InvitationsFetchByUserId($offset: Int = 0, $limit: Int = 10) {
+  invitation(
+    where: {
+      invited_id: {_is_null: true}
+    },
+    order_by: {created_at: asc},
+    offset: $offset,
+    limit: $limit
+  ) {
+    id
+    invited_id
+    created_at
+    updated_at
+  }
+}

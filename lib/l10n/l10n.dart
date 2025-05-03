@@ -323,6 +323,12 @@ abstract class L10n {
   /// **'Remove from the list'**
   String get removeFromList;
 
+  /// No description provided for @invitationScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations'**
+  String get invitationScreenTitle;
+
   /// No description provided for @confirmBeaconRemoval.
   ///
   /// In en, this message translates to:

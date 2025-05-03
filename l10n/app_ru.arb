@@ -156,12 +156,18 @@
   "@removeFromList": {
     "context": "AccountListTile"
   },
+
+
+  "invitationScreenTitle": "Приглашения",
+  "@invitationScreenTitle": {
+    "context": "InvitationScreen"
+  },
+
+
   "confirmBeaconRemoval": "Вы уверены, что хотите удалить этот маяк?",
   "@confirmBeaconRemoval": {
     "context": "BeaconDeleteDialog"
   },
-
-
   "beaconsTitle": "Маяки",
   "@beaconsTitle": {
     "context": "BeaconScreen"
