@@ -5,7 +5,6 @@ import 'package:tentura_root/domain/entity/date_range.dart';
 import 'package:tentura/data/repository/image_repository.dart';
 import 'package:tentura/domain/entity/coordinates.dart';
 import 'package:tentura/domain/entity/beacon.dart';
-import 'package:tentura/domain/use_case/string_input_validator.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import 'package:tentura/features/beacon/data/repository/beacon_repository.dart';
@@ -16,8 +15,7 @@ export 'package:tentura/ui/bloc/state_base.dart';
 
 export 'beacon_create_state.dart';
 
-class BeaconCreateCubit extends Cubit<BeaconCreateState>
-    with StringInputValidator {
+class BeaconCreateCubit extends Cubit<BeaconCreateState> {
   BeaconCreateCubit({
     ImageRepository? imageRepository,
     BeaconRepository? beaconRepository,

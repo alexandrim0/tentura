@@ -5,6 +5,7 @@ import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/utils/string_input_validator.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
@@ -12,7 +13,9 @@ import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 import '../bloc/profile_edit_cubit.dart';
 
 @RoutePage()
-class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
+class ProfileEditScreen extends StatelessWidget
+    with StringInputValidator
+    implements AutoRouteWrapper {
   const ProfileEditScreen({super.key});
 
   @override
@@ -132,7 +135,7 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
               style: textTheme.headlineLarge,
               onChanged: cubit.setTitle,
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
-              validator: cubit.titleValidator,
+              validator: (text) => titleValidator(l10n, text),
             ),
           ),
 
@@ -165,7 +168,7 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
                     style: textStyle,
                     onChanged: cubit.setDescription,
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                    validator: cubit.descriptionValidator,
+                    validator: (text) => descriptionValidator(l10n, text),
                   );
                 },
               ),

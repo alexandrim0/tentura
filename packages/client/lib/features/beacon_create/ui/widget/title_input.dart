@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/consts.dart';
+import 'package:tentura/ui/utils/string_input_validator.dart';
 
 import '../bloc/beacon_create_cubit.dart';
 
-class TitleInput extends StatelessWidget {
+class TitleInput extends StatelessWidget with StringInputValidator {
   const TitleInput({super.key});
 
   @override
@@ -20,7 +21,7 @@ class TitleInput extends StatelessWidget {
       maxLength: kTitleMaxLength,
       onTapOutside: (_) => FocusScope.of(context).unfocus(),
       onChanged: cubit.setTitle,
-      validator: cubit.titleValidator,
+      validator: (text) => titleValidator(l10n, text),
     );
   }
 }

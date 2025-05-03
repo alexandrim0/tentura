@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/consts.dart';
+import 'package:tentura/ui/utils/string_input_validator.dart';
 
 import '../bloc/beacon_create_cubit.dart';
 
-class DescriptionInput extends StatelessWidget {
+class DescriptionInput extends StatelessWidget with StringInputValidator {
   const DescriptionInput({super.key});
 
   @override
@@ -21,7 +22,7 @@ class DescriptionInput extends StatelessWidget {
       maxLines: null,
       onChanged: cubit.setDescription,
       onTapOutside: (_) => FocusScope.of(context).unfocus(),
-      validator: cubit.descriptionValidator,
+      validator: (text) => descriptionValidator(l10n, text),
     );
   }
 }

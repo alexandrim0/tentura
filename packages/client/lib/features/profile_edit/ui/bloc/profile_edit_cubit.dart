@@ -2,7 +2,6 @@ import 'package:get_it/get_it.dart';
 
 import 'package:tentura/data/repository/image_repository.dart';
 import 'package:tentura/domain/entity/profile.dart';
-import 'package:tentura/domain/use_case/string_input_validator.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import 'package:tentura/features/profile/data/repository/profile_repository.dart';
@@ -14,8 +13,7 @@ export 'package:tentura/ui/bloc/state_base.dart';
 
 export 'profile_edit_state.dart';
 
-class ProfileEditCubit extends Cubit<ProfileEditState>
-    with StringInputValidator {
+class ProfileEditCubit extends Cubit<ProfileEditState> {
   ProfileEditCubit({
     required Profile profile,
     ImageRepository? imageRepository,

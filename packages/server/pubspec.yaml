@@ -27,7 +27,7 @@ dependencies:
   minio: ^3.5.7
   jaspr: ^0.17.0
   postgres: ^3.5.6
-  shelf_plus: ^1.10.0
+  shelf_plus: ^1.10.1
   stormberry: ^0.15.0
   angel3_graphql: ^8.3.0
   graphql_schema2: ^6.3.0

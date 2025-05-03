@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tentura_root/l10n/l10n.dart';
 
 import 'package:tentura/consts.dart';
-import 'package:tentura/domain/enum.dart';
-import 'package:tentura/domain/use_case/string_input_validator.dart';
+import 'package:tentura/ui/utils/string_input_validator.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import '../bloc/auth_cubit.dart';
@@ -55,16 +54,7 @@ class _AccountAddDialogState extends State<AccountAddDialog>
               ),
               maxLength: kTitleMaxLength,
               style: _textTheme.headlineLarge,
-              validator:
-                  (String? code) => switch (invitationCodeValidator(code)) {
-                    StringInputValidatorErrors.tooShort =>
-                      _l10n.invitationCodeTooShort,
-                    StringInputValidatorErrors.tooLong =>
-                      _l10n.invitationCodeTooLong,
-                    StringInputValidatorErrors.wrongFormat =>
-                      _l10n.invitationCodeWrongFormat,
-                    _ => null,
-                  },
+              validator: (text) => invitationCodeValidator(_l10n, text),
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
             ),
           ),
@@ -81,7 +71,7 @@ class _AccountAddDialogState extends State<AccountAddDialog>
             ),
             maxLength: kTitleMaxLength,
             style: _textTheme.headlineLarge,
-            validator: titleValidator,
+            validator: (text) => titleValidator(_l10n, text),
             onTapOutside: (_) => FocusScope.of(context).unfocus(),
           ),
         ),
