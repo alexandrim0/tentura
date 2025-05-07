@@ -17,9 +17,11 @@ dependencies:
   http:
   intl:
   uuid:
+  drift:
   image:
   get_it:
   latlong2:
+  drift_dev:
   collection:
   injectable:
   tentura_root:
@@ -30,7 +32,7 @@ dependencies:
 
   # Common
   logger: ^2.5.0
-  auto_route: ^9.3.0
+  auto_route: ^10.0.1
   built_value: ^8.9.5
   http_parser: ^4.1.2
   flutter_bloc: ^9.1.1
@@ -41,12 +43,10 @@ dependencies:
   intl_translation: ^0.20.1
 
   # Platform
-  drift: ^2.26.0
   ferry: ^0.16.0
   mailto: ^2.0.0
   gql_exec: ^1.0.0
   geocoding: ^3.0.0
-  drift_dev: ^2.26.0
   geolocator: ^14.0.0
   share_plus: ^11.0.0
   image_picker: ^1.1.2
@@ -86,7 +86,7 @@ dev_dependencies:
 
   ferry_generator: ^0.12.0
   sentry_dart_plugin: ^2.4.1
-  auto_route_generator: ^9.0.0
+  auto_route_generator: ^10.0.1
   flutter_launcher_icons: ^0.14.3
 
 flutter:

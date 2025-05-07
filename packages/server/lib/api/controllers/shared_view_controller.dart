@@ -43,22 +43,20 @@ final class SharedViewController extends BaseController {
     }
 
     try {
-      return Response.ok(
-        await renderComponent(
-          SharedViewDocument(
-            entity: switch (ogId[0]) {
-              'B' => await getIt<BeaconRepository>().getBeaconById(
-                beaconId: ogId,
-              ),
-              'C' => await getIt<CommentRepository>().getCommentById(ogId),
-              'O' => await getIt<OpinionCase>().getOpinionById(ogId),
-              'U' => await getIt<UserRepository>().getUserById(ogId),
-              _ => throw IdWrongException(id: ogId),
-            },
-          ),
+      final html = await renderComponent(
+        SharedViewDocument(
+          entity: switch (ogId[0]) {
+            'B' => await getIt<BeaconRepository>().getBeaconById(
+              beaconId: ogId,
+            ),
+            'C' => await getIt<CommentRepository>().getCommentById(ogId),
+            'O' => await getIt<OpinionCase>().getOpinionById(ogId),
+            'U' => await getIt<UserRepository>().getUserById(ogId),
+            _ => throw IdWrongException(id: ogId),
+          },
         ),
-        headers: {kHeaderContentType: kContentTypeHtml},
       );
+      return Response(html.statusCode, body: html.body, headers: html.headers);
     } on IdWrongException catch (e) {
       return Response.badRequest(body: e.toString());
     } on IdNotFoundException catch (e) {

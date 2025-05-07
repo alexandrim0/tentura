@@ -7,7 +7,7 @@ import 'user_entity.dart';
 part 'opinion_entity.freezed.dart';
 
 @freezed
-class OpinionEntity with _$OpinionEntity {
+abstract class OpinionEntity with _$OpinionEntity {
   static String get newId => generateId('O');
 
   const factory OpinionEntity({
@@ -18,4 +18,6 @@ class OpinionEntity with _$OpinionEntity {
     required DateTime createdAt,
     @Default(0) int score,
   }) = _OpinionEntity;
+
+  const OpinionEntity._();
 }

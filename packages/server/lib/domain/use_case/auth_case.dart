@@ -52,26 +52,25 @@ class AuthCase {
   }) async {
     final jwt = _verifyAuthRequest(token: authRequestToken);
     final payload = jwt.payload as Map<String, dynamic>;
-    final newUser = UserEntity(
-      id: UserEntity.newId,
-      publicKey: payload[AuthRequestIntent.keyPublicKey]! as String,
-      title: title,
-    );
-
-    if (_env.isNeedInvite) {
-      final _ = switch (payload[AuthRequestIntentSignUp.keyCode]) {
-        final String inviteId => await _userRepository.inviteUser(
-          inviteId: inviteId,
-          user: newUser,
-        ),
-        _ =>
-          throw const IdWrongException(
-            description: 'Invite attribute not found!',
-          ),
-      };
-    } else {
-      await _userRepository.createUser(user: newUser);
-    }
+    final publicKey = payload[AuthRequestIntent.keyPublicKey]! as String;
+    final newUser =
+        _env.isNeedInvite
+            ? switch (payload[AuthRequestIntentSignUp.keyCode]) {
+              final String invitationId => await _userRepository
+                  .createInvitedUser(
+                    invitationId: invitationId,
+                    publicKey: publicKey,
+                    title: title,
+                  ),
+              _ =>
+                throw const IdWrongException(
+                  description: 'Invite attribute not found!',
+                ),
+            }
+            : await _userRepository.createUser(
+              publicKey: publicKey,
+              title: title,
+            );
     return _issueJwt(subject: newUser.id);
   }
 

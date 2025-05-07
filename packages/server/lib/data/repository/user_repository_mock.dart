@@ -1,25 +1,34 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura_server/data/mapper/user_mapper.dart';
 import 'package:tentura_server/domain/exception.dart';
 
 import 'user_repository.dart';
 
 @Injectable(as: UserRepository, env: [Environment.test], order: 1)
-class UserRepositoryMock implements UserRepository {
+class UserRepositoryMock with UserMapper implements UserRepository {
   static final storageByPublicKey = <String, UserEntity>{};
 
   const UserRepositoryMock();
 
   @override
-  Future<UserEntity> createUser({required UserEntity user}) async =>
-      storageByPublicKey.containsKey(user.publicKey)
-          ? throw Exception('Key already exists [${user.publicKey}]')
-          : storageByPublicKey[user.publicKey] = user;
+  Future<UserEntity> createUser({
+    required String publicKey,
+    required String title,
+  }) async =>
+      storageByPublicKey.containsKey(publicKey)
+          ? throw Exception('Key already exists [$publicKey]')
+          : storageByPublicKey[publicKey] = UserEntity(
+            id: UserEntity.newId,
+            publicKey: publicKey,
+            title: title,
+          );
 
   @override
-  Future<UserEntity> inviteUser({
-    required UserEntity user,
-    required String inviteId,
+  Future<UserEntity> createInvitedUser({
+    required String invitationId,
+    required String publicKey,
+    required String title,
   }) {
     throw UnimplementedError();
   }

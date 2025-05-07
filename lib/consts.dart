@@ -6,6 +6,8 @@ const kTitleMinLength = 3;
 
 const kTitleMaxLength = 32;
 
+const kPublicKeyLength = 44;
+
 const kDescriptionMaxLength = 2_048;
 
 const kRatingSector = 100 / 4;

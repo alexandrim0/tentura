@@ -1,116 +1,75 @@
 import 'package:injectable/injectable.dart';
-import 'package:stormberry/stormberry.dart';
 
-import 'package:tentura_server/env.dart';
-import 'package:tentura_server/data/model/invitation_model.dart';
-import 'package:tentura_server/data/model/user_model.dart';
-import 'package:tentura_server/data/model/vote_user_model.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
+import 'package:tentura_server/env.dart';
+
+import '../database/tentura_db.dart';
+import '../mapper/user_mapper.dart';
 
 export 'package:tentura_server/domain/entity/user_entity.dart';
 
 @Injectable(env: [Environment.dev, Environment.prod], order: 1)
-class UserRepository {
+class UserRepository with UserMapper {
   const UserRepository(this._database, this._env);
 
-  final Database _database;
+  final TenturaDb _database;
 
   final Env _env;
 
-  Future<void> createUser({required UserEntity user}) async {
-    final now = DateTime.timestamp();
-    await _database.users.insertOne(
-      UserInsertRequest(
-        id: user.id,
-        title: user.title,
-        publicKey: user.publicKey,
-        description: user.description,
-        hasPicture: user.hasPicture,
-        picHeight: user.picHeight,
-        picWidth: user.picWidth,
-        blurHash: user.blurHash,
-        createdAt: now,
-        updatedAt: now,
-      ),
-    );
-  }
+  Future<UserEntity> createUser({
+    required String publicKey,
+    required String title,
+  }) => _database.managers.users
+      .createReturning((o) => o(title: title, publicKey: publicKey))
+      .then(userModelToEntity);
 
-  Future<void> inviteUser({
-    required UserEntity user,
-    required String inviteId,
-  }) async {
-    await _database.runTx<void>(
-      (session) async {
-        final invitation = await _database.invitations.queryInvitation(
-          inviteId,
-        );
+  // TBD: move to SQL
+  Future<UserEntity> createInvitedUser({
+    required String invitationId,
+    required String publicKey,
+    required String title,
+  }) => _database.transaction<UserEntity>(() async {
+    final invitation =
+        await _database.managers.invitations
+            .filter((e) => e.id.equals(invitationId))
+            .getSingleOrNull();
 
-        if (invitation == null ||
-            invitation.invited != null ||
-            invitation.createdAt
-                .add(_env.invitationTTL)
-                .isAfter(DateTime.timestamp())) {
-          throw const InvitationWrongException();
-        }
-
-        final now = DateTime.timestamp();
-        await session.users.insertOne(
-          UserInsertRequest(
-            id: user.id,
-            title: user.title,
-            publicKey: user.publicKey,
-            description: user.description,
-            hasPicture: user.hasPicture,
-            picHeight: user.picHeight,
-            picWidth: user.picWidth,
-            blurHash: user.blurHash,
-            createdAt: now,
-            updatedAt: now,
-          ),
-        );
-        await _database.invitations.updateOne(
-          InvitationUpdateRequest(id: inviteId, invitedId: user.id),
-        );
-        await _database.voteUsers.insertMany([
-          VoteUserInsertRequest(
-            subjectId: user.id,
-            objectId: inviteId,
-            amount: 1,
-            createdAt: now,
-            updatedAt: now,
-          ),
-          VoteUserInsertRequest(
-            subjectId: inviteId,
-            objectId: user.id,
-            amount: 1,
-            createdAt: now,
-            updatedAt: now,
-          ),
-        ]);
-      },
-      settings: TransactionSettings(
-        isolationLevel: IsolationLevel.serializable,
-      ),
-    );
-  }
-
-  Future<UserEntity> getUserById(String id) async => switch (await _database
-      .users
-      .queryUser(id)) {
-    final UserModel m => m.asEntity,
-    null => throw IdNotFoundException(id: id),
-  };
-
-  Future<UserEntity> getUserByPublicKey(String publicKey) async {
-    final users = await _database.users.queryUsers(
-      QueryParams(where: 'public_key=@pk', values: {'pk': publicKey}),
-    );
-    if (users.isEmpty) {
-      throw IdNotFoundException(id: publicKey);
+    if (invitation == null ||
+        invitation.invitedId != null ||
+        invitation.createdAt.dateTime
+            .add(_env.invitationTTL)
+            .isAfter(DateTime.timestamp())) {
+      throw const InvitationWrongException();
     }
-    return (users.first as UserModel).asEntity;
-  }
+
+    final user = await _database.managers.users.createReturning(
+      (o) => o(title: title, publicKey: publicKey),
+    );
+    await _database.managers.invitations
+        .filter((e) => e.id.equals(invitation.id))
+        .update((o) => o(invitedId: Value(user.id)));
+    await _database.managers.voteUsers.bulkCreate(
+      (o) => [
+        o(subject: user.id, object: invitation.userId, amount: 1),
+        o(subject: invitation.userId, object: user.id, amount: 1),
+      ],
+    );
+
+    return userModelToEntity(user);
+  });
+
+  Future<UserEntity> getUserById(String id) => _database.managers.users
+      .filter((e) => e.id.equals(id))
+      .getSingle()
+      .then(userModelToEntity);
+
+  Future<UserEntity> getUserByPublicKey(String publicKey) => _database
+      .managers
+      .users
+      .filter((e) => e.publicKey.equals(publicKey))
+      .getSingle()
+      .then(userModelToEntity);
 
   Future<void> updateUser({
     required String id,
@@ -120,18 +79,23 @@ class UserRepository {
     String? blurHash,
     int? imageHeight,
     int? imageWidth,
-  }) => _database.users.updateOne(
-    UserUpdateRequest(
-      id: id,
-      title: title,
-      description: description,
-      hasPicture: hasImage,
-      blurHash: blurHash,
-      picHeight: imageHeight,
-      picWidth: imageWidth,
-    ),
-  );
+  }) async {
+    final user =
+        await _database.managers.users
+            .filter((e) => e.id.equals(id))
+            .getSingle();
+    await _database.managers.users.replace(
+      user.copyWith(
+        title: title ?? user.title,
+        description: description ?? user.description,
+        hasPicture: hasImage ?? user.hasPicture,
+        blurHash: blurHash ?? user.blurHash,
+        picHeight: imageHeight ?? user.picHeight,
+        picWidth: imageWidth ?? user.picWidth,
+      ),
+    );
+  }
 
   Future<void> deleteUserById({required String id}) =>
-      _database.users.deleteOne(id);
+      _database.managers.users.filter((e) => e.id.equals(id)).delete();
 }

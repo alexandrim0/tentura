@@ -4,8 +4,8 @@ import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
 @singleton
-class LocalStorageService {
-  const LocalStorageService();
+class LocalStorage {
+  const LocalStorage();
 
   Future<Uint8List> readFile(String path) => File(path).readAsBytes();
 

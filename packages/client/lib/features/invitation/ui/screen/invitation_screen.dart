@@ -54,6 +54,7 @@ class InvitationScreen extends StatelessWidget implements AutoRouteWrapper {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4),
           child: BlocSelector<InvitationCubit, InvitationState, bool>(
+            key: Key('Loader:${invitationCubit.hashCode}'),
             selector: (state) => state.isLoading,
             builder: LinearPiActive.builder,
             bloc: invitationCubit,
@@ -63,6 +64,7 @@ class InvitationScreen extends StatelessWidget implements AutoRouteWrapper {
       body: RefreshIndicator.adaptive(
         onRefresh: () async => invitationCubit.fetch(clear: true),
         child: BlocBuilder<InvitationCubit, InvitationState>(
+          key: Key('Body:${invitationCubit.hashCode}'),
           bloc: invitationCubit,
           buildWhen: (_, c) => c.isSuccess,
           builder: (_, state) {
@@ -74,6 +76,7 @@ class InvitationScreen extends StatelessWidget implements AutoRouteWrapper {
                   invitationCubit.fetch();
                 }
                 return ListTile(
+                  key: ValueKey(invitation),
                   title: Text(invitation.id),
                   subtitle: Text(invitation.createdAt.toString()),
                 );

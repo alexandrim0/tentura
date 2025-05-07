@@ -3,10 +3,9 @@ import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura_root/domain/entity/coordinates.dart';
-import 'package:tentura_root/domain/entity/date_range.dart';
+
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/image_repository.dart';
-import 'package:tentura_server/domain/entity/user_entity.dart';
 
 import 'image_case_mixin.dart';
 
@@ -21,22 +20,23 @@ class BeaconCase with ImageCaseMixin {
   Future<BeaconEntity> create({
     required String userId,
     required String title,
-    String? context,
     String? description,
-    DateRange? dateRange,
-    Stream<Uint8List>? imageBytes,
+    String? context,
+    DateTime? endAt,
+    DateTime? startAt,
     Coordinates? coordinates,
+    Stream<Uint8List>? imageBytes,
   }) async {
     final beacon = await _beaconRepository.createBeacon(
-      BeaconEntity.aNew(
-        title: title,
-        context: (context?.isEmpty ?? true) ? null : context,
-        description: description ?? '',
-        hasPicture: imageBytes != null,
-        timerange: dateRange,
-        coordinates: coordinates,
-        author: UserEntity(id: userId),
-      ),
+      authorId: userId,
+      title: title,
+      context: (context?.isEmpty ?? true) ? null : context,
+      description: description ?? '',
+      hasPicture: imageBytes != null,
+      latitude: coordinates?.lat,
+      longitude: coordinates?.long,
+      startAt: startAt,
+      endAt: endAt,
     );
     if (imageBytes != null) {
       await _imageRepository.putBeaconImage(

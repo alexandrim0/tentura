@@ -1,38 +1,47 @@
 import 'package:injectable/injectable.dart';
-import 'package:stormberry/stormberry.dart';
 
-import 'package:tentura_server/data/model/comment_model.dart';
 import 'package:tentura_server/domain/entity/comment_entity.dart';
-import 'package:tentura_server/domain/exception.dart';
+
+import '../database/tentura_db.dart';
+import '../mapper/beacon_mapper.dart';
+import '../mapper/comment_mapper.dart';
+import '../mapper/user_mapper.dart';
 
 export 'package:tentura_server/domain/entity/comment_entity.dart';
 
 @Injectable(env: [Environment.dev, Environment.prod], order: 1)
-class CommentRepository {
+class CommentRepository with UserMapper, BeaconMapper, CommentMapper {
   CommentRepository(this._database);
 
-  final Database _database;
+  final TenturaDb _database;
 
-  Future<CommentEntity> createComment(
-    CommentEntity comment, {
+  Future<CommentEntity> createComment({
+    required String authorId,
+    required String beaconId,
+    required String content,
     int ticker = 0,
   }) async {
-    await _database.comments.insertOne(
-      CommentInsertRequest(
-        id: comment.id,
-        userId: comment.author.id,
-        beaconId: comment.beacon.id,
-        content: comment.content,
-        createdAt: comment.createdAt,
-        ticker: ticker,
-      ),
+    final comment = await _database.managers.comments.createReturning(
+      (o) => o(userId: authorId, beaconId: beaconId, content: content),
     );
     return getCommentById(comment.id);
   }
 
-  Future<CommentEntity> getCommentById(String id) async =>
-      switch (await _database.comments.queryComment(id)) {
-        final CommentModel m => m.asEntity,
-        null => throw IdNotFoundException(id: id),
-      };
+  Future<CommentEntity> getCommentById(String id) async {
+    final (comment, commentRefs) =
+        await _database.managers.comments
+            .filter((e) => e.id.equals(id))
+            .withReferences((p) => p(userId: true, beaconId: true))
+            .getSingle();
+    final (beacon, beaconRefs) =
+        await commentRefs.beaconId
+            .withReferences((p) => p(userId: true))
+            .getSingle();
+    return commentModelToEntity(
+      comment,
+      beacon: beacon,
+      beaconAuthor: await beaconRefs.userId.getSingle(),
+      commentAuthor: await commentRefs.userId.getSingle(),
+    );
+  }
 }

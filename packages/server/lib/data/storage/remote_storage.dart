@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura_server/consts.dart';
 
 @singleton
-class RemoteStorageService {
+class RemoteStorage {
   final _remoteStorage = Minio(
     accessKey: kS3AccessKey,
     secretKey: kS3SecretKey,

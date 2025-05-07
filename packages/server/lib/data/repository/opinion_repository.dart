@@ -1,26 +1,28 @@
 import 'package:injectable/injectable.dart';
-import 'package:stormberry/stormberry.dart';
 
-import 'package:tentura_server/data/model/opinion_model.dart';
-import 'package:tentura_server/data/model/user_model.dart';
 import 'package:tentura_server/domain/entity/opinion_entity.dart';
-import 'package:tentura_server/domain/exception.dart';
+
+import '../database/tentura_db.dart';
+import '../mapper/opinion_mapper.dart';
+import '../mapper/user_mapper.dart';
 
 @Injectable(env: [Environment.dev, Environment.prod], order: 1)
-class OpinionRepository {
+class OpinionRepository with UserMapper, OpinionMapper {
   OpinionRepository(this._database);
 
-  final Database _database;
+  final TenturaDb _database;
 
   Future<OpinionEntity> getOpinionById(String id) async {
-    final opinion = await _database.opinions.queryOpinion(id) as OpinionModel?;
-    if (opinion == null) {
-      throw IdNotFoundException(id: id);
-    }
-    final user = await _database.users.queryUser(opinion.object) as UserModel?;
-    if (user == null) {
-      throw IdNotFoundException(id: id);
-    }
-    return opinion.toEntity(object: user.asEntity);
+    final (opinion, opinionRefs) =
+        await _database.managers.opinions
+            .filter((e) => e.id.equals(id))
+            .withReferences((p) => p(subject: true, object: true))
+            .getSingle();
+
+    return opinionModelToEntity(
+      opinion,
+      subject: await opinionRefs.subject.getSingle(),
+      object: await opinionRefs.object.getSingle(),
+    );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:tentura_root/domain/entity/date_range.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
 import 'package:tentura_server/domain/entity/comment_entity.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
@@ -75,12 +74,10 @@ If you are bold enough to stand among dwarves of valor, reply to this call or se
     context: 'QuestForGlory',
     createdAt: DateTime(2024, 10, 03),
     updatedAt: DateTime(2024, 10, 03),
+    startAt: DateTime(2024, 10, 03),
+    endAt: DateTime(2025, 10, 03),
     hasPicture: true,
     // TBD: add image parameters
-    timerange: DateRange(
-      start: DateTime(2024, 10, 03),
-      end: DateTime(2025, 10, 03),
-    ),
     author: kUserByPublicKey[kThorinKey]!,
   ),
 

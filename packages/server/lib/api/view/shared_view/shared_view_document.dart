@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use //
+
 import 'package:jaspr/server.dart';
 
 import 'package:tentura_server/consts.dart';

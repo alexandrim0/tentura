@@ -27,11 +27,12 @@ GraphQLObjectField<dynamic, dynamic> get beaconCreate => GraphQLObjectField(
   gqlTypeBeacon.nonNullable(),
   arguments: [
     InputFieldContext.field,
-    InputFieldTimerange.field,
     InputFieldDescription.field,
     InputFieldCoordinates.field,
     InputFieldUpload.fieldImage,
     InputFieldTitle.fieldNonNullable,
+    InputFieldStartAt.field,
+    InputFieldEndAt.field,
   ],
   resolve:
       (_, args) => switch (args[kGlobalInputQueryJwt]) {
@@ -41,9 +42,10 @@ GraphQLObjectField<dynamic, dynamic> get beaconCreate => GraphQLObjectField(
               description: InputFieldDescription.fromArgs(args),
               title: InputFieldTitle.fromArgsNonNullable(args),
               coordinates: InputFieldCoordinates.fromArgs(args),
-              dateRange: InputFieldTimerange.fromArgs(args),
               imageBytes: InputFieldUpload.fromArgs(args),
               context: InputFieldContext.fromArgs(args),
+              startAt: InputFieldStartAt.fromArgs(args),
+              endAt: InputFieldEndAt.fromArgs(args),
             )
             .then((v) => v.asJson),
         _ => throw const UnauthorizedException(),

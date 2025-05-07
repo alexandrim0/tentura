@@ -3,8 +3,8 @@ import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/consts.dart';
 
-import '../service/local_storage_service.dart';
-import '../service/remote_storage_service.dart';
+import '../storage/local_storage.dart';
+import '../storage/remote_storage.dart';
 
 @Injectable(order: 1)
 class ImageRepository {
@@ -18,9 +18,9 @@ class ImageRepository {
 
   const ImageRepository(this._localStorageService, this._remoteStorageService);
 
-  final LocalStorageService _localStorageService;
+  final LocalStorage _localStorageService;
 
-  final RemoteStorageService _remoteStorageService;
+  final RemoteStorage _remoteStorageService;
 
   Future<Uint8List> getBeaconImage({
     required String authorId,

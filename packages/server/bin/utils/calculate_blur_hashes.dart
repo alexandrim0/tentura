@@ -1,12 +1,10 @@
 import 'dart:io';
-import 'package:stormberry/stormberry.dart';
 
-import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/di/di.dart';
-import 'package:tentura_server/domain/enum.dart';
-import 'package:tentura_server/data/model/beacon_model.dart';
-import 'package:tentura_server/data/model/user_model.dart';
+import 'package:tentura_server/consts.dart';
+import 'package:tentura_server/data/database/tentura_db.dart';
 import 'package:tentura_server/domain/use_case/image_case_mixin.dart';
+import 'package:tentura_server/domain/enum.dart';
 
 class BlurHashCalculator with ImageCaseMixin {
   const BlurHashCalculator();
@@ -17,7 +15,7 @@ class BlurHashCalculator with ImageCaseMixin {
     } catch (e) {
       print(e);
     }
-    final database = getIt<Database>();
+    final database = getIt<TenturaDb>();
     final beacons = <File>[];
     final users = <File>[];
 
@@ -37,15 +35,16 @@ class BlurHashCalculator with ImageCaseMixin {
         final id = u.uri.pathSegments[u.uri.pathSegments.length - 2];
         final image = decodeImage(await u.readAsBytes());
         final blurHash = calculateBlurHash(image);
-        await database.users.updateOne(
-          UserUpdateRequest(
-            id: id,
-            hasPicture: true,
-            blurHash: blurHash,
-            picHeight: image.height,
-            picWidth: image.width,
-          ),
-        );
+        await database.managers.users
+            .filter((f) => f.id.equals(id))
+            .update(
+              (o) => o(
+                hasPicture: const Value(true),
+                blurHash: Value(blurHash),
+                picHeight: Value(image.height),
+                picWidth: Value(image.width),
+              ),
+            );
       } catch (e) {
         print(e);
       }
@@ -56,15 +55,16 @@ class BlurHashCalculator with ImageCaseMixin {
         final beaconId = b.uri.pathSegments.last.split('.').first;
         final image = decodeImage(await b.readAsBytes());
         final blurHash = calculateBlurHash(image);
-        await database.beacons.updateOne(
-          BeaconUpdateRequest(
-            id: beaconId,
-            hasPicture: true,
-            blurHash: blurHash,
-            picHeight: image.height,
-            picWidth: image.width,
-          ),
-        );
+        await database.managers.beacons
+            .filter((f) => f.id.equals(beaconId))
+            .update(
+              (o) => o(
+                hasPicture: const Value(true),
+                blurHash: Value(blurHash),
+                picHeight: Value(image.height),
+                picWidth: Value(image.width),
+              ),
+            );
       } catch (e) {
         print(e);
       }

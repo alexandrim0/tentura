@@ -1,23 +1,54 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura_root/domain/entity/coordinates.dart';
+
+import 'package:tentura_server/domain/entity/user_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
 
+import '../mapper/beacon_mapper.dart';
+import '../mapper/user_mapper.dart';
 import 'beacon_repository.dart';
 
 @Injectable(as: BeaconRepository, env: [Environment.test], order: 1)
-class BeaconRepositoryMock implements BeaconRepository {
+class BeaconRepositoryMock
+    with UserMapper, BeaconMapper
+    implements BeaconRepository {
   static final storageById = <String, BeaconEntity>{};
 
   const BeaconRepositoryMock();
 
   @override
-  Future<BeaconEntity> createBeacon(
-    BeaconEntity beacon, {
+  Future<BeaconEntity> createBeacon({
+    required String authorId,
+    required String title,
+    required bool hasPicture,
+    String? description,
+    String? context,
+    double? latitude,
+    double? longitude,
+    DateTime? startAt,
+    DateTime? endAt,
     int ticker = 0,
-  }) async =>
-      storageById.containsKey(beacon.id)
-          ? throw Exception('Key already exists [${beacon.id}]')
-          : storageById[beacon.id] = beacon;
+  }) async {
+    final now = DateTime.timestamp();
+    final beacon = BeaconEntity(
+      id: BeaconEntity.newId,
+      title: title,
+      context: context,
+      description: description ?? '',
+      author: UserEntity(id: authorId),
+      coordinates:
+          latitude != null && longitude != null
+              ? Coordinates(lat: latitude, long: longitude)
+              : null,
+      hasPicture: hasPicture,
+      startAt: startAt,
+      endAt: endAt,
+      createdAt: now,
+      updatedAt: now,
+    );
+    return storageById[beacon.id] = beacon;
+  }
 
   @override
   Future<BeaconEntity> getBeaconById({

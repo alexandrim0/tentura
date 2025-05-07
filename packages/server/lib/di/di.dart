@@ -1,8 +1,8 @@
 import 'package:jaspr/server.dart';
 import 'package:get_it/get_it.dart';
-import 'package:stormberry/stormberry.dart';
 import 'package:injectable/injectable.dart' hide Environment;
 
+import 'package:tentura_server/data/database/tentura_db.dart';
 import 'package:tentura_server/domain/enum.dart';
 import 'package:tentura_server/jaspr_options.dart';
 
@@ -17,5 +17,5 @@ GetIt configureDependencies(Environment env) {
 }
 
 Future<void> closeModules() async {
-  await getIt<Database>().close();
+  await getIt<TenturaDb>().close();
 }
