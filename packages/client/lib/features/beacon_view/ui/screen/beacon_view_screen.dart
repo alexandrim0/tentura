@@ -2,7 +2,7 @@ import 'package:nil/nil.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:tentura_root/l10n/l10n.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 
 import 'package:tentura/features/beacon/ui/widget/beacon_info.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_tile_control.dart';

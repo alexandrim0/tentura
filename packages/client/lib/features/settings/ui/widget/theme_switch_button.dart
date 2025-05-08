@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 
-import 'package:tentura_root/l10n/l10n.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 
 import '../bloc/settings_cubit.dart';
 

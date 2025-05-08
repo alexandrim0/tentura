@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'package:tentura_root/l10n/l10n.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
 

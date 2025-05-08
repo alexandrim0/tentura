@@ -4,9 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-import 'package:tentura_root/l10n/l10n.dart';
-
 import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/theme.dart';
 

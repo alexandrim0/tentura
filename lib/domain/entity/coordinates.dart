@@ -20,4 +20,6 @@ class Coordinates extends LatLng {
 
   @override
   Map<String, Object> toJson() => {'lat': latitude, 'long': longitude};
+
+  static const zero = Coordinates(lat: 0, long: 0);
 }

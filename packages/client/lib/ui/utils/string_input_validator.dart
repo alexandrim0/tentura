@@ -1,4 +1,4 @@
-import 'package:tentura_root/l10n/l10n.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 
 import 'package:tentura/consts.dart';
 

@@ -11,6 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   tentura_root:
     path: ../../
 
@@ -68,6 +70,7 @@ dependencies:
   blurhash_shader: ^1.1.2
   vector_graphics: ^1.1.18
   visibility_detector: ^0.4.0
+  # flutter_localizations: ^0.3.2
   flutter_native_splash: ^2.4.6
   force_directed_graphview: ^0.6.2
   scrollable_positioned_list: ^0.3.8
@@ -89,6 +92,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.3
 
 flutter:
+  generate: true
   uses-material-design: true
   fonts:
     - family: Tentura

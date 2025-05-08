@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura_root/l10n/l10n.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';

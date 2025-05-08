@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura_root/domain/entity/auth_request_intent.dart';
-import 'package:tentura_root/utils/base64_padded.dart';
 
 import 'package:tentura/data/database/database.dart';
 import 'package:tentura/data/service/local_secure_storage.dart';
@@ -80,7 +79,7 @@ class AuthRepository {
     if (seed.isEmpty) {
       throw const AuthSeedIsWrongException();
     }
-    final seedNormalized = base64UrlEncode(base64Decode(base64Padded(seed)));
+    final seedNormalized = base64UrlEncode(base64Decode(_base64Padded(seed)));
     final id = await _signIn(seedNormalized);
     await _addAccount(id, seedNormalized);
 
@@ -201,6 +200,12 @@ class AuthRepository {
           ),
         );
   }
+
+  String _base64Padded(String value) => switch (value.length % 4) {
+    2 => '$value==',
+    3 => '$value=',
+    _ => value,
+  };
 
   static const _repositoryKey = 'Auth';
 

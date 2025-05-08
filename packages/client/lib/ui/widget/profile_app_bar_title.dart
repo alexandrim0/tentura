@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tentura/domain/entity/profile.dart';
-import 'package:tentura_root/l10n/l10n.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 
 class ProfileAppBarTitle extends StatelessWidget {
   const ProfileAppBarTitle({required this.profile, super.key});
