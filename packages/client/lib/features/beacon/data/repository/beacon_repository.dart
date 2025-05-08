@@ -70,8 +70,14 @@ class BeaconRepository {
         ..title = beacon.title
         ..description = beacon.description
         ..context = beacon.context.isEmpty ? null : beacon.context
-        ..startAt = beacon.startAt?.toIso8601String()
-        ..endAt = beacon.endAt?.toIso8601String()
+        ..startAt =
+            beacon.startAt == null
+                ? null
+                : (GDateBuilder()..value = beacon.startAt!.toIso8601String())
+        ..endAt =
+            beacon.endAt == null
+                ? null
+                : (GDateBuilder()..value = beacon.endAt!.toIso8601String())
         ..coordinates =
             beacon.coordinates == null
                 ? null

@@ -3,7 +3,7 @@ part of '_input_types.dart';
 abstract class InputFieldStartAt {
   static final field = GraphQLFieldInput(
     _fieldKey,
-    graphQLString,
+    graphQLDate,
     defaultsToNull: true,
   );
 

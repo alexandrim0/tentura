@@ -5,10 +5,7 @@ import 'package:tentura/features/like/ui/bloc/like_cubit.dart';
 
 @Singleton(as: LikeCubit)
 class LikeCubitMock extends Cubit<LikeState> implements LikeCubit {
-  LikeCubitMock()
-      : super(LikeState(
-          updatedAt: DateTime.now(),
-        ));
+  LikeCubitMock() : super(LikeState(updatedAt: DateTime.now()));
 
   @override
   Future<void> decrementLike(Likable entity) async {}

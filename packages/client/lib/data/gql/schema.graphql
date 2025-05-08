@@ -825,6 +825,9 @@ enum cursor_ordering {
   DESC
 }
 
+"""An ISO-8601 Date."""
+scalar Date
+
 """
 columns and relationships of "edge"
 """
@@ -1217,7 +1220,7 @@ input message_updates {
 
 """mutation root"""
 type mutation_root {
-  beaconCreate(context: String, coordinates: Coordinates = {}, description: String, endAt: String, image: Upload = {}, startAt: String, title: String!): Beacon!
+  beaconCreate(context: String, coordinates: Coordinates = {}, description: String, endAt: Date, image: Upload = {}, startAt: Date, title: String!): Beacon!
   beaconDeleteById(id: String!): Boolean!
 
   """

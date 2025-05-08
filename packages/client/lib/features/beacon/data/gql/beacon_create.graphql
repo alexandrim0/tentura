@@ -4,8 +4,8 @@ mutation BeaconCreate(
   $description: String = "",
   $coordinates: Coordinates = {},
   $image: Upload = {},
-  $startAt: String,
-  $endAt: String
+  $startAt: Date,
+  $endAt: Date
 ) {
   beaconCreate(
     title: $title,

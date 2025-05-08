@@ -9,12 +9,12 @@ environment:
   flutter: ^3.29.3
 
 dependencies:
-  tentura:
-    path: ../client
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  tentura:
+    path: ../client
 
   get_it: ^8.0.3
   logger: ^2.5.0

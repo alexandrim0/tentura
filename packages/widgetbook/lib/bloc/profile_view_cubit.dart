@@ -1,12 +1,10 @@
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 import 'package:tentura/features/profile_view/ui/bloc/profile_view_state.dart';
-import 'package:tentura_widgetbook/bloc/_data.dart';
+
+import '_data.dart';
 
 class ProfileViewCubit extends Cubit<ProfileViewState> {
-  ProfileViewCubit()
-      : super(const ProfileViewState(
-          profile: profileAlice,
-        ));
+  ProfileViewCubit() : super(const ProfileViewState(profile: profileAlice));
 
   Future<void> addFriend() async {}
 

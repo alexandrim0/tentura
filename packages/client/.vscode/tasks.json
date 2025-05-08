@@ -1,0 +1,56 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "flutter: build web (wasm)",
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"web",
+				"--wasm",
+				"--pwa-strategy",
+				"none",
+				"--source-maps",
+				"--dart-define-from-file=.env",
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+		},
+		{
+			"label": "flutter: build apk (prod)",
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"apk",
+				"--flavor",
+				"prod",
+				"--target-platform",
+				"android-arm64",
+				"--split-per-abi",
+				"--no-tree-shake-icons",
+				"--dart-define-from-file=.env",
+			],
+			"group": {
+				"kind": "build",
+			},
+		},
+		{
+			"label": "flutter: build web (wasm, stage)",
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"web",
+				"--wasm",
+				"--dart-define-from-file=.env",
+			],
+			"group": {
+				"kind": "build",
+			},
+		},
+	],
+}
