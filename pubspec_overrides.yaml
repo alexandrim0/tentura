@@ -1,6 +1,0 @@
-dependency_overrides:
-  lints: ^6.0.0
-  analyzer: ^7.4.4
-  inspector: ^3.0.0
-  dart_style: ^3.0.1
-  web_socket_channel: ^3.0.2

@@ -11,10 +11,11 @@ fragment BeaconModel on beacon {
   pic_width
   blur_hash
   is_pinned
-  timerange
   context
   enabled
   my_vote
+  start_at
+  end_at
   long
   lat
   author {

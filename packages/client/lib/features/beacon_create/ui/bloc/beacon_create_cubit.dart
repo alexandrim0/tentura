@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart' as m show DateTimeRange;
 import 'package:get_it/get_it.dart';
 
-import 'package:tentura_root/domain/entity/date_range.dart';
 import 'package:tentura/data/repository/image_repository.dart';
 import 'package:tentura/domain/entity/coordinates.dart';
 import 'package:tentura/domain/entity/beacon.dart';
@@ -31,8 +29,8 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
 
   void setDescription(String value) => emit(state.copyWith(description: value));
 
-  void setDateRange(m.DateTimeRange? value) =>
-      emit(state.copyWith(dateRange: value));
+  void setDateRange({DateTime? startAt, DateTime? endAt}) =>
+      emit(state.copyWith(startAt: startAt, endAt: endAt));
 
   void setLocation(Coordinates? value) =>
       emit(state.copyWith(coordinates: value));
@@ -62,13 +60,8 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
           title: state.title,
           coordinates: state.coordinates,
           description: state.description,
-          dateRange:
-              state.dateRange == null
-                  ? null
-                  : DateRange(
-                    start: state.dateRange!.start,
-                    end: state.dateRange!.end,
-                  ),
+          startAt: state.startAt,
+          endAt: state.endAt,
           hasPicture: state.image != null,
         ),
         image: state.image,

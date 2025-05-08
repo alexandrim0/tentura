@@ -21,21 +21,7 @@ class DateRangeInput extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
         hintText: l10n.setDisplayPeriod,
-        suffixIcon:
-            BlocSelector<BeaconCreateCubit, BeaconCreateState, DateTimeRange?>(
-              selector: (state) => state.dateRange,
-              builder:
-                  (context, dateRange) =>
-                      dateRange == null
-                          ? const Icon(TenturaIcons.calendar)
-                          : IconButton(
-                            icon: const Icon(Icons.cancel_rounded),
-                            onPressed: () {
-                              controller.clear();
-                              cubit.setDateRange(null);
-                            },
-                          ),
-            ),
+        suffixIcon: const Icon(TenturaIcons.calendar),
       ),
       onTap: () async {
         final now = DateTime.timestamp();
@@ -51,7 +37,7 @@ class DateRangeInput extends StatelessWidget {
           controller.text =
               '${dateFormatYMD(dateRange.start)} '
               '- ${dateFormatYMD(dateRange.end)}';
-          cubit.setDateRange(dateRange);
+          cubit.setDateRange(startAt: dateRange.start, endAt: dateRange.end);
         }
       },
     );

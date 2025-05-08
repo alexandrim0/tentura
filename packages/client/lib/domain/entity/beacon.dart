@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:tentura/consts.dart';
-import 'package:tentura_root/domain/entity/date_range.dart';
 
 import 'coordinates.dart';
 import 'likable.dart';
@@ -15,8 +14,6 @@ abstract class Beacon with _$Beacon implements Likable {
   const factory Beacon({
     required DateTime createdAt,
     required DateTime updatedAt,
-    Coordinates? coordinates,
-    DateRange? dateRange,
     @Default('') String id,
     @Default('') String title,
     @Default('') String context,
@@ -31,6 +28,9 @@ abstract class Beacon with _$Beacon implements Likable {
     @Default(0) double score,
     @Default(0) int myVote,
     @Default(Profile()) Profile author,
+    Coordinates? coordinates,
+    DateTime? startAt,
+    DateTime? endAt,
   }) = _Beacon;
 
   const Beacon._();

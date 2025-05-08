@@ -69,19 +69,15 @@ class BeaconRepository {
       b.vars
         ..title = beacon.title
         ..description = beacon.description
+        ..context = beacon.context.isEmpty ? null : beacon.context
+        ..startAt = beacon.startAt?.toIso8601String()
+        ..endAt = beacon.endAt?.toIso8601String()
         ..coordinates =
             beacon.coordinates == null
                 ? null
                 : (GCoordinatesBuilder()
                   ..lat = beacon.coordinates!.lat
                   ..long = beacon.coordinates!.long)
-        ..context = beacon.context.isEmpty ? null : beacon.context
-        ..dateRange =
-            beacon.dateRange == null
-                ? null
-                : (GDateRangeBuilder()
-                  ..start = beacon.dateRange?.start?.toIso8601String()
-                  ..end = beacon.dateRange?.end?.toIso8601String())
         ..image =
             image == null
                 ? null

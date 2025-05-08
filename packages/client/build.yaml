@@ -33,10 +33,6 @@ targets:
             timestamptz:
               name: DateTime
 
-            tstzrange:
-              name: DateRange
-              import: "package:tentura_root/domain/entity/date_range.dart"
-
             Upload:
               name: MultipartFile
               import: 'package:http/http.dart'
@@ -54,18 +50,11 @@ targets:
             timestamptz:
               name: DateTime
 
-            tstzrange:
-              name: DateRange
-              import: "package:tentura_root/domain/entity/date_range.dart"
-
             Upload:
               name: MultipartFile
               import: 'package:http/http.dart'
 
           custom_serializers:
-            - import: "package:tentura/data/gql/tstzrange_serializer.dart"
-              name: TstzrangeSerializer
-
             - import: "package:tentura/data/gql/timestamptz_serializer.dart"
               name: TimestamptzSerializer
 

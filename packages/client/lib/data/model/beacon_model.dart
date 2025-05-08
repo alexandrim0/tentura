@@ -8,7 +8,6 @@ extension type const BeaconModel(GBeaconModel i) implements GBeaconModel {
     id: i.id,
     title: i.title,
     isEnabled: i.enabled,
-    dateRange: i.timerange,
     createdAt: i.created_at,
     updatedAt: i.updated_at,
     hasPicture: i.has_picture,
@@ -29,5 +28,7 @@ extension type const BeaconModel(GBeaconModel i) implements GBeaconModel {
     rScore: double.tryParse(i.scores?.first.src_score?.value ?? '') ?? 0,
     score: double.tryParse(i.scores?.first.dst_score?.value ?? '') ?? 0,
     author: (i.author as UserModel).toEntity,
+    startAt: i.start_at,
+    endAt: i.end_at,
   );
 }

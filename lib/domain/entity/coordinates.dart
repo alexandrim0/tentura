@@ -1,8 +1,6 @@
 import 'package:latlong2/latlong.dart';
 
 class Coordinates extends LatLng {
-  static const zero = Coordinates(lat: 0, long: 0);
-
   const Coordinates({required double lat, required double long})
     : super(lat, long);
 

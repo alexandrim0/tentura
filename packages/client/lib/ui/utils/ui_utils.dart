@@ -85,7 +85,7 @@ void commonScreenBlocListener(BuildContext context, StateBase state) =>
       final StateIsNavigating s =>
         s.path == kPathBack
             ? context.back()
-            : context.navigateToPath(s.path, includePrefixMatches: true),
+            : context.navigateNamedTo(s.path, includePrefixMatches: true),
       final StateIsMessaging s => showSnackBar(context, text: s.message),
       final StateHasError s => showSnackBar(
         context,

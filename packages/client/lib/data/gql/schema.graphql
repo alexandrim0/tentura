@@ -68,6 +68,7 @@ type beacon {
   created_at: timestamptz!
   description: String!
   enabled: Boolean!
+  end_at: timestamptz
   has_picture: Boolean!
   id: String!
 
@@ -104,7 +105,7 @@ type beacon {
     """filter the rows returned"""
     where: mutual_score_bool_exp
   ): [mutual_score!]
-  timerange: tstzrange
+  start_at: timestamptz
   title: String!
   updated_at: timestamptz!
   user_id: String!
@@ -174,6 +175,7 @@ input beacon_bool_exp {
   created_at: timestamptz_comparison_exp
   description: String_comparison_exp
   enabled: Boolean_comparison_exp
+  end_at: timestamptz_comparison_exp
   has_picture: Boolean_comparison_exp
   id: String_comparison_exp
   is_pinned: Boolean_comparison_exp
@@ -183,7 +185,7 @@ input beacon_bool_exp {
   pic_height: Int_comparison_exp
   pic_width: Int_comparison_exp
   scores: mutual_score_bool_exp
-  timerange: tstzrange_comparison_exp
+  start_at: timestamptz_comparison_exp
   title: String_comparison_exp
   updated_at: timestamptz_comparison_exp
   user_id: String_comparison_exp
@@ -198,11 +200,13 @@ input beacon_max_order_by {
   context: order_by
   created_at: order_by
   description: order_by
+  end_at: order_by
   id: order_by
   lat: order_by
   long: order_by
   pic_height: order_by
   pic_width: order_by
+  start_at: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -216,11 +220,13 @@ input beacon_min_order_by {
   context: order_by
   created_at: order_by
   description: order_by
+  end_at: order_by
   id: order_by
   lat: order_by
   long: order_by
   pic_height: order_by
   pic_width: order_by
+  start_at: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -247,6 +253,7 @@ input beacon_order_by {
   created_at: order_by
   description: order_by
   enabled: order_by
+  end_at: order_by
   has_picture: order_by
   id: order_by
   is_pinned: order_by
@@ -256,7 +263,7 @@ input beacon_order_by {
   pic_height: order_by
   pic_width: order_by
   scores_aggregate: mutual_score_aggregate_order_by
-  timerange: order_by
+  start_at: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -420,6 +427,9 @@ enum beacon_select_column {
   enabled
 
   """column name"""
+  end_at
+
+  """column name"""
   has_picture
 
   """column name"""
@@ -438,7 +448,7 @@ enum beacon_select_column {
   pic_width
 
   """column name"""
-  timerange
+  start_at
 
   """column name"""
   title
@@ -505,13 +515,14 @@ input beacon_stream_cursor_value_input {
   created_at: timestamptz
   description: String
   enabled: Boolean
+  end_at: timestamptz
   has_picture: Boolean
   id: String
   lat: float8
   long: float8
   pic_height: Int
   pic_width: Int
-  timerange: tstzrange
+  start_at: timestamptz
   title: String
   updated_at: timestamptz
   user_id: String
@@ -812,11 +823,6 @@ enum cursor_ordering {
 
   """descending ordering of the cursor"""
   DESC
-}
-
-input DateRange {
-  end: String
-  start: String
 }
 
 """
@@ -1211,7 +1217,7 @@ input message_updates {
 
 """mutation root"""
 type mutation_root {
-  beaconCreate(context: String, coordinates: Coordinates = {}, dateRange: DateRange = {}, description: String, image: Upload = {}, title: String!): Beacon!
+  beaconCreate(context: String, coordinates: Coordinates = {}, description: String, endAt: String, image: Upload = {}, startAt: String, title: String!): Beacon!
   beaconDeleteById(id: String!): Boolean!
 
   """
@@ -3113,23 +3119,6 @@ input timestamptz_comparison_exp {
   _lte: timestamptz
   _neq: timestamptz
   _nin: [timestamptz!]
-}
-
-scalar tstzrange
-
-"""
-Boolean expression to compare columns of type "tstzrange". All fields are combined with logical 'AND'.
-"""
-input tstzrange_comparison_exp {
-  _eq: tstzrange
-  _gt: tstzrange
-  _gte: tstzrange
-  _in: [tstzrange!]
-  _is_null: Boolean
-  _lt: tstzrange
-  _lte: tstzrange
-  _neq: tstzrange
-  _nin: [tstzrange!]
 }
 
 input updates_args {

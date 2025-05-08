@@ -73,7 +73,7 @@ class BeaconInfo extends StatelessWidget {
         ),
 
         //Beacon Timerange
-        if (beacon.dateRange != null)
+        if (beacon.startAt != null || beacon.endAt != null)
           Padding(
             padding: const EdgeInsets.only(bottom: kSpacingSmall),
             child: Row(
@@ -81,8 +81,8 @@ class BeaconInfo extends StatelessWidget {
               children: [
                 const Icon(TenturaIcons.calendar, size: 18),
                 Text(
-                  ' ${dateFormatYMD(beacon.dateRange?.start)}'
-                  ' - ${dateFormatYMD(beacon.dateRange?.end)}',
+                  ' ${dateFormatYMD(beacon.startAt)}'
+                  ' - ${dateFormatYMD(beacon.endAt)}',
                   maxLines: 1,
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis,

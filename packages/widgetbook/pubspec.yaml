@@ -8,25 +8,25 @@ environment:
   sdk: '>=3.7.2 <4.0.0'
   flutter: ^3.29.3
 
-resolution: workspace
-
 dependencies:
+  tentura:
+    path: ../client
   flutter:
     sdk: flutter
-  get_it:
-  logger:
-  tentura:
-  injectable:
-  google_fonts:
+  flutter_localizations:
+    sdk: flutter
 
+  get_it: ^8.0.3
+  logger: ^2.5.0
+  injectable: ^2.5.0
+  google_fonts: ^6.2.1
   widgetbook: ^3.13.1
   widgetbook_annotation: ^3.4.0
 
 dev_dependencies:
-  build_runner:
-  very_good_analysis:
-  injectable_generator:
-
+  build_runner: ^2.4.15
+  very_good_analysis: ^7.0.0
+  injectable_generator: ^2.6.2
   widgetbook_generator: ^3.12.0
 
 flutter:
