@@ -47,8 +47,6 @@ final kMaxConnectionAge =
 final kMaxConnectionCount =
     int.tryParse(environment['POSTGRES_MAXCONN'] ?? '') ?? 25;
 
-final kTenturaPassword = environment['TENTURA_PASSWORD'];
-
 final kS3AccessKey = environment['S3_ACCESS_KEY'] ?? '';
 
 final kS3SecretKey = environment['S3_SECRET_KEY'] ?? '';

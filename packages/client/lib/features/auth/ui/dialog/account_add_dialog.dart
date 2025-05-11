@@ -52,7 +52,7 @@ class _AccountAddDialogState extends State<AccountAddDialog>
                 hintText: _l10n.pleaseEnterCode,
                 labelText: _l10n.labelInvitationCode,
               ),
-              maxLength: kTitleMaxLength,
+              maxLength: kIdLength,
               style: _textTheme.headlineLarge,
               validator: (text) => invitationCodeValidator(_l10n, text),
               onTapOutside: (_) => FocusScope.of(context).unfocus(),

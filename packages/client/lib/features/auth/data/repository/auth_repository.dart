@@ -124,12 +124,14 @@ class AuthRepository {
   }
 
   Future<void> signOut() async {
+    if (_currentAccountId.isEmpty) {
+      return;
+    }
     await _remoteApiService
         .request(GSignOutReq())
         .firstWhere((e) => e.dataSource == DataSource.Link);
     await _remoteApiService.close();
     await _setCurrentAccountId(null);
-    // TBD: invalidate jwt on remote server also
   }
 
   /// Remove account only from local storage

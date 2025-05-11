@@ -3,7 +3,7 @@ import 'package:tentura/ui/bloc/state_base.dart';
 
 part 'invitation_state.freezed.dart';
 
-@freezed
+@Freezed(makeCollectionsUnmodifiable: false)
 abstract class InvitationState extends StateBase with _$InvitationState {
   const factory InvitationState({
     @Default(false) bool hasReachedMax,

@@ -107,6 +107,7 @@ class AuthCubit extends Cubit<AuthState> {
           status: StateHasError(const InvitationCodeIsWrongException()),
         ),
       );
+      return;
     }
 
     emit(state.copyWith(status: StateStatus.isLoading));

@@ -107,6 +107,7 @@ services:
       - 'S3_ENDPOINT=ams3.digitaloceanspaces.com'
       - 'IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com'
       - 'DEBUG_MODE=false'
+      - 'NEED_INVITE=true'
 
   schema_fetcher:
     extends:

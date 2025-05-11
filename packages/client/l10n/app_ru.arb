@@ -163,6 +163,10 @@
     "context": "InvitationScreen"
   },
 
+  "invitationsShowMenuItem": "Посмотреть приглашения",
+  "@invitationsShowMenuItem": {
+    "context": "FriendsScreen"
+  },
 
   "confirmBeaconRemoval": "Вы уверены, что хотите удалить этот маяк?",
   "@confirmBeaconRemoval": {

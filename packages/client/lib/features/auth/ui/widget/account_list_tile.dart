@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/ui/l10n/l10n.dart';
-
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/dialog/show_seed_dialog.dart';
 import 'package:tentura/ui/dialog/share_code_dialog.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 
 import '../bloc/auth_cubit.dart';

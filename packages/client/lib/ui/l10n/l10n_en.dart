@@ -126,6 +126,9 @@ class L10nEn extends L10n {
   String get invitationScreenTitle => 'Invitations';
 
   @override
+  String get invitationsShowMenuItem => 'Show Invitations';
+
+  @override
   String get confirmBeaconRemoval => 'Are you sure you want to delete this beacon?';
 
   @override

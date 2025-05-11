@@ -329,6 +329,12 @@ abstract class L10n {
   /// **'Invitations'**
   String get invitationScreenTitle;
 
+  /// No description provided for @invitationsShowMenuItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Invitations'**
+  String get invitationsShowMenuItem;
+
   /// No description provided for @confirmBeaconRemoval.
   ///
   /// In en, this message translates to:

@@ -126,6 +126,9 @@ class L10nRu extends L10n {
   String get invitationScreenTitle => 'Приглашения';
 
   @override
+  String get invitationsShowMenuItem => 'Посмотреть приглашения';
+
+  @override
   String get confirmBeaconRemoval => 'Вы уверены, что хотите удалить этот маяк?';
 
   @override

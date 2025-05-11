@@ -33,16 +33,6 @@ class AuthMiddleware {
       };
 
   ///
-  /// Check password from X-Tentura-Password header
-  ///
-  Middleware get verifyTenturaPassword =>
-      (innerHandler) =>
-          (request) =>
-              request.headers['X-Tentura-Password'] == kTenturaPassword
-                  ? innerHandler(request)
-                  : Response.unauthorized(null);
-
-  ///
   /// Check JWT, if success then place claims into request context
   ///
   Middleware get extractJwtClaims =>

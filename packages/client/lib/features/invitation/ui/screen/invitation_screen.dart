@@ -2,9 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import 'package:tentura/ui/l10n/l10n.dart';
-
+import 'package:tentura/consts.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
+import 'package:tentura/ui/dialog/share_code_dialog.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 
@@ -44,8 +45,15 @@ class InvitationScreen extends StatelessWidget implements AutoRouteWrapper {
           IconButton(
             onPressed: () async {
               final invitation = await invitationCubit.createInvitation();
-              if (invitation != null) {
-                // TBD: show dialog
+              if (invitation != null && context.mounted) {
+                await ShareCodeDialog.show(
+                  context,
+                  header: l10n.labelInvitationCode,
+                  link: Uri.parse(kServerName).replace(
+                    path: kPathAppLinkView,
+                    queryParameters: {'id': invitation.id},
+                  ),
+                );
               }
             },
             icon: const Icon(Icons.person_add_alt_1),
@@ -62,7 +70,7 @@ class InvitationScreen extends StatelessWidget implements AutoRouteWrapper {
         ),
       ),
       body: RefreshIndicator.adaptive(
-        onRefresh: () async => invitationCubit.fetch(clear: true),
+        onRefresh: invitationCubit.fetch,
         child: BlocBuilder<InvitationCubit, InvitationState>(
           key: Key('Body:${invitationCubit.hashCode}'),
           bloc: invitationCubit,
@@ -72,8 +80,9 @@ class InvitationScreen extends StatelessWidget implements AutoRouteWrapper {
               itemCount: state.invitations.length,
               itemBuilder: (_, i) {
                 final invitation = state.invitations[i];
-                if (state.invitations.length == i + 1) {
-                  invitationCubit.fetch();
+                if (state.invitations.length > kFetchListOffset &&
+                    state.invitations.length == i + 1) {
+                  invitationCubit.fetch(clear: false);
                 }
                 return ListTile(
                   key: ValueKey(invitation),

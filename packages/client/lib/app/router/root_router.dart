@@ -185,6 +185,15 @@ class RootRouter extends RootStackRouter {
       path: kPathComplaint,
     ),
 
+    // Invitations
+    AutoRoute(
+      keepHistory: false,
+      maintainState: false,
+      fullscreenDialog: true,
+      page: InvitationRoute.page,
+      path: kPathInvitations,
+    ),
+
     // default
     RedirectRoute(path: '*', redirectTo: kPathRoot),
   ];

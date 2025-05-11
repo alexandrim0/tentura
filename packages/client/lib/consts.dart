@@ -41,6 +41,7 @@ const kPathBeaconViewAll = '/beacon/all';
 const kPathProfileChat = '/profile/chat';
 const kPathProfileEdit = '/profile/edit';
 const kPathProfileView = r.kPathProfileView;
+const kPathInvitations = '/invitations';
 
 const kComplaintEmail = String.fromEnvironment(
   'COMPLAINT_EMAIL',

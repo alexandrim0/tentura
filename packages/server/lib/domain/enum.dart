@@ -5,6 +5,7 @@ enum HasuraOperation { insert, update, delete, manual }
 enum UserRoles { anon, user, admin }
 
 enum AuthExceptionCode {
+  unspecifiedException,
   authIdWrongException,
   authIdNotFoundException,
   authPemKeyWrongException,

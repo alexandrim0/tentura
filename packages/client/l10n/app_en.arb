@@ -163,7 +163,11 @@
     "context": "InvitationScreen"
   },
 
-  
+  "invitationsShowMenuItem": "Show Invitations",
+  "@invitationsShowMenuItem": {
+    "context": "FriendsScreen"
+  },
+
   "confirmBeaconRemoval": "Are you sure you want to delete this beacon?",
   "@confirmBeaconRemoval": {
     "context": "BeaconDeleteDialog"

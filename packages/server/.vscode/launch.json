@@ -9,6 +9,7 @@
             "type": "dart",
             "env": {
                 "DEBUG_MODE": "true",
+                "NEED_INVITE": "true",
                 "TENTURA_PASSWORD": "password",
                 "POSTGRES_PASSWORD": "password",
                 "SERVER_NAME": "https://dev.tentura.io",

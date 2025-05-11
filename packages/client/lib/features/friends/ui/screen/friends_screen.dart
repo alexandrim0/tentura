@@ -2,8 +2,8 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
-
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import 'package:tentura/features/chat/ui/widget/chat_peer_list_tile.dart';
@@ -17,12 +17,27 @@ class FriendsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final friendsCubit = GetIt.I<FriendsCubit>();
+    final screenCubit = context.read<ScreenCubit>();
+    final theme = Theme.of(context);
     final l10n = L10n.of(context)!;
-    return SafeArea(
-      child: BlocBuilder<FriendsCubit, FriendsState>(
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          PopupMenuButton<void>(
+            itemBuilder:
+                (_) => <PopupMenuEntry<void>>[
+                  PopupMenuItem(
+                    onTap: screenCubit.showInvitations,
+                    child: Text(l10n.invitationsShowMenuItem),
+                  ),
+                ],
+          ),
+        ],
+      ),
+      body: BlocBuilder<FriendsCubit, FriendsState>(
         bloc: friendsCubit,
-        buildWhen: (p, c) => c.isSuccess,
-        builder: (context, state) {
+        buildWhen: (_, c) => c.isSuccess,
+        builder: (_, state) {
           late final friends = state.friends.values.toList();
           return RefreshIndicator.adaptive(
             onRefresh: friendsCubit.fetch,
@@ -32,7 +47,7 @@ class FriendsScreen extends StatelessWidget {
                     ? Center(
                       child: Text(
                         l10n.labelNothingHere,
-                        style: Theme.of(context).textTheme.displaySmall,
+                        style: theme.textTheme.displaySmall,
                         textAlign: TextAlign.center,
                       ),
                     )
@@ -40,14 +55,14 @@ class FriendsScreen extends StatelessWidget {
                     : ListView.separated(
                       padding: kPaddingAll,
                       itemCount: friends.length,
-                      itemBuilder: (context, i) {
+                      itemBuilder: (_, i) {
                         final profile = friends[i];
                         return ChatPeerListTile(
                           key: ValueKey(profile),
                           profile: profile,
                         );
                       },
-                      separatorBuilder: (context, i) => const Divider(),
+                      separatorBuilder: (_, _) => const Divider(),
                     ),
           );
         },

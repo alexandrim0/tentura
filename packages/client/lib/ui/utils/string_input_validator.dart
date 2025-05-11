@@ -4,7 +4,7 @@ import 'package:tentura/consts.dart';
 
 mixin StringInputValidator {
   String? invitationCodeValidator(L10n l10n, String? code) {
-    if (code == null || code.length < kTitleMinLength) {
+    if (code == null || code.length < kIdLength) {
       return l10n.invitationCodeTooShort;
     }
     if (code.length > kTitleMaxLength) {

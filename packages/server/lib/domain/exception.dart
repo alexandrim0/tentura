@@ -23,6 +23,15 @@ base class ExceptionBase implements Exception {
   String toString() => jsonEncode(toMap);
 }
 
+final class UnspecifiedException extends ExceptionBase {
+  const UnspecifiedException({String? description, String? path})
+    : super(
+        code: const AuthExceptionCodes(AuthExceptionCode.unspecifiedException),
+        description: description ?? 'Unspecified exception',
+        path: path ?? '',
+      );
+}
+
 final class IdNotFoundException extends ExceptionBase {
   const IdNotFoundException({String id = '', String? description})
     : super(

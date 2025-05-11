@@ -24,6 +24,8 @@
                 "--dart-define",
                 "SERVER_NAME=https://localhost",
                 "--dart-define",
+                "NEED_INVITE_CODE=true",
+                "--dart-define",
 				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
             "args": [

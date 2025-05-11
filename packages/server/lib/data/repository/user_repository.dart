@@ -33,22 +33,27 @@ class UserRepository with UserMapper {
     final invitation =
         await _database.managers.invitations
             .filter((e) => e.id.equals(invitationId))
-            .getSingleOrNull();
-
-    if (invitation == null ||
-        invitation.invitedId != null ||
-        invitation.createdAt.dateTime
-            .add(_env.invitationTTL)
-            .isAfter(DateTime.timestamp())) {
+            .getSingle();
+    if (invitation.invitedId != null) {
+      throw const UnspecifiedException(description: 'Invitation already used!');
+    }
+    if (invitation.createdAt.dateTime
+        .add(_env.invitationTTL)
+        .isBefore(DateTime.timestamp())) {
       throw const InvitationWrongException();
     }
 
     final user = await _database.managers.users.createReturning(
       (o) => o(title: title, publicKey: publicKey),
     );
-    await _database.managers.invitations
-        .filter((e) => e.id.equals(invitation.id))
+    final changedRowCount = await _database.managers.invitations
+        .filter((e) => e.id.equals(invitationId))
         .update((o) => o(invitedId: Value(user.id)));
+    print('Change Rows: [$changedRowCount]');
+    if (changedRowCount == 0) {
+      throw Exception('Can`t update invitation!');
+    }
+
     await _database.managers.voteUsers.bulkCreate(
       (o) => [
         o(subject: user.id, object: invitation.userId, amount: 1),

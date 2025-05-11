@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:tentura/ui/l10n/l10n.dart';
-
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import '../widget/qr_code.dart';
@@ -12,11 +11,11 @@ class ShareCodeDialog extends StatelessWidget {
   static Future<void> show(
     BuildContext context, {
     required String header,
+    // TBD: get id only, build link here
     required Uri link,
   }) => showDialog(
     context: context,
-    builder:
-        (context) => ShareCodeDialog(header: header, link: link.toString()),
+    builder: (_) => ShareCodeDialog(header: header, link: link.toString()),
   );
 
   const ShareCodeDialog({required this.header, required this.link, super.key});
