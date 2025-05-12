@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -16,24 +17,27 @@ class FriendsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final friendsCubit = GetIt.I<FriendsCubit>();
     final screenCubit = context.read<ScreenCubit>();
+    final friendsCubit = GetIt.I<FriendsCubit>();
     final theme = Theme.of(context);
     final l10n = L10n.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          PopupMenuButton<void>(
-            itemBuilder:
-                (_) => <PopupMenuEntry<void>>[
-                  PopupMenuItem(
-                    onTap: screenCubit.showInvitations,
-                    child: Text(l10n.invitationsShowMenuItem),
+      appBar:
+          kNeedInviteCode
+              ? AppBar(
+                actions: [
+                  PopupMenuButton<void>(
+                    itemBuilder:
+                        (_) => <PopupMenuEntry<void>>[
+                          PopupMenuItem(
+                            onTap: screenCubit.showInvitations,
+                            child: Text(l10n.invitationsShowMenuItem),
+                          ),
+                        ],
                   ),
                 ],
-          ),
-        ],
-      ),
+              )
+              : null,
       body: BlocBuilder<FriendsCubit, FriendsState>(
         bloc: friendsCubit,
         buildWhen: (_, c) => c.isSuccess,

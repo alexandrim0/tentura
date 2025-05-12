@@ -24,6 +24,9 @@ class InvitationRepository {
           GInvitationsFetchByUserIdReq(
             (b) =>
                 b.vars
+                  ..created_at_gt = DateTime.now().subtract(
+                    const Duration(hours: kInvitationDefaultTTL),
+                  )
                   ..offset = offset
                   ..limit = limit,
           ),

@@ -10,6 +10,7 @@ import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 
 import '../bloc/invitation_cubit.dart';
+import '../dialog/invitation_remove_dialog.dart';
 
 @RoutePage()
 class InvitationScreen extends StatelessWidget implements AutoRouteWrapper {
@@ -87,7 +88,32 @@ class InvitationScreen extends StatelessWidget implements AutoRouteWrapper {
                 return ListTile(
                   key: ValueKey(invitation),
                   title: Text(invitation.id),
-                  subtitle: Text(invitation.createdAt.toString()),
+                  subtitle: Text(
+                    '${dateFormatYMD(invitation.createdAt)} '
+                    ' ${timeFormatHm(invitation.createdAt)}',
+                  ),
+                  trailing: IconButton(
+                    onPressed: () async {
+                      if (await InvitationRemoveDialog.show(context) ?? false) {
+                        await invitationCubit.deleteInvitationById(
+                          invitation.id,
+                        );
+                      }
+                    },
+                    icon: Icon(
+                      Icons.delete_outline_rounded,
+                      color: Colors.red[300],
+                    ),
+                  ),
+                  onTap:
+                      () => ShareCodeDialog.show(
+                        context,
+                        header: l10n.labelInvitationCode,
+                        link: Uri.parse(kServerName).replace(
+                          path: kPathAppLinkView,
+                          queryParameters: {'id': invitation.id},
+                        ),
+                      ),
                 );
               },
               padding: kPaddingH + kPaddingT,

@@ -1,7 +1,14 @@
-query InvitationsFetchByUserId($offset: Int = 0, $limit: Int = 10) {
+query InvitationsFetchByUserId(
+  $offset: Int = 0,
+  $limit: Int = 10,
+  $created_at_gt: timestamptz!
+) {
   invitation(
     where: {
-      invited_id: {_is_null: true}
+      _and: {
+        invited_id: {_is_null: true},
+        created_at: {_gt: $created_at_gt}
+      }
     },
     order_by: {created_at: asc},
     offset: $offset,
