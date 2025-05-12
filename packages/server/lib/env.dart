@@ -26,11 +26,7 @@ class Env {
        ),
        privateKey = EdDSAPrivateKey.fromPEM(
          (privateKey ?? kJwtPrivateKey).replaceAll(r'\n', '\n'),
-       ) {
-    print('Debug Mode: [${this.isDebugModeOn}]');
-    print('Need Invitation: [${this.isNeedInvite}]');
-    print('Invitation TTL: [${this.invitationTTL.inHours}]');
-  }
+       );
 
   @factoryMethod
   Env.fromSystem() : this();

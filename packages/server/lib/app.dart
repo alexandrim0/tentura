@@ -3,8 +3,9 @@ import 'dart:async';
 import 'dart:isolate';
 import 'package:shelf_plus/shelf_plus.dart';
 
-import 'consts.dart';
+import 'env.dart';
 import 'di/di.dart';
+import 'consts.dart';
 import 'domain/enum.dart';
 import 'api/route_handler.dart';
 
@@ -24,14 +25,14 @@ class App {
     );
 
     if (kDebugMode) {
-      await _serve(this);
+      await _serve(this, printEnv: true);
     } else {
       final children = [
         for (var i = 1; i < _numberOfIsolates; i += 1)
           await Isolate.spawn(_serve, this),
       ];
 
-      await _serve(this);
+      await _serve(this, printEnv: true);
 
       for (final isolate in children) {
         isolate.kill();
@@ -43,8 +44,14 @@ class App {
   }
 }
 
-Future<void> _serve(App app) async {
-  configureDependencies(app.env);
+Future<void> _serve(App app, {bool printEnv = false}) async {
+  final getIt = configureDependencies(app.env);
+  if (printEnv) {
+    final env = getIt<Env>();
+    print('Debug Mode: [${env.isDebugModeOn}]');
+    print('Need Invitation: [${env.isNeedInvite}]');
+    print('Invitation TTL: [${env.invitationTTL.inHours}]');
+  }
 
   final server = await shelfRun(
     routeHandler,
