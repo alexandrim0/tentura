@@ -33,6 +33,8 @@ class AuthRepository {
 
   final _controller = StreamController<String>.broadcast();
 
+  final _random = Random.secure();
+
   String _currentAccountId = '';
 
   @disposeMethod
@@ -92,7 +94,7 @@ class AuthRepository {
     required String invitationCode,
   }) async {
     final seed = base64UrlEncode(
-      Uint8List(32)..fillRange(0, 32, Random.secure().nextInt(256)),
+      Uint8List.fromList(List<int>.generate(32, (_) => _random.nextInt(256))),
     );
     final authRequestToken = await _remoteApiService.setAuth(
       seed: seed,
