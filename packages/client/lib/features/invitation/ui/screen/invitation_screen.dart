@@ -43,21 +43,24 @@ class InvitationScreen extends StatelessWidget implements AutoRouteWrapper {
       appBar: AppBar(
         title: Text(l10n.invitationScreenTitle),
         actions: [
-          IconButton(
-            onPressed: () async {
-              final invitation = await invitationCubit.createInvitation();
-              if (invitation != null && context.mounted) {
-                await ShareCodeDialog.show(
-                  context,
-                  header: l10n.labelInvitationCode,
-                  link: Uri.parse(kServerName).replace(
-                    path: kPathAppLinkView,
-                    queryParameters: {'id': invitation.id},
-                  ),
-                );
-              }
-            },
-            icon: const Icon(Icons.person_add_alt_1),
+          Padding(
+            padding: const EdgeInsets.only(right: kSpacingSmall),
+            child: IconButton(
+              onPressed: () async {
+                final invitation = await invitationCubit.createInvitation();
+                if (invitation != null && context.mounted) {
+                  await ShareCodeDialog.show(
+                    context,
+                    header: l10n.labelInvitationCode,
+                    link: Uri.parse(kServerName).replace(
+                      path: kPathAppLinkView,
+                      queryParameters: {'id': invitation.id},
+                    ),
+                  );
+                }
+              },
+              icon: const Icon(Icons.person_add_alt_1),
+            ),
           ),
         ],
         bottom: PreferredSize(
@@ -85,12 +88,12 @@ class InvitationScreen extends StatelessWidget implements AutoRouteWrapper {
                     state.invitations.length == i + 1) {
                   invitationCubit.fetch(clear: false);
                 }
+                final createdAt = invitation.createdAt.toLocal();
                 return ListTile(
                   key: ValueKey(invitation),
                   title: Text(invitation.id),
                   subtitle: Text(
-                    '${dateFormatYMD(invitation.createdAt)} '
-                    ' ${timeFormatHm(invitation.createdAt)}',
+                    '${dateFormatYMD(createdAt)}  ${timeFormatHm(createdAt)}',
                   ),
                   trailing: IconButton(
                     onPressed: () async {
@@ -116,7 +119,6 @@ class InvitationScreen extends StatelessWidget implements AutoRouteWrapper {
                       ),
                 );
               },
-              padding: kPaddingH + kPaddingT,
               separatorBuilder: separatorBuilder,
             );
           },

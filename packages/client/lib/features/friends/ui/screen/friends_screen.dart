@@ -57,7 +57,6 @@ class FriendsScreen extends StatelessWidget {
                     )
                     // Friends List
                     : ListView.separated(
-                      padding: kPaddingAll,
                       itemCount: friends.length,
                       itemBuilder: (_, i) {
                         final profile = friends[i];
@@ -66,7 +65,7 @@ class FriendsScreen extends StatelessWidget {
                           profile: profile,
                         );
                       },
-                      separatorBuilder: (_, _) => const Divider(),
+                      separatorBuilder: separatorBuilder,
                     ),
           );
         },

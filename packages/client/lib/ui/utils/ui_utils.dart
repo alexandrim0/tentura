@@ -78,7 +78,8 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
 }
 
 // ignore: strict_top_level_inference //
-Widget separatorBuilder(_, _) => const Divider(endIndent: 20, indent: 20);
+Widget separatorBuilder(_, _) =>
+    const Divider(endIndent: kSpacingMedium, indent: kSpacingMedium);
 
 void commonScreenBlocListener(BuildContext context, StateBase state) =>
     switch (state.status) {
