@@ -7,8 +7,6 @@ services:
     restart: unless-stopped
     networks:
       - backend
-    logging:
-      driver: journald
 
   proxy:
     extends:
@@ -57,7 +55,6 @@ services:
       - tentura
       - postgres
     environment:
-      - TENTURA_PASSWORD
       - HASURA_GRAPHQL_ADMIN_SECRET
       - 'HASURA_GRAPHQL_ENABLE_TELEMETRY=false'
       - 'HASURA_GRAPHQL_UNAUTHORIZED_ROLE=anon'
@@ -104,6 +101,8 @@ services:
     image: vbulavintsev/tentura-service
     depends_on:
       - postgres
+    networks:
+      - frontend
     environment:
       - 'DEBUG_MODE=false'
       - SERVER_NAME
@@ -116,7 +115,6 @@ services:
       - POSTGRES_USERNAME
       - POSTGRES_PASSWORD
       - POSTGRES_MAXCONN
-      - TENTURA_PASSWORD
       - JWT_PRIVATE_PEM
       - JWT_PUBLIC_PEM
       - JWT_EXPIRES_IN

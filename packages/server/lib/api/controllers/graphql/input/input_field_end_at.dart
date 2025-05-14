@@ -1,7 +1,7 @@
 part of '_input_types.dart';
 
 abstract class InputFieldEndAt {
-  static final field = GraphQLFieldInput(
+  static final GraphQLFieldInput<DateTime?, String?> field = GraphQLFieldInput(
     _fieldKey,
     graphQLDate,
     defaultsToNull: true,

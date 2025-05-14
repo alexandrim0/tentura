@@ -11,7 +11,6 @@ mutation BeaconCreate(
     title: $title,
     description: $description,
     coordinates: $coordinates,
-    dateRange: $dateRange,
     context: $context,
     startAt: $startAt,
     endAt: $endAt,

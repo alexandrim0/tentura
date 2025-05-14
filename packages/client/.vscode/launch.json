@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "tentura (debug)",
+            "name": "tentura (Dev, debug)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
@@ -13,6 +13,10 @@
                 "--flavor",
                 "prod",
 				"--dart-define-from-file=.env",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
+				"--dart-define",
+				"SERVER_NAME=https://dev.tentura.io",
             ],
         },
         {
@@ -36,12 +40,16 @@
             ]
         },
         {
-            "name": "tentura-web (debug)",
+            "name": "tentura-web (Dev, debug)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
 				"--dart-define-from-file=.env",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
+				"--dart-define",
+				"SERVER_NAME=https://dev.tentura.io",
             ],
             "args": [
                 "-d", "chrome",
@@ -72,6 +80,10 @@
                 "--flavor",
                 "prod",
 				"--dart-define-from-file=.env",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
+				"--dart-define",
+				"SERVER_NAME=https://dev.tentura.io",
             ],
         },
         {
@@ -93,6 +105,10 @@
             "toolArgs": [
                 "--wasm",
 				"--dart-define-from-file=.env",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
+				"--dart-define",
+				"SERVER_NAME=https://dev.tentura.io",
             ],
             "args": [
                 "-d", "chrome",

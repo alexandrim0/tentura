@@ -12,6 +12,7 @@ flutter gen-l10n
 
 dart run build_runner build -d
 
+flutter build web --wasm --pwa-strategy=none --source-maps --dart-define-from-file=.env --dart-define NEED_INVITE_CODE=true --dart-define SERVER_NAME=https://app.tentura.io
 ```
 
 To make database scheme diff run:
