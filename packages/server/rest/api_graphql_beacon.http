@@ -27,15 +27,17 @@ mutation BeaconCreate(
   $context: String = "",
   $description: String = "",
   $coordinates: Coordinates = {},
-  $dateRange: DateRange = {},
   $image: Upload = {}
+  $startAt: String,
+  $endAt: String,
 ) {
   beaconCreate(
     title: $title,
     description: $description,
     coordinates: $coordinates,
-    dateRange: $dateRange,
     context: $context,
+    startAt: $startAt,
+    endAt: $endAt,
     image: $image
   ) {
     id
@@ -45,8 +47,6 @@ mutation BeaconCreate(
 {
   "title": "From rest",
   "description": "Just for test",
-  "dateRange": {
-    "start": "2025-04-05T00:00:00.000",
-    "end": "2025-04-05T00:00:00.000"
-  }
+  "startAt": "2025-04-05T00:00:00.000",
+  "endAt": "2025-04-05T00:00:00.000"
 }

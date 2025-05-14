@@ -72,6 +72,26 @@
             ],
         },
         {
+            "name": "tentura-web (Prod, debug)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+				"--dart-define-from-file=.env",
+				"--dart-define",
+                "IMAGE_SERVER=https://static.tentura.io",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
+				"--dart-define",
+				"SERVER_NAME=https://app.tentura.io",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
+            ]
+        },
+        {
             "name": "tentura (profile)",
             "request": "launch",
             "type": "dart",
