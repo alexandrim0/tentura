@@ -11,10 +11,10 @@ import '../input/_input_types.dart';
 GraphQLObjectField<dynamic, dynamic> get signIn => GraphQLObjectField(
   'signIn',
   gqlTypeAuthResponse.nonNullable(),
-  arguments: [InputFieldAuthRequestToken.fieldNonNullable],
+  arguments: [_authRequestToken.field],
   resolve: (_, args) async {
     final jwt = await GetIt.I<AuthCase>().signIn(
-      authRequestToken: InputFieldAuthRequestToken.fromArgsNonNullable(args),
+      authRequestToken: _authRequestToken.fromArgsNonNullable(args),
     );
     return jwt.asOauth2Map;
   },
@@ -23,13 +23,10 @@ GraphQLObjectField<dynamic, dynamic> get signIn => GraphQLObjectField(
 GraphQLObjectField<dynamic, dynamic> get signUp => GraphQLObjectField(
   'signUp',
   gqlTypeAuthResponse.nonNullable(),
-  arguments: [
-    InputFieldTitle.fieldNonNullable,
-    InputFieldAuthRequestToken.fieldNonNullable,
-  ],
+  arguments: [InputFieldTitle.fieldNonNullable, _authRequestToken.field],
   resolve: (_, args) async {
     final jwt = await GetIt.I<AuthCase>().signUp(
-      authRequestToken: InputFieldAuthRequestToken.fromArgsNonNullable(args),
+      authRequestToken: _authRequestToken.fromArgsNonNullable(args),
       title: InputFieldTitle.fromArgsNonNullable(args),
     );
     return jwt.asOauth2Map;
@@ -45,3 +42,5 @@ GraphQLObjectField<dynamic, dynamic> get signOut => GraphQLObjectField(
         _ => throw const UnauthorizedException(),
       },
 );
+
+final _authRequestToken = InputFieldString(fieldName: 'authRequestToken');

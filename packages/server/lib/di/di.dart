@@ -12,7 +12,7 @@ final getIt = GetIt.instance;
 
 @InjectableInit()
 GetIt configureDependencies(Environment env) {
-  Jaspr.initializeApp(options: defaultJasprOptions, useIsolates: false);
+  Jaspr.initializeApp(options: defaultJasprOptions);
   return getIt.init(environment: env.name);
 }
 
