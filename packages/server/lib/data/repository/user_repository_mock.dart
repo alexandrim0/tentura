@@ -12,7 +12,7 @@ class UserRepositoryMock with UserMapper implements UserRepository {
   const UserRepositoryMock();
 
   @override
-  Future<UserEntity> createUser({
+  Future<UserEntity> create({
     required String publicKey,
     required String title,
   }) async =>
@@ -25,7 +25,7 @@ class UserRepositoryMock with UserMapper implements UserRepository {
           );
 
   @override
-  Future<UserEntity> createInvitedUser({
+  Future<UserEntity> createInvited({
     required String invitationId,
     required String publicKey,
     required String title,
@@ -34,17 +34,17 @@ class UserRepositoryMock with UserMapper implements UserRepository {
   }
 
   @override
-  Future<UserEntity> getUserById(String id) async =>
+  Future<UserEntity> getById(String id) async =>
       storageByPublicKey.values.where((e) => e.id == id).firstOrNull ??
       (throw IdNotFoundException(id: id));
 
   @override
-  Future<UserEntity> getUserByPublicKey(String publicKey) async =>
+  Future<UserEntity> getByPublicKey(String publicKey) async =>
       storageByPublicKey[publicKey] ??
       (throw IdNotFoundException(id: publicKey));
 
   @override
-  Future<void> updateUser({
+  Future<void> update({
     required String id,
     String? title,
     String? description,
@@ -53,7 +53,7 @@ class UserRepositoryMock with UserMapper implements UserRepository {
     int? imageHeight,
     int? imageWidth,
   }) async {
-    final user = await getUserById(id);
+    final user = await getById(id);
     storageByPublicKey[user.publicKey] = user.copyWith(
       title: title ?? user.title,
       description: description ?? user.description,
@@ -65,7 +65,15 @@ class UserRepositoryMock with UserMapper implements UserRepository {
   }
 
   @override
-  Future<void> deleteUserById({required String id}) async {
+  Future<void> deleteById({required String id}) async {
     storageByPublicKey.removeWhere((_, e) => e.id == id);
+  }
+
+  @override
+  Future<bool> bindMutual({
+    required String invitationId,
+    required String userId,
+  }) {
+    throw UnimplementedError();
   }
 }

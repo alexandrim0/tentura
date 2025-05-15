@@ -15,7 +15,7 @@ class InvitationRepository with UserMapper, InvitationMapper {
   Future<InvitationEntity> getById(String id) async {
     final (invitation, refs) =
         await _database.managers.invitations
-            .filter((f) => f.id.equals(id))
+            .filter((f) => f.id(id))
             .withReferences((p) => p(userId: true, invitedId: true))
             .getSingle();
     return invitationModelToEntity(
@@ -24,4 +24,13 @@ class InvitationRepository with UserMapper, InvitationMapper {
       invited: await refs.invitedId?.getSingleOrNull(),
     );
   }
+
+  Future<bool> deleteById({
+    required String invitationId,
+    required String userId,
+  }) async =>
+      await _database.managers.invitations
+          .filter((e) => e.id(invitationId) & e.userId.id(userId))
+          .delete() ==
+      1;
 }

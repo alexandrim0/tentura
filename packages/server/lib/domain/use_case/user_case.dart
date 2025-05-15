@@ -24,7 +24,7 @@ class UserCase with ImageCaseMixin {
   }) async {
     if (dropImage ?? false) {
       await _imageRepository.deleteUserImage(userId: id);
-      await _userRepository.updateUser(
+      await _userRepository.update(
         id: id,
         title: title,
         description: description,
@@ -35,7 +35,7 @@ class UserCase with ImageCaseMixin {
       );
     } else if (imageBytes != null) {
       await _imageRepository.putUserImage(userId: id, bytes: imageBytes);
-      await _userRepository.updateUser(
+      await _userRepository.update(
         id: id,
         title: title,
         description: description,
@@ -46,7 +46,7 @@ class UserCase with ImageCaseMixin {
       );
       unawaited(updateBlurHash(userId: id));
     } else {
-      await _userRepository.updateUser(
+      await _userRepository.update(
         id: id,
         title: title,
         description: description,
@@ -56,7 +56,7 @@ class UserCase with ImageCaseMixin {
   }
 
   Future<bool> deleteById({required String id}) async {
-    await _userRepository.deleteUserById(id: id);
+    await _userRepository.deleteById(id: id);
     await _imageRepository.deleteUserImageAll(userId: id);
     return true;
   }
@@ -65,7 +65,7 @@ class UserCase with ImageCaseMixin {
     try {
       final imageBytes = await _imageRepository.getUserImage(userId: userId);
       final image = decodeImage(imageBytes);
-      await _userRepository.updateUser(
+      await _userRepository.update(
         id: userId,
         blurHash: calculateBlurHash(image),
         imageHeight: image.height,

@@ -67,31 +67,31 @@ final class PemKeyWrongException extends ExceptionBase {
 }
 
 final class AuthorizationHeaderWrongException extends ExceptionBase {
-  const AuthorizationHeaderWrongException()
+  const AuthorizationHeaderWrongException({String? description})
     : super(
         code: const AuthExceptionCodes(
           AuthExceptionCode.authAuthorizationHeaderWrongException,
         ),
-        description: 'Wrong Authorization header',
+        description: description ?? 'Wrong Authorization header',
       );
 }
 
 final class UnauthorizedException extends ExceptionBase {
-  const UnauthorizedException()
+  const UnauthorizedException({String? description})
     : super(
         code: const AuthExceptionCodes(
           AuthExceptionCode.authAuthorizationHeaderWrongException,
         ),
-        description: 'Wrong Authorization header',
+        description: description ?? 'Wrong Authorization header',
       );
 }
 
 final class InvitationWrongException extends ExceptionBase {
-  const InvitationWrongException()
+  const InvitationWrongException({String? description})
     : super(
         code: const AuthExceptionCodes(
           AuthExceptionCode.authInvitationWrongException,
         ),
-        description: 'Wrong invitation code',
+        description: description ?? 'Wrong invitation code',
       );
 }

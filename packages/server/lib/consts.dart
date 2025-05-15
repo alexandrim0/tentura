@@ -1,6 +1,6 @@
 import 'dart:io' show Platform;
 
-import 'package:tentura_root/consts.dart' as tentura;
+import 'package:tentura_root/consts.dart' as r;
 
 export 'package:tentura_root/consts.dart' hide kImageServer, kServerName;
 
@@ -23,12 +23,12 @@ final kWorkersCount =
 final kServerUri = Uri.dataFromString(kServerName);
 
 /// First part of FQDN: `https://app.server.name`
-final kServerName = environment['SERVER_NAME'] ?? tentura.kServerName;
+final kServerName = environment['SERVER_NAME'] ?? r.kServerName;
 
 /// First part of FQDN: `https://image.server.name`
-final kImageServer = environment['IMAGE_SERVER'] ?? tentura.kImageServer;
+final kImageServer = environment['IMAGE_SERVER'] ?? r.kImageServer;
 
-final kImageFolderPath = environment['IMAGES_PATH'] ?? tentura.kImagesPath;
+final kImageFolderPath = environment['IMAGES_PATH'] ?? r.kImagesPath;
 
 // Database connection settings
 final kPgHost = environment['POSTGRES_HOST'] ?? 'postgres';
@@ -80,3 +80,9 @@ final kJwtPrivateKey =
 MC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF
 -----END PRIVATE KEY-----
 ''';
+
+final kInvitationTTL = Duration(
+  hours:
+      int.tryParse(environment['INVITATION_TTL'] ?? '') ??
+      r.kInvitationDefaultTTL,
+);

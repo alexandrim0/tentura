@@ -17,7 +17,7 @@ class UserRepository with UserMapper {
 
   final Env _env;
 
-  Future<UserEntity> createUser({
+  Future<UserEntity> create({
     required String publicKey,
     required String title,
   }) => _database.managers.users
@@ -25,33 +25,36 @@ class UserRepository with UserMapper {
       .then(userModelToEntity);
 
   // TBD: move to SQL
-  Future<UserEntity> createInvitedUser({
+  Future<UserEntity> createInvited({
     required String invitationId,
     required String publicKey,
     required String title,
   }) => _database.transaction<UserEntity>(() async {
     final invitation =
         await _database.managers.invitations
-            .filter((e) => e.id.equals(invitationId))
+            .filter((e) => e.id(invitationId))
             .getSingle();
     if (invitation.invitedId != null) {
-      throw const UnspecifiedException(description: 'Invitation already used!');
+      throw const InvitationWrongException(
+        description: 'Invitation already used!',
+      );
     }
     if (invitation.createdAt.dateTime
         .add(_env.invitationTTL)
         .isBefore(DateTime.timestamp())) {
-      throw const InvitationWrongException();
+      throw const InvitationWrongException(description: 'Invitation expired!');
     }
 
     final user = await _database.managers.users.createReturning(
       (o) => o(title: title, publicKey: publicKey),
     );
     final changedRowCount = await _database.managers.invitations
-        .filter((e) => e.id.equals(invitationId))
+        .filter((e) => e.id(invitationId))
         .update((o) => o(invitedId: Value(user.id)));
-    print('Change Rows: [$changedRowCount]');
     if (changedRowCount == 0) {
-      throw Exception('Can`t update invitation!');
+      throw const InvitationWrongException(
+        description: 'Can`t update invitation!',
+      );
     }
 
     await _database.managers.voteUsers.bulkCreate(
@@ -64,19 +67,19 @@ class UserRepository with UserMapper {
     return userModelToEntity(user);
   });
 
-  Future<UserEntity> getUserById(String id) => _database.managers.users
-      .filter((e) => e.id.equals(id))
+  Future<UserEntity> getById(String id) => _database.managers.users
+      .filter((e) => e.id(id))
       .getSingle()
       .then(userModelToEntity);
 
-  Future<UserEntity> getUserByPublicKey(String publicKey) => _database
+  Future<UserEntity> getByPublicKey(String publicKey) => _database
       .managers
       .users
-      .filter((e) => e.publicKey.equals(publicKey))
+      .filter((e) => e.publicKey(publicKey))
       .getSingle()
       .then(userModelToEntity);
 
-  Future<void> updateUser({
+  Future<void> update({
     required String id,
     String? title,
     String? description,
@@ -86,9 +89,7 @@ class UserRepository with UserMapper {
     int? imageWidth,
   }) async {
     final user =
-        await _database.managers.users
-            .filter((e) => e.id.equals(id))
-            .getSingle();
+        await _database.managers.users.filter((e) => e.id(id)).getSingle();
     await _database.managers.users.replace(
       user.copyWith(
         title: title ?? user.title,
@@ -101,6 +102,41 @@ class UserRepository with UserMapper {
     );
   }
 
-  Future<void> deleteUserById({required String id}) =>
-      _database.managers.users.filter((e) => e.id.equals(id)).delete();
+  Future<void> deleteById({required String id}) =>
+      _database.managers.users.filter((e) => e.id(id)).delete();
+
+  // TBD: move to SQL
+  Future<bool> bindMutual({
+    required String invitationId,
+    required String userId,
+  }) => _database.transaction<bool>(() async {
+    final invitation =
+        await _database.managers.invitations
+            .filter((e) => e.id(invitationId))
+            .getSingle();
+    if (invitation.invitedId != null) {
+      throw const InvitationWrongException(
+        description: 'Invitation already used!',
+      );
+    } else if (invitation.createdAt.dateTime
+        .add(_env.invitationTTL)
+        .isBefore(DateTime.timestamp())) {
+      throw const InvitationWrongException(description: 'Invitation expired!');
+    }
+
+    final invitationsDeletedCount =
+        await _database.managers.invitations
+            .filter((e) => e.id(invitationId))
+            .delete();
+
+    await _database.managers.voteUsers.bulkCreate(
+      (o) => [
+        o(subject: invitation.userId, object: userId, amount: 1),
+        o(subject: userId, object: invitation.userId, amount: 1),
+      ],
+      mode: InsertMode.insertOrIgnore,
+    );
+
+    return invitationsDeletedCount == 1;
+  });
 }

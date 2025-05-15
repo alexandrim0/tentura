@@ -14,24 +14,20 @@ final class MutationBeacon extends GqlNodeBase {
 
   final _endAt = InputFieldDatetime(fieldName: 'endAt');
 
-  List<GraphQLObjectField<dynamic, dynamic>> get all => [
-    beaconCreate,
-    beaconBeleteById,
-  ];
+  List<GraphQLObjectField<dynamic, dynamic>> get all => [create, deleteById];
 
-  GraphQLObjectField<dynamic, dynamic> get beaconBeleteById =>
-      GraphQLObjectField(
-        'beaconDeleteById',
-        graphQLBoolean.nonNullable(),
-        arguments: [InputFieldId.fieldNonNullable],
-        resolve:
-            (_, args) => _beaconCase.deleteById(
-              beaconId: InputFieldId.fromArgsNonNullable(args),
-              userId: getCredentials(args).sub,
-            ),
-      );
+  GraphQLObjectField<dynamic, dynamic> get deleteById => GraphQLObjectField(
+    'beaconDeleteById',
+    graphQLBoolean.nonNullable(),
+    arguments: [InputFieldId.fieldNonNullable],
+    resolve:
+        (_, args) => _beaconCase.deleteById(
+          beaconId: InputFieldId.fromArgsNonNullable(args),
+          userId: getCredentials(args).sub,
+        ),
+  );
 
-  GraphQLObjectField<dynamic, dynamic> get beaconCreate => GraphQLObjectField(
+  GraphQLObjectField<dynamic, dynamic> get create => GraphQLObjectField(
     'beaconCreate',
     gqlTypeBeacon.nonNullable(),
     arguments: [

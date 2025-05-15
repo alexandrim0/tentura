@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/utils/id.dart';
 
 import 'user_entity.dart';
@@ -19,4 +20,8 @@ abstract class InvitationEntity with _$InvitationEntity {
   }) = _IntitationEntity;
 
   const InvitationEntity._();
+
+  bool get isAccepted => invited != null;
+
+  bool get isExpired => createdAt.add(kInvitationTTL).isBefore(DateTime.now());
 }

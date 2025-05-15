@@ -39,7 +39,7 @@ class AuthCase {
 
   Future<JwtEntity> signIn({required String authRequestToken}) async {
     final jwt = _verifyAuthRequest(token: authRequestToken);
-    final user = await _userRepository.getUserByPublicKey(
+    final user = await _userRepository.getByPublicKey(
       (jwt.payload as Map)[AuthRequestIntent.keyPublicKey] as String,
     );
 
@@ -56,21 +56,17 @@ class AuthCase {
     final newUser =
         _env.isNeedInvite
             ? switch (payload[AuthRequestIntentSignUp.keyCode]) {
-              final String invitationId => await _userRepository
-                  .createInvitedUser(
-                    invitationId: invitationId,
-                    publicKey: publicKey,
-                    title: title,
-                  ),
+              final String invitationId => await _userRepository.createInvited(
+                invitationId: invitationId,
+                publicKey: publicKey,
+                title: title,
+              ),
               _ =>
                 throw const IdWrongException(
                   description: 'Invite attribute not found!',
                 ),
             }
-            : await _userRepository.createUser(
-              publicKey: publicKey,
-              title: title,
-            );
+            : await _userRepository.create(publicKey: publicKey, title: title);
     return _issueJwt(subject: newUser.id);
   }
 

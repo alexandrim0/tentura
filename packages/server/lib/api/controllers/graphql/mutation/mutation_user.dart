@@ -10,12 +10,9 @@ final class MutationUser extends GqlNodeBase {
 
   final UserCase _userCase;
 
-  List<GraphQLObjectField<dynamic, dynamic>> get all => [
-    userUpdate,
-    userDelete,
-  ];
+  List<GraphQLObjectField<dynamic, dynamic>> get all => [update, delete];
 
-  GraphQLObjectField<dynamic, dynamic> get userUpdate => GraphQLObjectField(
+  GraphQLObjectField<dynamic, dynamic> get update => GraphQLObjectField(
     'userUpdate',
     gqlTypeProfile.nonNullable(),
     arguments: [
@@ -36,7 +33,7 @@ final class MutationUser extends GqlNodeBase {
             .then((v) => v.asJson),
   );
 
-  GraphQLObjectField<dynamic, dynamic> get userDelete => GraphQLObjectField(
+  GraphQLObjectField<dynamic, dynamic> get delete => GraphQLObjectField(
     'userDelete',
     graphQLBoolean.nonNullable(),
     resolve: (_, args) => _userCase.deleteById(id: getCredentials(args).sub),

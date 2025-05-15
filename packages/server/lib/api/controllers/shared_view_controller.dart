@@ -51,7 +51,7 @@ final class SharedViewController extends BaseController {
             ),
             'C' => await getIt<CommentRepository>().getCommentById(ogId),
             'O' => await getIt<OpinionCase>().getOpinionById(ogId),
-            'U' => await getIt<UserRepository>().getUserById(ogId),
+            'U' => await getIt<UserRepository>().getById(ogId),
             _ => throw IdWrongException(id: ogId),
           },
         ),

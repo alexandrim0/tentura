@@ -14,13 +14,7 @@ class Env {
     String? privateKey,
   }) : isDebugModeOn = isDebugModeOn ?? _environment['DEBUG_MODE'] == 'true',
        isNeedInvite = isNeedInvite ?? _environment['NEED_INVITE'] == 'true',
-       invitationTTL =
-           invitationTTL ??
-           Duration(
-             hours:
-                 int.tryParse(_environment['INVITATION_TTL'] ?? '') ??
-                 kInvitationDefaultTTL,
-           ),
+       invitationTTL = invitationTTL ?? kInvitationTTL,
        publicKey = EdDSAPublicKey.fromPEM(
          (publicKey ?? kJwtPublicKey).replaceAll(r'\n', '\n'),
        ),
