@@ -1,44 +1,52 @@
-import 'package:get_it/get_it.dart';
-import 'package:graphql_schema2/graphql_schema2.dart';
-
-import 'package:tentura_server/domain/entity/jwt_entity.dart';
-import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/domain/use_case/beacon_case.dart';
 
 import '../custom_types.dart';
+import '../gql_nodel_base.dart';
 import '../input/_input_types.dart';
 
-GraphQLObjectField<dynamic, dynamic> get beaconBeleteById => GraphQLObjectField(
-  'beaconDeleteById',
-  graphQLBoolean.nonNullable(),
-  arguments: [InputFieldId.fieldNonNullable],
-  resolve:
-      (_, args) => switch (args[kGlobalInputQueryJwt]) {
-        final JwtEntity jwt => GetIt.I<BeaconCase>().deleteById(
-          beaconId: InputFieldId.fromArgsNonNullable(args),
-          userId: jwt.sub,
-        ),
-        _ => throw const UnauthorizedException(),
-      },
-);
+final class MutationBeacon extends GqlNodeBase {
+  MutationBeacon({BeaconCase? beaconCase})
+    : _beaconCase = beaconCase ?? GetIt.I<BeaconCase>();
 
-GraphQLObjectField<dynamic, dynamic> get beaconCreate => GraphQLObjectField(
-  'beaconCreate',
-  gqlTypeBeacon.nonNullable(),
-  arguments: [
-    InputFieldTitle.fieldNonNullable,
-    InputFieldDescription.field,
-    InputFieldCoordinates.field,
-    InputFieldUpload.fieldImage,
-    InputFieldContext.field,
-    _startAt.fieldNullable,
-    _endAt.fieldNullable,
-  ],
-  resolve:
-      (_, args) => switch (args[kGlobalInputQueryJwt]) {
-        final JwtEntity jwt => GetIt.I<BeaconCase>()
+  final BeaconCase _beaconCase;
+
+  final _startAt = InputFieldDatetime(fieldName: 'startAt');
+
+  final _endAt = InputFieldDatetime(fieldName: 'endAt');
+
+  List<GraphQLObjectField<dynamic, dynamic>> get all => [
+    beaconCreate,
+    beaconBeleteById,
+  ];
+
+  GraphQLObjectField<dynamic, dynamic> get beaconBeleteById =>
+      GraphQLObjectField(
+        'beaconDeleteById',
+        graphQLBoolean.nonNullable(),
+        arguments: [InputFieldId.fieldNonNullable],
+        resolve:
+            (_, args) => _beaconCase.deleteById(
+              beaconId: InputFieldId.fromArgsNonNullable(args),
+              userId: getCredentials(args).sub,
+            ),
+      );
+
+  GraphQLObjectField<dynamic, dynamic> get beaconCreate => GraphQLObjectField(
+    'beaconCreate',
+    gqlTypeBeacon.nonNullable(),
+    arguments: [
+      InputFieldTitle.fieldNonNullable,
+      InputFieldDescription.field,
+      InputFieldCoordinates.field,
+      InputFieldUpload.fieldImage,
+      InputFieldContext.field,
+      _startAt.fieldNullable,
+      _endAt.fieldNullable,
+    ],
+    resolve:
+        (_, args) => _beaconCase
             .create(
-              userId: jwt.sub,
+              userId: getCredentials(args).sub,
               description: InputFieldDescription.fromArgs(args),
               title: InputFieldTitle.fromArgsNonNullable(args),
               coordinates: InputFieldCoordinates.fromArgs(args),
@@ -48,10 +56,5 @@ GraphQLObjectField<dynamic, dynamic> get beaconCreate => GraphQLObjectField(
               endAt: _endAt.fromArgs(args),
             )
             .then((v) => v.asJson),
-        _ => throw const UnauthorizedException(),
-      },
-);
-
-final _startAt = InputFieldDatetime(fieldName: 'startAt');
-
-final _endAt = InputFieldDatetime(fieldName: 'endAt');
+  );
+}

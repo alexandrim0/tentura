@@ -74,6 +74,8 @@ class AuthCase {
     return _issueJwt(subject: newUser.id);
   }
 
+  Future<bool> signOut({required JwtEntity jwt}) async => true;
+
   JWT _verifyAuthRequest({required String token}) {
     final jwtDecoded = JWT.decode(token);
 
