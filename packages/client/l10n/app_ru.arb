@@ -290,6 +290,7 @@
   "@buttonSubmitComplaint": {
     "context": "ComplaintScreen"
   },
+
   "writeCodeHere": "Если у вас есть код, введите его здесь:",
   "@writeCodeHere": {
     "context": "ConnectScreen"
@@ -302,6 +303,11 @@
   "@codePrefixError": {
     "context": "ConnectScreen"
   },
+  "codeNotFoundError": "Код не найден или устарел!",
+  "@codeNotFoundError": {
+    "context": "ConnectScreen"
+  },
+
   "addNewTopic": "Добавить новую тему",
   "@addNewTopic": {
     "context": "Topics"
@@ -328,6 +334,16 @@
       }
     }
   },
+  "confirmFriendAccept": "Вы уверены, что хотите принять приглашение от {profileTitle}?",
+  "@confirmFriendAccept": {
+    "context": "FriendAcceptInvitationDialog",
+    "placeholders": {
+      "profileTitle": {
+        "type": "String"
+      }
+    }
+  },
+
   "tapToChooseLocation": "Нажмите, чтобы выбрать место",
   "@tapToChooseLocation": {
     "context": "ChooseLocationDialog"

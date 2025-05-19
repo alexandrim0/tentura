@@ -290,6 +290,7 @@
   "@buttonSubmitComplaint": {
     "context": "ComplaintScreen"
   },
+
   "writeCodeHere": "If you have the Code, please write it here:",
   "@writeCodeHere": {
     "context": "ConnectScreen"
@@ -302,6 +303,11 @@
   "@codePrefixError": {
     "context": "ConnectScreen"
   },
+  "codeNotFoundError": "Code not found or stale!",
+  "@codeNotFoundError": {
+    "context": "ConnectScreen"
+  },
+
   "addNewTopic": "Add a new topic",
   "@addNewTopic": {
     "context": "Topics"
@@ -328,6 +334,16 @@
       }
     }
   },
+  "confirmFriendAccept": "Are you sure you want to accept invitation from {profileTitle}?",
+  "@confirmFriendAccept": {
+    "context": "FriendAcceptInvitationDialog",
+    "placeholders": {
+      "profileTitle": {
+        "type": "String"
+      }
+    }
+  },
+
   "tapToChooseLocation": "Tap to choose location",
   "@tapToChooseLocation": {
     "context": "ChooseLocationDialog"

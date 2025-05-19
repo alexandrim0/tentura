@@ -4,7 +4,7 @@ import 'identifiable.dart';
 
 part 'invitation_entity.freezed.dart';
 
-@Freezed(makeCollectionsUnmodifiable: false)
+@freezed
 abstract class InvitationEntity extends Identifiable with _$InvitationEntity {
   const factory InvitationEntity({
     required String id,

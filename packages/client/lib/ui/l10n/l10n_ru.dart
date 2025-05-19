@@ -228,6 +228,9 @@ class L10nRu extends L10n {
   String get codePrefixError => 'Неверный префикс кода!';
 
   @override
+  String get codeNotFoundError => 'Код не найден или устарел!';
+
+  @override
   String get addNewTopic => 'Добавить новую тему';
 
   @override
@@ -241,6 +244,11 @@ class L10nRu extends L10n {
   @override
   String confirmFriendRemoval(String profileTitle) {
     return 'Вы уверены, что хотите удалить $profileTitle из списка друзей?';
+  }
+
+  @override
+  String confirmFriendAccept(String profileTitle) {
+    return 'Вы уверены, что хотите принять приглашение от $profileTitle?';
   }
 
   @override

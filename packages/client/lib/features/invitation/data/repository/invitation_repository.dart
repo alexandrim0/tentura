@@ -1,13 +1,20 @@
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/consts.dart';
+import 'package:tentura/data/model/user_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 import 'package:tentura/domain/entity/invitation_entity.dart';
+import 'package:tentura/domain/entity/profile.dart';
 
 import '../../domain/exception.dart';
+import '../gql/_g/invitation_accept.req.gql.dart';
 import '../gql/_g/invitation_create.req.gql.dart';
 import '../gql/_g/invitation_delete_by_id.req.gql.dart';
+import '../gql/_g/invitation_fetch_by_id.req.gql.dart';
 import '../gql/_g/invitations_fetch_by_user_id.req.gql.dart';
+
+typedef InvitationFetchByIdResult =
+    ({InvitationEntity invitation, Profile issuer});
 
 @singleton
 class InvitationRepository {
@@ -15,7 +22,26 @@ class InvitationRepository {
 
   final RemoteApiService _remoteApiService;
 
-  Future<List<InvitationEntity>> fetchInvitations({
+  Future<InvitationFetchByIdResult?> fetchById(String id) async {
+    final invitation = await _remoteApiService
+        .request(GInvitationByIdReq((b) => b.vars.id = id))
+        .firstWhere((e) => e.dataSource == DataSource.Link)
+        .then((r) => r.dataOrThrow(label: _label).invitationById);
+    if (invitation == null) {
+      return null;
+    }
+    final timestamp = DateTime.parse(invitation.created_at);
+    return (
+      invitation: InvitationEntity(
+        id: invitation.id,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      ),
+      issuer: (invitation.issuer! as UserModel).toEntity,
+    );
+  }
+
+  Future<List<InvitationEntity>> fetchMine({
     int offset = 0,
     int limit = kFetchWindowSize,
   }) async {
@@ -45,7 +71,7 @@ class InvitationRepository {
         .toList();
   }
 
-  Future<InvitationEntity> createInvitation() async {
+  Future<InvitationEntity> create() async {
     final result = await _remoteApiService
         .request(GInvitationCreateReq())
         .firstWhere((e) => e.dataSource == DataSource.Link)
@@ -61,13 +87,23 @@ class InvitationRepository {
     );
   }
 
-  Future<void> deleteInvitationById(String id) async {
+  Future<void> deleteById(String id) async {
     final result = await _remoteApiService
         .request(GInvitationDeleteByIdReq((b) => b.vars.id = id))
         .firstWhere((e) => e.dataSource == DataSource.Link)
-        .then((r) => r.dataOrThrow(label: _label).delete_invitation_by_pk);
-    if (result == null) {
+        .then((r) => r.dataOrThrow(label: _label).invitationDelete);
+    if (result == false) {
       throw InvitationDeleteException(id);
+    }
+  }
+
+  Future<void> accept(String id) async {
+    final result = await _remoteApiService
+        .request(GInvitationAcceptReq((b) => b.vars.id = id))
+        .firstWhere((e) => e.dataSource == DataSource.Link)
+        .then((r) => r.dataOrThrow(label: _label).invitationAccept);
+    if (result == false) {
+      throw InvitationAcceptException(id);
     }
   }
 

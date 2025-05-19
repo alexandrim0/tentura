@@ -1,5 +1,5 @@
 {
-  "resource_version": 74,
+  "resource_version": 98,
   "metadata": {
     "version": 3,
     "sources": [
@@ -376,6 +376,12 @@
           },
           {
             "table": {
+              "name": "image",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
               "name": "invitation",
               "schema": "public"
             },
@@ -439,28 +445,6 @@
                     "user_id": {
                       "_eq": "X-Hasura-User-Id"
                     }
-                  }
-                },
-                "comment": ""
-              }
-            ],
-            "delete_permissions": [
-              {
-                "role": "user",
-                "permission": {
-                  "filter": {
-                    "_and": [
-                      {
-                        "user_id": {
-                          "_eq": "X-Hasura-User-Id"
-                        }
-                      },
-                      {
-                        "invited_id": {
-                          "_is_null": true
-                        }
-                      }
-                    ]
                   }
                 },
                 "comment": ""
@@ -1315,6 +1299,43 @@
           {
             "relationships": [],
             "type_name": "User"
+          },
+          {
+            "relationships": [
+              {
+                "definition": {
+                  "to_source": {
+                    "field_mapping": {
+                      "issuer_id": "id"
+                    },
+                    "relationship_type": "object",
+                    "source": "postgres",
+                    "table": {
+                      "name": "user",
+                      "schema": "public"
+                    }
+                  }
+                },
+                "name": "issuer"
+              },
+              {
+                "definition": {
+                  "to_source": {
+                    "field_mapping": {
+                      "invited_id": "id"
+                    },
+                    "relationship_type": "object",
+                    "source": "postgres",
+                    "table": {
+                      "name": "user",
+                      "schema": "public"
+                    }
+                  }
+                },
+                "name": "invited"
+              }
+            ],
+            "type_name": "Invitation"
           }
         ]
       }

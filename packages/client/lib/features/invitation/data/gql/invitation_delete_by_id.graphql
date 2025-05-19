@@ -1,5 +1,3 @@
 mutation InvitationDeleteById($id: String!) {
-  delete_invitation_by_pk(id: $id) {
-    id
-  }
+  invitationDelete(id: $id)
 }

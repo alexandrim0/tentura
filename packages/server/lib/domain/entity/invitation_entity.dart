@@ -24,4 +24,12 @@ abstract class InvitationEntity with _$InvitationEntity {
   bool get isAccepted => invited != null;
 
   bool get isExpired => createdAt.add(kInvitationTTL).isBefore(DateTime.now());
+
+  Map<String, Object?> get asMap => {
+    'id': id,
+    'issuer_id': issuer.id,
+    'invited_id': invited?.id,
+    'created_at': createdAt.toIso8601String(),
+    'updated_at': updatedAt.toIso8601String(),
+  };
 }

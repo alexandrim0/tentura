@@ -6,6 +6,7 @@ List<GraphQLType<dynamic, dynamic>> get customTypes => [
   InputFieldUpload.type,
   InputFieldCoordinates.type,
   gqlTypeAuthResponse,
+  gqlTypeInvitation,
   gqlTypeProfile,
   gqlTypeBeacon,
 ];
@@ -24,3 +25,12 @@ final gqlTypeBeacon = GraphQLObjectType('Beacon', null)
 
 final gqlTypeProfile = GraphQLObjectType('User', null)
   ..fields.addAll([field('id', graphQLString.nonNullable())]);
+
+final gqlTypeInvitation = GraphQLObjectType('Invitation', null)
+  ..fields.addAll([
+    field('id', graphQLString.nonNullable()),
+    field('issuer_id', graphQLString.nonNullable()),
+    field('invited_id', graphQLString),
+    field('created_at', graphQLString.nonNullable()),
+    field('updated_at', graphQLString.nonNullable()),
+  ]);

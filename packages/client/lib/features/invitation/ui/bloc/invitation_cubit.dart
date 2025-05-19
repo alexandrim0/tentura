@@ -33,7 +33,7 @@ class InvitationCubit extends Cubit<InvitationState> {
     }
 
     try {
-      final invitations = await _invitationRepository.fetchInvitations(
+      final invitations = await _invitationRepository.fetchMine(
         offset: state.invitations.length,
       );
       state.invitations
@@ -53,7 +53,7 @@ class InvitationCubit extends Cubit<InvitationState> {
   Future<InvitationEntity?> createInvitation() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final invitation = await _invitationRepository.createInvitation();
+      final invitation = await _invitationRepository.create();
       state.invitations.add(invitation);
       emit(state.copyWith(status: StateStatus.isSuccess));
       return invitation;
@@ -66,7 +66,7 @@ class InvitationCubit extends Cubit<InvitationState> {
   Future<void> deleteInvitationById(String id) async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      await _invitationRepository.deleteInvitationById(id);
+      await _invitationRepository.deleteById(id);
       state.invitations.removeWhere((e) => e.id == id);
       emit(state.copyWith(status: StateStatus.isSuccess));
     } catch (e) {

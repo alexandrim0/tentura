@@ -954,6 +954,16 @@ type invitation {
   user_id: String!
 }
 
+type Invitation {
+  created_at: String!
+  id: String!
+  invited: user
+  invited_id: String
+  issuer: user
+  issuer_id: String!
+  updated_at: String!
+}
+
 """
 Boolean expression to filter rows from the table "invitation". All fields are combined with a logical 'AND'.
 """
@@ -1247,19 +1257,6 @@ type mutation_root {
   delete_comment_by_pk(id: String!): comment
 
   """
-  delete data from the table: "invitation"
-  """
-  delete_invitation(
-    """filter the rows which have to be deleted"""
-    where: invitation_bool_exp!
-  ): invitation_mutation_response
-
-  """
-  delete single row from the table: "invitation"
-  """
-  delete_invitation_by_pk(id: String!): invitation
-
-  """
   delete data from the table: "message"
   """
   delete_message(
@@ -1508,6 +1505,8 @@ type mutation_root {
     """upsert condition"""
     on_conflict: vote_user_on_conflict
   ): vote_user
+  invitationAccept(id: String!): Boolean!
+  invitationDelete(id: String!): Boolean!
   signIn(authRequestToken: String!): AuthResponse!
   signOut: Boolean!
   signUp(authRequestToken: String!, title: String!): AuthResponse!
@@ -2208,6 +2207,7 @@ type query_root {
     """filter the rows returned"""
     where: invitation_bool_exp
   ): [invitation!]!
+  invitationById(id: String!): Invitation
 
   """fetch data from the table: "invitation" using primary key columns"""
   invitation_by_pk(id: String!): invitation

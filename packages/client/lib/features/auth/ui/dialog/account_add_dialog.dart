@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/ui/l10n/l10n.dart';
-
 import 'package:tentura/consts.dart';
+import 'package:tentura/domain/use_case/clipboard_case.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/string_input_validator.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -24,9 +24,17 @@ class _AccountAddDialogState extends State<AccountAddDialog>
 
   final _titleController = TextEditingController();
 
+  late final _textTheme = Theme.of(context).textTheme;
+
   late final _l10n = L10n.of(context)!;
 
-  late final _textTheme = Theme.of(context).textTheme;
+  @override
+  void initState() {
+    super.initState();
+    GetIt.I<ClipboardCase>()
+        .getCodeFromClipboard(prefix: 'I')
+        .then((code) => _codeController.text = code);
+  }
 
   @override
   void dispose() {

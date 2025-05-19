@@ -9,9 +9,9 @@ final class MutationInvitation extends GqlNodeBase {
 
   final InvitationCase _invitationCase;
 
-  List<GraphQLObjectField<dynamic, dynamic>> get all => [accept];
+  List<GraphQLObjectField<dynamic, dynamic>> get all => [accept, delete];
 
-  GraphQLObjectField<bool, bool> get accept => GraphQLObjectField<bool, bool>(
+  GraphQLObjectField<dynamic, dynamic> get accept => GraphQLObjectField(
     'invitationAccept',
     graphQLBoolean.nonNullable(),
     arguments: [InputFieldId.fieldNonNullable],
@@ -22,7 +22,7 @@ final class MutationInvitation extends GqlNodeBase {
         ),
   );
 
-  GraphQLObjectField<bool, bool> get delete => GraphQLObjectField<bool, bool>(
+  GraphQLObjectField<dynamic, dynamic> get delete => GraphQLObjectField(
     'invitationDelete',
     graphQLBoolean.nonNullable(),
     arguments: [InputFieldId.fieldNonNullable],

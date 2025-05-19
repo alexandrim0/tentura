@@ -228,6 +228,9 @@ class L10nEn extends L10n {
   String get codePrefixError => 'Wrong code prefix!';
 
   @override
+  String get codeNotFoundError => 'Code not found or stale!';
+
+  @override
   String get addNewTopic => 'Add a new topic';
 
   @override
@@ -241,6 +244,11 @@ class L10nEn extends L10n {
   @override
   String confirmFriendRemoval(String profileTitle) {
     return 'Are you sure you want to delete $profileTitle from friends list?';
+  }
+
+  @override
+  String confirmFriendAccept(String profileTitle) {
+    return 'Are you sure you want to accept invitation from $profileTitle?';
   }
 
   @override

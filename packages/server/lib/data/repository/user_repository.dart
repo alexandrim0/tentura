@@ -135,6 +135,7 @@ class UserRepository with UserMapper {
         o(subject: userId, object: invitation.userId, amount: 1),
       ],
       mode: InsertMode.insertOrIgnore,
+      onConflict: DoNothing(),
     );
 
     return invitationsDeletedCount == 1;

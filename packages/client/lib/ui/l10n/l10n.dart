@@ -533,6 +533,12 @@ abstract class L10n {
   /// **'Wrong code prefix!'**
   String get codePrefixError;
 
+  /// No description provided for @codeNotFoundError.
+  ///
+  /// In en, this message translates to:
+  /// **'Code not found or stale!'**
+  String get codeNotFoundError;
+
   /// No description provided for @addNewTopic.
   ///
   /// In en, this message translates to:
@@ -556,6 +562,12 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Are you sure you want to delete {profileTitle} from friends list?'**
   String confirmFriendRemoval(String profileTitle);
+
+  /// No description provided for @confirmFriendAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to accept invitation from {profileTitle}?'**
+  String confirmFriendAccept(String profileTitle);
 
   /// No description provided for @tapToChooseLocation.
   ///

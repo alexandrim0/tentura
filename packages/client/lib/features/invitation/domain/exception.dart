@@ -9,3 +9,9 @@ class InvitationDeleteException implements InvitationException {
 
   final String id;
 }
+
+class InvitationAcceptException implements InvitationException {
+  const InvitationAcceptException(this.id);
+
+  final String id;
+}

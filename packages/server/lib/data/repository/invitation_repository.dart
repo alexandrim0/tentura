@@ -12,17 +12,22 @@ class InvitationRepository with UserMapper, InvitationMapper {
 
   final TenturaDb _database;
 
-  Future<InvitationEntity> getById(String id) async {
-    final (invitation, refs) =
+  Future<InvitationEntity?> getById({
+    required String invitationId,
+    required String userId,
+  }) async {
+    final result =
         await _database.managers.invitations
-            .filter((f) => f.id(id))
+            .filter((f) => f.id(invitationId))
             .withReferences((p) => p(userId: true, invitedId: true))
-            .getSingle();
-    return invitationModelToEntity(
-      invitation,
-      issuer: await refs.userId.getSingle(),
-      invited: await refs.invitedId?.getSingleOrNull(),
-    );
+            .getSingleOrNull();
+    return result == null
+        ? null
+        : invitationModelToEntity(
+          result.$1,
+          issuer: await result.$2.userId.getSingle(),
+          invited: await result.$2.invitedId?.getSingleOrNull(),
+        );
   }
 
   Future<bool> deleteById({

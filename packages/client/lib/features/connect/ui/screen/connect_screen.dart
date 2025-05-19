@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'package:tentura/ui/l10n/l10n.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/app/router/root_router.dart';
-import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/domain/use_case/clipboard_case.dart';
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
+import 'package:tentura/ui/utils/ui_utils.dart';
+
+import 'package:tentura/features/invitation/data/repository/invitation_repository.dart';
+import 'package:tentura/features/invitation/ui/dialog/invitation_accept_dialog.dart';
 
 @RoutePage()
 class ConnectScreen extends StatefulWidget {
@@ -18,6 +21,10 @@ class ConnectScreen extends StatefulWidget {
 
 class _ConnectScreenState extends State<ConnectScreen> {
   final _inputController = TextEditingController();
+
+  final _clipboardCase = GetIt.I<ClipboardCase>();
+
+  final _invitationRepository = GetIt.I<InvitationRepository>();
 
   late final _l10n = L10n.of(context)!;
 
@@ -47,16 +54,15 @@ class _ConnectScreenState extends State<ConnectScreen> {
               child: TextFormField(
                 controller: _inputController,
                 contextMenuBuilder:
-                    (_, EditableTextState state) =>
-                        AdaptiveTextSelectionToolbar.buttonItems(
-                          anchors: state.contextMenuAnchors,
-                          buttonItems: [
-                            ContextMenuButtonItem(
-                              onPressed: _getCodeFromClipboard,
-                              type: ContextMenuButtonType.paste,
-                            ),
-                          ],
+                    (_, state) => AdaptiveTextSelectionToolbar.buttonItems(
+                      anchors: state.contextMenuAnchors,
+                      buttonItems: [
+                        ContextMenuButtonItem(
+                          onPressed: _getCodeFromClipboard,
+                          type: ContextMenuButtonType.paste,
                         ),
+                      ],
+                    ),
                 decoration: const InputDecoration(filled: true),
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),
                 textAlign: TextAlign.center,
@@ -98,7 +104,9 @@ class _ConnectScreenState extends State<ConnectScreen> {
               child: FilledButton(
                 onPressed: () async {
                   final code = await QRScanDialog.show(context);
-                  if (context.mounted) _goWithCode(code);
+                  if (context.mounted && code != null) {
+                    await _goWithCode(code);
+                  }
                 },
                 child: Text(_l10n.buttonScanQR),
               ),
@@ -109,35 +117,44 @@ class _ConnectScreenState extends State<ConnectScreen> {
     ),
   );
 
-  Future<void> _getCodeFromClipboard() async {
-    final text = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
-    if (text == null) return;
-    if (text.length == kIdLength) {
-      _inputController.text = text;
-    } else {
-      try {
-        final id = Uri.dataFromString(text).queryParameters['id'];
-        if (id != null) {
-          _inputController.text = id;
-        }
-      } catch (_) {}
-    }
-  }
+  Future<void> _getCodeFromClipboard() async =>
+      _inputController.text = await _clipboardCase.getCodeFromClipboard();
 
-  void _goWithCode(String? code) {
-    if (code == null || code.isEmpty) return;
+  Future<void> _goWithCode(String code) async {
     if (code.length != kIdLength) {
       showSnackBar(context, isError: true, text: _l10n.codeLengthError);
+      return;
     }
+
     switch (code[0]) {
       case 'U':
-        context.pushRoute(ProfileViewRoute(id: code));
+        await context.pushRoute(ProfileViewRoute(id: code));
 
       case 'B':
-        context.pushRoute(BeaconViewRoute(id: code));
+        await context.pushRoute(BeaconViewRoute(id: code));
 
       case 'C':
-        context.pushRoute(BeaconViewRoute(id: code));
+        await context.pushRoute(BeaconViewRoute(id: code));
+
+      case 'I':
+        final result = await _invitationRepository.fetchById(code);
+        if (mounted) {
+          if (result == null) {
+            showSnackBar(context, isError: true, text: _l10n.codeNotFoundError);
+          } else if (await InvitationAcceptDialog.show(
+                context,
+                profile: result.issuer,
+              ) ??
+              false) {
+            // TBD: tell reason enum
+            await _invitationRepository.accept(code);
+            if (mounted) {
+              // TBD: l10n
+              showSnackBar(context, text: 'Invitation accepted!');
+              await context.pushRoute(ProfileViewRoute(id: result.issuer.id));
+            }
+          }
+        }
 
       default:
         showSnackBar(context, isError: true, text: _l10n.codePrefixError);
