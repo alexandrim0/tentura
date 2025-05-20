@@ -90,11 +90,35 @@ class RootRouter extends RootStackRouter {
       keepHistory: false,
       maintainState: false,
       page: AuthLoginRoute.page,
+      path: kPathSignIn,
       guards: [
         AutoRouteGuard.redirect(
           (_) => _authCubit.state.isAuthenticated ? const ProfileRoute() : null,
         ),
       ],
+    ),
+
+    // Profile Register
+    AutoRoute(
+      keepHistory: false,
+      maintainState: false,
+      fullscreenDialog: true,
+      page: AuthRegisterRoute.page,
+      path: kPathSignUp,
+      guards: [
+        AutoRouteGuard.redirect(
+          (_) => _authCubit.state.isAuthenticated ? const ProfileRoute() : null,
+        ),
+      ],
+    ),
+
+    // Invitations
+    AutoRoute(
+      keepHistory: false,
+      maintainState: false,
+      fullscreenDialog: true,
+      page: InvitationRoute.page,
+      path: kPathInvitations,
     ),
 
     // Profile View
@@ -185,15 +209,6 @@ class RootRouter extends RootStackRouter {
       path: kPathComplaint,
     ),
 
-    // Invitations
-    AutoRoute(
-      keepHistory: false,
-      maintainState: false,
-      fullscreenDialog: true,
-      page: InvitationRoute.page,
-      path: kPathInvitations,
-    ),
-
     // default
     RedirectRoute(path: '*', redirectTo: kPathRoot),
   ];
@@ -211,6 +226,12 @@ class RootRouter extends RootStackRouter {
             final String id when id.startsWith('C') => kPathBeaconView,
             final String id when id.startsWith('U') => kPathProfileView,
             final String id when id.startsWith('O') => kPathProfileView,
+            final String id when id.startsWith('I') =>
+              _authCubit.state.isAuthenticated
+                  ? kPathConnect
+                  : _authCubit.state.accounts.isEmpty
+                  ? kPathSignUp
+                  : kPathSignIn,
             _ => kPathConnect,
           },
         )

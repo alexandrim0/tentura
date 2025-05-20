@@ -7,6 +7,14 @@ import 'package:tentura/consts.dart';
 class ClipboardCase {
   const ClipboardCase();
 
+  Future<String> getSeedFromClipboard() async {
+    if (await Clipboard.hasStrings()) {
+      // TBD: validate seed
+      return (await Clipboard.getData(Clipboard.kTextPlain))?.text ?? '';
+    }
+    return '';
+  }
+
   Future<String> getCodeFromClipboard({String prefix = ''}) async {
     final text = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
     if (text == null) {
@@ -16,8 +24,8 @@ class ClipboardCase {
     }
 
     try {
-      final id = Uri.dataFromString(text).queryParameters['id'];
-      if (id != null && text.length == kIdLength && text.startsWith(prefix)) {
+      final id = Uri.dataFromString(text).queryParameters['id'] ?? '';
+      if (id.length == kIdLength && id.startsWith(prefix)) {
         return id;
       }
     } catch (_) {}

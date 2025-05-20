@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
+import 'package:tentura/domain/use_case/clipboard_case.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import 'package:tentura/features/profile/data/repository/profile_repository.dart';
@@ -23,6 +23,7 @@ export 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   @FactoryMethod(preResolve: true)
   static Future<AuthCubit> hydrated(
+    ClipboardCase clipboardCase,
     AuthRepository authRepository,
     ProfileRepository profileRepository,
   ) async {
@@ -39,14 +40,20 @@ class AuthCubit extends Cubit<AuthState> {
         state = state.copyWith(currentAccountId: '');
       }
     }
-    return AuthCubit(authRepository, profileRepository, state);
+    return AuthCubit(clipboardCase, authRepository, profileRepository, state);
   }
 
-  AuthCubit(this._authRepository, this._profileRepository, AuthState state)
-    : super(state) {
+  AuthCubit(
+    this._clipboardCase,
+    this._authRepository,
+    this._profileRepository,
+    AuthState state,
+  ) : super(state) {
     _authChanges.resume();
     _profileChanges.resume();
   }
+
+  final ClipboardCase _clipboardCase;
 
   final AuthRepository _authRepository;
 
@@ -77,7 +84,9 @@ class AuthCubit extends Cubit<AuthState> {
       _authRepository.getSeedByAccountId(id);
 
   Future<void> addAccount(String? seed) async {
-    if (seed == null) return;
+    if (seed == null || seed.isEmpty) {
+      return;
+    }
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final accountId = await _authRepository.addAccount(seed);
@@ -169,11 +178,11 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> getSeedFromClipboard() async {
-    if (await Clipboard.hasStrings()) {
-      await addAccount((await Clipboard.getData(Clipboard.kTextPlain))?.text);
-    }
-  }
+  Future<void> getSeedFromClipboard() async =>
+      addAccount(await _clipboardCase.getSeedFromClipboard());
+
+  Future<String> getCodeFromClipboard() =>
+      _clipboardCase.getCodeFromClipboard(prefix: 'I');
 
   void _onAuthChanged(String id) => emit(
     AuthState(

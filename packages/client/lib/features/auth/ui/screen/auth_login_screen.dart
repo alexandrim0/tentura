@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura/consts.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/widget/linear_pi_active.dart';
 
 import '../bloc/auth_cubit.dart';
-import '../dialog/account_add_dialog.dart';
 import '../widget/account_list_tile.dart';
 
 @RoutePage()
@@ -14,12 +16,21 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
   const AuthLoginScreen({super.key});
 
   @override
-  Widget wrappedRoute(BuildContext context) =>
-      BlocListener<AuthCubit, AuthState>(
-        bloc: GetIt.I<AuthCubit>(),
-        listener: commonScreenBlocListener,
-        child: this,
-      );
+  Widget wrappedRoute(BuildContext context) => BlocProvider(
+    create: (_) => ScreenCubit(),
+    child: MultiBlocListener(
+      listeners: [
+        const BlocListener<ScreenCubit, ScreenState>(
+          listener: commonScreenBlocListener,
+        ),
+        BlocListener<AuthCubit, AuthState>(
+          bloc: GetIt.I<AuthCubit>(),
+          listener: commonScreenBlocListener,
+        ),
+      ],
+      child: this,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +41,19 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
       buildWhen: (_, c) => c.isSuccess,
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(centerTitle: true, title: Text(l10n.chooseAccount)),
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text(l10n.chooseAccount),
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(4),
+              child: BlocSelector<AuthCubit, AuthState, bool>(
+                key: Key('Loader:${authCubit.hashCode}'),
+                selector: (state) => state.isLoading,
+                builder: LinearPiActive.builder,
+                bloc: authCubit,
+              ),
+            ),
+          ),
           body: SafeArea(
             minimum: kPaddingH,
             child: Column(
@@ -57,7 +80,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                         account: account,
                       );
                     },
-                    separatorBuilder: (_, _) => const Divider(),
+                    separatorBuilder: separatorBuilder,
                   ),
 
                 // Recover from seed (QR)
@@ -80,6 +103,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                     child: Text(l10n.recoverFromClipboard),
                   ),
                 ),
+
                 const Spacer(),
 
                 // Create new account
@@ -88,7 +112,11 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                       kPaddingAll +
                       const EdgeInsets.only(bottom: 60 - kSpacingMedium),
                   child: FilledButton(
-                    onPressed: () => AccountAddDialog.show(context),
+                    onPressed: () async {
+                      await context.navigateNamedTo(kPathSignUp);
+                      // TBD: use ScreenCubit
+                      // context.read<ScreenCubit>().showProfileCreator();
+                    },
                     child: Text(l10n.createNewAccount),
                   ),
                 ),

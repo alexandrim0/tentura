@@ -33,6 +33,8 @@ class ScreenCubit extends Cubit<ScreenState> {
 
   void showProfileEditor() => emit(state.navigateTo(kPathProfileEdit));
 
+  void showProfileCreator() => emit(state.navigateTo(kPathSignUp));
+
   void showSettings() => emit(state.navigateTo(kPathSettings));
 
   void showComplaint(String id) =>
