@@ -18,11 +18,7 @@ final class SharedViewController extends BaseController {
 
   @override
   Future<Response> handler(Request request) async {
-    final ogId =
-        request.requestedUri.queryParameters['id'] ??
-        (throw const IdWrongException());
-
-    if (request.requestedUri.host != 'localhost' &&
+    if (!kRenderSharedPreview &&
         (request.headers['User-Agent']?.contains('Mozilla') ?? false)) {
       return Response.found(
         Uri(
@@ -31,18 +27,15 @@ final class SharedViewController extends BaseController {
           port: request.requestedUri.port,
           path: '/',
           fragment:
-              '${switch (ogId[0]) {
-                'B' => kPathBeaconView,
-                'C' => kPathBeaconView,
-                'U' => kPathProfileView,
-                'O' => kPathProfileView,
-                _ => throw IdWrongException(id: ogId),
-              }}?${request.requestedUri.query}',
+              '${request.requestedUri.path}?${request.requestedUri.query}',
         ),
       );
     }
 
     try {
+      final ogId =
+          request.requestedUri.queryParameters['id'] ??
+          (throw const IdWrongException());
       final html = await renderComponent(
         SharedViewDocument(
           entity: switch (ogId[0]) {
@@ -50,6 +43,8 @@ final class SharedViewController extends BaseController {
               beaconId: ogId,
             ),
             'C' => await getIt<CommentRepository>().getCommentById(ogId),
+            // TBD: Invitation preview
+            'I' => throw UnimplementedError(),
             'O' => await getIt<OpinionCase>().getOpinionById(ogId),
             'U' => await getIt<UserRepository>().getById(ogId),
             _ => throw IdWrongException(id: ogId),

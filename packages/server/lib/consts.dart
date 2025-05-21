@@ -12,6 +12,8 @@ final environment = Map<String, String>.from(Platform.environment);
 
 final kDebugMode = environment['DEBUG_MODE'] == 'true';
 
+final kRenderSharedPreview = environment['RENDER_SHARED_PREVIEW'] == 'true';
+
 final kBindAddress = environment['BIND_ADDRESS'] ?? '0.0.0.0';
 
 final kListenPort = int.tryParse(environment['LISTEN_PORT'] ?? '') ?? 2080;
