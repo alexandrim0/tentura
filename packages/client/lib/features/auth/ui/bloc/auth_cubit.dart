@@ -94,10 +94,9 @@ class AuthCubit extends Cubit<AuthState> {
       await _authRepository.updateAccount(account);
       emit(
         AuthState(
-          accounts:
-              state.accounts
-                ..add(account)
-                ..sort(_compareProfile),
+          accounts: state.accounts
+            ..add(account)
+            ..sort(_compareProfile),
           updatedAt: DateTime.timestamp(),
         ),
       );
@@ -121,20 +120,19 @@ class AuthCubit extends Cubit<AuthState> {
 
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
+      final newProfile = Profile(
+        id: await _authRepository.signUp(
+          invitationCode: invitationCode,
+          title: title,
+        ),
+        title: title,
+      );
       emit(
         AuthState(
-          accounts:
-              state.accounts
-                ..add(
-                  Profile(
-                    id: await _authRepository.signUp(
-                      invitationCode: invitationCode,
-                      title: title,
-                    ),
-                    title: title,
-                  ),
-                )
-                ..sort(_compareProfile),
+          accounts: state.accounts
+            ..add(newProfile)
+            ..sort(_compareProfile),
+          currentAccountId: newProfile.id,
           updatedAt: DateTime.timestamp(),
         ),
       );
