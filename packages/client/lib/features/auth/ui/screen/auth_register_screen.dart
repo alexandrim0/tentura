@@ -97,17 +97,22 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUnfocus,
                   controller: _codeController,
+                  contextMenuBuilder: (_, state) =>
+                      AdaptiveTextSelectionToolbar.buttonItems(
+                        anchors: state.contextMenuAnchors,
+                        buttonItems: [
+                          ContextMenuButtonItem(
+                            type: ContextMenuButtonType.paste,
+                            onPressed: _getCodeFromClipboard,
+                          ),
+                        ],
+                      ),
+
                   decoration: InputDecoration(
                     hintText: _l10n.pleaseEnterCode,
                     labelText: _l10n.labelInvitationCode,
                     suffix: IconButton(
-                      onPressed: () async {
-                        final code = await _authCubit.getCodeFromClipboard();
-                        if (code.isNotEmpty) {
-                          _codeController.text = code;
-                        }
-                      },
-
+                      onPressed: _getCodeFromClipboard,
                       icon: const Icon(Icons.paste_rounded),
                     ),
                   ),
@@ -173,5 +178,12 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
         ),
       ),
     );
+  }
+
+  Future<void> _getCodeFromClipboard() async {
+    final code = await _authCubit.getCodeFromClipboard();
+    if (code.isNotEmpty) {
+      _codeController.text = code;
+    }
   }
 }
