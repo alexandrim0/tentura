@@ -44,7 +44,7 @@ class ShareCodeDialog extends StatelessWidget {
       ),
 
       // QRCode
-      content: QrCode(data: header),
+      content: QrCode(data:link),
 
       // Buttons
       actions: [
