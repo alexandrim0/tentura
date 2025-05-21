@@ -99,13 +99,15 @@ class L10nEn extends L10n {
   String get pleaseEnterCode => 'Please enter Invitation Code';
 
   @override
-  String get confirmAccountRemoval => 'Are you sure you want to remove this account?';
+  String get confirmAccountRemoval =>
+      'Are you sure you want to remove this account?';
 
   @override
   String get chooseAccount => 'Choose account';
 
   @override
-  String get alreadyHaveAccount => 'Already have an account?\nAccess it by scanning a QR code from another device\nor by using your saved seed phrase.';
+  String get alreadyHaveAccount =>
+      'Already have an account?\nAccess it by scanning a QR code from another device\nor by using your saved seed phrase.';
 
   @override
   String get recoverFromQR => 'Recover from QR';
@@ -129,7 +131,8 @@ class L10nEn extends L10n {
   String get invitationsShowMenuItem => 'Show Invitations';
 
   @override
-  String get confirmBeaconRemoval => 'Are you sure you want to delete this beacon?';
+  String get confirmBeaconRemoval =>
+      'Are you sure you want to delete this beacon?';
 
   @override
   String get beaconsTitle => 'Beacons';
@@ -156,10 +159,12 @@ class L10nEn extends L10n {
   String get showOnMap => 'Show on the map';
 
   @override
-  String get confirmBeaconPublishing => 'Are you sure you want to publish this beacon?';
+  String get confirmBeaconPublishing =>
+      'Are you sure you want to publish this beacon?';
 
   @override
-  String get confirmBeaconPublishingHint => 'Once the beacon is published, it will not be possible to make changes. Are you sure you want to publish this beacon?';
+  String get confirmBeaconPublishingHint =>
+      'Once the beacon is published, it will not be possible to make changes. Are you sure you want to publish this beacon?';
 
   @override
   String get createNewBeacon => 'Create new Beacon';
@@ -285,13 +290,15 @@ class L10nEn extends L10n {
   String get introTitle => 'Build Your Network with Clarity';
 
   @override
-  String get introText => 'Each post reveals the connections you share. Enjoy complete transparency and mastery over your relationships';
+  String get introText =>
+      'Each post reveals the connections you share. Enjoy complete transparency and mastery over your relationships';
 
   @override
   String get buttonStart => 'Start';
 
   @override
-  String get confirmOpinionRemoval => 'Are you sure you want to delete this opinion?';
+  String get confirmOpinionRemoval =>
+      'Are you sure you want to delete this opinion?';
 
   @override
   String get noOpinions => 'There are no opinions yet';
@@ -300,10 +307,12 @@ class L10nEn extends L10n {
   String get deleteOpinion => 'Delete my opinion';
 
   @override
-  String get confirmProfileRemoval => 'Are you sure you want to delete your profile?';
+  String get confirmProfileRemoval =>
+      'Are you sure you want to delete your profile?';
 
   @override
-  String get profileRemovalHint => 'All your beacons and personal data will be deleted completely.';
+  String get profileRemovalHint =>
+      'All your beacons and personal data will be deleted completely.';
 
   @override
   String get showConnections => 'Show Connections';
@@ -330,7 +339,8 @@ class L10nEn extends L10n {
   String get writeOpinion => 'Write an opinion';
 
   @override
-  String get positiveOrNegativeOpinion => 'Is this opinion is positive or negative?';
+  String get positiveOrNegativeOpinion =>
+      'Is this opinion is positive or negative?';
 
   @override
   String get positiveOpinion => 'Positive';

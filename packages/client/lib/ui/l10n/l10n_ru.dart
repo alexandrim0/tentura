@@ -99,13 +99,15 @@ class L10nRu extends L10n {
   String get pleaseEnterCode => 'Введите код приглашения';
 
   @override
-  String get confirmAccountRemoval => 'Вы уверены, что хотите удалить этот аккаунт?';
+  String get confirmAccountRemoval =>
+      'Вы уверены, что хотите удалить этот аккаунт?';
 
   @override
   String get chooseAccount => 'Выберите аккаунт';
 
   @override
-  String get alreadyHaveAccount => 'У вас уже есть аккаунт?\nПолучите доступ, отсканировав QR-код на другом устройстве\nили используя сохранённую seed-фразу.';
+  String get alreadyHaveAccount =>
+      'У вас уже есть аккаунт?\nПолучите доступ, отсканировав QR-код на другом устройстве\nили используя сохранённую seed-фразу.';
 
   @override
   String get recoverFromQR => 'Восстановить из QR';
@@ -129,7 +131,8 @@ class L10nRu extends L10n {
   String get invitationsShowMenuItem => 'Посмотреть приглашения';
 
   @override
-  String get confirmBeaconRemoval => 'Вы уверены, что хотите удалить этот маяк?';
+  String get confirmBeaconRemoval =>
+      'Вы уверены, что хотите удалить этот маяк?';
 
   @override
   String get beaconsTitle => 'Маяки';
@@ -156,10 +159,12 @@ class L10nRu extends L10n {
   String get showOnMap => 'Показать на карте';
 
   @override
-  String get confirmBeaconPublishing => 'Вы уверены, что хотите опубликовать этот маяк?';
+  String get confirmBeaconPublishing =>
+      'Вы уверены, что хотите опубликовать этот маяк?';
 
   @override
-  String get confirmBeaconPublishingHint => 'После публикации маяка изменения будут невозможны. Вы уверены, что хотите опубликовать этот маяк?';
+  String get confirmBeaconPublishingHint =>
+      'После публикации маяка изменения будут невозможны. Вы уверены, что хотите опубликовать этот маяк?';
 
   @override
   String get createNewBeacon => 'Создать маяк';
@@ -285,13 +290,15 @@ class L10nRu extends L10n {
   String get introTitle => 'Стройте свою личную сеть прозрачно!';
 
   @override
-  String get introText => 'Каждая публикация показывает, что именно связывает вас с окружающими. Проверьте эти связи и держите ваши отношения под контролем!';
+  String get introText =>
+      'Каждая публикация показывает, что именно связывает вас с окружающими. Проверьте эти связи и держите ваши отношения под контролем!';
 
   @override
   String get buttonStart => 'Начать';
 
   @override
-  String get confirmOpinionRemoval => 'Вы уверены, что хотите удалить это мнение?';
+  String get confirmOpinionRemoval =>
+      'Вы уверены, что хотите удалить это мнение?';
 
   @override
   String get noOpinions => 'Мнений пока нет';
@@ -300,10 +307,12 @@ class L10nRu extends L10n {
   String get deleteOpinion => 'Удалить моё мнение';
 
   @override
-  String get confirmProfileRemoval => 'Вы уверены, что хотите удалить ваш профиль?';
+  String get confirmProfileRemoval =>
+      'Вы уверены, что хотите удалить ваш профиль?';
 
   @override
-  String get profileRemovalHint => 'Все ваши маяки и личные данные будут полностью удалены.';
+  String get profileRemovalHint =>
+      'Все ваши маяки и личные данные будут полностью удалены.';
 
   @override
   String get showConnections => 'Показать связи';
@@ -330,7 +339,8 @@ class L10nRu extends L10n {
   String get writeOpinion => 'Написать мнение';
 
   @override
-  String get positiveOrNegativeOpinion => 'Это мнение положительное или отрицательное?';
+  String get positiveOrNegativeOpinion =>
+      'Это мнение положительное или отрицательное?';
 
   @override
   String get positiveOpinion => 'Положительное';
