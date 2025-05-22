@@ -1,20 +1,15 @@
-import 'dart:typed_data';
-import 'package:image/image.dart';
+import 'package:image/image.dart' as img;
 import 'package:injectable/injectable.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:blurhash_dart/blurhash_dart.dart';
 
 import 'package:tentura/consts.dart';
-import 'package:tentura/data/service/remote_api_service.dart';
 import 'package:tentura/domain/entity/image_entity.dart';
+
+export 'package:image_picker/image_picker.dart' show XFile;
 
 @injectable
 class ImageRepository {
-  ImageRepository(
-    this._remoteApiService,
-  );
-
-  final RemoteApiService _remoteApiService;
+  final _imagePicker = ImagePicker();
 
   Future<ImageEntity?> pickImage() async {
     final maxDimension = kImageMaxDimension.toDouble();
@@ -23,45 +18,39 @@ class ImageRepository {
       maxWidth: maxDimension,
       source: ImageSource.gallery,
     );
-    if (xFile == null) return null;
+    return xFile == null
+        ? null
+        : switch (xFile.name.toLowerCase()) {
+          _ when xFile.name.endsWith('.jpg') || xFile.name.endsWith('.jpeg') =>
+            ImageEntity(
+              imageBytes: await xFile.readAsBytes(),
+              fileName: xFile.name,
+            ),
 
-    final image = decodeImage(await xFile.readAsBytes());
+          _ when xFile.name.endsWith('.png') => ImageEntity(
+            imageBytes: img.encodeJpg(
+              img.decodePng(await xFile.readAsBytes()) ??
+                  (throw const FormatException('Cant decode image')),
+            ),
+            fileName: xFile.name,
+          ),
 
-    if (image == null || image.isEmpty || !image.isValid) {
-      throw const FormatException('Unsupported image format!');
-    }
+          _ when xFile.name.endsWith('.webp') => ImageEntity(
+            imageBytes: img.encodeJpg(
+              img.decodeWebP(await xFile.readAsBytes()) ??
+                  (throw const FormatException('Cant decode image')),
+            ),
+            fileName: xFile.name,
+          ),
 
-    final numComp = image.height == image.width
-        ? (x: kMaxNumCompX, y: kMaxNumCompX)
-        : image.height > image.width
-            ? (x: kMinNumCompX, y: kMaxNumCompX)
-            : (x: kMaxNumCompX, y: kMinNumCompX);
-    final blurHash = BlurHash.encode(
-      image,
-      numCompX: numComp.x,
-      numCompY: numComp.y,
-    ).hash;
-    final resultImage = encodeJpg(
-      image,
-      quality: kImageQuality,
-    );
-    return ImageEntity(
-      imageBytes: resultImage,
-      fileName: xFile.name,
-      blurHash: blurHash,
-      height: image.height,
-      width: image.width,
-    );
+          // Try to decode other formats (may be much slower)
+          _ => ImageEntity(
+            imageBytes: img.encodeJpg(
+              img.decodeImage(await xFile.readAsBytes()) ??
+                  (throw const FormatException('Cant decode image')),
+            ),
+            fileName: xFile.name,
+          ),
+        };
   }
-
-  Future<void> uploadImage({
-    required Uint8List image,
-    required String imageId,
-  }) =>
-      _remoteApiService.uploadImage(
-        image: image,
-        id: imageId,
-      );
-
-  static final _imagePicker = ImagePicker();
 }

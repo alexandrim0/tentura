@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:tentura/ui/l10n/l10n.dart';
+
 import 'package:tentura/domain/entity/opinion.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -18,6 +20,7 @@ class OpinionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
     return Column(
       children: [
         // Header
@@ -26,12 +29,11 @@ class OpinionTile extends StatelessWidget {
           children: [
             // Avatar
             GestureDetector(
-              onTap:
-                  isMine
-                      ? null
-                      : () => context.read<ScreenCubit>().showProfile(
-                        opinion.author.id,
-                      ),
+              onTap: () {
+                if (!isMine) {
+                  context.read<ScreenCubit>().showProfile(opinion.author.id);
+                }
+              },
               child: Padding(
                 padding: const EdgeInsets.only(right: kSpacingMedium),
                 child: AvatarRated.small(
@@ -48,7 +50,7 @@ class OpinionTile extends StatelessWidget {
                 children: [
                   // Title
                   Text(
-                    isMine ? 'Me' : opinion.author.title,
+                    isMine ? l10n.labelMe : opinion.author.title,
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
 
@@ -77,7 +79,7 @@ class OpinionTile extends StatelessWidget {
                             await opinionCubit.removeOpinionById(opinion.id);
                           }
                         },
-                        child: const Text('Delete my opinion'),
+                        child: Text(l10n.deleteOpinion),
                       )
                     else
                       // Complaint
@@ -86,7 +88,7 @@ class OpinionTile extends StatelessWidget {
                             () => context.read<ScreenCubit>().showComplaint(
                               opinion.id,
                             ),
-                        child: const Text('Complaint'),
+                        child: Text(l10n.buttonComplaint),
                       ),
                   ],
             ),

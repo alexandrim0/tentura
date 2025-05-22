@@ -7,7 +7,6 @@ services:
     network_mode: host
     environment:
       - POSTGRES_PASSWORD
-      - TENTURA_PASSWORD
       - JWT_PRIVATE_PEM
       - JWT_PUBLIC_PEM
 
@@ -47,14 +46,14 @@ services:
       - 'HASURA_GRAPHQL_ENABLE_CONSOLE=true'
       - 'HASURA_GRAPHQL_ADMIN_SECRET=password'
       - 'HASURA_GRAPHQL_ENABLE_TELEMETRY=false'
+      - 'HASURA_GRAPHQL_UNAUTHORIZED_ROLE=anon'
       - 'HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES=true'
       - 'HASURA_GRAPHQL_INFER_FUNCTION_PERMISSIONS=false'
       - 'HASURA_GRAPHQL_ENABLE_METADATA_QUERY_LOGGING=true'
       - 'HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres'
       - 'HASURA_GRAPHQL_JWT_SECRET={"type":"Ed25519", "key":"${JWT_PUBLIC_PEM}", "claims_map": {"x-hasura-allowed-roles": ["user", "admin"], "x-hasura-default-role": "user", "x-hasura-user-id": {"path": "$$.sub"}}}'
       - 'HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=streaming_subscriptions,remove_empty_subscription_responses'
-      - 'ACTION_BASE_URL=http://localhost:2080/hasura/actions'
-      - 'EVENT_BASE_URL=http://localhost:2080/hasura/events'
+      - 'TENTURA_GRAPHQL_URL=http://localhost:2080/api/v2/graphql'
 
   postgres:
     extends:
@@ -107,6 +106,7 @@ services:
       - 'S3_ENDPOINT=ams3.digitaloceanspaces.com'
       - 'IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com'
       - 'DEBUG_MODE=false'
+      - 'NEED_INVITE=true'
 
   schema_fetcher:
     extends:

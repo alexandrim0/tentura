@@ -6,7 +6,7 @@ export 'package:tentura/ui/bloc/state_base.dart';
 part 'favorites_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class FavoritesState extends StateBase with _$FavoritesState {
+abstract class FavoritesState extends StateBase with _$FavoritesState {
   const factory FavoritesState({
     @Default('') String userId,
     @Default([]) List<Beacon> beacons,

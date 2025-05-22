@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
+import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import '../widget/qr_code.dart';
@@ -10,28 +11,22 @@ class ShareCodeDialog extends StatelessWidget {
   static Future<void> show(
     BuildContext context, {
     required String header,
+    // TBD: get id only, build link here
     required Uri link,
-  }) =>
-      showDialog(
-        context: context,
-        builder: (context) => ShareCodeDialog(
-          header: header,
-          link: link.toString(),
-        ),
-      );
+  }) => showDialog(
+    context: context,
+    builder: (_) => ShareCodeDialog(header: header, link: link.toString()),
+  );
+
+  const ShareCodeDialog({required this.header, required this.link, super.key});
 
   final String header;
   final String link;
 
-  const ShareCodeDialog({
-    required this.header,
-    required this.link,
-    super.key,
-  });
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = L10n.of(context)!;
     return AlertDialog.adaptive(
       alignment: Alignment.center,
       actionsAlignment: MainAxisAlignment.spaceBetween,
@@ -49,39 +44,38 @@ class ShareCodeDialog extends StatelessWidget {
       ),
 
       // QRCode
-      content: QrCode(
-        data: header,
-      ),
+      content: QrCode(data:link),
 
       // Buttons
       actions: [
         TextButton(
-          child: const Text('Copy to clipboard'),
+          child: Text(l10n.copyToClipboard),
           onPressed: () async {
             await Clipboard.setData(ClipboardData(text: link));
             if (context.mounted) {
-              showSnackBar(
-                context,
-                text: 'Seed copied to clipboard!',
-              );
+              showSnackBar(context, text: l10n.seedCopied);
             }
           },
         ),
         Builder(
-          builder: (context) => TextButton(
-            child: const Text('Share Link'),
-            onPressed: () {
-              final box = context.findRenderObject()! as RenderBox;
-              Share.share(
-                link,
-                sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
-              );
-            },
-          ),
+          builder:
+              (context) => TextButton(
+                child: Text(l10n.shareLink),
+                onPressed: () {
+                  final box = context.findRenderObject()! as RenderBox;
+                  SharePlus.instance.share(
+                    ShareParams(
+                      uri: Uri.parse(link),
+                      sharePositionOrigin:
+                          box.localToGlobal(Offset.zero) & box.size,
+                    ),
+                  );
+                },
+              ),
         ),
         TextButton(
           onPressed: Navigator.of(context).pop,
-          child: const Text('Close'),
+          child: Text(l10n.buttonClose),
         ),
       ],
     );

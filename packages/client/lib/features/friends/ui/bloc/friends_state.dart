@@ -6,7 +6,7 @@ export 'package:tentura/ui/bloc/state_base.dart';
 part 'friends_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class FriendsState extends StateBase with _$FriendsState {
+abstract class FriendsState extends StateBase with _$FriendsState {
   const factory FriendsState({
     required Map<String, Profile> friends,
     @Default(StateIsSuccess()) StateStatus status,

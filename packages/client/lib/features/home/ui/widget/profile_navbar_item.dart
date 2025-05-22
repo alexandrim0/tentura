@@ -5,6 +5,7 @@ import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
+import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 
 class ProfileNavBarItem extends StatelessWidget {
   const ProfileNavBarItem({super.key});
@@ -35,10 +36,19 @@ class ProfileNavBarItem extends StatelessWidget {
             onLongPress: state.accounts.length > 1 ? menuController.open : null,
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: AvatarRated(
-                profile: state.currentAccount,
-                withRating: false,
-                size: 36,
+              child: BlocBuilder<ProfileCubit, ProfileState>(
+                bloc: GetIt.I<ProfileCubit>(),
+                buildWhen:
+                    (p, c) =>
+                        p.profile.hasAvatar != c.profile.hasAvatar ||
+                        p.profile.blurhash != c.profile.blurhash,
+                builder: (context, state) {
+                  return AvatarRated(
+                    profile: state.profile,
+                    withRating: false,
+                    size: 36,
+                  );
+                },
               ),
             ),
           ),

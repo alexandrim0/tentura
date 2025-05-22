@@ -1,64 +1,94 @@
-import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
-import 'package:stormberry/stormberry.dart';
+import 'package:drift_postgres/drift_postgres.dart';
 
-import 'package:tentura_server/data/model/beacon_model.dart';
-import 'package:tentura_server/data/service/image_service.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
-import 'package:tentura_server/domain/exception.dart';
+
+import '../database/tentura_db.dart';
+import '../mapper/beacon_mapper.dart';
+import '../mapper/user_mapper.dart';
 
 export 'package:tentura_server/domain/entity/beacon_entity.dart';
 
 @Injectable(env: [Environment.dev, Environment.prod], order: 1)
-class BeaconRepository {
-  BeaconRepository(this._database, this._imageService);
+class BeaconRepository with UserMapper, BeaconMapper {
+  const BeaconRepository(this._database);
 
-  final Database _database;
+  final TenturaDb _database;
 
-  final ImageService _imageService;
-
-  Future<BeaconEntity> createBeacon(BeaconEntity beacon) async {
-    await _database.beacons.insertOne(
-      BeaconInsertRequest(
-        id: beacon.id,
-        userId: beacon.author.id,
-        title: beacon.title,
-        description: beacon.description,
-        hasPicture: beacon.hasPicture,
-        picHeight: beacon.picHeight,
-        picWidth: beacon.picWidth,
-        blurHash: beacon.blurHash,
-        createdAt: beacon.createdAt,
-        updatedAt: beacon.updatedAt,
-        enabled: beacon.isEnabled,
-        timerange: beacon.timerange,
-        context: beacon.context,
-        lat: beacon.coordinates?.latitude,
-        long: beacon.coordinates?.longitude,
+  Future<BeaconEntity> createBeacon({
+    required String authorId,
+    required String title,
+    required bool hasPicture,
+    String? description,
+    String? context,
+    double? latitude,
+    double? longitude,
+    DateTime? startAt,
+    DateTime? endAt,
+    int ticker = 0,
+  }) async {
+    final beacon = await _database.managers.beacons.createReturning(
+      (o) => o(
+        userId: authorId,
+        title: title,
+        context: Value(context),
+        description: Value(description ?? ''),
+        hasPicture: Value(hasPicture),
+        ticker: Value(ticker),
+        lat: Value(latitude),
+        long: Value(longitude),
+        startAt: Value(startAt == null ? null : PgDateTime(startAt)),
+        endAt: Value(endAt == null ? null : PgDateTime(endAt)),
       ),
     );
-    return getBeaconById(beacon.id);
+    final author =
+        await _database.managers.users
+            .filter((e) => e.id.equals(authorId))
+            .getSingle();
+    return beaconModelToEntity(beacon, author: author);
   }
 
-  Future<BeaconEntity> getBeaconById(String id) async {
-    final beaconModel = await _database.beacons.queryBeacon(id);
-    if (beaconModel == null) {
-      throw IdNotFoundException(id);
-    }
-    return (beaconModel as BeaconModel).asEntity;
-  }
-
-  Future<void> updateBeaconBlurHash({
+  ///
+  /// Query Beacon by beaconId, filter by userId if set
+  ///
+  Future<BeaconEntity> getBeaconById({
     required String beaconId,
-    required Uint8List imageBytes,
-  }) => _database.beacons.updateOne(
-    BeaconUpdateRequest(
-      blurHash: _imageService.calculateBlurHash(
-        _imageService.decodeImage(imageBytes),
-      ),
-      id: beaconId,
-    ),
-  );
+    String? filterByUserId,
+  }) async {
+    final (beacon, author) =
+        await _database.managers.beacons
+            .filter(
+              filterByUserId == null
+                  ? (e) => e.id.equals(beaconId)
+                  : (e) =>
+                      e.id.equals(beaconId) &
+                      e.userId.id.equals(filterByUserId),
+            )
+            .withReferences((p) => p(userId: true))
+            .getSingle();
 
-  Future<void> deleteBeaconById(String id) => _database.beacons.deleteOne(id);
+    return beaconModelToEntity(beacon, author: await author.userId.getSingle());
+  }
+
+  Future<void> updateBeaconImageDetails({
+    required String beaconId,
+    required String blurHash,
+    required int imageHeight,
+    required int imageWidth,
+  }) async {
+    final beacon =
+        await _database.managers.beacons
+            .filter((e) => e.id.equals(beaconId))
+            .getSingle();
+    await _database.managers.beacons.replace(
+      beacon.copyWith(
+        picHeight: imageHeight,
+        picWidth: imageWidth,
+        blurHash: blurHash,
+      ),
+    );
+  }
+
+  Future<void> deleteBeaconById(String id) =>
+      _database.managers.beacons.filter((e) => e.id.equals(id)).delete();
 }

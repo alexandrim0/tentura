@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/app/router/root_router.dart';
-import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/domain/use_case/clipboard_case.dart';
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
+import 'package:tentura/ui/utils/ui_utils.dart';
+
+import 'package:tentura/features/invitation/data/repository/invitation_repository.dart';
+import 'package:tentura/features/invitation/ui/dialog/invitation_accept_dialog.dart';
 
 @RoutePage()
 class ConnectScreen extends StatefulWidget {
@@ -16,6 +22,12 @@ class ConnectScreen extends StatefulWidget {
 class _ConnectScreenState extends State<ConnectScreen> {
   final _inputController = TextEditingController();
 
+  final _clipboardCase = GetIt.I<ClipboardCase>();
+
+  final _invitationRepository = GetIt.I<InvitationRepository>();
+
+  late final _l10n = L10n.of(context)!;
+
   @override
   void dispose() {
     _inputController.dispose();
@@ -24,87 +36,128 @@ class _ConnectScreenState extends State<ConnectScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: SafeArea(
-          minimum: kPaddingAll,
-          child: Padding(
-            padding: kPaddingAll,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Padding(
-                  padding: kPaddingSmallT,
-                  child: Text(
-                    'If you have the Code, please write it here:',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Padding(
-                  padding: kPaddingT,
-                  child: TextFormField(
-                    controller: _inputController,
-                    decoration: const InputDecoration(
-                      filled: true,
-                    ),
-                    maxLength: kIdLength,
-                    textAlign: TextAlign.center,
-                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                  ),
-                ),
-                Padding(
-                  padding: kPaddingV,
-                  child: FilledButton(
-                    child: const Text('Search'),
-                    onPressed: () => _goWithCode(_inputController.text),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 32),
-                  child: Text(
-                    'or',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Padding(
-                  padding: kPaddingV,
-                  child: FilledButton(
-                    onPressed: () async {
-                      final code = await QRScanDialog.show(context);
-                      if (context.mounted) _goWithCode(code);
-                    },
-                    child: const Text('Scan QR'),
-                  ),
-                ),
-              ],
+    body: SafeArea(
+      minimum: kPaddingAll,
+      child: Padding(
+        padding: kPaddingAll,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: kPaddingSmallT,
+              child: Text(_l10n.writeCodeHere, textAlign: TextAlign.center),
             ),
-          ),
-        ),
-      );
 
-  void _goWithCode(String? code) {
-    if (code == null || code.isEmpty) return;
+            // Input
+            Padding(
+              padding: kPaddingT,
+              child: TextFormField(
+                controller: _inputController,
+                contextMenuBuilder:
+                    (_, state) => AdaptiveTextSelectionToolbar.buttonItems(
+                      anchors: state.contextMenuAnchors,
+                      buttonItems: [
+                        ContextMenuButtonItem(
+                          onPressed: _getCodeFromClipboard,
+                          type: ContextMenuButtonType.paste,
+                        ),
+                      ],
+                    ),
+                decoration: const InputDecoration(filled: true),
+                onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                textAlign: TextAlign.center,
+                maxLength: kIdLength,
+              ),
+            ),
+
+            // Button (search)
+            Padding(
+              padding: kPaddingV,
+              child: FilledButton(
+                child: Text(_l10n.buttonSearch),
+                onPressed: () => _goWithCode(_inputController.text),
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: kSpacingSmall),
+              child: Text(_l10n.labelOr, textAlign: TextAlign.center),
+            ),
+
+            // Button (paste)
+            Padding(
+              padding: kPaddingV,
+              child: FilledButton(
+                onPressed: _getCodeFromClipboard,
+                child: Text(_l10n.buttonPaste),
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: kSpacingSmall),
+              child: Text(_l10n.labelOr, textAlign: TextAlign.center),
+            ),
+
+            // Button (scan qr)
+            Padding(
+              padding: kPaddingV,
+              child: FilledButton(
+                onPressed: () async {
+                  final code = await QRScanDialog.show(context);
+                  if (context.mounted && code != null) {
+                    await _goWithCode(code);
+                  }
+                },
+                child: Text(_l10n.buttonScanQR),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  Future<void> _getCodeFromClipboard() async =>
+      _inputController.text = await _clipboardCase.getCodeFromClipboard();
+
+  Future<void> _goWithCode(String code) async {
     if (code.length != kIdLength) {
-      showSnackBar(
-        context,
-        isError: true,
-        text: 'Wrong code length!',
-      );
+      showSnackBar(context, isError: true, text: _l10n.codeLengthError);
+      return;
     }
+
     switch (code[0]) {
       case 'U':
-        context.pushRoute(ProfileViewRoute(id: code));
+        await context.pushRoute(ProfileViewRoute(id: code));
 
       case 'B':
-        context.pushRoute(BeaconViewRoute(id: code));
+        await context.pushRoute(BeaconViewRoute(id: code));
 
       case 'C':
-        context.pushRoute(BeaconViewRoute(id: code));
+        await context.pushRoute(BeaconViewRoute(id: code));
+
+      case 'I':
+        final result = await _invitationRepository.fetchById(code);
+        if (mounted) {
+          if (result == null) {
+            showSnackBar(context, isError: true, text: _l10n.codeNotFoundError);
+          } else if (await InvitationAcceptDialog.show(
+                context,
+                profile: result.issuer,
+              ) ??
+              false) {
+            // TBD: tell reason enum
+            await _invitationRepository.accept(code);
+            if (mounted) {
+              // TBD: l10n
+              showSnackBar(context, text: 'Invitation accepted!');
+              await context.pushRoute(ProfileViewRoute(id: result.issuer.id));
+            }
+          }
+        }
 
       default:
-        showSnackBar(
-          context,
-          isError: true,
-          text: 'Wrong code prefix!',
-        );
+        showSnackBar(context, isError: true, text: _l10n.codePrefixError);
     }
   }
 }

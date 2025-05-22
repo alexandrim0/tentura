@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:tentura/ui/l10n/l10n.dart';
+
 import 'package:tentura/domain/entity/comment.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
@@ -20,6 +22,7 @@ class CommentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
     return Column(
       children: [
         const Divider(),
@@ -49,7 +52,7 @@ class CommentTile extends StatelessWidget {
                   children: [
                     // Title
                     Text(
-                      isMine ? 'Me' : comment.author.title,
+                      isMine ? l10n.labelMe : comment.author.title,
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
 
@@ -75,7 +78,7 @@ class CommentTile extends StatelessWidget {
                           () => context.read<ScreenCubit>().showComplaint(
                             comment.id,
                           ),
-                      child: const Text('Complaint'),
+                      child: Text(l10n.buttonComplaint),
                     ),
                   ];
                 },

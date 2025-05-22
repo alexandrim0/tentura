@@ -1,13 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import 'package:tentura/features/opinion/ui/bloc/opinion_cubit.dart';
-import 'package:tentura/features/opinion/ui/widget/opinion_list.dart';
-import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/bottom_text_input.dart';
+
+import 'package:tentura/features/opinion/ui/bloc/opinion_cubit.dart';
+import 'package:tentura/features/opinion/ui/widget/opinion_list.dart';
+import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 
 import '../bloc/profile_view_cubit.dart';
 import '../dialog/opinion_publish_dialog.dart';
@@ -21,44 +23,60 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
   final String id;
 
   @override
-  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
-    providers: [
-      BlocProvider.value(value: GetIt.I<ScreenCubit>()),
-      BlocProvider(create: (_) => ProfileViewCubit(id: id)),
-      BlocProvider(
-        create: (_) {
-          return OpinionCubit(
-            objectId: id,
-            myProfile: GetIt.I<ProfileCubit>().state.profile,
-          );
-        },
-      ),
-    ],
-    child: MultiBlocListener(
-      listeners: const [
-        BlocListener<ProfileViewCubit, ProfileViewState>(
-          listener: commonScreenBlocListener,
+  Widget wrappedRoute(BuildContext context) => FutureBuilder<Ids>(
+    future: OpinionCubit.checkIfIdIsOpinion(id),
+    builder: (_, state) {
+      if (!state.hasData) {
+        return const Center(child: CircularProgressIndicator.adaptive());
+      } else if (state.hasError) {
+        Center(child: Text(state.error.toString()));
+      }
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: GetIt.I<ScreenCubit>()),
+          BlocProvider(
+            create: (_) => ProfileViewCubit(id: state.data!.profileId),
+          ),
+          BlocProvider(
+            create: (_) {
+              final opinion = state.data?.opinion;
+              return OpinionCubit(
+                userId: state.data!.profileId,
+                opinions: opinion == null ? null : [opinion],
+                myProfile: GetIt.I<ProfileCubit>().state.profile,
+              );
+            },
+          ),
+        ],
+        child: MultiBlocListener(
+          listeners: const [
+            BlocListener<ProfileViewCubit, ProfileViewState>(
+              listener: commonScreenBlocListener,
+            ),
+            BlocListener<OpinionCubit, OpinionState>(
+              listener: commonScreenBlocListener,
+            ),
+            BlocListener<ScreenCubit, ScreenState>(
+              listener: commonScreenBlocListener,
+            ),
+          ],
+          child: this,
         ),
-        BlocListener<OpinionCubit, OpinionState>(
-          listener: commonScreenBlocListener,
-        ),
-        BlocListener<ScreenCubit, ScreenState>(
-          listener: commonScreenBlocListener,
-        ),
-      ],
-      child: this,
-    ),
+      );
+    },
   );
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
     final opinionCubit = context.read<OpinionCubit>();
-    final profileViewCubit = context.read<ProfileViewCubit>();
     return Scaffold(
       body: RefreshIndicator.adaptive(
-        onRefresh: () async {
-          await Future.wait([profileViewCubit.fetch(), opinionCubit.fetch()]);
-        },
+        onRefresh:
+            () async => Future.wait([
+              context.read<ProfileViewCubit>().fetch(),
+              opinionCubit.fetch(),
+            ]),
         child: CustomScrollView(
           slivers: [
             // Header
@@ -83,19 +101,18 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
       bottomSheet: BlocSelector<OpinionCubit, OpinionState, bool>(
         selector: (state) => state.hasMyOpinion,
         bloc: opinionCubit,
-        builder: (_, hasMyOpinion) {
-          return hasMyOpinion
-              ? const BottomTextInput(hintText: 'You can have only one opinion')
-              : BottomTextInput(
-                hintText: 'Write an opinion',
-                onSend: (text) async {
-                  await opinionCubit.addOpinion(
-                    amount: await OpinionPublishDialog.show(context),
-                    text: text,
-                  );
-                },
-              );
-        },
+        builder:
+            (_, hasMyOpinion) =>
+                hasMyOpinion
+                    ? BottomTextInput(hintText: l10n.onlyOneOpinion)
+                    : BottomTextInput(
+                      hintText: l10n.writeOpinion,
+                      onSend:
+                          (text) async => opinionCubit.addOpinion(
+                            amount: await OpinionPublishDialog.show(context),
+                            text: text,
+                          ),
+                    ),
       ),
     );
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:tentura/ui/l10n/l10n.dart';
+
 import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -28,6 +30,7 @@ class BeaconInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = L10n.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -70,7 +73,7 @@ class BeaconInfo extends StatelessWidget {
         ),
 
         //Beacon Timerange
-        if (beacon.dateRange != null)
+        if (beacon.startAt != null || beacon.endAt != null)
           Padding(
             padding: const EdgeInsets.only(bottom: kSpacingSmall),
             child: Row(
@@ -78,8 +81,8 @@ class BeaconInfo extends StatelessWidget {
               children: [
                 const Icon(TenturaIcons.calendar, size: 18),
                 Text(
-                  ' ${dateFormatYMD(beacon.dateRange?.start)}'
-                  ' - ${dateFormatYMD(beacon.dateRange?.end)}',
+                  ' ${dateFormatYMD(beacon.startAt)}'
+                  ' - ${dateFormatYMD(beacon.endAt)}',
                   maxLines: 1,
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis,
@@ -119,7 +122,7 @@ class BeaconInfo extends StatelessWidget {
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
                     label:
                         kIsWeb
-                            ? const Text('Show on the map')
+                            ? Text(l10n.showOnMap)
                             : PlaceNameText(
                               coords: beacon.coordinates!,
                               style: theme.textTheme.bodySmall,

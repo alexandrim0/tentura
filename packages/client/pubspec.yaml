@@ -2,70 +2,76 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 0.13.3
+version: 1.0.7
 
 environment:
-  sdk: '>=3.7.0 <4.0.0'
-  flutter: ^3.29.0
-
-resolution: workspace
+  sdk: '>=3.8.0 <4.0.0'
+  flutter: ^3.32.0
 
 dependencies:
-  # From workspace
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl:
-  uuid:
-  image:
-  get_it:
-  latlong2:
-  collection:
-  injectable:
-  tentura_sdk:
   tentura_root:
-  google_fonts:
-  blurhash_dart:
-  freezed_annotation:
+    path: ../../
 
   # Common
+  uuid: ^4.4.2
+  get_it: ^8.0.3
   logger: ^2.5.0
-  auto_route: ^9.3.0
+  latlong2: ^0.9.1
+  injectable: ^2.5.0
+  auto_route: ^9.0.0
   built_value: ^8.9.5
-  flutter_bloc: ^9.1.0
+  collection: ^1.19.1
+  http_parser: ^4.1.2
+  flutter_bloc: ^9.1.1
   synchronized: ^3.3.0
-  sentry_drift: ^8.13.2
-  sentry_flutter: ^8.13.2
+  sentry_drift: ^8.14.2
+  sentry_flutter: ^8.14.2
   json_annotation: ^4.9.0
+  ed25519_edwards: ^0.3.1
+  dart_jsonwebtoken: ^3.2.0
   intl_translation: ^0.20.1
+  freezed_annotation: ^2.4.4
 
-  # Platform 
-  drift: ^2.25.0
+  # Platform
+  http: ^1.2.2
+  drift: ^2.26.0
+  ferry: ^0.16.0
   mailto: ^2.0.0
+  gql_exec: ^1.0.0
   geocoding: ^3.0.0
-  drift_dev: ^2.25.1
-  geolocator: ^13.0.2
-  share_plus: ^10.1.4
+  drift_dev: ^2.26.0
+  geolocator: ^14.0.0
+  share_plus: ^11.0.0
   image_picker: ^1.1.2
   url_launcher: ^6.3.1
   drift_flutter: ^0.2.4
+  gql_http_link: ^1.1.0
   share_handler: ^0.0.22
-  mobile_scanner: ^7.0.0-beta.8
+  mobile_scanner: ^7.0.0
+  gql_error_link: ^1.0.0
+  gql_dedupe_link: ^2.0.3
+  gql_websocket_link: ^2.0.1
   flutter_secure_storage: ^10.0.0-beta.4
 
   # UI related
   nil: ^1.1.1
+  intl: ^0.20.2
+  image: ^4.5.4
   readmore: ^3.0.0
   qr_flutter: ^4.1.0
-  flutter_map: ^8.1.0
-  flutter_svg: ^2.0.17
+  flutter_map: ^8.1.1
+  flutter_svg: ^2.1.0
+  google_fonts: ^6.2.1
   validatorless: ^1.2.4
   blurhash_shader: ^1.1.2
   vector_graphics: ^1.1.18
   visibility_detector: ^0.4.0
-  flutter_native_splash: ^2.4.5
-  # smooth_page_indicator: ^1.2.0
+  # flutter_localizations: ^0.3.2
+  flutter_native_splash: ^2.4.6
   force_directed_graphview: ^0.6.2
   scrollable_positioned_list: ^0.3.8
   flutter_map_cancellable_tile_provider: ^3.0.0
@@ -73,17 +79,20 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  freezed:
-  build_runner:
-  json_serializable:
-  very_good_analysis:
-  injectable_generator:
-
+  lints: ^5.1.1
+  freezed: ^2.5.7
+  build_runner: ^2.4.15
+  flutter_lints: ^5.0.0
   ferry_generator: ^0.12.0
+  json_serializable: ^6.9.0
+  sentry_dart_plugin: ^2.4.1
+  very_good_analysis: ^7.0.0
   auto_route_generator: ^9.0.0
+  injectable_generator: ^2.6.2
   flutter_launcher_icons: ^0.14.3
 
 flutter:
+  generate: true
   uses-material-design: true
   fonts:
     - family: Tentura
@@ -91,10 +100,11 @@ flutter:
         - asset: fonts/tentura-icons.ttf
   assets:
     - images/placeholder/
-    - images/intro/
+    - images/intro.svg.vec
 
 sentry:
   upload_debug_symbols: true
   upload_source_maps: true
   upload_sources: true
   ignore_missing: true
+  project: tentura

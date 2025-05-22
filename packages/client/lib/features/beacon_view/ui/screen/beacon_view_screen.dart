@@ -1,8 +1,10 @@
+import 'package:nil/nil.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura/ui/l10n/l10n.dart';
+
 import 'package:tentura/features/beacon/ui/widget/beacon_info.dart';
-import 'package:tentura/features/beacon/ui/widget/beacon_mine_control.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_tile_control.dart';
 import 'package:tentura/features/comment/ui/bloc/comment_cubit.dart';
 import 'package:tentura/features/comment/ui/widget/comment_tile.dart';
@@ -16,6 +18,7 @@ import 'package:tentura/ui/widget/linear_pi_active.dart';
 import 'package:tentura/ui/widget/author_info.dart';
 
 import '../bloc/beacon_view_cubit.dart';
+import '../widget/beacon_mine_control.dart';
 
 @RoutePage()
 class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
@@ -54,6 +57,8 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
+    final screenCubit = context.read<ScreenCubit>();
     final beaconViewCubit = context.read<BeaconViewCubit>();
     return Scaffold(
       appBar: AppBar(
@@ -61,16 +66,22 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
         leading: const DeepBackButton(),
         actions: [
           // More
-          PopupMenuButton(
-            itemBuilder: (context) {
-              return <PopupMenuEntry<void>>[
-                // Complaint
-                PopupMenuItem(
-                  onTap: () => context.read<ScreenCubit>().showComplaint(id),
-                  child: const Text('Complaint'),
-                ),
-              ];
-            },
+          BlocSelector<BeaconViewCubit, BeaconViewState, bool>(
+            selector: (state) => state.isBeaconMine,
+            builder:
+                (context, isBeaconMine) =>
+                    isBeaconMine
+                        ? nil
+                        : PopupMenuButton(
+                          itemBuilder:
+                              (_) => <PopupMenuEntry<void>>[
+                                // Complaint
+                                PopupMenuItem(
+                                  onTap: () => screenCubit.showComplaint(id),
+                                  child: Text(l10n.buttonComplaint),
+                                ),
+                              ],
+                        ),
           ),
         ],
         bottom: PreferredSize(
@@ -103,16 +114,12 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
                 isShowBeaconEnabled: false,
               ),
 
-              // Buttons Row
+              // Beacon Control
               Padding(
                 padding: kPaddingSmallV,
                 child:
                     state.isBeaconMine
-                        ? BeaconMineControl(
-                          key: ValueKey(beacon.id),
-                          goBackOnDelete: true,
-                          beacon: beacon,
-                        )
+                        ? BeaconMineControl(key: ValueKey(beacon.id))
                         : BeaconTileControl(
                           beacon: beacon,
                           key: ValueKey(beacon.id),
@@ -120,9 +127,12 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
               ),
 
               // Comments Section
-              const Text(
-                'Comments',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Text(
+                l10n.labelComments,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
 
               // Comments list
@@ -141,7 +151,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
                     width: double.infinity,
                     child: FilledButton(
                       onPressed: beaconViewCubit.showAll,
-                      child: const Text('Show all comments'),
+                      child: Text(l10n.showAllComments),
                     ),
                   ),
                 ),
@@ -150,7 +160,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
         },
       ),
       bottomSheet: BottomTextInput(
-        hintText: 'Write a comment',
+        hintText: l10n.writeComment,
         onSend: beaconViewCubit.addComment,
       ),
     );

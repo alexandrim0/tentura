@@ -23,7 +23,7 @@ ThemeData _createAppTheme(ColorScheme colorScheme) {
     unselectedWidgetColor: colorScheme.onSurface,
 
     //Dialog
-    dialogTheme: DialogTheme(backgroundColor: colorScheme.surfaceContainer),
+    dialogTheme: DialogThemeData(backgroundColor: colorScheme.surfaceContainer),
 
     // Elevated Button
     elevatedButtonTheme: ElevatedButtonThemeData(

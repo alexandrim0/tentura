@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:tentura/ui/l10n/l10n.dart';
+
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -14,6 +16,7 @@ class ProfileBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final screenCubit = context.read<ScreenCubit>();
     return BlocSelector<ProfileCubit, ProfileState, Profile>(
@@ -44,7 +47,7 @@ class ProfileBody extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: () => screenCubit.showGraph(profile.id),
                   icon: const Icon(TenturaIcons.graph),
-                  label: const Text('Show Connections'),
+                  label: Text(l10n.showConnections),
                 ),
               ),
 
@@ -54,7 +57,7 @@ class ProfileBody extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: () => screenCubit.showBeacons(profile.id),
                   icon: const Icon(Icons.open_in_full),
-                  label: const Text('Show Beacons'),
+                  label: Text(l10n.showBeacons),
                 ),
               ),
 
@@ -67,7 +70,7 @@ class ProfileBody extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.settings),
-                        label: const Text('Settings'),
+                        label: Text(l10n.labelSettings),
                         onPressed: screenCubit.showSettings,
                       ),
                     ),
@@ -76,7 +79,7 @@ class ProfileBody extends StatelessWidget {
                     Expanded(
                       child: FilledButton.icon(
                         icon: const Icon(Icons.post_add),
-                        label: const Text('New Beacon'),
+                        label: Text(l10n.newBeacon),
                         onPressed: screenCubit.showBeaconCreate,
                       ),
                     ),
@@ -88,7 +91,7 @@ class ProfileBody extends StatelessWidget {
               Padding(
                 padding: kPaddingT,
                 child: Text(
-                  'Community Feedback',
+                  l10n.communityFeedback,
                   style: textTheme.headlineMedium,
                 ),
               ),

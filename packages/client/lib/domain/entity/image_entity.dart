@@ -5,12 +5,16 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'image_entity.freezed.dart';
 
 @freezed
-class ImageEntity with _$ImageEntity {
+abstract class ImageEntity with _$ImageEntity {
   const factory ImageEntity({
     required Uint8List imageBytes,
     @Default('') String fileName,
-    @Default('') String blurHash,
-    @Default(0) int height,
-    @Default(0) int width,
+    @Default('image/jpeg') String mimeType,
   }) = _ImageEntity;
+
+  factory ImageEntity.empty() => ImageEntity(imageBytes: Uint8List(0));
+
+  const ImageEntity._();
+
+  bool get isEmpty => imageBytes.isEmpty;
 }

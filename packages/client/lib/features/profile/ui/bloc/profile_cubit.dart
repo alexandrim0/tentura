@@ -51,7 +51,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     if (state.profile.id.isEmpty) return;
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final profile = await _profileRepository.fetch(state.profile.id);
+      final profile = await _profileRepository.fetchById(state.profile.id);
       emit(ProfileState(profile: profile));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
@@ -62,7 +62,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       await _profileRepository.delete(state.profile.id);
-      emit(ProfileState(status: StateIsNavigating(kPathLogin)));
+      emit(ProfileState(status: StateIsNavigating(kPathSignIn)));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }
@@ -74,9 +74,12 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   void _onProfileChanges(RepositoryEvent<Profile> event) => switch (event) {
-    RepositoryEventUpdate<Profile>(value: final profile)
+    RepositoryEventFetch<Profile>(value: final profile)
         when profile.id == state.profile.id =>
       emit(ProfileState(profile: profile)),
+    RepositoryEventUpdate<Profile>(value: final profile) => emit(
+      ProfileState(profile: profile),
+    ),
     _ => null,
   };
 }

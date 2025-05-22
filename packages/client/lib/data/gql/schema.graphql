@@ -13,6 +13,14 @@ directive @cached(
   refresh: Boolean! = false
 ) on QUERY
 
+type AuthResponse {
+  access_token: String!
+  expires_in: Int!
+  refresh_token: String
+  subject: String!
+  token_type: String!
+}
+
 """
 columns and relationships of "beacon"
 """
@@ -60,6 +68,7 @@ type beacon {
   created_at: timestamptz!
   description: String!
   enabled: Boolean!
+  end_at: timestamptz
   has_picture: Boolean!
   id: String!
 
@@ -96,7 +105,7 @@ type beacon {
     """filter the rows returned"""
     where: mutual_score_bool_exp
   ): [mutual_score!]
-  timerange: tstzrange
+  start_at: timestamptz
   title: String!
   updated_at: timestamptz!
   user_id: String!
@@ -118,6 +127,10 @@ type beacon {
     """filter the rows returned"""
     where: vote_beacon_bool_exp
   ): [vote_beacon!]!
+}
+
+type Beacon {
+  id: String!
 }
 
 """
@@ -162,6 +175,7 @@ input beacon_bool_exp {
   created_at: timestamptz_comparison_exp
   description: String_comparison_exp
   enabled: Boolean_comparison_exp
+  end_at: timestamptz_comparison_exp
   has_picture: Boolean_comparison_exp
   id: String_comparison_exp
   is_pinned: Boolean_comparison_exp
@@ -171,40 +185,11 @@ input beacon_bool_exp {
   pic_height: Int_comparison_exp
   pic_width: Int_comparison_exp
   scores: mutual_score_bool_exp
-  timerange: tstzrange_comparison_exp
+  start_at: timestamptz_comparison_exp
   title: String_comparison_exp
   updated_at: timestamptz_comparison_exp
   user_id: String_comparison_exp
   vote_beacons: vote_beacon_bool_exp
-}
-
-"""
-unique or primary key constraints on table "beacon"
-"""
-enum beacon_constraint {
-  """
-  unique or primary key constraint on columns "id"
-  """
-  beacon_pkey
-}
-
-"""
-input type for inserting data into table "beacon"
-"""
-input beacon_insert_input {
-  beacon_pinneds: beacon_pinned_arr_rel_insert_input
-  blur_hash: String
-  comments: comment_arr_rel_insert_input
-  context: String
-  description: String
-  has_picture: Boolean
-  lat: float8
-  long: float8
-  pic_height: Int
-  pic_width: Int
-  timerange: tstzrange
-  title: String
-  vote_beacons: vote_beacon_arr_rel_insert_input
 }
 
 """
@@ -215,11 +200,13 @@ input beacon_max_order_by {
   context: order_by
   created_at: order_by
   description: order_by
+  end_at: order_by
   id: order_by
   lat: order_by
   long: order_by
   pic_height: order_by
   pic_width: order_by
+  start_at: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -233,11 +220,13 @@ input beacon_min_order_by {
   context: order_by
   created_at: order_by
   description: order_by
+  end_at: order_by
   id: order_by
   lat: order_by
   long: order_by
   pic_height: order_by
   pic_width: order_by
+  start_at: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -254,25 +243,6 @@ type beacon_mutation_response {
   returning: [beacon!]!
 }
 
-"""
-input type for inserting object relation for remote table "beacon"
-"""
-input beacon_obj_rel_insert_input {
-  data: beacon_insert_input!
-
-  """upsert condition"""
-  on_conflict: beacon_on_conflict
-}
-
-"""
-on_conflict condition type for table "beacon"
-"""
-input beacon_on_conflict {
-  constraint: beacon_constraint!
-  update_columns: [beacon_update_column!]! = []
-  where: beacon_bool_exp
-}
-
 """Ordering options when selecting data from "beacon"."""
 input beacon_order_by {
   author: user_order_by
@@ -283,6 +253,7 @@ input beacon_order_by {
   created_at: order_by
   description: order_by
   enabled: order_by
+  end_at: order_by
   has_picture: order_by
   id: order_by
   is_pinned: order_by
@@ -292,7 +263,7 @@ input beacon_order_by {
   pic_height: order_by
   pic_width: order_by
   scores_aggregate: mutual_score_aggregate_order_by
-  timerange: order_by
+  start_at: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -322,16 +293,6 @@ input beacon_pinned_aggregate_order_by {
 }
 
 """
-input type for inserting array relation for remote table "beacon_pinned"
-"""
-input beacon_pinned_arr_rel_insert_input {
-  data: [beacon_pinned_insert_input!]!
-
-  """upsert condition"""
-  on_conflict: beacon_pinned_on_conflict
-}
-
-"""
 Boolean expression to filter rows from the table "beacon_pinned". All fields are combined with a logical 'AND'.
 """
 input beacon_pinned_bool_exp {
@@ -358,7 +319,6 @@ enum beacon_pinned_constraint {
 input type for inserting data into table "beacon_pinned"
 """
 input beacon_pinned_insert_input {
-  beacon: beacon_obj_rel_insert_input
   beacon_id: String
 }
 
@@ -467,6 +427,9 @@ enum beacon_select_column {
   enabled
 
   """column name"""
+  end_at
+
+  """column name"""
   has_picture
 
   """column name"""
@@ -485,7 +448,7 @@ enum beacon_select_column {
   pic_width
 
   """column name"""
-  timerange
+  start_at
 
   """column name"""
   title
@@ -552,13 +515,14 @@ input beacon_stream_cursor_value_input {
   created_at: timestamptz
   description: String
   enabled: Boolean
+  end_at: timestamptz
   has_picture: Boolean
   id: String
   lat: float8
   long: float8
   pic_height: Int
   pic_width: Int
-  timerange: tstzrange
+  start_at: timestamptz
   title: String
   updated_at: timestamptz
   user_id: String
@@ -572,14 +536,6 @@ input beacon_sum_order_by {
   long: order_by
   pic_height: order_by
   pic_width: order_by
-}
-
-"""
-update columns of table "beacon"
-"""
-enum beacon_update_column {
-  """column name"""
-  enabled
 }
 
 input beacon_updates {
@@ -704,16 +660,6 @@ input comment_aggregate_order_by {
 }
 
 """
-input type for inserting array relation for remote table "comment"
-"""
-input comment_arr_rel_insert_input {
-  data: [comment_insert_input!]!
-
-  """upsert condition"""
-  on_conflict: comment_on_conflict
-}
-
-"""
 Boolean expression to filter rows from the table "comment". All fields are combined with a logical 'AND'.
 """
 input comment_bool_exp {
@@ -746,7 +692,6 @@ enum comment_constraint {
 input type for inserting data into table "comment"
 """
 input comment_insert_input {
-  beacon: beacon_obj_rel_insert_input
   beacon_id: String
   content: String
   vote_comments: vote_comment_arr_rel_insert_input
@@ -864,6 +809,11 @@ placeholder for update columns of table "comment" (current role has no relevant 
 enum comment_update_column {
   """placeholder (do not use)"""
   _PLACEHOLDER
+}
+
+input Coordinates {
+  lat: Float
+  long: Float
 }
 
 """ordering argument of a cursor"""
@@ -985,6 +935,148 @@ input Int_comparison_exp {
   _lte: Int
   _neq: Int
   _nin: [Int!]
+}
+
+"""
+columns and relationships of "invitation"
+"""
+type invitation {
+  created_at: timestamptz!
+  id: String!
+
+  """An object relationship"""
+  invited: user
+  invited_id: String
+
+  """An object relationship"""
+  issuer: user
+  updated_at: timestamptz!
+  user_id: String!
+}
+
+type Invitation {
+  created_at: String!
+  id: String!
+  invited: user
+  invited_id: String
+  issuer: user
+  issuer_id: String!
+  updated_at: String!
+}
+
+"""
+Boolean expression to filter rows from the table "invitation". All fields are combined with a logical 'AND'.
+"""
+input invitation_bool_exp {
+  _and: [invitation_bool_exp!]
+  _not: invitation_bool_exp
+  _or: [invitation_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  id: String_comparison_exp
+  invited: user_bool_exp
+  invited_id: String_comparison_exp
+  issuer: user_bool_exp
+  updated_at: timestamptz_comparison_exp
+  user_id: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "invitation"
+"""
+enum invitation_constraint {
+  """
+  unique or primary key constraint on columns "invited_id"
+  """
+  invitation_invited_id_key
+
+  """
+  unique or primary key constraint on columns "id"
+  """
+  invitation_pkey
+}
+
+"""
+input type for inserting data into table "invitation"
+"""
+input invitation_insert_input
+
+"""
+response of any mutation on the table "invitation"
+"""
+type invitation_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [invitation!]!
+}
+
+"""
+on_conflict condition type for table "invitation"
+"""
+input invitation_on_conflict {
+  constraint: invitation_constraint!
+  update_columns: [invitation_update_column!]! = []
+  where: invitation_bool_exp
+}
+
+"""Ordering options when selecting data from "invitation"."""
+input invitation_order_by {
+  created_at: order_by
+  id: order_by
+  invited: user_order_by
+  invited_id: order_by
+  issuer: user_order_by
+  updated_at: order_by
+  user_id: order_by
+}
+
+"""
+select columns of table "invitation"
+"""
+enum invitation_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  invited_id
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  user_id
+}
+
+"""
+Streaming cursor of the table "invitation"
+"""
+input invitation_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: invitation_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input invitation_stream_cursor_value_input {
+  created_at: timestamptz
+  id: String
+  invited_id: String
+  updated_at: timestamptz
+  user_id: String
+}
+
+"""
+placeholder for update columns of table "invitation" (current role has no relevant permissions)
+"""
+enum invitation_update_column {
+  """placeholder (do not use)"""
+  _PLACEHOLDER
 }
 
 scalar json
@@ -1135,18 +1227,8 @@ input message_updates {
 
 """mutation root"""
 type mutation_root {
-  """
-  delete data from the table: "beacon"
-  """
-  delete_beacon(
-    """filter the rows which have to be deleted"""
-    where: beacon_bool_exp!
-  ): beacon_mutation_response
-
-  """
-  delete single row from the table: "beacon"
-  """
-  delete_beacon_by_pk(id: String!): beacon
+  beaconCreate(context: String, coordinates: Coordinates = {}, description: String, endAt: String, image: Upload = {}, startAt: String, title: String!): Beacon!
+  beaconDeleteById(id: String!): Boolean!
 
   """
   delete data from the table: "beacon_pinned"
@@ -1227,28 +1309,6 @@ type mutation_root {
   delete_vote_user_by_pk(object: String!, subject: String!): vote_user
 
   """
-  insert data into the table: "beacon"
-  """
-  insert_beacon(
-    """the rows to be inserted"""
-    objects: [beacon_insert_input!]!
-
-    """upsert condition"""
-    on_conflict: beacon_on_conflict
-  ): beacon_mutation_response
-
-  """
-  insert a single row into the table: "beacon"
-  """
-  insert_beacon_one(
-    """the row to be inserted"""
-    object: beacon_insert_input!
-
-    """upsert condition"""
-    on_conflict: beacon_on_conflict
-  ): beacon
-
-  """
   insert data into the table: "beacon_pinned"
   """
   insert_beacon_pinned(
@@ -1291,6 +1351,28 @@ type mutation_root {
     """upsert condition"""
     on_conflict: comment_on_conflict
   ): comment
+
+  """
+  insert data into the table: "invitation"
+  """
+  insert_invitation(
+    """the rows to be inserted"""
+    objects: [invitation_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: invitation_on_conflict
+  ): invitation_mutation_response
+
+  """
+  insert a single row into the table: "invitation"
+  """
+  insert_invitation_one(
+    """the row to be inserted"""
+    object: invitation_insert_input!
+
+    """upsert condition"""
+    on_conflict: invitation_on_conflict
+  ): invitation
 
   """
   insert data into the table: "message"
@@ -1423,6 +1505,11 @@ type mutation_root {
     """upsert condition"""
     on_conflict: vote_user_on_conflict
   ): vote_user
+  invitationAccept(id: String!): Boolean!
+  invitationDelete(id: String!): Boolean!
+  signIn(authRequestToken: String!): AuthResponse!
+  signOut: Boolean!
+  signUp(authRequestToken: String!, title: String!): AuthResponse!
 
   """
   update data of the table: "beacon"
@@ -1472,34 +1559,6 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [message_updates!]!
   ): [message_mutation_response]
-
-  """
-  update data of the table: "user"
-  """
-  update_user(
-    """sets the columns of the filtered rows to the given values"""
-    _set: user_set_input
-
-    """filter the rows which have to be updated"""
-    where: user_bool_exp!
-  ): user_mutation_response
-
-  """
-  update single row of the table: "user"
-  """
-  update_user_by_pk(
-    """sets the columns of the filtered rows to the given values"""
-    _set: user_set_input
-    pk_columns: user_pk_columns_input!
-  ): user
-
-  """
-  update multiples rows of table: "user"
-  """
-  update_user_many(
-    """updates to execute, in order"""
-    updates: [user_updates!]!
-  ): [user_mutation_response]
 
   """
   update data of the table: "vote_beacon"
@@ -1627,6 +1686,8 @@ type mutation_root {
     """filter the rows returned"""
     where: edge_bool_exp
   ): [edge!]!
+  userDelete: Boolean!
+  userUpdate(description: String, dropImage: Boolean, image: Upload = {}, title: String): User!
 }
 
 """
@@ -1640,6 +1701,9 @@ type mutual_score {
   comment: comment
   dst: String
   dst_score: float8
+
+  """An object relationship"""
+  opinion: opinion
   src: String
   src_score: float8
 
@@ -1683,6 +1747,7 @@ input mutual_score_bool_exp {
   comment: comment_bool_exp
   dst: String_comparison_exp
   dst_score: float8_comparison_exp
+  opinion: opinion_bool_exp
   src: String_comparison_exp
   src_score: float8_comparison_exp
   user: user_bool_exp
@@ -1714,6 +1779,7 @@ input mutual_score_order_by {
   comment: comment_order_by
   dst: order_by
   dst_score: order_by
+  opinion: opinion_order_by
   src: order_by
   src_score: order_by
   user: user_order_by
@@ -1848,6 +1914,9 @@ type opinion {
     where: mutual_score_bool_exp
   ): [mutual_score!]
   subject: String!
+
+  """An object relationship"""
+  user: user!
 }
 
 """
@@ -1865,6 +1934,7 @@ input opinion_bool_exp {
   object: String_comparison_exp
   scores: mutual_score_bool_exp
   subject: String_comparison_exp
+  user: user_bool_exp
 }
 
 """
@@ -1921,6 +1991,7 @@ input opinion_order_by {
   object: order_by
   scores_aggregate: mutual_score_aggregate_order_by
   subject: order_by
+  user: user_order_by
 }
 
 """
@@ -1973,6 +2044,12 @@ placeholder for update columns of table "opinion" (current role has no relevant 
 enum opinion_update_column {
   """placeholder (do not use)"""
   _PLACEHOLDER
+}
+
+input opinions_args {
+  limit_: Int
+  object: String
+  offset_: Int
 }
 
 """column ordering options"""
@@ -2112,6 +2189,30 @@ type query_root {
   ): [mutual_score!]!
 
   """
+  fetch data from the table: "invitation"
+  """
+  invitation(
+    """distinct select on columns"""
+    distinct_on: [invitation_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [invitation_order_by!]
+
+    """filter the rows returned"""
+    where: invitation_bool_exp
+  ): [invitation!]!
+  invitationById(id: String!): Invitation
+
+  """fetch data from the table: "invitation" using primary key columns"""
+  invitation_by_pk(id: String!): invitation
+
+  """
   fetch data from the table: "message"
   """
   message(
@@ -2203,6 +2304,31 @@ type query_root {
   opinion_by_pk(id: String!): opinion
 
   """
+  execute function "opinions" which returns "mutual_score"
+  """
+  opinions(
+    """
+    input parameters for function "opinions"
+    """
+    args: opinions_args!
+
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
+
+  """
   execute function "rating" which returns "mutual_score"
   """
   rating(
@@ -2272,6 +2398,7 @@ type query_root {
 
   """fetch data from the table: "user_context" using primary key columns"""
   user_context_by_pk(context_name: String!, user_id: String!): user_context
+  version: String!
 
   """
   fetch data from the table: "vote_beacon"
@@ -2572,6 +2699,43 @@ type subscription_root {
   ): [mutual_score!]!
 
   """
+  fetch data from the table: "invitation"
+  """
+  invitation(
+    """distinct select on columns"""
+    distinct_on: [invitation_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [invitation_order_by!]
+
+    """filter the rows returned"""
+    where: invitation_bool_exp
+  ): [invitation!]!
+
+  """fetch data from the table: "invitation" using primary key columns"""
+  invitation_by_pk(id: String!): invitation
+
+  """
+  fetch data from the table in a streaming manner: "invitation"
+  """
+  invitation_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [invitation_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: invitation_bool_exp
+  ): [invitation!]!
+
+  """
   fetch data from the table: "message"
   """
   message(
@@ -2703,6 +2867,31 @@ type subscription_root {
     """filter the rows returned"""
     where: opinion_bool_exp
   ): [opinion!]!
+
+  """
+  execute function "opinions" which returns "mutual_score"
+  """
+  opinions(
+    """
+    input parameters for function "opinions"
+    """
+    args: opinions_args!
+
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
 
   """
   execute function "rating" which returns "mutual_score"
@@ -2932,26 +3121,14 @@ input timestamptz_comparison_exp {
   _nin: [timestamptz!]
 }
 
-scalar tstzrange
-
-"""
-Boolean expression to compare columns of type "tstzrange". All fields are combined with logical 'AND'.
-"""
-input tstzrange_comparison_exp {
-  _eq: tstzrange
-  _gt: tstzrange
-  _gte: tstzrange
-  _in: [tstzrange!]
-  _is_null: Boolean
-  _lt: tstzrange
-  _lte: tstzrange
-  _neq: tstzrange
-  _nin: [tstzrange!]
-}
-
 input updates_args {
   hasura_session: json
   prefix: String
+}
+
+input Upload {
+  filename: String
+  type: String
 }
 
 """
@@ -3120,6 +3297,10 @@ type user {
   ): [vote_user!]!
 }
 
+type User {
+  id: String!
+}
+
 """
 Boolean expression to filter rows from the table "user". All fields are combined with a logical 'AND'.
 """
@@ -3246,17 +3427,6 @@ enum user_context_update_column {
   _PLACEHOLDER
 }
 
-"""
-response of any mutation on the table "user"
-"""
-type user_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [user!]!
-}
-
 """Ordering options when selecting data from "user"."""
 input user_order_by {
   beacon_pinneds_aggregate: beacon_pinned_aggregate_order_by
@@ -3278,11 +3448,6 @@ input user_order_by {
   vote_beacons_aggregate: vote_beacon_aggregate_order_by
   vote_comments_aggregate: vote_comment_aggregate_order_by
   vote_users_aggregate: vote_user_aggregate_order_by
-}
-
-"""primary key columns input for table: user"""
-input user_pk_columns_input {
-  id: String!
 }
 
 """
@@ -3321,15 +3486,6 @@ enum user_select_column {
 }
 
 """
-input type for updating data in table "user"
-"""
-input user_set_input {
-  description: String
-  has_picture: Boolean
-  title: String
-}
-
-"""
 Streaming cursor of the table "user"
 """
 input user_stream_cursor_input {
@@ -3352,14 +3508,6 @@ input user_stream_cursor_value_input {
   public_key: String
   title: String
   updated_at: timestamptz
-}
-
-input user_updates {
-  """sets the columns of the filtered rows to the given values"""
-  _set: user_set_input
-
-  """filter the rows which have to be updated"""
-  where: user_bool_exp!
 }
 
 scalar uuid
@@ -3414,16 +3562,6 @@ input vote_beacon_aggregate_order_by {
 }
 
 """
-input type for inserting array relation for remote table "vote_beacon"
-"""
-input vote_beacon_arr_rel_insert_input {
-  data: [vote_beacon_insert_input!]!
-
-  """upsert condition"""
-  on_conflict: vote_beacon_on_conflict
-}
-
-"""
 order by avg() on columns of table "vote_beacon"
 """
 input vote_beacon_avg_order_by {
@@ -3468,7 +3606,6 @@ input type for inserting data into table "vote_beacon"
 """
 input vote_beacon_insert_input {
   amount: Int
-  beacon: beacon_obj_rel_insert_input
   object: String
 }
 

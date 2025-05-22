@@ -1,3 +1,4 @@
+import 'package:tentura/features/beacon/domain/enum.dart';
 import 'package:tentura/features/beacon/ui/bloc/beacon_cubit.dart';
 
 import 'package:tentura_widgetbook/bloc/_data.dart';
@@ -21,4 +22,7 @@ class BeaconCubitMock extends Cubit<BeaconState> implements BeaconCubit {
 
   @override
   Future<void> toggleEnabled(String beaconId) async {}
+
+  @override
+  void toggleFilter(BeaconFilter? filter) {}
 }

@@ -7,7 +7,7 @@
     "theme_color": "#3A1E5C",
     "description": "Social network for communities",
     "orientation": "portrait-primary",
-    "prefer_related_applications": false,
+    "prefer_related_applications": true,
     "icons": [
         {
             "src": "icons/Icon-192.png",
@@ -21,5 +21,5 @@
         }
     ],
     "manifest_version": 3,
-    "version": "0.13.3"
+    "version": "1.0.7"
 }

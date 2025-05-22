@@ -1,5 +1,5 @@
 {
-  "resource_version": 512,
+  "resource_version": 98,
   "metadata": {
     "version": 3,
     "sources": [
@@ -92,50 +92,27 @@
                 }
               }
             ],
-            "insert_permissions": [
-              {
-                "role": "user",
-                "permission": {
-                  "check": {},
-                  "set": {
-                    "user_id": "x-hasura-User-Id"
-                  },
-                  "columns": [
-                    "blur_hash",
-                    "context",
-                    "description",
-                    "has_picture",
-                    "lat",
-                    "long",
-                    "pic_height",
-                    "pic_width",
-                    "timerange",
-                    "title"
-                  ]
-                },
-                "comment": ""
-              }
-            ],
             "select_permissions": [
               {
                 "role": "user",
                 "permission": {
                   "columns": [
+                    "blur_hash",
+                    "context",
+                    "created_at",
+                    "description",
                     "enabled",
+                    "end_at",
                     "has_picture",
+                    "id",
                     "lat",
                     "long",
                     "pic_height",
                     "pic_width",
-                    "blur_hash",
-                    "context",
-                    "description",
-                    "id",
+                    "start_at",
                     "title",
-                    "user_id",
-                    "created_at",
                     "updated_at",
-                    "timerange"
+                    "user_id"
                   ],
                   "computed_fields": [
                     "is_pinned",
@@ -160,45 +137,6 @@
                   },
                   "check": null
                 }
-              }
-            ],
-            "delete_permissions": [
-              {
-                "role": "user",
-                "permission": {
-                  "filter": {
-                    "user_id": {
-                      "_eq": "X-Hasura-User-Id"
-                    }
-                  }
-                },
-                "comment": ""
-              }
-            ],
-            "event_triggers": [
-              {
-                "name": "beacon_mutate",
-                "definition": {
-                  "delete": {
-                    "columns": "*"
-                  },
-                  "enable_manual": true,
-                  "insert": {
-                    "columns": "*"
-                  }
-                },
-                "retry_conf": {
-                  "interval_sec": 10,
-                  "num_retries": 2,
-                  "timeout_sec": 60
-                },
-                "webhook": "{{EVENT_BASE_URL}}/beacon_mutate",
-                "headers": [
-                  {
-                    "name": "X-Tentura-Password",
-                    "value_from_env": "TENTURA_PASSWORD"
-                  }
-                ]
               }
             ]
           },
@@ -438,6 +376,83 @@
           },
           {
             "table": {
+              "name": "image",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
+              "name": "invitation",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "invited",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "invited_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "user",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "issuer",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "user_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "user",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "check": {},
+                  "set": {
+                    "user_id": "x-hasura-User-Id"
+                  },
+                  "columns": []
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "invited_id",
+                    "user_id",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
               "name": "message",
               "schema": "public"
             },
@@ -568,6 +583,21 @@
                 }
               },
               {
+                "name": "opinion",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "dst": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "opinion",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
                 "name": "user",
                 "using": {
                   "manual_configuration": {
@@ -618,6 +648,12 @@
                       "schema": "public"
                     }
                   }
+                }
+              },
+              {
+                "name": "user",
+                "using": {
+                  "foreign_key_constraint_on": "object"
                 }
               }
             ],
@@ -818,24 +854,6 @@
                   "limit": 10
                 }
               }
-            ],
-            "update_permissions": [
-              {
-                "role": "user",
-                "permission": {
-                  "columns": [
-                    "description",
-                    "title",
-                    "has_picture"
-                  ],
-                  "filter": {
-                    "id": {
-                      "_eq": "X-Hasura-User-Id"
-                    }
-                  },
-                  "check": {}
-                }
-              }
             ]
           },
           {
@@ -893,6 +911,12 @@
                 "comment": ""
               }
             ]
+          },
+          {
+            "table": {
+              "name": "user_vsids",
+              "schema": "public"
+            }
           },
           {
             "table": {
@@ -1161,6 +1185,21 @@
           },
           {
             "function": {
+              "name": "opinions",
+              "schema": "public"
+            },
+            "configuration": {
+              "custom_root_fields": {},
+              "session_argument": "hasura_session"
+            },
+            "permissions": [
+              {
+                "role": "user"
+              }
+            ]
+          },
+          {
+            "function": {
               "name": "rating",
               "schema": "public"
             },
@@ -1236,6 +1275,69 @@
             "use_prepared_statements": true
           }
         }
+      }
+    ],
+    "remote_schemas": [
+      {
+        "name": "tentura",
+        "definition": {
+          "url": "{{TENTURA_GRAPHQL_URL}}",
+          "timeout_seconds": 60,
+          "customization": {},
+          "forward_client_headers": true
+        },
+        "comment": "",
+        "remote_relationships": [
+          {
+            "relationships": [],
+            "type_name": "Beacon"
+          },
+          {
+            "relationships": [],
+            "type_name": "Profile"
+          },
+          {
+            "relationships": [],
+            "type_name": "User"
+          },
+          {
+            "relationships": [
+              {
+                "definition": {
+                  "to_source": {
+                    "field_mapping": {
+                      "issuer_id": "id"
+                    },
+                    "relationship_type": "object",
+                    "source": "postgres",
+                    "table": {
+                      "name": "user",
+                      "schema": "public"
+                    }
+                  }
+                },
+                "name": "issuer"
+              },
+              {
+                "definition": {
+                  "to_source": {
+                    "field_mapping": {
+                      "invited_id": "id"
+                    },
+                    "relationship_type": "object",
+                    "source": "postgres",
+                    "table": {
+                      "name": "user",
+                      "schema": "public"
+                    }
+                  }
+                },
+                "name": "invited"
+              }
+            ],
+            "type_name": "Invitation"
+          }
+        ]
       }
     ]
   }

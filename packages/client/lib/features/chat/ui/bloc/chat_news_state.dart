@@ -5,7 +5,7 @@ import '../../domain/entity/chat_message.dart';
 part 'chat_news_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class ChatNewsState extends StateBase with _$ChatNewsState {
+abstract class ChatNewsState extends StateBase with _$ChatNewsState {
   const factory ChatNewsState({
     required String myId,
     required DateTime cursor,

@@ -5,6 +5,7 @@ import 'package:tentura/consts.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import '../../data/repository/beacon_repository.dart';
+import '../../domain/enum.dart';
 import 'beacon_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +29,7 @@ class BeaconCubit extends Cubit<BeaconState> {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final beacons = await _beaconRepository.fetchBeacons(
+        isEnabled: state.filter == BeaconFilter.enabled,
         offset: state.beacons.length,
         profileId: state.profileId,
       );
@@ -41,6 +43,12 @@ class BeaconCubit extends Cubit<BeaconState> {
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }
+  }
+
+  void toggleFilter(BeaconFilter? filter) {
+    if (filter == null) return;
+    emit(state.copyWith(filter: filter, hasReachedLast: false, beacons: []));
+    fetch();
   }
 
   Future<void> delete(String beaconId) async {
@@ -57,9 +65,11 @@ class BeaconCubit extends Cubit<BeaconState> {
   Future<void> toggleEnabled(String beaconId) async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      await _beaconRepository.setEnabled(
-        !state.beacons.singleWhere((e) => e.id == beaconId).isEnabled,
-        id: beaconId,
+      final beaconIndex = state.beacons.indexWhere((e) => e.id == beaconId);
+      final beacon = state.beacons[beaconIndex];
+      await _beaconRepository.setEnabled(!beacon.isEnabled, id: beacon.id);
+      state.beacons[beaconIndex] = beacon.copyWith(
+        isEnabled: !beacon.isEnabled,
       );
       emit(state.copyWith(status: StateStatus.isSuccess));
     } catch (e) {

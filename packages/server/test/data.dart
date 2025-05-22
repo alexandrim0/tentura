@@ -1,4 +1,3 @@
-import 'package:tentura_root/domain/entity/date_time_range.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
 import 'package:tentura_server/domain/entity/comment_entity.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
@@ -51,10 +50,7 @@ Activist, publicist, concerned neighbor and representative of one of the largest
   ),
 
   // User for auth test
-  kPussyCatKey: UserEntity(
-    id: 'U3ea0a229ad85',
-    title: 'Pussy Cat',
-  ),
+  kPussyCatKey: UserEntity(id: 'U3ea0a229ad85', title: 'Pussy Cat'),
 };
 
 const kB20f3d51e498f = 'B20f3d51e498f';
@@ -78,12 +74,10 @@ If you are bold enough to stand among dwarves of valor, reply to this call or se
     context: 'QuestForGlory',
     createdAt: DateTime(2024, 10, 03),
     updatedAt: DateTime(2024, 10, 03),
+    startAt: DateTime(2024, 10, 03),
+    endAt: DateTime(2025, 10, 03),
     hasPicture: true,
     // TBD: add image parameters
-    timerange: DateTimeRange(
-      start: DateTime(2024, 10, 03),
-      end: DateTime(2025, 10, 03),
-    ),
     author: kUserByPublicKey[kThorinKey]!,
   ),
 
@@ -115,7 +109,8 @@ final kCommentById = <String, CommentEntity>{
   ),
   kC1b28e93382e1: CommentEntity(
     id: kC1b28e93382e1,
-    content: 'Sorry, cousin, my boar is allergic to dragons. '
+    content:
+        'Sorry, cousin, my boar is allergic to dragons. '
         'Wish you all the luck though!',
     createdAt: DateTime(2024, 10, 05, 10, 23, 28),
     beacon: kBeaconById[kBc1cb783b0159]!,

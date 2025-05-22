@@ -7,7 +7,7 @@ import 'package:tentura/domain/enum.dart';
 part 'chat_message.freezed.dart';
 
 @freezed
-class ChatMessage with _$ChatMessage implements Identifiable {
+abstract class ChatMessage with _$ChatMessage implements Identifiable {
   const factory ChatMessage({
     required String id,
     required String sender,

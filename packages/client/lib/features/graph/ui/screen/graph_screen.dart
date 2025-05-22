@@ -1,65 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura/ui/l10n/l10n.dart';
+
 import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/widget/deep_back_button.dart';
 
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 // import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
 
-import '../../data/repository/graph_repository.dart';
 import '../bloc/graph_cubit.dart';
 import '../widget/graph_body.dart';
 
 @RoutePage()
 class GraphScreen extends StatelessWidget implements AutoRouteWrapper {
-  const GraphScreen({
-    @queryParam this.focus = '',
-    super.key,
-  });
+  const GraphScreen({@queryParam this.focus = '', super.key});
 
   final String focus;
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (context) => GraphCubit(
-          GetIt.I<GraphRepository>(),
-          me: GetIt.I<ProfileCubit>().state.profile,
-          focus: focus,
-        ),
-        child: BlocListener<GraphCubit, GraphState>(
-          listener: commonScreenBlocListener,
-          child: this,
-        ),
-      );
+    create:
+        (_) =>
+            GraphCubit(me: GetIt.I<ProfileCubit>().state.profile, focus: focus),
+    child: BlocListener<GraphCubit, GraphState>(
+      listener: commonScreenBlocListener,
+      child: this,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
     final cubit = context.read<GraphCubit>();
     return Scaffold(
       appBar: AppBar(
+        leading: const DeepBackButton(),
+
+        // Title
+        title: Text(l10n.graphView),
+
         // Menu :
         actions: [
           PopupMenuButton(
-            itemBuilder: (context) {
-              return <PopupMenuEntry<void>>[
-                PopupMenuItem<void>(
-                  onTap: cubit.jumpToEgo,
-                  child: const Text('Go to Ego'),
-                ),
-                const PopupMenuDivider(),
-                PopupMenuItem<void>(
-                  onTap: cubit.togglePositiveOnly,
-                  child: cubit.state.positiveOnly
-                      ? const Text('Show negative')
-                      : const Text('Hide negative'),
-                ),
-              ];
-            },
+            itemBuilder:
+                (_) => <PopupMenuEntry<void>>[
+                  PopupMenuItem<void>(
+                    onTap: cubit.jumpToEgo,
+                    child: Text(l10n.goToEgo),
+                  ),
+                  const PopupMenuDivider(),
+                  PopupMenuItem<void>(
+                    onTap: cubit.togglePositiveOnly,
+                    child:
+                        cubit.state.positiveOnly
+                            ? Text(l10n.showNegative)
+                            : Text(l10n.hideNegative),
+                  ),
+                ],
           ),
         ],
-
-        // Title
-        title: const Text('Graph view'),
 
         // Context selector
         // (hidden for now)

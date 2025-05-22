@@ -6,7 +6,7 @@ export 'package:tentura/ui/bloc/state_base.dart';
 part 'rating_state.freezed.dart';
 
 @Freezed(makeCollectionsUnmodifiable: false)
-class RatingState extends StateBase with _$RatingState {
+abstract class RatingState extends StateBase with _$RatingState {
   const factory RatingState({
     @Default('') String context,
     @Default([]) List<Profile> items,

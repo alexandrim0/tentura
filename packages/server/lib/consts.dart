@@ -1,25 +1,18 @@
 import 'dart:io' show Platform;
 
-import 'package:tentura_root/consts.dart' as tentura;
+import 'package:tentura_root/consts.dart' as r;
 
 export 'package:tentura_root/consts.dart' hide kImageServer, kServerName;
 
-// Numbers
-
-// blurHash
-const kMaxNumCompX = 8;
-const kMinNumCompX = 6;
-
 // Strings
-const kContextUserId = 'userId';
-
-const kPathActions = '/hasura/actions';
-const kPathEvents = '/hasura/events';
+const kContextJwtKey = 'contextJwt';
 
 // Make [environment] as mutable for testing purposes only!
 final environment = Map<String, String>.from(Platform.environment);
 
 final kDebugMode = environment['DEBUG_MODE'] == 'true';
+
+final kRenderSharedPreview = environment['RENDER_SHARED_PREVIEW'] == 'true';
 
 final kBindAddress = environment['BIND_ADDRESS'] ?? '0.0.0.0';
 
@@ -32,12 +25,12 @@ final kWorkersCount =
 final kServerUri = Uri.dataFromString(kServerName);
 
 /// First part of FQDN: `https://app.server.name`
-final kServerName = environment['SERVER_NAME'] ?? tentura.kServerName;
+final kServerName = environment['SERVER_NAME'] ?? r.kServerName;
 
 /// First part of FQDN: `https://image.server.name`
-final kImageServer = environment['IMAGE_SERVER'] ?? tentura.kImageServer;
+final kImageServer = environment['IMAGE_SERVER'] ?? r.kImageServer;
 
-final kImageFolderPath = environment['IMAGES_PATH'] ?? tentura.kImagesPath;
+final kImageFolderPath = environment['IMAGES_PATH'] ?? r.kImagesPath;
 
 // Database connection settings
 final kPgHost = environment['POSTGRES_HOST'] ?? 'postgres';
@@ -50,10 +43,11 @@ final kPgUsername = environment['POSTGRES_USERNAME'] ?? 'postgres';
 
 final kPgPassword = environment['POSTGRES_PASSWORD'] ?? 'password';
 
+final kMaxConnectionAge =
+    int.tryParse(environment['POSTGRES_MAXCONNAGE'] ?? '') ?? 600;
+
 final kMaxConnectionCount =
     int.tryParse(environment['POSTGRES_MAXCONN'] ?? '') ?? 25;
-
-final kTenturaPassword = environment['TENTURA_PASSWORD'];
 
 final kS3AccessKey = environment['S3_ACCESS_KEY'] ?? '';
 
@@ -88,3 +82,9 @@ final kJwtPrivateKey =
 MC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF
 -----END PRIVATE KEY-----
 ''';
+
+final kInvitationTTL = Duration(
+  hours:
+      int.tryParse(environment['INVITATION_TTL'] ?? '') ??
+      r.kInvitationDefaultTTL,
+);

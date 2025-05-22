@@ -1,84 +1,143 @@
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
-import 'package:stormberry/stormberry.dart';
 
-import 'package:tentura_server/consts.dart';
-import 'package:tentura_server/data/model/user_model.dart';
-import 'package:tentura_server/data/service/image_service.dart';
-import 'package:tentura_server/data/service/local_storage_service.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
+import 'package:tentura_server/env.dart';
+
+import '../database/tentura_db.dart';
+import '../mapper/user_mapper.dart';
 
 export 'package:tentura_server/domain/entity/user_entity.dart';
 
 @Injectable(env: [Environment.dev, Environment.prod], order: 1)
-class UserRepository {
-  UserRepository(this._database, this._imageService, this._localStorageService);
+class UserRepository with UserMapper {
+  const UserRepository(this._database, this._env);
 
-  final Database _database;
+  final TenturaDb _database;
 
-  final ImageService _imageService;
+  final Env _env;
 
-  final LocalStorageService _localStorageService;
-
-  Future<UserEntity> createUser({
+  Future<UserEntity> create({
     required String publicKey,
-    required UserEntity user,
-  }) async {
-    final now = DateTime.timestamp();
-    await _database.users.insertOne(
-      UserInsertRequest(
-        publicKey: publicKey,
-        id: user.id,
-        title: user.title,
-        description: user.description,
-        hasPicture: user.hasPicture,
-        picHeight: user.picHeight,
-        picWidth: user.picWidth,
-        blurHash: user.blurHash,
-        createdAt: now,
-        updatedAt: now,
-      ),
-    );
-    return getUserById(user.id);
-  }
+    required String title,
+  }) => _database.managers.users
+      .createReturning((o) => o(title: title, publicKey: publicKey))
+      .then(userModelToEntity);
 
-  Future<UserEntity> getUserById(String id) async => switch (await _database
-      .users
-      .queryUser(id)) {
-    final UserModel m => m.asEntity,
-    null => throw IdNotFoundException(id),
-  };
-
-  Future<UserEntity> getUserByPublicKey(String publicKey) async {
-    final users = await _database.users.queryUsers(
-      QueryParams(where: 'public_key=@pk', values: {'pk': publicKey}),
-    );
-    if (users.isEmpty) {
-      throw IdNotFoundException(publicKey);
+  // TBD: move to SQL
+  Future<UserEntity> createInvited({
+    required String invitationId,
+    required String publicKey,
+    required String title,
+  }) => _database.transaction<UserEntity>(() async {
+    final invitation =
+        await _database.managers.invitations
+            .filter((e) => e.id(invitationId))
+            .getSingle();
+    if (invitation.invitedId != null) {
+      throw const InvitationWrongException(
+        description: 'Invitation already used!',
+      );
     }
-    return (users.first as UserModel).asEntity;
-  }
+    if (invitation.createdAt.dateTime
+        .add(_env.invitationTTL)
+        .isBefore(DateTime.timestamp())) {
+      throw const InvitationWrongException(description: 'Invitation expired!');
+    }
 
-  Future<void> setUserImage({
-    required String id,
-    required Uint8List imageBytes,
-  }) async {
-    final image = _imageService.decodeImage(imageBytes);
-    await _localStorageService.saveBytesToFile(
-      imageBytes,
-      File('$kImageFolderPath/$id/avatar.$kImageExt'),
+    final user = await _database.managers.users.createReturning(
+      (o) => o(title: title, publicKey: publicKey),
     );
-    final blurHash = _imageService.calculateBlurHash(image);
-    await _database.users.updateOne(
-      UserUpdateRequest(
-        id: id,
-        hasPicture: true,
-        blurHash: blurHash,
-        picHeight: image.height,
-        picWidth: image.width,
+    final changedRowCount = await _database.managers.invitations
+        .filter((e) => e.id(invitationId))
+        .update((o) => o(invitedId: Value(user.id)));
+    if (changedRowCount == 0) {
+      throw const InvitationWrongException(
+        description: 'Can`t update invitation!',
+      );
+    }
+
+    await _database.managers.voteUsers.bulkCreate(
+      (o) => [
+        o(subject: user.id, object: invitation.userId, amount: 1),
+        o(subject: invitation.userId, object: user.id, amount: 1),
+      ],
+    );
+
+    return userModelToEntity(user);
+  });
+
+  Future<UserEntity> getById(String id) => _database.managers.users
+      .filter((e) => e.id(id))
+      .getSingle()
+      .then(userModelToEntity);
+
+  Future<UserEntity> getByPublicKey(String publicKey) => _database
+      .managers
+      .users
+      .filter((e) => e.publicKey(publicKey))
+      .getSingle()
+      .then(userModelToEntity);
+
+  Future<void> update({
+    required String id,
+    String? title,
+    String? description,
+    bool? hasImage,
+    String? blurHash,
+    int? imageHeight,
+    int? imageWidth,
+  }) async {
+    final user =
+        await _database.managers.users.filter((e) => e.id(id)).getSingle();
+    await _database.managers.users.replace(
+      user.copyWith(
+        title: title ?? user.title,
+        description: description ?? user.description,
+        hasPicture: hasImage ?? user.hasPicture,
+        blurHash: blurHash ?? user.blurHash,
+        picHeight: imageHeight ?? user.picHeight,
+        picWidth: imageWidth ?? user.picWidth,
       ),
     );
   }
+
+  Future<void> deleteById({required String id}) =>
+      _database.managers.users.filter((e) => e.id(id)).delete();
+
+  // TBD: move to SQL
+  Future<bool> bindMutual({
+    required String invitationId,
+    required String userId,
+  }) => _database.transaction<bool>(() async {
+    final invitation =
+        await _database.managers.invitations
+            .filter((e) => e.id(invitationId))
+            .getSingle();
+    if (invitation.invitedId != null) {
+      throw const InvitationWrongException(
+        description: 'Invitation already used!',
+      );
+    } else if (invitation.createdAt.dateTime
+        .add(_env.invitationTTL)
+        .isBefore(DateTime.timestamp())) {
+      throw const InvitationWrongException(description: 'Invitation expired!');
+    }
+
+    final invitationsDeletedCount =
+        await _database.managers.invitations
+            .filter((e) => e.id(invitationId))
+            .delete();
+
+    await _database.managers.voteUsers.bulkCreate(
+      (o) => [
+        o(subject: invitation.userId, object: userId, amount: 1),
+        o(subject: userId, object: invitation.userId, amount: 1),
+      ],
+      mode: InsertMode.insertOrIgnore,
+      onConflict: DoNothing(),
+    );
+
+    return invitationsDeletedCount == 1;
+  });
 }

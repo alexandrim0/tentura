@@ -3,7 +3,7 @@ import 'package:tentura/ui/bloc/state_base.dart';
 part 'graph_state.freezed.dart';
 
 @freezed
-class GraphState extends StateBase with _$GraphState {
+abstract class GraphState extends StateBase with _$GraphState {
   const factory GraphState({
     required String focus,
     @Default('') String context,

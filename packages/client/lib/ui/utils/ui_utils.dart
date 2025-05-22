@@ -77,12 +77,16 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
   );
 }
 
-Widget separatorBuilder(_, _) => const Divider(endIndent: 20, indent: 20);
+// ignore: strict_top_level_inference //
+Widget separatorBuilder(_, _) =>
+    const Divider(endIndent: kSpacingMedium, indent: kSpacingMedium);
 
 void commonScreenBlocListener(BuildContext context, StateBase state) =>
     switch (state.status) {
       final StateIsNavigating s =>
-        s.path == kPathBack ? context.back() : context.navigateNamedTo(s.path),
+        s.path == kPathBack
+            ? context.back()
+            : context.navigateNamedTo(s.path, includePrefixMatches: true),
       final StateIsMessaging s => showSnackBar(context, text: s.message),
       final StateHasError s => showSnackBar(
         context,

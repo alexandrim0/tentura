@@ -1,0 +1,7 @@
+mutation SignIn($authRequestToken: String!) {
+  signIn(authRequestToken: $authRequestToken) {
+    access_token
+    expires_in
+    subject
+  }
+}

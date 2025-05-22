@@ -1,2 +1,0 @@
-dependency_overrides:
-  web_socket_channel: ^3.0.2

@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "blaxou.freezed",
+        "humao.rest-client",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "uniquevision.vscode-plpgsql-lsp",
+    ],
+}

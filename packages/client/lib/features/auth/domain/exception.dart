@@ -29,3 +29,10 @@ class AuthIdIsWrongException extends AuthException {
   @override
   String toString() => 'Account ID is wrong!';
 }
+
+class InvitationCodeIsWrongException extends AuthException {
+  const InvitationCodeIsWrongException();
+
+  @override
+  String toString() => 'Invitation Code is wrong!';
+}

@@ -4,6 +4,7 @@ import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
+import 'package:tentura/features/beacon/data/repository/beacon_repository.dart';
 import 'package:tentura/features/comment/data/repository/comment_repository.dart';
 
 import '../../data/repository/beacon_view_repository.dart';
@@ -17,10 +18,12 @@ class BeaconViewCubit extends Cubit<BeaconViewState> {
   BeaconViewCubit({
     required String id,
     required Profile myProfile,
+    BeaconRepository? beaconRepository,
     CommentRepository? commentRepository,
     BeaconViewRepository? beaconViewRepository,
   }) : _beaconViewRepository =
            beaconViewRepository ?? GetIt.I<BeaconViewRepository>(),
+       _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
        _commentRepository = commentRepository ?? GetIt.I<CommentRepository>(),
        super(_idToState(id, myProfile)) {
     state.hasFocusedComment
@@ -30,8 +33,32 @@ class BeaconViewCubit extends Cubit<BeaconViewState> {
         : _fetchBeaconByIdWithComments();
   }
 
+  final BeaconRepository _beaconRepository;
   final BeaconViewRepository _beaconViewRepository;
   final CommentRepository _commentRepository;
+
+  Future<void> delete(String beaconId) async {
+    emit(state.copyWith(status: StateStatus.isLoading));
+    try {
+      await _beaconRepository.delete(beaconId);
+      emit(state.copyWith(status: StateIsNavigating.back()));
+    } catch (e) {
+      emit(state.copyWith(status: StateHasError(e)));
+    }
+  }
+
+  Future<void> toggleEnabled() async {
+    emit(state.copyWith(status: StateStatus.isLoading));
+    try {
+      await _beaconRepository.setEnabled(
+        !state.beacon.isEnabled,
+        id: state.beacon.id,
+      );
+      emit(state.copyWith(status: StateStatus.isSuccess));
+    } catch (e) {
+      emit(state.copyWith(status: StateHasError(e)));
+    }
+  }
 
   Future<void> showAll() async {
     emit(state.copyWith(status: StateStatus.isLoading));

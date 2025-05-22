@@ -15,17 +15,16 @@ abstract class RegisterModule {
       SentryNavigatorObserver();
 
   @singleton
+  // ignore: deprecated_member_use // TBD: change after 9.0.0
   QueryExecutor get database => SentryQueryExecutor(
-        () => driftDatabase(
-          name: 'main_db',
-          native: const DriftNativeOptions(
-            shareAcrossIsolates: true,
-          ),
-          web: DriftWebOptions(
-            sqlite3Wasm: Uri.parse('/assets/packages/sqlite3.wasm'),
-            driftWorker: Uri.parse('/assets/packages/drift_worker.js'),
-          ),
-        ),
-        databaseName: 'main_db',
-      );
+    () => driftDatabase(
+      name: 'main_db',
+      native: const DriftNativeOptions(shareAcrossIsolates: true),
+      web: DriftWebOptions(
+        sqlite3Wasm: Uri.parse('/assets/packages/sqlite3.wasm'),
+        driftWorker: Uri.parse('/assets/packages/drift_worker.js'),
+      ),
+    ),
+    databaseName: 'main_db',
+  );
 }

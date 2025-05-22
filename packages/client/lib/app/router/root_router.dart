@@ -61,11 +61,10 @@ class RootRouter extends RootStackRouter {
       ],
       guards: [
         AutoRouteGuard.redirect(
-          (resolver) =>
-              _settingsCubit.state.introEnabled ? const IntroRoute() : null,
+          (_) => _settingsCubit.state.introEnabled ? const IntroRoute() : null,
         ),
         AutoRouteGuard.redirect(
-          (resolver) =>
+          (_) =>
               _authCubit.state.isNotAuthenticated
                   ? const AuthLoginRoute()
                   : null,
@@ -80,7 +79,7 @@ class RootRouter extends RootStackRouter {
       page: IntroRoute.page,
       guards: [
         AutoRouteGuard.redirect(
-          (resolver) =>
+          (_) =>
               _settingsCubit.state.introEnabled ? null : const AuthLoginRoute(),
         ),
       ],
@@ -91,16 +90,35 @@ class RootRouter extends RootStackRouter {
       keepHistory: false,
       maintainState: false,
       page: AuthLoginRoute.page,
+      path: kPathSignIn,
       guards: [
         AutoRouteGuard.redirect(
-          (resolver) =>
-              _authCubit.state.isAuthenticated
-                  ? (_authCubit.state.currentAccount.needEdit
-                      ? const ProfileEditRoute()
-                      : const ProfileRoute())
-                  : null,
+          (_) => _authCubit.state.isAuthenticated ? const ProfileRoute() : null,
         ),
       ],
+    ),
+
+    // Profile Register
+    AutoRoute(
+      keepHistory: false,
+      maintainState: false,
+      fullscreenDialog: true,
+      page: AuthRegisterRoute.page,
+      path: kPathSignUp,
+      guards: [
+        AutoRouteGuard.redirect(
+          (_) => _authCubit.state.isAuthenticated ? const ProfileRoute() : null,
+        ),
+      ],
+    ),
+
+    // Invitations
+    AutoRoute(
+      keepHistory: false,
+      maintainState: false,
+      fullscreenDialog: true,
+      page: InvitationRoute.page,
+      path: kPathInvitations,
     ),
 
     // Profile View
@@ -204,9 +222,16 @@ class RootRouter extends RootStackRouter {
     uri.path == kPathAppLinkView
         ? uri.replace(
           path: switch (uri.queryParameters['id']) {
-            final String id when id.startsWith('U') => kPathProfileView,
             final String id when id.startsWith('B') => kPathBeaconView,
             final String id when id.startsWith('C') => kPathBeaconView,
+            final String id when id.startsWith('U') => kPathProfileView,
+            final String id when id.startsWith('O') => kPathProfileView,
+            final String id when id.startsWith('I') =>
+              _authCubit.state.isAuthenticated
+                  ? kPathConnect
+                  : _authCubit.state.accounts.isEmpty
+                  ? kPathSignUp
+                  : kPathSignIn,
             _ => kPathConnect,
           },
         )

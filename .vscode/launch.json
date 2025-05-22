@@ -17,6 +17,25 @@
             ],
         },
         {
+            "name": "tentura-web (local)",
+            "request": "launch",
+            "cwd": "packages/client",
+            "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+                "--dart-define",
+                "SERVER_NAME=https://localhost",
+                "--dart-define",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
+                "--web-browser-flag=--ignore-certificate-errors",
+            ]
+        },
+        {
             "name": "tentura-web (debug)",
             "request": "launch",
             "cwd": "packages/client",
@@ -112,6 +131,8 @@
             "type": "dart",
             "env": {
                 "DEBUG_MODE": "true",
+                "TENTURA_PASSWORD": "password",
+                "POSTGRES_PASSWORD": "password",
                 "SERVER_NAME": "https://dev.tentura.io",
                 "IMAGE_SERVER": "https://tentura.ams3.cdn.digitaloceanspaces.com",
                 "S3_ENDPOINT": "ams3.digitaloceanspaces.com",

@@ -19,7 +19,7 @@ class ProfileScreen extends StatelessWidget implements AutoRouteWrapper {
   Widget wrappedRoute(BuildContext context) => BlocProvider(
     create: (_) {
       final profile = GetIt.I<ProfileCubit>().state.profile;
-      return OpinionCubit(myProfile: profile, objectId: profile.id);
+      return OpinionCubit(myProfile: profile, userId: profile.id);
     },
     child: BlocListener<OpinionCubit, OpinionState>(
       listener: commonScreenBlocListener,

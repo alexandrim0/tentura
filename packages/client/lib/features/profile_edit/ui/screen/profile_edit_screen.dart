@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura/ui/l10n/l10n.dart';
+
 import 'package:tentura/consts.dart';
-import 'package:tentura/domain/entity/image_entity.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/utils/string_input_validator.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
@@ -11,7 +13,9 @@ import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 import '../bloc/profile_edit_cubit.dart';
 
 @RoutePage()
-class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
+class ProfileEditScreen extends StatelessWidget
+    with StringInputValidator
+    implements AutoRouteWrapper {
   const ProfileEditScreen({super.key});
 
   @override
@@ -36,6 +40,7 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = L10n.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     final cubit = context.read<ProfileEditCubit>();
     return Scaffold(
@@ -43,7 +48,15 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
       appBar: AppBar(
         actions: [
           // Save Button
-          TextButton(onPressed: cubit.save, child: const Text('Save')),
+          BlocSelector<ProfileEditCubit, ProfileEditState, bool>(
+            selector: (state) => state.hasChanges,
+            builder: (context, hasChanges) {
+              return TextButton(
+                onPressed: hasChanges ? cubit.save : null,
+                child: Text(l10n.buttonSave),
+              );
+            },
+          ),
         ],
       ),
       resizeToAvoidBottomInset: false,
@@ -52,20 +65,25 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
       body: Column(
         children: [
           // Avatar
-          BlocSelector<ProfileEditCubit, ProfileEditState, ImageEntity?>(
-            selector: (state) => state.image,
-            builder: (_, image) {
+          BlocBuilder<ProfileEditCubit, ProfileEditState>(
+            buildWhen: (p, c) {
+              return p.image != c.image || p.willDropImage != c.willDropImage;
+            },
+            builder: (_, state) {
               return Stack(
                 children: [
-                  if (image == null)
+                  if (state.hasNoImage && state.canDropImage)
                     // Original Avatar
-                    AvatarRated.big(profile: cubit.profile, withRating: false)
+                    AvatarRated.big(
+                      profile: cubit.state.original,
+                      withRating: false,
+                    )
                   else
                     SizedBox.square(
                       dimension: AvatarRated.sizeBig,
                       child: ClipOval(
                         child:
-                            image.imageBytes.isEmpty
+                            state.hasNoImage || state.willDropImage
                                 // Placeholder
                                 ? Image.asset(
                                   kAssetAvatarPlaceholder,
@@ -74,7 +92,7 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
                                 )
                                 // New Avatar
                                 : Image.memory(
-                                  image.imageBytes,
+                                  state.image!.imageBytes,
                                   fit: BoxFit.cover,
                                 ),
                       ),
@@ -84,7 +102,7 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
                     bottom: 0,
                     right: 0,
                     child:
-                        image == null || image.imageBytes.isNotEmpty
+                        state.canDropImage
                             // Remove Picture Button
                             ? IconButton.filledTonal(
                               iconSize: AvatarRated.sizeSmall,
@@ -108,16 +126,16 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
             padding: kPaddingAll,
             child: TextFormField(
               autovalidateMode: AutovalidateMode.onUnfocus,
-              decoration: const InputDecoration(
-                labelText: 'Title',
-                hintText: 'Please, fill Title',
+              decoration: InputDecoration(
+                labelText: l10n.labelTitle,
+                hintText: l10n.pleaseFillTitle,
               ),
               initialValue: cubit.state.title,
               maxLength: kTitleMaxLength,
               style: textTheme.headlineLarge,
               onChanged: cubit.setTitle,
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
-              validator: cubit.titleValidator,
+              validator: (text) => titleValidator(l10n, text),
             ),
           ),
 
@@ -139,18 +157,18 @@ class ProfileEditScreen extends StatelessWidget implements AutoRouteWrapper {
                             ? (constraints.maxHeight / painter.height).floor()
                             : 1,
                     minLines: 1,
-                    maxLength: kDescriptionLength,
+                    maxLength: kDescriptionMaxLength,
                     keyboardType: TextInputType.multiline,
                     initialValue: cubit.state.description,
                     autovalidateMode: AutovalidateMode.onUnfocus,
                     decoration: InputDecoration(
-                      labelText: 'Description',
+                      labelText: l10n.labelDescription,
                       labelStyle: textTheme.bodyMedium,
                     ),
                     style: textStyle,
                     onChanged: cubit.setDescription,
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                    validator: cubit.descriptionValidator,
+                    validator: (text) => descriptionValidator(l10n, text),
                   );
                 },
               ),

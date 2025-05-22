@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/data/model/beacon_model.dart';
 import 'package:tentura/data/model/user_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
@@ -11,9 +12,7 @@ import '../gql/_g/graph_fetch.req.gql.dart';
 
 @injectable
 class GraphRepository {
-  GraphRepository(
-    this._remoteApiService,
-  );
+  GraphRepository(this._remoteApiService);
 
   final RemoteApiService _remoteApiService;
 
@@ -23,21 +22,23 @@ class GraphRepository {
     String? focus,
     int offset = 0,
     int limit = 5,
-  }) =>
-      _remoteApiService
-          .request(GGraphFetchReq(
-            (b) => b
-              ..context = const Context().withEntry(HttpLinkHeaders(headers: {
-                kHeaderQueryContext: context,
-              }))
-              ..vars.focus = focus
-              ..vars.limit = limit
-              ..vars.offset = offset
-              ..vars.context = context
-              ..vars.positive_only = positiveOnly,
-          ))
-          .firstWhere((e) => e.dataSource == DataSource.Link)
-          .then((r) {
+  }) => _remoteApiService
+      .request(
+        GGraphFetchReq(
+          (b) =>
+              b
+                ..context = const Context().withEntry(
+                  HttpLinkHeaders(headers: {kHeaderQueryContext: context}),
+                )
+                ..vars.focus = focus
+                ..vars.limit = limit
+                ..vars.offset = offset
+                ..vars.context = context
+                ..vars.positive_only = positiveOnly,
+        ),
+      )
+      .firstWhere((e) => e.dataSource == DataSource.Link)
+      .then((r) {
         final data = r.dataOrThrow(label: _label);
         final beacon = data.beacon_by_pk;
         final result = <EdgeDirected>{};
@@ -50,9 +51,7 @@ class GraphRepository {
                 src: e.src!,
                 dst: e.dst!,
                 weight: weight,
-                node: BeaconNode(
-                  beacon: (beacon as BeaconModel).toEntity,
-                )
+                node: BeaconNode(beacon: (beacon as BeaconModel).toEntity),
               ));
             }
           } else {
@@ -60,9 +59,7 @@ class GraphRepository {
               src: e.src!,
               dst: e.dst!,
               weight: weight,
-              node: UserNode(
-                user: (user as UserModel).toEntity,
-              ),
+              node: UserNode(user: (user as UserModel).toEntity),
             ));
           }
         }

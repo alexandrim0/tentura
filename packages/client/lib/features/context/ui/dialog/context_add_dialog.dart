@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'package:tentura/ui/l10n/l10n.dart';
+
 class ContextAddDialog extends StatefulWidget {
   static Future<String?> show(BuildContext context) => showDialog<String>(
-        context: context,
-        builder: (context) => const ContextAddDialog(),
-      );
+    context: context,
+    builder: (context) => const ContextAddDialog(),
+  );
 
   const ContextAddDialog({super.key});
 
@@ -15,6 +17,8 @@ class ContextAddDialog extends StatefulWidget {
 class _ContextAddDialogState extends State<ContextAddDialog> {
   final _controller = TextEditingController();
 
+  late final _l10n = L10n.of(context)!;
+
   @override
   void dispose() {
     _controller.dispose();
@@ -23,19 +27,17 @@ class _ContextAddDialogState extends State<ContextAddDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
-        title: const Text('Add a new topic'),
-        content: TextField(
-          controller: _controller,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
-            child: const Text('Ok'),
-          ),
-          TextButton(
-            onPressed: Navigator.of(context).pop,
-            child: const Text('Cancel'),
-          ),
-        ],
-      );
+    title: Text(_l10n.addNewTopic),
+    content: TextField(controller: _controller),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
+        child: Text(_l10n.buttonOk),
+      ),
+      TextButton(
+        onPressed: Navigator.of(context).pop,
+        child: Text(_l10n.buttonCancel),
+      ),
+    ],
+  );
 }

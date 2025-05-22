@@ -6,20 +6,18 @@ class TimestamptzSerializer implements PrimitiveSerializer<DateTime> {
     Serializers serializers,
     Object serialized, {
     FullType specifiedType = FullType.unspecified,
-  }) =>
-      DateTime.parse(serialized as String);
+  }) => DateTime.parse(serialized as String);
 
   @override
   Object serialize(
     Serializers serializers,
     DateTime timestamptz, {
     FullType specifiedType = FullType.unspecified,
-  }) =>
-      timestamptz.toIso8601String();
+  }) => timestamptz.toIso8601String();
 
   @override
   Iterable<Type> get types => [DateTime];
 
   @override
-  String get wireName => 'DateTime';
+  String get wireName => 'timestamptz';
 }

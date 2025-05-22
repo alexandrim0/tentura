@@ -5,26 +5,19 @@ import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
 @Singleton(as: ContextCubit)
 class ContextCubitMock extends Cubit<ContextState> implements ContextCubit {
   ContextCubitMock()
-      : super(const ContextState(
-          contexts: {
-            'InContext',
-            'OutContext',
-            'NoneContext',
-          },
-        ));
+    : super(
+        const ContextState(
+          contexts: {'InContext', 'OutContext', 'NoneContext'},
+        ),
+      );
 
   @override
-  Future<void> add(
-    String? contextName, {
-    bool select = true,
-  }) async {
+  Future<void> add(String? contextName, {bool needSelect = true}) async {
     if (contextName == null || state.contexts.contains(contextName)) {
       return;
     }
-    if (select) {
-      emit(state.copyWith(
-        selected: contextName,
-      ));
+    if (needSelect) {
+      emit(state.copyWith(selected: contextName));
     }
   }
 
@@ -35,9 +28,7 @@ class ContextCubitMock extends Cubit<ContextState> implements ContextCubit {
     }
     state.contexts.remove(contextName);
     if (contextName == state.selected) {
-      emit(state.copyWith(
-        selected: '',
-      ));
+      emit(state.copyWith(selected: ''));
     } else {
       emit(state.copyWith());
     }
@@ -51,10 +42,7 @@ class ContextCubitMock extends Cubit<ContextState> implements ContextCubit {
 
   @override
   String select(String contextName) {
-    emit(ContextState(
-      contexts: state.contexts,
-      selected: contextName,
-    ));
+    emit(ContextState(contexts: state.contexts, selected: contextName));
     return contextName;
   }
 }

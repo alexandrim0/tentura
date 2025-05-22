@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use //
+
 import 'package:jaspr/server.dart';
 
 const kThemeLightPurple = Color.hex('#ECF0FC');
@@ -26,21 +28,16 @@ final defaultStyles = [
     '--avatar-name': kThemeDarkPurple.value,
     '--comment-bg': kThemeLightCommentbg.value,
   }),
-  css.media(
-    const MediaQuery.all(
-      prefersColorScheme: ColorScheme.dark,
-    ),
-    [
-      css(':root').raw({
-        '--background-color-purple': kThemeDarkPurple.value,
-        '--font-main': kThemeDarkFontMain.value,
-        '--shadow-color': kThemeDarkBoxShadow.value,
-        '--card-bg': kThemeDarkCardBg.value,
-        '--avatar-name': kThemeLightPurple.value,
-        '--comment-bg': kThemeDarkCommentBg.value,
-      }),
-    ],
-  ),
+  css.media(const MediaQuery.all(prefersColorScheme: ColorScheme.dark), [
+    css(':root').raw({
+      '--background-color-purple': kThemeDarkPurple.value,
+      '--font-main': kThemeDarkFontMain.value,
+      '--shadow-color': kThemeDarkBoxShadow.value,
+      '--card-bg': kThemeDarkCardBg.value,
+      '--avatar-name': kThemeLightPurple.value,
+      '--comment-bg': kThemeDarkCommentBg.value,
+    }),
+  ]),
   css('html, body')
       .box(
         width: 100.percent,
@@ -52,98 +49,63 @@ final defaultStyles = [
         fontFamily: FontFamilies.sansSerif,
         color: const Color.variable('--font-main'),
       ),
-  css('p').box(
-    margin: EdgeInsets.unset,
-  ),
+  css('p').box(margin: EdgeInsets.unset),
   css('h1')
-      .box(
-        margin: EdgeInsets.unset,
-      )
-      .text(
-        fontSize: 20.px,
-        fontWeight: FontWeight.normal,
-      ),
-  css('.secondary-text').text(
-    fontSize: 12.px,
-    color: const Color.hex('#78839C'),
-  ),
+      .box(margin: EdgeInsets.unset)
+      .text(fontSize: 20.px, fontWeight: FontWeight.normal),
   css(
-    '.card',
-    [
-      css('&')
-          .flexbox(
-            direction: FlexDirection.column,
-          )
-          .raw({
-            'flex-grow': '1',
-          })
-          .box(
-            minHeight: const Unit.vh(100),
-          )
-          .background(
-            color: const Color.variable('--card-bg'),
-          ),
-      css('&-container').box(
-        padding: const EdgeInsets.only(
-          left: kEdgeInsetsM,
-          right: kEdgeInsetsM,
-          bottom: kEdgeInsetsMS,
-          top: kEdgeInsetsMS,
-        ),
+    '.secondary-text',
+  ).text(fontSize: 12.px, color: const Color.hex('#78839C')),
+  css('.card', [
+    css('&')
+        .flexbox(direction: FlexDirection.column)
+        .raw({'flex-grow': '1'})
+        .box(minHeight: const Unit.vh(100))
+        .background(color: const Color.variable('--card-bg')),
+    css('&-container').box(
+      padding: const EdgeInsets.only(
+        left: kEdgeInsetsM,
+        right: kEdgeInsetsM,
+        bottom: kEdgeInsetsMS,
+        top: kEdgeInsetsMS,
       ),
-    ],
-  ),
-  css(
-    '.card-avatar',
-    [
-      css('&__image')
-          .box(
-        margin: const EdgeInsets.only(
-          left: Unit.pixels(-2),
-        ),
-        radius: const BorderRadius.circular(Unit.percent(50)),
-        border: const Border.all(
-          BorderSide.solid(
-            color: Color.variable('--card-bg'),
-            width: Unit.pixels(4),
+    ),
+  ]),
+  css('.card-avatar', [
+    css('&__image')
+        .box(
+          margin: const EdgeInsets.only(left: Unit.pixels(-2)),
+          radius: const BorderRadius.circular(Unit.percent(50)),
+          border: const Border.all(
+            BorderSide.solid(
+              color: Color.variable('--card-bg'),
+              width: Unit.pixels(4),
+            ),
           ),
-        ),
-      )
-          .raw({
-        'object-fit': 'cover',
-      }),
-      css('&__text').text(
-        color: const Color.variable('--avatar-name'),
-      ),
-    ],
-  ),
+        )
+        .raw({'object-fit': 'cover'}),
+    css('&__text').text(color: const Color.variable('--avatar-name')),
+  ]),
 
   // large screens
-  css.media(
-    MediaQuery.screen(
-      minWidth: 480.px,
-    ),
-    [
-      css('body')
-          .flexbox(
-            alignItems: AlignItems.center,
-            justifyContent: JustifyContent.center,
-          )
-          .background(
-            color: const Color.variable('--background-color-purple'),
-          ),
-      css('.card').box(
-        minHeight: Unit.auto,
-        maxWidth: const Unit.pixels(360),
-        radius: const BorderRadius.circular(Unit.pixels(8)),
-        shadow: const BoxShadow(
-          offsetX: Unit.zero,
-          offsetY: Unit.pixels(8),
-          blur: Unit.pixels(16),
-          spread: Unit.pixels(6),
-          color: Color.variable('--shadow-color'),
-        ),
+  css.media(MediaQuery.screen(minWidth: 480.px), [
+    css('body')
+        .flexbox(
+          alignItems: AlignItems.center,
+          justifyContent: JustifyContent.center,
+        )
+        .background(color: const Color.variable('--background-color-purple')),
+    css('.card').box(
+      minHeight: Unit.auto,
+      maxWidth: const Unit.pixels(360),
+      radius: const BorderRadius.circular(Unit.pixels(8)),
+      shadow: const BoxShadow(
+        offsetX: Unit.zero,
+        offsetY: Unit.pixels(8),
+        blur: Unit.pixels(16),
+        spread: Unit.pixels(6),
+        color: Color.variable('--shadow-color'),
       ),
-    ],
-  ),
+    ),
+  ]),
 ];

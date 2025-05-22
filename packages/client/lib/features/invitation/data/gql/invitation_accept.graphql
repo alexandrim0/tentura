@@ -1,0 +1,3 @@
+mutation InvitationAccept($id: String!) {
+  invitationAccept(id: $id)
+}

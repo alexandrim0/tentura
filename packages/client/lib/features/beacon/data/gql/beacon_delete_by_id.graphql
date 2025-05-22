@@ -1,5 +1,3 @@
 mutation BeaconDeleteById($id: String!) {
-  delete_beacon_by_pk(id: $id) {
-    id
-  }
+  beaconDeleteById(id: $id)
 }

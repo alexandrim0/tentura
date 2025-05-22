@@ -3,16 +3,17 @@
 query OpinionsFetchByUserId(
   $objectId: String!,
   $offset: Int = 0,
-  $limit: Int = 10
+  $limit: Int = 5
 ) {
-  opinion(
-    offset: $offset,
-    limit: $limit,
-    where: {
-      object: {_eq: $objectId},
-      scores: {dst_score: {_gt: "0"}}
+  opinions(
+    args: {
+      object: $objectId,
+      offset_: $offset,
+      limit_: $limit
     }
   ) {
-    ...OpinionModel
+    opinion {
+      ...OpinionModel
+    }
   }
 }
