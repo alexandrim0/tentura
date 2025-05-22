@@ -2,7 +2,7 @@ module.exports = {
   client: {
     service: {
       name: 'tentura',
-      localSchemaFile: './lib/data/gql/schema.graphql'
+      localSchemaFile: './packages/client/lib/data/gql/schema.graphql'
     },
   }
 };

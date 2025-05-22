@@ -1,0 +1,7 @@
+# import '/data/gql/user_model.graphql'
+
+query UserFetchById($id: String!) {
+  user_by_pk(id: $id) {
+    ...UserModel
+  }
+}

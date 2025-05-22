@@ -1,0 +1,7 @@
+# import '/data/gql/beacon_model.graphql'
+
+query BeaconFetchById($id: String!) {
+  beacon_by_pk(id: $id) {
+    ...BeaconModel
+  }
+}

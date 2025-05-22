@@ -1,9 +1,0 @@
-# import '/features/beacon/data/gql/beacon_model.graphql'
-
-query BeaconFetchPinned {
-  beacon_pinned {
-    beacon {
-      ...BeaconModel
-    }
-  }
-}

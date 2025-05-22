@@ -1,0 +1,28 @@
+# import '/data/gql/user_model.graphql'
+
+fragment BeaconModel on beacon {
+  id
+  title
+  description
+  created_at
+  updated_at
+  has_picture
+  pic_height
+  pic_width
+  blur_hash
+  is_pinned
+  context
+  enabled
+  my_vote
+  start_at
+  end_at
+  long
+  lat
+  author {
+    ...UserModel
+  }
+  scores {
+    src_score
+    dst_score
+  }
+}

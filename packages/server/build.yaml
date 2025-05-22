@@ -1,0 +1,20 @@
+targets:
+  $default:
+    builders:
+
+      drift_dev:
+        options:
+          databases:
+            tentura: lib/data/database/tentura_db.dart
+          named_parameters: true
+          sql:
+            dialects:
+              - postgres
+
+      freezed:
+        options:
+          equal: true
+          copy_with: true
+          format: false
+          when: false
+          map: false

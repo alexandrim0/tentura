@@ -1,0 +1,144 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "tentura (Dev, debug)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+                "--flavor",
+                "prod",
+				"--dart-define-from-file=.env",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
+				"--dart-define",
+				"SERVER_NAME=https://dev.tentura.io",
+            ],
+        },
+        {
+            "name": "tentura-web (local)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+                "--dart-define",
+                "SERVER_NAME=https://localhost",
+                "--dart-define",
+                "NEED_INVITE_CODE=true",
+                "--dart-define",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--web-port", "8888",
+                "--web-experimental-hot-reload",
+                "--web-browser-flag=--disable-web-security",
+                "--web-browser-flag=--ignore-certificate-errors",
+            ]
+        },
+        {
+            "name": "tentura-web (Dev, debug)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+				"--dart-define-from-file=.env",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
+				"--dart-define",
+				"SERVER_NAME=https://dev.tentura.io",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--web-port", "8888",
+                "--web-experimental-hot-reload",
+                "--web-browser-flag=--disable-web-security",
+            ]
+        },
+        {
+            "name": "tentura-stage (debug)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+                "--flavor",
+                "stage",
+                "--dart-define",
+                "SERVER_NAME=https://stage.tentura.io",
+                "--dart-define",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
+            ],
+        },
+        {
+            "name": "tentura-web (Prod, debug)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+				"--dart-define-from-file=.env",
+				"--dart-define",
+                "IMAGE_SERVER=https://static.tentura.io",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
+				"--dart-define",
+				"SERVER_NAME=https://app.tentura.io",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--web-port", "8888",
+                "--web-experimental-hot-reload",
+                "--web-browser-flag=--disable-web-security",
+            ]
+        },
+        {
+            "name": "tentura (profile)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "toolArgs": [
+                "--flavor",
+                "prod",
+				"--dart-define-from-file=.env",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
+				"--dart-define",
+				"SERVER_NAME=https://dev.tentura.io",
+            ],
+        },
+        {
+            "name": "tentura (release)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "toolArgs": [
+                "--flavor",
+                "prod",
+				"--dart-define-from-file=.env",
+            ],
+        },
+        {
+            "name": "tentura-wasm (release)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "toolArgs": [
+                "--wasm",
+				"--dart-define-from-file=.env",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
+				"--dart-define",
+				"SERVER_NAME=https://dev.tentura.io",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--wasm",
+                "--web-port", "8888",
+                "--web-browser-flag=--disable-web-security",
+            ]
+        },
+  ],
+}

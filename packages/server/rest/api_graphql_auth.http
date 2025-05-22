@@ -1,0 +1,87 @@
+#
+### GQL signIn
+#
+POST {{base_url}}/{{gqlV2_path}}
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation SignIn($authRequestToken: String!) {
+  signIn(
+    authRequestToken: $authRequestToken
+  ) {
+    subject
+    expires_in
+    access_token
+  }
+}
+
+{
+  "authRequestToken": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJwayI6IjJDbUliM0hvMmViNm04V0lvZzZLaXl6Q1kwNXNieVgwNFBpR2xINWJhRHc9IiwiaWF0IjoxNzQxODk0NDYxLCJleHAiOjIwNTI5MzQ0NjF9.NpwK4WT581zUZkWVXC-lzC3qhIGHywg4eZ7SuOKKl4mwQ8SomX-f8hMGgfE3wu4SBbGzrjxKkP4EIFnSYXdxBQ"
+}
+
+
+#
+### GQL signUp (no code)
+#
+POST {{base_url}}/{{gqlV2_path}}
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation SignUp(
+  $authRequestToken: String!,
+  $title: String!,
+) {
+  signUp(
+    authRequestToken: $authRequestToken,
+    title: $title,
+  ) {
+    subject
+    expires_in
+    access_token
+  }
+}
+
+{
+  "authRequestToken": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJwayI6IjJDbUliM0hvMmViNm04V0lvZzZLaXl6Q1kwNXNieVgwNFBpR2xINWJhRHc9IiwiaWF0IjoxNzQxODk0NDYxLCJleHAiOjIwNTI5MzQ0NjF9.NpwK4WT581zUZkWVXC-lzC3qhIGHywg4eZ7SuOKKl4mwQ8SomX-f8hMGgfE3wu4SBbGzrjxKkP4EIFnSYXdxBQ",
+  "title": "Newbie"
+}
+
+
+#
+### GQL signUp (with code)
+#
+POST {{base_url}}/{{gqlV2_path}}
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation SignUp(
+  $authRequestToken: String!,
+  $title: String!,
+) {
+  signUp(
+    authRequestToken: $authRequestToken,
+    title: $title,
+  ) {
+    subject
+    expires_in
+    access_token
+  }
+}
+
+{
+  "authRequestToken": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJwayI6IjJDbUliM0hvMmViNm04V0lvZzZLaXl6Q1kwNXNieVgwNFBpR2xINWJhRHc9IiwiaWF0IjoxNzQxODk0NDYxLCJleHAiOjIwNTI5MzQ0NjF9.NpwK4WT581zUZkWVXC-lzC3qhIGHywg4eZ7SuOKKl4mwQ8SomX-f8hMGgfE3wu4SBbGzrjxKkP4EIFnSYXdxBQ",
+  "title": "Newbie"
+}
+
+
+#
+### GQL signOut
+#
+POST {{base_url}}/{{gqlV2_path}}
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation SignOut {
+  signOut
+}

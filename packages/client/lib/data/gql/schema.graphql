@@ -1,0 +1,4308 @@
+schema {
+  query: query_root
+  mutation: mutation_root
+  subscription: subscription_root
+}
+
+"""whether this query should be cached (Hasura Cloud only)"""
+directive @cached(
+  """measured in seconds"""
+  ttl: Int! = 60
+
+  """refresh the cache entry"""
+  refresh: Boolean! = false
+) on QUERY
+
+type AuthResponse {
+  access_token: String!
+  expires_in: Int!
+  refresh_token: String
+  subject: String!
+  token_type: String!
+}
+
+"""
+columns and relationships of "beacon"
+"""
+type beacon {
+  """An object relationship"""
+  author: user!
+
+  """An array relationship"""
+  beacon_pinneds(
+    """distinct select on columns"""
+    distinct_on: [beacon_pinned_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [beacon_pinned_order_by!]
+
+    """filter the rows returned"""
+    where: beacon_pinned_bool_exp
+  ): [beacon_pinned!]!
+  blur_hash: String!
+
+  """An array relationship"""
+  comments(
+    """distinct select on columns"""
+    distinct_on: [comment_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [comment_order_by!]
+
+    """filter the rows returned"""
+    where: comment_bool_exp
+  ): [comment!]!
+  context: String
+  created_at: timestamptz!
+  description: String!
+  enabled: Boolean!
+  end_at: timestamptz
+  has_picture: Boolean!
+  id: String!
+
+  """
+  A computed field, executes function "beacon_get_is_pinned"
+  """
+  is_pinned: Boolean
+  lat: float8
+  long: float8
+
+  """
+  A computed field, executes function "beacon_get_my_vote"
+  """
+  my_vote: Int
+  pic_height: Int!
+  pic_width: Int!
+
+  """
+  A computed field, executes function "beacon_get_scores"
+  """
+  scores(
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]
+  start_at: timestamptz
+  title: String!
+  updated_at: timestamptz!
+  user_id: String!
+
+  """An array relationship"""
+  vote_beacons(
+    """distinct select on columns"""
+    distinct_on: [vote_beacon_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_beacon_order_by!]
+
+    """filter the rows returned"""
+    where: vote_beacon_bool_exp
+  ): [vote_beacon!]!
+}
+
+type Beacon {
+  id: String!
+}
+
+"""
+order by aggregate values of table "beacon"
+"""
+input beacon_aggregate_order_by {
+  avg: beacon_avg_order_by
+  count: order_by
+  max: beacon_max_order_by
+  min: beacon_min_order_by
+  stddev: beacon_stddev_order_by
+  stddev_pop: beacon_stddev_pop_order_by
+  stddev_samp: beacon_stddev_samp_order_by
+  sum: beacon_sum_order_by
+  var_pop: beacon_var_pop_order_by
+  var_samp: beacon_var_samp_order_by
+  variance: beacon_variance_order_by
+}
+
+"""
+order by avg() on columns of table "beacon"
+"""
+input beacon_avg_order_by {
+  lat: order_by
+  long: order_by
+  pic_height: order_by
+  pic_width: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "beacon". All fields are combined with a logical 'AND'.
+"""
+input beacon_bool_exp {
+  _and: [beacon_bool_exp!]
+  _not: beacon_bool_exp
+  _or: [beacon_bool_exp!]
+  author: user_bool_exp
+  beacon_pinneds: beacon_pinned_bool_exp
+  blur_hash: String_comparison_exp
+  comments: comment_bool_exp
+  context: String_comparison_exp
+  created_at: timestamptz_comparison_exp
+  description: String_comparison_exp
+  enabled: Boolean_comparison_exp
+  end_at: timestamptz_comparison_exp
+  has_picture: Boolean_comparison_exp
+  id: String_comparison_exp
+  is_pinned: Boolean_comparison_exp
+  lat: float8_comparison_exp
+  long: float8_comparison_exp
+  my_vote: Int_comparison_exp
+  pic_height: Int_comparison_exp
+  pic_width: Int_comparison_exp
+  scores: mutual_score_bool_exp
+  start_at: timestamptz_comparison_exp
+  title: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  user_id: String_comparison_exp
+  vote_beacons: vote_beacon_bool_exp
+}
+
+"""
+order by max() on columns of table "beacon"
+"""
+input beacon_max_order_by {
+  blur_hash: order_by
+  context: order_by
+  created_at: order_by
+  description: order_by
+  end_at: order_by
+  id: order_by
+  lat: order_by
+  long: order_by
+  pic_height: order_by
+  pic_width: order_by
+  start_at: order_by
+  title: order_by
+  updated_at: order_by
+  user_id: order_by
+}
+
+"""
+order by min() on columns of table "beacon"
+"""
+input beacon_min_order_by {
+  blur_hash: order_by
+  context: order_by
+  created_at: order_by
+  description: order_by
+  end_at: order_by
+  id: order_by
+  lat: order_by
+  long: order_by
+  pic_height: order_by
+  pic_width: order_by
+  start_at: order_by
+  title: order_by
+  updated_at: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "beacon"
+"""
+type beacon_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [beacon!]!
+}
+
+"""Ordering options when selecting data from "beacon"."""
+input beacon_order_by {
+  author: user_order_by
+  beacon_pinneds_aggregate: beacon_pinned_aggregate_order_by
+  blur_hash: order_by
+  comments_aggregate: comment_aggregate_order_by
+  context: order_by
+  created_at: order_by
+  description: order_by
+  enabled: order_by
+  end_at: order_by
+  has_picture: order_by
+  id: order_by
+  is_pinned: order_by
+  lat: order_by
+  long: order_by
+  my_vote: order_by
+  pic_height: order_by
+  pic_width: order_by
+  scores_aggregate: mutual_score_aggregate_order_by
+  start_at: order_by
+  title: order_by
+  updated_at: order_by
+  user_id: order_by
+  vote_beacons_aggregate: vote_beacon_aggregate_order_by
+}
+
+"""
+columns and relationships of "beacon_pinned"
+"""
+type beacon_pinned {
+  """An object relationship"""
+  beacon: beacon!
+  beacon_id: String!
+
+  """An object relationship"""
+  user: user!
+  user_id: String!
+}
+
+"""
+order by aggregate values of table "beacon_pinned"
+"""
+input beacon_pinned_aggregate_order_by {
+  count: order_by
+  max: beacon_pinned_max_order_by
+  min: beacon_pinned_min_order_by
+}
+
+"""
+Boolean expression to filter rows from the table "beacon_pinned". All fields are combined with a logical 'AND'.
+"""
+input beacon_pinned_bool_exp {
+  _and: [beacon_pinned_bool_exp!]
+  _not: beacon_pinned_bool_exp
+  _or: [beacon_pinned_bool_exp!]
+  beacon: beacon_bool_exp
+  beacon_id: String_comparison_exp
+  user: user_bool_exp
+  user_id: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "beacon_pinned"
+"""
+enum beacon_pinned_constraint {
+  """
+  unique or primary key constraint on columns "user_id", "beacon_id"
+  """
+  beacon_pinned_pkey
+}
+
+"""
+input type for inserting data into table "beacon_pinned"
+"""
+input beacon_pinned_insert_input {
+  beacon_id: String
+}
+
+"""
+order by max() on columns of table "beacon_pinned"
+"""
+input beacon_pinned_max_order_by {
+  beacon_id: order_by
+  user_id: order_by
+}
+
+"""
+order by min() on columns of table "beacon_pinned"
+"""
+input beacon_pinned_min_order_by {
+  beacon_id: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "beacon_pinned"
+"""
+type beacon_pinned_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [beacon_pinned!]!
+}
+
+"""
+on_conflict condition type for table "beacon_pinned"
+"""
+input beacon_pinned_on_conflict {
+  constraint: beacon_pinned_constraint!
+  update_columns: [beacon_pinned_update_column!]! = []
+  where: beacon_pinned_bool_exp
+}
+
+"""Ordering options when selecting data from "beacon_pinned"."""
+input beacon_pinned_order_by {
+  beacon: beacon_order_by
+  beacon_id: order_by
+  user: user_order_by
+  user_id: order_by
+}
+
+"""
+select columns of table "beacon_pinned"
+"""
+enum beacon_pinned_select_column {
+  """column name"""
+  beacon_id
+
+  """column name"""
+  user_id
+}
+
+"""
+Streaming cursor of the table "beacon_pinned"
+"""
+input beacon_pinned_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: beacon_pinned_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input beacon_pinned_stream_cursor_value_input {
+  beacon_id: String
+  user_id: String
+}
+
+"""
+placeholder for update columns of table "beacon_pinned" (current role has no relevant permissions)
+"""
+enum beacon_pinned_update_column {
+  """placeholder (do not use)"""
+  _PLACEHOLDER
+}
+
+"""primary key columns input for table: beacon"""
+input beacon_pk_columns_input {
+  id: String!
+}
+
+"""
+select columns of table "beacon"
+"""
+enum beacon_select_column {
+  """column name"""
+  blur_hash
+
+  """column name"""
+  context
+
+  """column name"""
+  created_at
+
+  """column name"""
+  description
+
+  """column name"""
+  enabled
+
+  """column name"""
+  end_at
+
+  """column name"""
+  has_picture
+
+  """column name"""
+  id
+
+  """column name"""
+  lat
+
+  """column name"""
+  long
+
+  """column name"""
+  pic_height
+
+  """column name"""
+  pic_width
+
+  """column name"""
+  start_at
+
+  """column name"""
+  title
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  user_id
+}
+
+"""
+input type for updating data in table "beacon"
+"""
+input beacon_set_input {
+  enabled: Boolean
+}
+
+"""
+order by stddev() on columns of table "beacon"
+"""
+input beacon_stddev_order_by {
+  lat: order_by
+  long: order_by
+  pic_height: order_by
+  pic_width: order_by
+}
+
+"""
+order by stddev_pop() on columns of table "beacon"
+"""
+input beacon_stddev_pop_order_by {
+  lat: order_by
+  long: order_by
+  pic_height: order_by
+  pic_width: order_by
+}
+
+"""
+order by stddev_samp() on columns of table "beacon"
+"""
+input beacon_stddev_samp_order_by {
+  lat: order_by
+  long: order_by
+  pic_height: order_by
+  pic_width: order_by
+}
+
+"""
+Streaming cursor of the table "beacon"
+"""
+input beacon_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: beacon_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input beacon_stream_cursor_value_input {
+  blur_hash: String
+  context: String
+  created_at: timestamptz
+  description: String
+  enabled: Boolean
+  end_at: timestamptz
+  has_picture: Boolean
+  id: String
+  lat: float8
+  long: float8
+  pic_height: Int
+  pic_width: Int
+  start_at: timestamptz
+  title: String
+  updated_at: timestamptz
+  user_id: String
+}
+
+"""
+order by sum() on columns of table "beacon"
+"""
+input beacon_sum_order_by {
+  lat: order_by
+  long: order_by
+  pic_height: order_by
+  pic_width: order_by
+}
+
+input beacon_updates {
+  """sets the columns of the filtered rows to the given values"""
+  _set: beacon_set_input
+
+  """filter the rows which have to be updated"""
+  where: beacon_bool_exp!
+}
+
+"""
+order by var_pop() on columns of table "beacon"
+"""
+input beacon_var_pop_order_by {
+  lat: order_by
+  long: order_by
+  pic_height: order_by
+  pic_width: order_by
+}
+
+"""
+order by var_samp() on columns of table "beacon"
+"""
+input beacon_var_samp_order_by {
+  lat: order_by
+  long: order_by
+  pic_height: order_by
+  pic_width: order_by
+}
+
+"""
+order by variance() on columns of table "beacon"
+"""
+input beacon_variance_order_by {
+  lat: order_by
+  long: order_by
+  pic_height: order_by
+  pic_width: order_by
+}
+
+"""
+Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
+"""
+input Boolean_comparison_exp {
+  _eq: Boolean
+  _gt: Boolean
+  _gte: Boolean
+  _in: [Boolean!]
+  _is_null: Boolean
+  _lt: Boolean
+  _lte: Boolean
+  _neq: Boolean
+  _nin: [Boolean!]
+}
+
+"""
+columns and relationships of "comment"
+"""
+type comment {
+  """An object relationship"""
+  author: user!
+
+  """An object relationship"""
+  beacon: beacon!
+  beacon_id: String!
+  content: String!
+  created_at: timestamptz!
+  id: String!
+
+  """
+  A computed field, executes function "comment_get_my_vote"
+  """
+  my_vote: Int
+
+  """
+  A computed field, executes function "comment_get_scores"
+  """
+  scores(
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]
+  user_id: String!
+
+  """An array relationship"""
+  vote_comments(
+    """distinct select on columns"""
+    distinct_on: [vote_comment_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_comment_order_by!]
+
+    """filter the rows returned"""
+    where: vote_comment_bool_exp
+  ): [vote_comment!]!
+}
+
+"""
+order by aggregate values of table "comment"
+"""
+input comment_aggregate_order_by {
+  count: order_by
+  max: comment_max_order_by
+  min: comment_min_order_by
+}
+
+"""
+Boolean expression to filter rows from the table "comment". All fields are combined with a logical 'AND'.
+"""
+input comment_bool_exp {
+  _and: [comment_bool_exp!]
+  _not: comment_bool_exp
+  _or: [comment_bool_exp!]
+  author: user_bool_exp
+  beacon: beacon_bool_exp
+  beacon_id: String_comparison_exp
+  content: String_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: String_comparison_exp
+  my_vote: Int_comparison_exp
+  scores: mutual_score_bool_exp
+  user_id: String_comparison_exp
+  vote_comments: vote_comment_bool_exp
+}
+
+"""
+unique or primary key constraints on table "comment"
+"""
+enum comment_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  comment_pkey
+}
+
+"""
+input type for inserting data into table "comment"
+"""
+input comment_insert_input {
+  beacon_id: String
+  content: String
+  vote_comments: vote_comment_arr_rel_insert_input
+}
+
+"""
+order by max() on columns of table "comment"
+"""
+input comment_max_order_by {
+  beacon_id: order_by
+  content: order_by
+  created_at: order_by
+  id: order_by
+  user_id: order_by
+}
+
+"""
+order by min() on columns of table "comment"
+"""
+input comment_min_order_by {
+  beacon_id: order_by
+  content: order_by
+  created_at: order_by
+  id: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "comment"
+"""
+type comment_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [comment!]!
+}
+
+"""
+input type for inserting object relation for remote table "comment"
+"""
+input comment_obj_rel_insert_input {
+  data: comment_insert_input!
+
+  """upsert condition"""
+  on_conflict: comment_on_conflict
+}
+
+"""
+on_conflict condition type for table "comment"
+"""
+input comment_on_conflict {
+  constraint: comment_constraint!
+  update_columns: [comment_update_column!]! = []
+  where: comment_bool_exp
+}
+
+"""Ordering options when selecting data from "comment"."""
+input comment_order_by {
+  author: user_order_by
+  beacon: beacon_order_by
+  beacon_id: order_by
+  content: order_by
+  created_at: order_by
+  id: order_by
+  my_vote: order_by
+  scores_aggregate: mutual_score_aggregate_order_by
+  user_id: order_by
+  vote_comments_aggregate: vote_comment_aggregate_order_by
+}
+
+"""
+select columns of table "comment"
+"""
+enum comment_select_column {
+  """column name"""
+  beacon_id
+
+  """column name"""
+  content
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  user_id
+}
+
+"""
+Streaming cursor of the table "comment"
+"""
+input comment_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: comment_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input comment_stream_cursor_value_input {
+  beacon_id: String
+  content: String
+  created_at: timestamptz
+  id: String
+  user_id: String
+}
+
+"""
+placeholder for update columns of table "comment" (current role has no relevant permissions)
+"""
+enum comment_update_column {
+  """placeholder (do not use)"""
+  _PLACEHOLDER
+}
+
+input Coordinates {
+  lat: Float
+  long: Float
+}
+
+"""ordering argument of a cursor"""
+enum cursor_ordering {
+  """ascending ordering of the cursor"""
+  ASC
+
+  """descending ordering of the cursor"""
+  DESC
+}
+
+"""
+columns and relationships of "edge"
+"""
+type edge {
+  """An object relationship"""
+  beacon: beacon
+
+  """An object relationship"""
+  comment: comment
+  dst: String
+  score: float8
+  src: String
+
+  """An object relationship"""
+  user: user
+}
+
+"""
+Boolean expression to filter rows from the table "edge". All fields are combined with a logical 'AND'.
+"""
+input edge_bool_exp {
+  _and: [edge_bool_exp!]
+  _not: edge_bool_exp
+  _or: [edge_bool_exp!]
+  beacon: beacon_bool_exp
+  comment: comment_bool_exp
+  dst: String_comparison_exp
+  score: float8_comparison_exp
+  src: String_comparison_exp
+  user: user_bool_exp
+}
+
+"""Ordering options when selecting data from "edge"."""
+input edge_order_by {
+  beacon: beacon_order_by
+  comment: comment_order_by
+  dst: order_by
+  score: order_by
+  src: order_by
+  user: user_order_by
+}
+
+"""
+select columns of table "edge"
+"""
+enum edge_select_column {
+  """column name"""
+  dst
+
+  """column name"""
+  score
+
+  """column name"""
+  src
+}
+
+"""
+Streaming cursor of the table "edge"
+"""
+input edge_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: edge_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input edge_stream_cursor_value_input {
+  dst: String
+  score: float8
+  src: String
+}
+
+scalar float8
+
+"""
+Boolean expression to compare columns of type "float8". All fields are combined with logical 'AND'.
+"""
+input float8_comparison_exp {
+  _eq: float8
+  _gt: float8
+  _gte: float8
+  _in: [float8!]
+  _is_null: Boolean
+  _lt: float8
+  _lte: float8
+  _neq: float8
+  _nin: [float8!]
+}
+
+input graph_args {
+  context: String
+  focus: String
+  positive_only: Boolean
+}
+
+"""
+Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
+"""
+input Int_comparison_exp {
+  _eq: Int
+  _gt: Int
+  _gte: Int
+  _in: [Int!]
+  _is_null: Boolean
+  _lt: Int
+  _lte: Int
+  _neq: Int
+  _nin: [Int!]
+}
+
+"""
+columns and relationships of "invitation"
+"""
+type invitation {
+  created_at: timestamptz!
+  id: String!
+
+  """An object relationship"""
+  invited: user
+  invited_id: String
+
+  """An object relationship"""
+  issuer: user
+  updated_at: timestamptz!
+  user_id: String!
+}
+
+type Invitation {
+  created_at: String!
+  id: String!
+  invited: user
+  invited_id: String
+  issuer: user
+  issuer_id: String!
+  updated_at: String!
+}
+
+"""
+Boolean expression to filter rows from the table "invitation". All fields are combined with a logical 'AND'.
+"""
+input invitation_bool_exp {
+  _and: [invitation_bool_exp!]
+  _not: invitation_bool_exp
+  _or: [invitation_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  id: String_comparison_exp
+  invited: user_bool_exp
+  invited_id: String_comparison_exp
+  issuer: user_bool_exp
+  updated_at: timestamptz_comparison_exp
+  user_id: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "invitation"
+"""
+enum invitation_constraint {
+  """
+  unique or primary key constraint on columns "invited_id"
+  """
+  invitation_invited_id_key
+
+  """
+  unique or primary key constraint on columns "id"
+  """
+  invitation_pkey
+}
+
+"""
+input type for inserting data into table "invitation"
+"""
+input invitation_insert_input
+
+"""
+response of any mutation on the table "invitation"
+"""
+type invitation_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [invitation!]!
+}
+
+"""
+on_conflict condition type for table "invitation"
+"""
+input invitation_on_conflict {
+  constraint: invitation_constraint!
+  update_columns: [invitation_update_column!]! = []
+  where: invitation_bool_exp
+}
+
+"""Ordering options when selecting data from "invitation"."""
+input invitation_order_by {
+  created_at: order_by
+  id: order_by
+  invited: user_order_by
+  invited_id: order_by
+  issuer: user_order_by
+  updated_at: order_by
+  user_id: order_by
+}
+
+"""
+select columns of table "invitation"
+"""
+enum invitation_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  invited_id
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  user_id
+}
+
+"""
+Streaming cursor of the table "invitation"
+"""
+input invitation_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: invitation_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input invitation_stream_cursor_value_input {
+  created_at: timestamptz
+  id: String
+  invited_id: String
+  updated_at: timestamptz
+  user_id: String
+}
+
+"""
+placeholder for update columns of table "invitation" (current role has no relevant permissions)
+"""
+enum invitation_update_column {
+  """placeholder (do not use)"""
+  _PLACEHOLDER
+}
+
+scalar json
+
+"""
+columns and relationships of "message"
+"""
+type message {
+  created_at: timestamptz!
+  delivered: Boolean!
+  id: uuid!
+  message: String!
+  object: String!
+  subject: String!
+  updated_at: timestamptz!
+}
+
+"""
+Boolean expression to filter rows from the table "message". All fields are combined with a logical 'AND'.
+"""
+input message_bool_exp {
+  _and: [message_bool_exp!]
+  _not: message_bool_exp
+  _or: [message_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  delivered: Boolean_comparison_exp
+  id: uuid_comparison_exp
+  message: String_comparison_exp
+  object: String_comparison_exp
+  subject: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "message"
+"""
+enum message_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  message_pkey
+}
+
+"""
+input type for inserting data into table "message"
+"""
+input message_insert_input {
+  message: String
+  object: String
+}
+
+"""
+response of any mutation on the table "message"
+"""
+type message_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [message!]!
+}
+
+"""
+on_conflict condition type for table "message"
+"""
+input message_on_conflict {
+  constraint: message_constraint!
+  update_columns: [message_update_column!]! = []
+  where: message_bool_exp
+}
+
+"""Ordering options when selecting data from "message"."""
+input message_order_by {
+  created_at: order_by
+  delivered: order_by
+  id: order_by
+  message: order_by
+  object: order_by
+  subject: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: message"""
+input message_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "message"
+"""
+enum message_select_column {
+  """column name"""
+  created_at
+
+  """column name"""
+  delivered
+
+  """column name"""
+  id
+
+  """column name"""
+  message
+
+  """column name"""
+  object
+
+  """column name"""
+  subject
+
+  """column name"""
+  updated_at
+}
+
+"""
+Streaming cursor of the table "message"
+"""
+input message_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: message_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input message_stream_cursor_value_input {
+  created_at: timestamptz
+  delivered: Boolean
+  id: uuid
+  message: String
+  object: String
+  subject: String
+  updated_at: timestamptz
+}
+
+"""
+placeholder for update columns of table "message" (current role has no relevant permissions)
+"""
+enum message_update_column {
+  """placeholder (do not use)"""
+  _PLACEHOLDER
+}
+
+input message_updates {
+  """filter the rows which have to be updated"""
+  where: message_bool_exp!
+}
+
+"""mutation root"""
+type mutation_root {
+  beaconCreate(context: String, coordinates: Coordinates = {}, description: String, endAt: String, image: Upload = {}, startAt: String, title: String!): Beacon!
+  beaconDeleteById(id: String!): Boolean!
+
+  """
+  delete data from the table: "beacon_pinned"
+  """
+  delete_beacon_pinned(
+    """filter the rows which have to be deleted"""
+    where: beacon_pinned_bool_exp!
+  ): beacon_pinned_mutation_response
+
+  """
+  delete single row from the table: "beacon_pinned"
+  """
+  delete_beacon_pinned_by_pk(beacon_id: String!, user_id: String!): beacon_pinned
+
+  """
+  delete data from the table: "comment"
+  """
+  delete_comment(
+    """filter the rows which have to be deleted"""
+    where: comment_bool_exp!
+  ): comment_mutation_response
+
+  """
+  delete single row from the table: "comment"
+  """
+  delete_comment_by_pk(id: String!): comment
+
+  """
+  delete data from the table: "message"
+  """
+  delete_message(
+    """filter the rows which have to be deleted"""
+    where: message_bool_exp!
+  ): message_mutation_response
+
+  """
+  delete single row from the table: "message"
+  """
+  delete_message_by_pk(id: uuid!): message
+
+  """
+  delete data from the table: "opinion"
+  """
+  delete_opinion(
+    """filter the rows which have to be deleted"""
+    where: opinion_bool_exp!
+  ): opinion_mutation_response
+
+  """
+  delete single row from the table: "opinion"
+  """
+  delete_opinion_by_pk(id: String!): opinion
+
+  """
+  delete data from the table: "user_context"
+  """
+  delete_user_context(
+    """filter the rows which have to be deleted"""
+    where: user_context_bool_exp!
+  ): user_context_mutation_response
+
+  """
+  delete single row from the table: "user_context"
+  """
+  delete_user_context_by_pk(context_name: String!, user_id: String!): user_context
+
+  """
+  delete data from the table: "vote_user"
+  """
+  delete_vote_user(
+    """filter the rows which have to be deleted"""
+    where: vote_user_bool_exp!
+  ): vote_user_mutation_response
+
+  """
+  delete single row from the table: "vote_user"
+  """
+  delete_vote_user_by_pk(object: String!, subject: String!): vote_user
+
+  """
+  insert data into the table: "beacon_pinned"
+  """
+  insert_beacon_pinned(
+    """the rows to be inserted"""
+    objects: [beacon_pinned_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: beacon_pinned_on_conflict
+  ): beacon_pinned_mutation_response
+
+  """
+  insert a single row into the table: "beacon_pinned"
+  """
+  insert_beacon_pinned_one(
+    """the row to be inserted"""
+    object: beacon_pinned_insert_input!
+
+    """upsert condition"""
+    on_conflict: beacon_pinned_on_conflict
+  ): beacon_pinned
+
+  """
+  insert data into the table: "comment"
+  """
+  insert_comment(
+    """the rows to be inserted"""
+    objects: [comment_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: comment_on_conflict
+  ): comment_mutation_response
+
+  """
+  insert a single row into the table: "comment"
+  """
+  insert_comment_one(
+    """the row to be inserted"""
+    object: comment_insert_input!
+
+    """upsert condition"""
+    on_conflict: comment_on_conflict
+  ): comment
+
+  """
+  insert data into the table: "invitation"
+  """
+  insert_invitation(
+    """the rows to be inserted"""
+    objects: [invitation_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: invitation_on_conflict
+  ): invitation_mutation_response
+
+  """
+  insert a single row into the table: "invitation"
+  """
+  insert_invitation_one(
+    """the row to be inserted"""
+    object: invitation_insert_input!
+
+    """upsert condition"""
+    on_conflict: invitation_on_conflict
+  ): invitation
+
+  """
+  insert data into the table: "message"
+  """
+  insert_message(
+    """the rows to be inserted"""
+    objects: [message_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: message_on_conflict
+  ): message_mutation_response
+
+  """
+  insert a single row into the table: "message"
+  """
+  insert_message_one(
+    """the row to be inserted"""
+    object: message_insert_input!
+
+    """upsert condition"""
+    on_conflict: message_on_conflict
+  ): message
+
+  """
+  insert data into the table: "opinion"
+  """
+  insert_opinion(
+    """the rows to be inserted"""
+    objects: [opinion_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: opinion_on_conflict
+  ): opinion_mutation_response
+
+  """
+  insert a single row into the table: "opinion"
+  """
+  insert_opinion_one(
+    """the row to be inserted"""
+    object: opinion_insert_input!
+
+    """upsert condition"""
+    on_conflict: opinion_on_conflict
+  ): opinion
+
+  """
+  insert data into the table: "user_context"
+  """
+  insert_user_context(
+    """the rows to be inserted"""
+    objects: [user_context_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: user_context_on_conflict
+  ): user_context_mutation_response
+
+  """
+  insert a single row into the table: "user_context"
+  """
+  insert_user_context_one(
+    """the row to be inserted"""
+    object: user_context_insert_input!
+
+    """upsert condition"""
+    on_conflict: user_context_on_conflict
+  ): user_context
+
+  """
+  insert data into the table: "vote_beacon"
+  """
+  insert_vote_beacon(
+    """the rows to be inserted"""
+    objects: [vote_beacon_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vote_beacon_on_conflict
+  ): vote_beacon_mutation_response
+
+  """
+  insert a single row into the table: "vote_beacon"
+  """
+  insert_vote_beacon_one(
+    """the row to be inserted"""
+    object: vote_beacon_insert_input!
+
+    """upsert condition"""
+    on_conflict: vote_beacon_on_conflict
+  ): vote_beacon
+
+  """
+  insert data into the table: "vote_comment"
+  """
+  insert_vote_comment(
+    """the rows to be inserted"""
+    objects: [vote_comment_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vote_comment_on_conflict
+  ): vote_comment_mutation_response
+
+  """
+  insert a single row into the table: "vote_comment"
+  """
+  insert_vote_comment_one(
+    """the row to be inserted"""
+    object: vote_comment_insert_input!
+
+    """upsert condition"""
+    on_conflict: vote_comment_on_conflict
+  ): vote_comment
+
+  """
+  insert data into the table: "vote_user"
+  """
+  insert_vote_user(
+    """the rows to be inserted"""
+    objects: [vote_user_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: vote_user_on_conflict
+  ): vote_user_mutation_response
+
+  """
+  insert a single row into the table: "vote_user"
+  """
+  insert_vote_user_one(
+    """the row to be inserted"""
+    object: vote_user_insert_input!
+
+    """upsert condition"""
+    on_conflict: vote_user_on_conflict
+  ): vote_user
+  invitationAccept(id: String!): Boolean!
+  invitationDelete(id: String!): Boolean!
+  signIn(authRequestToken: String!): AuthResponse!
+  signOut: Boolean!
+  signUp(authRequestToken: String!, title: String!): AuthResponse!
+
+  """
+  update data of the table: "beacon"
+  """
+  update_beacon(
+    """sets the columns of the filtered rows to the given values"""
+    _set: beacon_set_input
+
+    """filter the rows which have to be updated"""
+    where: beacon_bool_exp!
+  ): beacon_mutation_response
+
+  """
+  update single row of the table: "beacon"
+  """
+  update_beacon_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: beacon_set_input
+    pk_columns: beacon_pk_columns_input!
+  ): beacon
+
+  """
+  update multiples rows of table: "beacon"
+  """
+  update_beacon_many(
+    """updates to execute, in order"""
+    updates: [beacon_updates!]!
+  ): [beacon_mutation_response]
+
+  """
+  update data of the table: "message"
+  """
+  update_message(
+    """filter the rows which have to be updated"""
+    where: message_bool_exp!
+  ): message_mutation_response
+
+  """
+  update single row of the table: "message"
+  """
+  update_message_by_pk(pk_columns: message_pk_columns_input!): message
+
+  """
+  update multiples rows of table: "message"
+  """
+  update_message_many(
+    """updates to execute, in order"""
+    updates: [message_updates!]!
+  ): [message_mutation_response]
+
+  """
+  update data of the table: "vote_beacon"
+  """
+  update_vote_beacon(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: vote_beacon_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vote_beacon_set_input
+
+    """filter the rows which have to be updated"""
+    where: vote_beacon_bool_exp!
+  ): vote_beacon_mutation_response
+
+  """
+  update single row of the table: "vote_beacon"
+  """
+  update_vote_beacon_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: vote_beacon_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vote_beacon_set_input
+    pk_columns: vote_beacon_pk_columns_input!
+  ): vote_beacon
+
+  """
+  update multiples rows of table: "vote_beacon"
+  """
+  update_vote_beacon_many(
+    """updates to execute, in order"""
+    updates: [vote_beacon_updates!]!
+  ): [vote_beacon_mutation_response]
+
+  """
+  update data of the table: "vote_comment"
+  """
+  update_vote_comment(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: vote_comment_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vote_comment_set_input
+
+    """filter the rows which have to be updated"""
+    where: vote_comment_bool_exp!
+  ): vote_comment_mutation_response
+
+  """
+  update single row of the table: "vote_comment"
+  """
+  update_vote_comment_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: vote_comment_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vote_comment_set_input
+    pk_columns: vote_comment_pk_columns_input!
+  ): vote_comment
+
+  """
+  update multiples rows of table: "vote_comment"
+  """
+  update_vote_comment_many(
+    """updates to execute, in order"""
+    updates: [vote_comment_updates!]!
+  ): [vote_comment_mutation_response]
+
+  """
+  update data of the table: "vote_user"
+  """
+  update_vote_user(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: vote_user_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vote_user_set_input
+
+    """filter the rows which have to be updated"""
+    where: vote_user_bool_exp!
+  ): vote_user_mutation_response
+
+  """
+  update single row of the table: "vote_user"
+  """
+  update_vote_user_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: vote_user_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: vote_user_set_input
+    pk_columns: vote_user_pk_columns_input!
+  ): vote_user
+
+  """
+  update multiples rows of table: "vote_user"
+  """
+  update_vote_user_many(
+    """updates to execute, in order"""
+    updates: [vote_user_updates!]!
+  ): [vote_user_mutation_response]
+
+  """
+  execute VOLATILE function "updates" which returns "edge"
+  """
+  updates(
+    """
+    input parameters for function "updates"
+    """
+    args: updates_args!
+
+    """distinct select on columns"""
+    distinct_on: [edge_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [edge_order_by!]
+
+    """filter the rows returned"""
+    where: edge_bool_exp
+  ): [edge!]!
+  userDelete: Boolean!
+  userUpdate(description: String, dropImage: Boolean, image: Upload = {}, title: String): User!
+}
+
+"""
+columns and relationships of "mutual_score"
+"""
+type mutual_score {
+  """An object relationship"""
+  beacon: beacon
+
+  """An object relationship"""
+  comment: comment
+  dst: String
+  dst_score: float8
+
+  """An object relationship"""
+  opinion: opinion
+  src: String
+  src_score: float8
+
+  """An object relationship"""
+  user: user
+}
+
+"""
+order by aggregate values of table "mutual_score"
+"""
+input mutual_score_aggregate_order_by {
+  avg: mutual_score_avg_order_by
+  count: order_by
+  max: mutual_score_max_order_by
+  min: mutual_score_min_order_by
+  stddev: mutual_score_stddev_order_by
+  stddev_pop: mutual_score_stddev_pop_order_by
+  stddev_samp: mutual_score_stddev_samp_order_by
+  sum: mutual_score_sum_order_by
+  var_pop: mutual_score_var_pop_order_by
+  var_samp: mutual_score_var_samp_order_by
+  variance: mutual_score_variance_order_by
+}
+
+"""
+order by avg() on columns of table "mutual_score"
+"""
+input mutual_score_avg_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "mutual_score". All fields are combined with a logical 'AND'.
+"""
+input mutual_score_bool_exp {
+  _and: [mutual_score_bool_exp!]
+  _not: mutual_score_bool_exp
+  _or: [mutual_score_bool_exp!]
+  beacon: beacon_bool_exp
+  comment: comment_bool_exp
+  dst: String_comparison_exp
+  dst_score: float8_comparison_exp
+  opinion: opinion_bool_exp
+  src: String_comparison_exp
+  src_score: float8_comparison_exp
+  user: user_bool_exp
+}
+
+"""
+order by max() on columns of table "mutual_score"
+"""
+input mutual_score_max_order_by {
+  dst: order_by
+  dst_score: order_by
+  src: order_by
+  src_score: order_by
+}
+
+"""
+order by min() on columns of table "mutual_score"
+"""
+input mutual_score_min_order_by {
+  dst: order_by
+  dst_score: order_by
+  src: order_by
+  src_score: order_by
+}
+
+"""Ordering options when selecting data from "mutual_score"."""
+input mutual_score_order_by {
+  beacon: beacon_order_by
+  comment: comment_order_by
+  dst: order_by
+  dst_score: order_by
+  opinion: opinion_order_by
+  src: order_by
+  src_score: order_by
+  user: user_order_by
+}
+
+"""
+select columns of table "mutual_score"
+"""
+enum mutual_score_select_column {
+  """column name"""
+  dst
+
+  """column name"""
+  dst_score
+
+  """column name"""
+  src
+
+  """column name"""
+  src_score
+}
+
+"""
+order by stddev() on columns of table "mutual_score"
+"""
+input mutual_score_stddev_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by stddev_pop() on columns of table "mutual_score"
+"""
+input mutual_score_stddev_pop_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by stddev_samp() on columns of table "mutual_score"
+"""
+input mutual_score_stddev_samp_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+Streaming cursor of the table "mutual_score"
+"""
+input mutual_score_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: mutual_score_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input mutual_score_stream_cursor_value_input {
+  dst: String
+  dst_score: float8
+  src: String
+  src_score: float8
+}
+
+"""
+order by sum() on columns of table "mutual_score"
+"""
+input mutual_score_sum_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by var_pop() on columns of table "mutual_score"
+"""
+input mutual_score_var_pop_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by var_samp() on columns of table "mutual_score"
+"""
+input mutual_score_var_samp_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+"""
+order by variance() on columns of table "mutual_score"
+"""
+input mutual_score_variance_order_by {
+  dst_score: order_by
+  src_score: order_by
+}
+
+input my_field_args {
+  context: String
+}
+
+"""
+columns and relationships of "opinion"
+"""
+type opinion {
+  amount: Int!
+
+  """An object relationship"""
+  author: user
+  content: String!
+  created_at: timestamptz!
+  id: String!
+  object: String!
+
+  """
+  A computed field, executes function "opinion_get_scores"
+  """
+  scores(
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]
+  subject: String!
+
+  """An object relationship"""
+  user: user!
+}
+
+"""
+Boolean expression to filter rows from the table "opinion". All fields are combined with a logical 'AND'.
+"""
+input opinion_bool_exp {
+  _and: [opinion_bool_exp!]
+  _not: opinion_bool_exp
+  _or: [opinion_bool_exp!]
+  amount: Int_comparison_exp
+  author: user_bool_exp
+  content: String_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: String_comparison_exp
+  object: String_comparison_exp
+  scores: mutual_score_bool_exp
+  subject: String_comparison_exp
+  user: user_bool_exp
+}
+
+"""
+unique or primary key constraints on table "opinion"
+"""
+enum opinion_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  opinion_pkey
+
+  """
+  unique or primary key constraint on columns "object", "subject"
+  """
+  opinion_subject_object_key
+}
+
+"""
+input type for inserting data into table "opinion"
+"""
+input opinion_insert_input {
+  amount: Int
+  content: String
+  object: String
+}
+
+"""
+response of any mutation on the table "opinion"
+"""
+type opinion_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [opinion!]!
+}
+
+"""
+on_conflict condition type for table "opinion"
+"""
+input opinion_on_conflict {
+  constraint: opinion_constraint!
+  update_columns: [opinion_update_column!]! = []
+  where: opinion_bool_exp
+}
+
+"""Ordering options when selecting data from "opinion"."""
+input opinion_order_by {
+  amount: order_by
+  author: user_order_by
+  content: order_by
+  created_at: order_by
+  id: order_by
+  object: order_by
+  scores_aggregate: mutual_score_aggregate_order_by
+  subject: order_by
+  user: user_order_by
+}
+
+"""
+select columns of table "opinion"
+"""
+enum opinion_select_column {
+  """column name"""
+  amount
+
+  """column name"""
+  content
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  object
+
+  """column name"""
+  subject
+}
+
+"""
+Streaming cursor of the table "opinion"
+"""
+input opinion_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: opinion_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input opinion_stream_cursor_value_input {
+  amount: Int
+  content: String
+  created_at: timestamptz
+  id: String
+  object: String
+  subject: String
+}
+
+"""
+placeholder for update columns of table "opinion" (current role has no relevant permissions)
+"""
+enum opinion_update_column {
+  """placeholder (do not use)"""
+  _PLACEHOLDER
+}
+
+input opinions_args {
+  limit_: Int
+  object: String
+  offset_: Int
+}
+
+"""column ordering options"""
+enum order_by {
+  """in ascending order, nulls last"""
+  asc
+
+  """in ascending order, nulls first"""
+  asc_nulls_first
+
+  """in ascending order, nulls last"""
+  asc_nulls_last
+
+  """in descending order, nulls first"""
+  desc
+
+  """in descending order, nulls first"""
+  desc_nulls_first
+
+  """in descending order, nulls last"""
+  desc_nulls_last
+}
+
+type query_root {
+  """
+  fetch data from the table: "beacon"
+  """
+  beacon(
+    """distinct select on columns"""
+    distinct_on: [beacon_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [beacon_order_by!]
+
+    """filter the rows returned"""
+    where: beacon_bool_exp
+  ): [beacon!]!
+
+  """fetch data from the table: "beacon" using primary key columns"""
+  beacon_by_pk(id: String!): beacon
+
+  """
+  fetch data from the table: "beacon_pinned"
+  """
+  beacon_pinned(
+    """distinct select on columns"""
+    distinct_on: [beacon_pinned_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [beacon_pinned_order_by!]
+
+    """filter the rows returned"""
+    where: beacon_pinned_bool_exp
+  ): [beacon_pinned!]!
+
+  """fetch data from the table: "beacon_pinned" using primary key columns"""
+  beacon_pinned_by_pk(beacon_id: String!, user_id: String!): beacon_pinned
+
+  """
+  fetch data from the table: "comment"
+  """
+  comment(
+    """distinct select on columns"""
+    distinct_on: [comment_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [comment_order_by!]
+
+    """filter the rows returned"""
+    where: comment_bool_exp
+  ): [comment!]!
+
+  """fetch data from the table: "comment" using primary key columns"""
+  comment_by_pk(id: String!): comment
+
+  """
+  fetch data from the table: "edge"
+  """
+  edge(
+    """distinct select on columns"""
+    distinct_on: [edge_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [edge_order_by!]
+
+    """filter the rows returned"""
+    where: edge_bool_exp
+  ): [edge!]!
+
+  """
+  execute function "graph" which returns "mutual_score"
+  """
+  graph(
+    """
+    input parameters for function "graph"
+    """
+    args: graph_args!
+
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
+
+  """
+  fetch data from the table: "invitation"
+  """
+  invitation(
+    """distinct select on columns"""
+    distinct_on: [invitation_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [invitation_order_by!]
+
+    """filter the rows returned"""
+    where: invitation_bool_exp
+  ): [invitation!]!
+  invitationById(id: String!): Invitation
+
+  """fetch data from the table: "invitation" using primary key columns"""
+  invitation_by_pk(id: String!): invitation
+
+  """
+  fetch data from the table: "message"
+  """
+  message(
+    """distinct select on columns"""
+    distinct_on: [message_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_order_by!]
+
+    """filter the rows returned"""
+    where: message_bool_exp
+  ): [message!]!
+
+  """fetch data from the table: "message" using primary key columns"""
+  message_by_pk(id: uuid!): message
+
+  """
+  fetch data from the table: "mutual_score"
+  """
+  mutual_score(
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
+
+  """
+  execute function "my_field" which returns "mutual_score"
+  """
+  my_field(
+    """
+    input parameters for function "my_field"
+    """
+    args: my_field_args!
+
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
+
+  """
+  fetch data from the table: "opinion"
+  """
+  opinion(
+    """distinct select on columns"""
+    distinct_on: [opinion_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [opinion_order_by!]
+
+    """filter the rows returned"""
+    where: opinion_bool_exp
+  ): [opinion!]!
+
+  """fetch data from the table: "opinion" using primary key columns"""
+  opinion_by_pk(id: String!): opinion
+
+  """
+  execute function "opinions" which returns "mutual_score"
+  """
+  opinions(
+    """
+    input parameters for function "opinions"
+    """
+    args: opinions_args!
+
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
+
+  """
+  execute function "rating" which returns "mutual_score"
+  """
+  rating(
+    """
+    input parameters for function "rating"
+    """
+    args: rating_args!
+
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
+
+  """
+  fetch data from the table: "user"
+  """
+  user(
+    """distinct select on columns"""
+    distinct_on: [user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_order_by!]
+
+    """filter the rows returned"""
+    where: user_bool_exp
+  ): [user!]!
+
+  """fetch data from the table: "user" using primary key columns"""
+  user_by_pk(id: String!): user
+
+  """
+  fetch data from the table: "user_context"
+  """
+  user_context(
+    """distinct select on columns"""
+    distinct_on: [user_context_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_context_order_by!]
+
+    """filter the rows returned"""
+    where: user_context_bool_exp
+  ): [user_context!]!
+
+  """fetch data from the table: "user_context" using primary key columns"""
+  user_context_by_pk(context_name: String!, user_id: String!): user_context
+  version: String!
+
+  """
+  fetch data from the table: "vote_beacon"
+  """
+  vote_beacon(
+    """distinct select on columns"""
+    distinct_on: [vote_beacon_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_beacon_order_by!]
+
+    """filter the rows returned"""
+    where: vote_beacon_bool_exp
+  ): [vote_beacon!]!
+
+  """fetch data from the table: "vote_beacon" using primary key columns"""
+  vote_beacon_by_pk(object: String!, subject: String!): vote_beacon
+
+  """
+  fetch data from the table: "vote_comment"
+  """
+  vote_comment(
+    """distinct select on columns"""
+    distinct_on: [vote_comment_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_comment_order_by!]
+
+    """filter the rows returned"""
+    where: vote_comment_bool_exp
+  ): [vote_comment!]!
+
+  """fetch data from the table: "vote_comment" using primary key columns"""
+  vote_comment_by_pk(object: String!, subject: String!): vote_comment
+
+  """
+  fetch data from the table: "vote_user"
+  """
+  vote_user(
+    """distinct select on columns"""
+    distinct_on: [vote_user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_user_order_by!]
+
+    """filter the rows returned"""
+    where: vote_user_bool_exp
+  ): [vote_user!]!
+
+  """fetch data from the table: "vote_user" using primary key columns"""
+  vote_user_by_pk(object: String!, subject: String!): vote_user
+}
+
+input rating_args {
+  context: String
+}
+
+"""
+Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
+"""
+input String_comparison_exp {
+  _eq: String
+  _gt: String
+  _gte: String
+
+  """does the column match the given case-insensitive pattern"""
+  _ilike: String
+  _in: [String!]
+
+  """
+  does the column match the given POSIX regular expression, case insensitive
+  """
+  _iregex: String
+  _is_null: Boolean
+
+  """does the column match the given pattern"""
+  _like: String
+  _lt: String
+  _lte: String
+  _neq: String
+
+  """does the column NOT match the given case-insensitive pattern"""
+  _nilike: String
+  _nin: [String!]
+
+  """
+  does the column NOT match the given POSIX regular expression, case insensitive
+  """
+  _niregex: String
+
+  """does the column NOT match the given pattern"""
+  _nlike: String
+
+  """
+  does the column NOT match the given POSIX regular expression, case sensitive
+  """
+  _nregex: String
+
+  """does the column NOT match the given SQL regular expression"""
+  _nsimilar: String
+
+  """
+  does the column match the given POSIX regular expression, case sensitive
+  """
+  _regex: String
+
+  """does the column match the given SQL regular expression"""
+  _similar: String
+}
+
+type subscription_root {
+  """
+  fetch data from the table: "beacon"
+  """
+  beacon(
+    """distinct select on columns"""
+    distinct_on: [beacon_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [beacon_order_by!]
+
+    """filter the rows returned"""
+    where: beacon_bool_exp
+  ): [beacon!]!
+
+  """fetch data from the table: "beacon" using primary key columns"""
+  beacon_by_pk(id: String!): beacon
+
+  """
+  fetch data from the table: "beacon_pinned"
+  """
+  beacon_pinned(
+    """distinct select on columns"""
+    distinct_on: [beacon_pinned_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [beacon_pinned_order_by!]
+
+    """filter the rows returned"""
+    where: beacon_pinned_bool_exp
+  ): [beacon_pinned!]!
+
+  """fetch data from the table: "beacon_pinned" using primary key columns"""
+  beacon_pinned_by_pk(beacon_id: String!, user_id: String!): beacon_pinned
+
+  """
+  fetch data from the table in a streaming manner: "beacon_pinned"
+  """
+  beacon_pinned_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [beacon_pinned_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: beacon_pinned_bool_exp
+  ): [beacon_pinned!]!
+
+  """
+  fetch data from the table in a streaming manner: "beacon"
+  """
+  beacon_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [beacon_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: beacon_bool_exp
+  ): [beacon!]!
+
+  """
+  fetch data from the table: "comment"
+  """
+  comment(
+    """distinct select on columns"""
+    distinct_on: [comment_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [comment_order_by!]
+
+    """filter the rows returned"""
+    where: comment_bool_exp
+  ): [comment!]!
+
+  """fetch data from the table: "comment" using primary key columns"""
+  comment_by_pk(id: String!): comment
+
+  """
+  fetch data from the table in a streaming manner: "comment"
+  """
+  comment_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [comment_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: comment_bool_exp
+  ): [comment!]!
+
+  """
+  fetch data from the table: "edge"
+  """
+  edge(
+    """distinct select on columns"""
+    distinct_on: [edge_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [edge_order_by!]
+
+    """filter the rows returned"""
+    where: edge_bool_exp
+  ): [edge!]!
+
+  """
+  fetch data from the table in a streaming manner: "edge"
+  """
+  edge_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [edge_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: edge_bool_exp
+  ): [edge!]!
+
+  """
+  execute function "graph" which returns "mutual_score"
+  """
+  graph(
+    """
+    input parameters for function "graph"
+    """
+    args: graph_args!
+
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
+
+  """
+  fetch data from the table: "invitation"
+  """
+  invitation(
+    """distinct select on columns"""
+    distinct_on: [invitation_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [invitation_order_by!]
+
+    """filter the rows returned"""
+    where: invitation_bool_exp
+  ): [invitation!]!
+
+  """fetch data from the table: "invitation" using primary key columns"""
+  invitation_by_pk(id: String!): invitation
+
+  """
+  fetch data from the table in a streaming manner: "invitation"
+  """
+  invitation_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [invitation_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: invitation_bool_exp
+  ): [invitation!]!
+
+  """
+  fetch data from the table: "message"
+  """
+  message(
+    """distinct select on columns"""
+    distinct_on: [message_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [message_order_by!]
+
+    """filter the rows returned"""
+    where: message_bool_exp
+  ): [message!]!
+
+  """fetch data from the table: "message" using primary key columns"""
+  message_by_pk(id: uuid!): message
+
+  """
+  fetch data from the table in a streaming manner: "message"
+  """
+  message_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [message_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: message_bool_exp
+  ): [message!]!
+
+  """
+  fetch data from the table: "mutual_score"
+  """
+  mutual_score(
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
+
+  """
+  fetch data from the table in a streaming manner: "mutual_score"
+  """
+  mutual_score_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [mutual_score_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
+
+  """
+  execute function "my_field" which returns "mutual_score"
+  """
+  my_field(
+    """
+    input parameters for function "my_field"
+    """
+    args: my_field_args!
+
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
+
+  """
+  fetch data from the table: "opinion"
+  """
+  opinion(
+    """distinct select on columns"""
+    distinct_on: [opinion_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [opinion_order_by!]
+
+    """filter the rows returned"""
+    where: opinion_bool_exp
+  ): [opinion!]!
+
+  """fetch data from the table: "opinion" using primary key columns"""
+  opinion_by_pk(id: String!): opinion
+
+  """
+  fetch data from the table in a streaming manner: "opinion"
+  """
+  opinion_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [opinion_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: opinion_bool_exp
+  ): [opinion!]!
+
+  """
+  execute function "opinions" which returns "mutual_score"
+  """
+  opinions(
+    """
+    input parameters for function "opinions"
+    """
+    args: opinions_args!
+
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
+
+  """
+  execute function "rating" which returns "mutual_score"
+  """
+  rating(
+    """
+    input parameters for function "rating"
+    """
+    args: rating_args!
+
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]!
+
+  """
+  fetch data from the table: "user"
+  """
+  user(
+    """distinct select on columns"""
+    distinct_on: [user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_order_by!]
+
+    """filter the rows returned"""
+    where: user_bool_exp
+  ): [user!]!
+
+  """fetch data from the table: "user" using primary key columns"""
+  user_by_pk(id: String!): user
+
+  """
+  fetch data from the table: "user_context"
+  """
+  user_context(
+    """distinct select on columns"""
+    distinct_on: [user_context_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_context_order_by!]
+
+    """filter the rows returned"""
+    where: user_context_bool_exp
+  ): [user_context!]!
+
+  """fetch data from the table: "user_context" using primary key columns"""
+  user_context_by_pk(context_name: String!, user_id: String!): user_context
+
+  """
+  fetch data from the table in a streaming manner: "user_context"
+  """
+  user_context_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [user_context_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: user_context_bool_exp
+  ): [user_context!]!
+
+  """
+  fetch data from the table in a streaming manner: "user"
+  """
+  user_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [user_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: user_bool_exp
+  ): [user!]!
+
+  """
+  fetch data from the table: "vote_beacon"
+  """
+  vote_beacon(
+    """distinct select on columns"""
+    distinct_on: [vote_beacon_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_beacon_order_by!]
+
+    """filter the rows returned"""
+    where: vote_beacon_bool_exp
+  ): [vote_beacon!]!
+
+  """fetch data from the table: "vote_beacon" using primary key columns"""
+  vote_beacon_by_pk(object: String!, subject: String!): vote_beacon
+
+  """
+  fetch data from the table in a streaming manner: "vote_beacon"
+  """
+  vote_beacon_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [vote_beacon_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: vote_beacon_bool_exp
+  ): [vote_beacon!]!
+
+  """
+  fetch data from the table: "vote_comment"
+  """
+  vote_comment(
+    """distinct select on columns"""
+    distinct_on: [vote_comment_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_comment_order_by!]
+
+    """filter the rows returned"""
+    where: vote_comment_bool_exp
+  ): [vote_comment!]!
+
+  """fetch data from the table: "vote_comment" using primary key columns"""
+  vote_comment_by_pk(object: String!, subject: String!): vote_comment
+
+  """
+  fetch data from the table in a streaming manner: "vote_comment"
+  """
+  vote_comment_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [vote_comment_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: vote_comment_bool_exp
+  ): [vote_comment!]!
+
+  """
+  fetch data from the table: "vote_user"
+  """
+  vote_user(
+    """distinct select on columns"""
+    distinct_on: [vote_user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_user_order_by!]
+
+    """filter the rows returned"""
+    where: vote_user_bool_exp
+  ): [vote_user!]!
+
+  """fetch data from the table: "vote_user" using primary key columns"""
+  vote_user_by_pk(object: String!, subject: String!): vote_user
+
+  """
+  fetch data from the table in a streaming manner: "vote_user"
+  """
+  vote_user_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [vote_user_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: vote_user_bool_exp
+  ): [vote_user!]!
+}
+
+scalar timestamptz
+
+"""
+Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'.
+"""
+input timestamptz_comparison_exp {
+  _eq: timestamptz
+  _gt: timestamptz
+  _gte: timestamptz
+  _in: [timestamptz!]
+  _is_null: Boolean
+  _lt: timestamptz
+  _lte: timestamptz
+  _neq: timestamptz
+  _nin: [timestamptz!]
+}
+
+input updates_args {
+  hasura_session: json
+  prefix: String
+}
+
+input Upload {
+  filename: String
+  type: String
+}
+
+"""
+columns and relationships of "user"
+"""
+type user {
+  """An array relationship"""
+  beacon_pinneds(
+    """distinct select on columns"""
+    distinct_on: [beacon_pinned_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [beacon_pinned_order_by!]
+
+    """filter the rows returned"""
+    where: beacon_pinned_bool_exp
+  ): [beacon_pinned!]!
+
+  """An array relationship"""
+  beacons(
+    """distinct select on columns"""
+    distinct_on: [beacon_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [beacon_order_by!]
+
+    """filter the rows returned"""
+    where: beacon_bool_exp
+  ): [beacon!]!
+  blur_hash: String!
+
+  """An array relationship"""
+  comments(
+    """distinct select on columns"""
+    distinct_on: [comment_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [comment_order_by!]
+
+    """filter the rows returned"""
+    where: comment_bool_exp
+  ): [comment!]!
+  created_at: timestamptz!
+  description: String!
+  has_picture: Boolean!
+  id: String!
+
+  """
+  A computed field, executes function "user_get_my_vote"
+  """
+  my_vote: Int
+  pic_height: Int!
+  pic_width: Int!
+  public_key: String!
+
+  """
+  A computed field, executes function "user_get_scores"
+  """
+  scores(
+    """distinct select on columns"""
+    distinct_on: [mutual_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [mutual_score_order_by!]
+
+    """filter the rows returned"""
+    where: mutual_score_bool_exp
+  ): [mutual_score!]
+  title: String!
+  updated_at: timestamptz!
+
+  """An array relationship"""
+  voteUsersBySubject(
+    """distinct select on columns"""
+    distinct_on: [vote_user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_user_order_by!]
+
+    """filter the rows returned"""
+    where: vote_user_bool_exp
+  ): [vote_user!]!
+
+  """An array relationship"""
+  vote_beacons(
+    """distinct select on columns"""
+    distinct_on: [vote_beacon_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_beacon_order_by!]
+
+    """filter the rows returned"""
+    where: vote_beacon_bool_exp
+  ): [vote_beacon!]!
+
+  """An array relationship"""
+  vote_comments(
+    """distinct select on columns"""
+    distinct_on: [vote_comment_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_comment_order_by!]
+
+    """filter the rows returned"""
+    where: vote_comment_bool_exp
+  ): [vote_comment!]!
+
+  """An array relationship"""
+  vote_users(
+    """distinct select on columns"""
+    distinct_on: [vote_user_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [vote_user_order_by!]
+
+    """filter the rows returned"""
+    where: vote_user_bool_exp
+  ): [vote_user!]!
+}
+
+type User {
+  id: String!
+}
+
+"""
+Boolean expression to filter rows from the table "user". All fields are combined with a logical 'AND'.
+"""
+input user_bool_exp {
+  _and: [user_bool_exp!]
+  _not: user_bool_exp
+  _or: [user_bool_exp!]
+  beacon_pinneds: beacon_pinned_bool_exp
+  beacons: beacon_bool_exp
+  blur_hash: String_comparison_exp
+  comments: comment_bool_exp
+  created_at: timestamptz_comparison_exp
+  description: String_comparison_exp
+  has_picture: Boolean_comparison_exp
+  id: String_comparison_exp
+  my_vote: Int_comparison_exp
+  pic_height: Int_comparison_exp
+  pic_width: Int_comparison_exp
+  public_key: String_comparison_exp
+  scores: mutual_score_bool_exp
+  title: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  voteUsersBySubject: vote_user_bool_exp
+  vote_beacons: vote_beacon_bool_exp
+  vote_comments: vote_comment_bool_exp
+  vote_users: vote_user_bool_exp
+}
+
+"""
+columns and relationships of "user_context"
+"""
+type user_context {
+  context_name: String!
+  user_id: String!
+}
+
+"""
+Boolean expression to filter rows from the table "user_context". All fields are combined with a logical 'AND'.
+"""
+input user_context_bool_exp {
+  _and: [user_context_bool_exp!]
+  _not: user_context_bool_exp
+  _or: [user_context_bool_exp!]
+  context_name: String_comparison_exp
+  user_id: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "user_context"
+"""
+enum user_context_constraint {
+  """
+  unique or primary key constraint on columns "user_id", "context_name"
+  """
+  user_context_pkey
+}
+
+"""
+input type for inserting data into table "user_context"
+"""
+input user_context_insert_input {
+  context_name: String
+}
+
+"""
+response of any mutation on the table "user_context"
+"""
+type user_context_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [user_context!]!
+}
+
+"""
+on_conflict condition type for table "user_context"
+"""
+input user_context_on_conflict {
+  constraint: user_context_constraint!
+  update_columns: [user_context_update_column!]! = []
+  where: user_context_bool_exp
+}
+
+"""Ordering options when selecting data from "user_context"."""
+input user_context_order_by {
+  context_name: order_by
+  user_id: order_by
+}
+
+"""
+select columns of table "user_context"
+"""
+enum user_context_select_column {
+  """column name"""
+  context_name
+
+  """column name"""
+  user_id
+}
+
+"""
+Streaming cursor of the table "user_context"
+"""
+input user_context_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: user_context_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input user_context_stream_cursor_value_input {
+  context_name: String
+  user_id: String
+}
+
+"""
+placeholder for update columns of table "user_context" (current role has no relevant permissions)
+"""
+enum user_context_update_column {
+  """placeholder (do not use)"""
+  _PLACEHOLDER
+}
+
+"""Ordering options when selecting data from "user"."""
+input user_order_by {
+  beacon_pinneds_aggregate: beacon_pinned_aggregate_order_by
+  beacons_aggregate: beacon_aggregate_order_by
+  blur_hash: order_by
+  comments_aggregate: comment_aggregate_order_by
+  created_at: order_by
+  description: order_by
+  has_picture: order_by
+  id: order_by
+  my_vote: order_by
+  pic_height: order_by
+  pic_width: order_by
+  public_key: order_by
+  scores_aggregate: mutual_score_aggregate_order_by
+  title: order_by
+  updated_at: order_by
+  voteUsersBySubject_aggregate: vote_user_aggregate_order_by
+  vote_beacons_aggregate: vote_beacon_aggregate_order_by
+  vote_comments_aggregate: vote_comment_aggregate_order_by
+  vote_users_aggregate: vote_user_aggregate_order_by
+}
+
+"""
+select columns of table "user"
+"""
+enum user_select_column {
+  """column name"""
+  blur_hash
+
+  """column name"""
+  created_at
+
+  """column name"""
+  description
+
+  """column name"""
+  has_picture
+
+  """column name"""
+  id
+
+  """column name"""
+  pic_height
+
+  """column name"""
+  pic_width
+
+  """column name"""
+  public_key
+
+  """column name"""
+  title
+
+  """column name"""
+  updated_at
+}
+
+"""
+Streaming cursor of the table "user"
+"""
+input user_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: user_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input user_stream_cursor_value_input {
+  blur_hash: String
+  created_at: timestamptz
+  description: String
+  has_picture: Boolean
+  id: String
+  pic_height: Int
+  pic_width: Int
+  public_key: String
+  title: String
+  updated_at: timestamptz
+}
+
+scalar uuid
+
+"""
+Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
+"""
+input uuid_comparison_exp {
+  _eq: uuid
+  _gt: uuid
+  _gte: uuid
+  _in: [uuid!]
+  _is_null: Boolean
+  _lt: uuid
+  _lte: uuid
+  _neq: uuid
+  _nin: [uuid!]
+}
+
+"""
+columns and relationships of "vote_beacon"
+"""
+type vote_beacon {
+  amount: Int!
+
+  """An object relationship"""
+  beacon: beacon!
+  created_at: timestamptz!
+  object: String!
+  subject: String!
+  updated_at: timestamptz!
+
+  """An object relationship"""
+  user: user!
+}
+
+"""
+order by aggregate values of table "vote_beacon"
+"""
+input vote_beacon_aggregate_order_by {
+  avg: vote_beacon_avg_order_by
+  count: order_by
+  max: vote_beacon_max_order_by
+  min: vote_beacon_min_order_by
+  stddev: vote_beacon_stddev_order_by
+  stddev_pop: vote_beacon_stddev_pop_order_by
+  stddev_samp: vote_beacon_stddev_samp_order_by
+  sum: vote_beacon_sum_order_by
+  var_pop: vote_beacon_var_pop_order_by
+  var_samp: vote_beacon_var_samp_order_by
+  variance: vote_beacon_variance_order_by
+}
+
+"""
+order by avg() on columns of table "vote_beacon"
+"""
+input vote_beacon_avg_order_by {
+  amount: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "vote_beacon". All fields are combined with a logical 'AND'.
+"""
+input vote_beacon_bool_exp {
+  _and: [vote_beacon_bool_exp!]
+  _not: vote_beacon_bool_exp
+  _or: [vote_beacon_bool_exp!]
+  amount: Int_comparison_exp
+  beacon: beacon_bool_exp
+  created_at: timestamptz_comparison_exp
+  object: String_comparison_exp
+  subject: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  user: user_bool_exp
+}
+
+"""
+unique or primary key constraints on table "vote_beacon"
+"""
+enum vote_beacon_constraint {
+  """
+  unique or primary key constraint on columns "object", "subject"
+  """
+  vote_beacon_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "vote_beacon"
+"""
+input vote_beacon_inc_input {
+  amount: Int
+}
+
+"""
+input type for inserting data into table "vote_beacon"
+"""
+input vote_beacon_insert_input {
+  amount: Int
+  object: String
+}
+
+"""
+order by max() on columns of table "vote_beacon"
+"""
+input vote_beacon_max_order_by {
+  amount: order_by
+  created_at: order_by
+  object: order_by
+  subject: order_by
+  updated_at: order_by
+}
+
+"""
+order by min() on columns of table "vote_beacon"
+"""
+input vote_beacon_min_order_by {
+  amount: order_by
+  created_at: order_by
+  object: order_by
+  subject: order_by
+  updated_at: order_by
+}
+
+"""
+response of any mutation on the table "vote_beacon"
+"""
+type vote_beacon_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vote_beacon!]!
+}
+
+"""
+on_conflict condition type for table "vote_beacon"
+"""
+input vote_beacon_on_conflict {
+  constraint: vote_beacon_constraint!
+  update_columns: [vote_beacon_update_column!]! = []
+  where: vote_beacon_bool_exp
+}
+
+"""Ordering options when selecting data from "vote_beacon"."""
+input vote_beacon_order_by {
+  amount: order_by
+  beacon: beacon_order_by
+  created_at: order_by
+  object: order_by
+  subject: order_by
+  updated_at: order_by
+  user: user_order_by
+}
+
+"""primary key columns input for table: vote_beacon"""
+input vote_beacon_pk_columns_input {
+  object: String!
+  subject: String!
+}
+
+"""
+select columns of table "vote_beacon"
+"""
+enum vote_beacon_select_column {
+  """column name"""
+  amount
+
+  """column name"""
+  created_at
+
+  """column name"""
+  object
+
+  """column name"""
+  subject
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "vote_beacon"
+"""
+input vote_beacon_set_input {
+  amount: Int
+}
+
+"""
+order by stddev() on columns of table "vote_beacon"
+"""
+input vote_beacon_stddev_order_by {
+  amount: order_by
+}
+
+"""
+order by stddev_pop() on columns of table "vote_beacon"
+"""
+input vote_beacon_stddev_pop_order_by {
+  amount: order_by
+}
+
+"""
+order by stddev_samp() on columns of table "vote_beacon"
+"""
+input vote_beacon_stddev_samp_order_by {
+  amount: order_by
+}
+
+"""
+Streaming cursor of the table "vote_beacon"
+"""
+input vote_beacon_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: vote_beacon_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input vote_beacon_stream_cursor_value_input {
+  amount: Int
+  created_at: timestamptz
+  object: String
+  subject: String
+  updated_at: timestamptz
+}
+
+"""
+order by sum() on columns of table "vote_beacon"
+"""
+input vote_beacon_sum_order_by {
+  amount: order_by
+}
+
+"""
+update columns of table "vote_beacon"
+"""
+enum vote_beacon_update_column {
+  """column name"""
+  amount
+}
+
+input vote_beacon_updates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: vote_beacon_inc_input
+
+  """sets the columns of the filtered rows to the given values"""
+  _set: vote_beacon_set_input
+
+  """filter the rows which have to be updated"""
+  where: vote_beacon_bool_exp!
+}
+
+"""
+order by var_pop() on columns of table "vote_beacon"
+"""
+input vote_beacon_var_pop_order_by {
+  amount: order_by
+}
+
+"""
+order by var_samp() on columns of table "vote_beacon"
+"""
+input vote_beacon_var_samp_order_by {
+  amount: order_by
+}
+
+"""
+order by variance() on columns of table "vote_beacon"
+"""
+input vote_beacon_variance_order_by {
+  amount: order_by
+}
+
+"""
+columns and relationships of "vote_comment"
+"""
+type vote_comment {
+  amount: Int!
+
+  """An object relationship"""
+  comment: comment!
+  created_at: timestamptz!
+  object: String!
+  subject: String!
+  updated_at: timestamptz!
+
+  """An object relationship"""
+  user: user!
+}
+
+"""
+order by aggregate values of table "vote_comment"
+"""
+input vote_comment_aggregate_order_by {
+  avg: vote_comment_avg_order_by
+  count: order_by
+  max: vote_comment_max_order_by
+  min: vote_comment_min_order_by
+  stddev: vote_comment_stddev_order_by
+  stddev_pop: vote_comment_stddev_pop_order_by
+  stddev_samp: vote_comment_stddev_samp_order_by
+  sum: vote_comment_sum_order_by
+  var_pop: vote_comment_var_pop_order_by
+  var_samp: vote_comment_var_samp_order_by
+  variance: vote_comment_variance_order_by
+}
+
+"""
+input type for inserting array relation for remote table "vote_comment"
+"""
+input vote_comment_arr_rel_insert_input {
+  data: [vote_comment_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: vote_comment_on_conflict
+}
+
+"""
+order by avg() on columns of table "vote_comment"
+"""
+input vote_comment_avg_order_by {
+  amount: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "vote_comment". All fields are combined with a logical 'AND'.
+"""
+input vote_comment_bool_exp {
+  _and: [vote_comment_bool_exp!]
+  _not: vote_comment_bool_exp
+  _or: [vote_comment_bool_exp!]
+  amount: Int_comparison_exp
+  comment: comment_bool_exp
+  created_at: timestamptz_comparison_exp
+  object: String_comparison_exp
+  subject: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  user: user_bool_exp
+}
+
+"""
+unique or primary key constraints on table "vote_comment"
+"""
+enum vote_comment_constraint {
+  """
+  unique or primary key constraint on columns "object", "subject"
+  """
+  vote_comment_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "vote_comment"
+"""
+input vote_comment_inc_input {
+  amount: Int
+}
+
+"""
+input type for inserting data into table "vote_comment"
+"""
+input vote_comment_insert_input {
+  amount: Int
+  comment: comment_obj_rel_insert_input
+  object: String
+}
+
+"""
+order by max() on columns of table "vote_comment"
+"""
+input vote_comment_max_order_by {
+  amount: order_by
+  created_at: order_by
+  object: order_by
+  subject: order_by
+  updated_at: order_by
+}
+
+"""
+order by min() on columns of table "vote_comment"
+"""
+input vote_comment_min_order_by {
+  amount: order_by
+  created_at: order_by
+  object: order_by
+  subject: order_by
+  updated_at: order_by
+}
+
+"""
+response of any mutation on the table "vote_comment"
+"""
+type vote_comment_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vote_comment!]!
+}
+
+"""
+on_conflict condition type for table "vote_comment"
+"""
+input vote_comment_on_conflict {
+  constraint: vote_comment_constraint!
+  update_columns: [vote_comment_update_column!]! = []
+  where: vote_comment_bool_exp
+}
+
+"""Ordering options when selecting data from "vote_comment"."""
+input vote_comment_order_by {
+  amount: order_by
+  comment: comment_order_by
+  created_at: order_by
+  object: order_by
+  subject: order_by
+  updated_at: order_by
+  user: user_order_by
+}
+
+"""primary key columns input for table: vote_comment"""
+input vote_comment_pk_columns_input {
+  object: String!
+  subject: String!
+}
+
+"""
+select columns of table "vote_comment"
+"""
+enum vote_comment_select_column {
+  """column name"""
+  amount
+
+  """column name"""
+  created_at
+
+  """column name"""
+  object
+
+  """column name"""
+  subject
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "vote_comment"
+"""
+input vote_comment_set_input {
+  amount: Int
+}
+
+"""
+order by stddev() on columns of table "vote_comment"
+"""
+input vote_comment_stddev_order_by {
+  amount: order_by
+}
+
+"""
+order by stddev_pop() on columns of table "vote_comment"
+"""
+input vote_comment_stddev_pop_order_by {
+  amount: order_by
+}
+
+"""
+order by stddev_samp() on columns of table "vote_comment"
+"""
+input vote_comment_stddev_samp_order_by {
+  amount: order_by
+}
+
+"""
+Streaming cursor of the table "vote_comment"
+"""
+input vote_comment_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: vote_comment_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input vote_comment_stream_cursor_value_input {
+  amount: Int
+  created_at: timestamptz
+  object: String
+  subject: String
+  updated_at: timestamptz
+}
+
+"""
+order by sum() on columns of table "vote_comment"
+"""
+input vote_comment_sum_order_by {
+  amount: order_by
+}
+
+"""
+update columns of table "vote_comment"
+"""
+enum vote_comment_update_column {
+  """column name"""
+  amount
+}
+
+input vote_comment_updates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: vote_comment_inc_input
+
+  """sets the columns of the filtered rows to the given values"""
+  _set: vote_comment_set_input
+
+  """filter the rows which have to be updated"""
+  where: vote_comment_bool_exp!
+}
+
+"""
+order by var_pop() on columns of table "vote_comment"
+"""
+input vote_comment_var_pop_order_by {
+  amount: order_by
+}
+
+"""
+order by var_samp() on columns of table "vote_comment"
+"""
+input vote_comment_var_samp_order_by {
+  amount: order_by
+}
+
+"""
+order by variance() on columns of table "vote_comment"
+"""
+input vote_comment_variance_order_by {
+  amount: order_by
+}
+
+"""
+columns and relationships of "vote_user"
+"""
+type vote_user {
+  amount: Int!
+  created_at: timestamptz!
+  object: String!
+  subject: String!
+  updated_at: timestamptz!
+
+  """An object relationship"""
+  user: user!
+
+  """An object relationship"""
+  userBySubject: user!
+}
+
+"""
+order by aggregate values of table "vote_user"
+"""
+input vote_user_aggregate_order_by {
+  avg: vote_user_avg_order_by
+  count: order_by
+  max: vote_user_max_order_by
+  min: vote_user_min_order_by
+  stddev: vote_user_stddev_order_by
+  stddev_pop: vote_user_stddev_pop_order_by
+  stddev_samp: vote_user_stddev_samp_order_by
+  sum: vote_user_sum_order_by
+  var_pop: vote_user_var_pop_order_by
+  var_samp: vote_user_var_samp_order_by
+  variance: vote_user_variance_order_by
+}
+
+"""
+order by avg() on columns of table "vote_user"
+"""
+input vote_user_avg_order_by {
+  amount: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "vote_user". All fields are combined with a logical 'AND'.
+"""
+input vote_user_bool_exp {
+  _and: [vote_user_bool_exp!]
+  _not: vote_user_bool_exp
+  _or: [vote_user_bool_exp!]
+  amount: Int_comparison_exp
+  created_at: timestamptz_comparison_exp
+  object: String_comparison_exp
+  subject: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  user: user_bool_exp
+  userBySubject: user_bool_exp
+}
+
+"""
+unique or primary key constraints on table "vote_user"
+"""
+enum vote_user_constraint {
+  """
+  unique or primary key constraint on columns "object", "subject"
+  """
+  vote_user_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "vote_user"
+"""
+input vote_user_inc_input {
+  amount: Int
+}
+
+"""
+input type for inserting data into table "vote_user"
+"""
+input vote_user_insert_input {
+  amount: Int
+  object: String
+}
+
+"""
+order by max() on columns of table "vote_user"
+"""
+input vote_user_max_order_by {
+  amount: order_by
+  created_at: order_by
+  object: order_by
+  subject: order_by
+  updated_at: order_by
+}
+
+"""
+order by min() on columns of table "vote_user"
+"""
+input vote_user_min_order_by {
+  amount: order_by
+  created_at: order_by
+  object: order_by
+  subject: order_by
+  updated_at: order_by
+}
+
+"""
+response of any mutation on the table "vote_user"
+"""
+type vote_user_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [vote_user!]!
+}
+
+"""
+on_conflict condition type for table "vote_user"
+"""
+input vote_user_on_conflict {
+  constraint: vote_user_constraint!
+  update_columns: [vote_user_update_column!]! = []
+  where: vote_user_bool_exp
+}
+
+"""Ordering options when selecting data from "vote_user"."""
+input vote_user_order_by {
+  amount: order_by
+  created_at: order_by
+  object: order_by
+  subject: order_by
+  updated_at: order_by
+  user: user_order_by
+  userBySubject: user_order_by
+}
+
+"""primary key columns input for table: vote_user"""
+input vote_user_pk_columns_input {
+  object: String!
+  subject: String!
+}
+
+"""
+select columns of table "vote_user"
+"""
+enum vote_user_select_column {
+  """column name"""
+  amount
+
+  """column name"""
+  created_at
+
+  """column name"""
+  object
+
+  """column name"""
+  subject
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "vote_user"
+"""
+input vote_user_set_input {
+  amount: Int
+}
+
+"""
+order by stddev() on columns of table "vote_user"
+"""
+input vote_user_stddev_order_by {
+  amount: order_by
+}
+
+"""
+order by stddev_pop() on columns of table "vote_user"
+"""
+input vote_user_stddev_pop_order_by {
+  amount: order_by
+}
+
+"""
+order by stddev_samp() on columns of table "vote_user"
+"""
+input vote_user_stddev_samp_order_by {
+  amount: order_by
+}
+
+"""
+Streaming cursor of the table "vote_user"
+"""
+input vote_user_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: vote_user_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input vote_user_stream_cursor_value_input {
+  amount: Int
+  created_at: timestamptz
+  object: String
+  subject: String
+  updated_at: timestamptz
+}
+
+"""
+order by sum() on columns of table "vote_user"
+"""
+input vote_user_sum_order_by {
+  amount: order_by
+}
+
+"""
+update columns of table "vote_user"
+"""
+enum vote_user_update_column {
+  """column name"""
+  amount
+}
+
+input vote_user_updates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: vote_user_inc_input
+
+  """sets the columns of the filtered rows to the given values"""
+  _set: vote_user_set_input
+
+  """filter the rows which have to be updated"""
+  where: vote_user_bool_exp!
+}
+
+"""
+order by var_pop() on columns of table "vote_user"
+"""
+input vote_user_var_pop_order_by {
+  amount: order_by
+}
+
+"""
+order by var_samp() on columns of table "vote_user"
+"""
+input vote_user_var_samp_order_by {
+  amount: order_by
+}
+
+"""
+order by variance() on columns of table "vote_user"
+"""
+input vote_user_variance_order_by {
+  amount: order_by
+}
+

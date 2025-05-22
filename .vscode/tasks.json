@@ -2,6 +2,28 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "flutter: build web (wasm)",
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"web",
+				"--wasm",
+				"--pwa-strategy",
+				"none",
+				"--source-maps",
+				"--dart-define-from-file=.env",
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"options": {
+				"cwd": "packages/client"
+			},
+		},
+		{
+			"label": "flutter: build apk (prod)",
 			"type": "flutter",
 			"command": "flutter",
 			"args": [
@@ -13,52 +35,54 @@
 				"android-arm64",
 				"--split-per-abi",
 				"--no-tree-shake-icons",
-				"--dart-define",
-				"APP_LINK_BASE=tentura.intersubjective.space"
+				"--dart-define-from-file=.env",
 			],
 			"group": {
 				"kind": "build",
-				"isDefault": false
 			},
-			"problemMatcher": [],
-			"label": "flutter: flutter build apk"
+			"options": {
+				"cwd": "packages/client"
+			},
 		},
 		{
-			"type": "flutter",
-			"command": "flutter",
-			"args": [
-				"build",
-				"web",
-				"--release",
-				"--dart-define",
-				"APP_LINK_BASE=tentura.intersubjective.space",
-],
-			"group": {
-				"kind": "build",
-				"isDefault": false
-			},
-			"problemMatcher": [],
-			"label": "flutter: flutter build web"
-		},
-		{
+			"label": "flutter: build widgetbook",
 			"type": "flutter",
 			"command": "flutter",
 			"args": [
 				"build",
 				"web",
 				"--wasm",
-				"--release",
+				"--base-href",
+				"/widgetbook/",
+				"--pwa-strategy",
+				"none",
 				"--dart-define",
-				"API_URI=",
-				"--dart-define",
-				"APP_LINK_BASE=tentura.intersubjective.space"
+				"IS_IMPORTED=true",
+				"--dart-define-from-file=.env",
 			],
 			"group": {
 				"kind": "build",
-				"isDefault": false
 			},
-			"problemMatcher": [],
-			"label": "flutter: flutter build web (wasm)"
-		}
-	]
+			"options": {
+				"cwd": "packages/widgetbook"
+			},
+		},
+		{
+			"label": "flutter: build web (wasm, stage)",
+			"type": "flutter",
+			"command": "flutter",
+			"args": [
+				"build",
+				"web",
+				"--wasm",
+				"--dart-define-from-file=.env",
+			],
+			"group": {
+				"kind": "build",
+			},
+			"options": {
+				"cwd": "packages/client"
+			},
+		},
+	],
 }

@@ -1,0 +1,3 @@
+mutation InvitationDeleteById($id: String!) {
+  invitationDelete(id: $id)
+}

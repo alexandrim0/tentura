@@ -1,0 +1,519 @@
+{
+  "@@locale": "ru",
+  "appTitle": "Тентура",
+  "@appTitle": {
+    "context": "App"
+  },
+  "labelTitle": "Название",
+  "@labelTitle": {
+    "context": "Utils"
+  },
+  "labelDescription": "Описание",
+  "@labelDescription": {
+    "context": "Utils"
+  },
+  "labelMe": "Я",
+  "@labelMe": {
+    "context": "Utils"
+  },
+  "labelOr": "или",
+  "@labelOr": {
+    "context": "Utils"
+  },
+  "labelConfirmation": "Вы уверены?",
+  "@labelConfirmation": {
+    "context": "Utils"
+  },
+  "labelNothingHere": "Здесь пока ничего нет",
+  "@labelNothingHere": {
+    "context": "Utils"
+  },
+  "labelSettings": "Настройки",
+  "@labelSettings": {
+    "context": "Utils"
+  },
+  "buttonCancel": "Отмена",
+  "@buttonCancel": {
+    "context": "Utils"
+  },
+  "buttonDelete": "Удалить",
+  "@buttonDelete": {
+    "context": "Utils"
+  },
+  "buttonRemove": "Убрать",
+  "@buttonRemove": {
+    "context": "Utils"
+  },
+  "buttonCreate": "Создать",
+  "@buttonCreate": {
+    "context": "Utils"
+  },
+  "buttonComplaint": "Жалоба",
+  "@buttonComplaint": {
+    "context": "Utils"
+  },
+  "buttonYes": "Да",
+  "@buttonYes": {
+    "context": "Utils"
+  },
+  "buttonOk": "Ок",
+  "@buttonOk": {
+    "context": "Utils"
+  },
+  "buttonSave": "Сохранить",
+  "@buttonSave": {
+    "context": "Utils"
+  },
+  "buttonClose": "Закрыть",
+  "@buttonClose": {
+    "context": "Utils"
+  },
+  "buttonSearch": "Поиск",
+  "@buttonSearch": {
+    "context": "Utils"
+  },
+  "buttonPaste": "Вставить из буфера",
+  "@buttonPaste": {
+    "context": "Utils"
+  },
+  "buttonScanQR": "Сканировать QR",
+  "@buttonScanQR": {
+    "context": "Utils"
+  },
+
+
+  "invitationCodeTooShort": "Код слишком короткий",
+  "@invitationCodeTooShort": {
+    "context": "CommonErrors"
+  },
+  "invitationCodeTooLong": "Код слишком длинный",
+  "@invitationCodeTooLong": {
+    "context": "CommonErrors"
+  },
+  "invitationCodeWrongFormat": "Неправильный формат кода",
+  "@invitationCodeWrongFormat": {
+    "context": "CommonErrors"
+  },
+  "titleTooShort": "Название слишком короткое",
+  "@titleTooShort": {
+    "context": "CommonErrors"
+  },
+  "titleTooLong": "Название слишком длинное",
+  "@titleTooLong": {
+    "context": "CommonErrors"
+  },
+  "descriptionTooLong": "Описание слишком длинное",
+  "@descriptionTooLong": {
+    "context": "CommonErrors"
+  },
+
+
+  "createNewAccount": "Создать аккаунт",
+  "@createNewAccount": {
+    "context": "AccountAddDialog, AuthLoginScreen"
+  },
+  "labelInvitationCode": "Код приглашения",
+  "@labelInvitationCode": {
+    "context": "AccountAddDialog"
+  },
+  "pleaseEnterCode": "Введите код приглашения",
+  "@pleaseEnterCode": {
+    "context": "AccountAddDialog"
+  },
+  "pleaseFillTitle": "Пожалуйста, укажите название",
+  "@pleaseFillTitle": {
+    "context": "AccountAddDialog, ProfileEditScreen"
+  },
+  "confirmAccountRemoval": "Вы уверены, что хотите удалить этот аккаунт?",
+  "@confirmAccountRemoval": {
+    "context": "AccountRemoveDialog"
+  },
+  "chooseAccount": "Выберите аккаунт",
+  "@chooseAccount": {
+    "context": "AuthLoginScreen"
+  },
+  "alreadyHaveAccount": "У вас уже есть аккаунт?\nПолучите доступ, отсканировав QR-код на другом устройстве\nили используя сохранённую seed-фразу.",
+  "@alreadyHaveAccount": {
+    "context": "AuthLoginScreen"
+  },
+  "recoverFromQR": "Восстановить из QR",
+  "@recoverFromQR": {
+    "context": "AuthLoginScreen"
+  },
+  "recoverFromClipboard": "Восстановить из буфера",
+  "@recoverFromClipboard": {
+    "context": "AuthLoginScreen"
+  },
+  "shareAccount": "Поделиться аккаунтом",
+  "@shareAccount": {
+    "context": "AccountListTile"
+  },
+  "showSeed": "Показать Seed",
+  "@showSeed": {
+    "context": "AccountListTile, SettingsScreen"
+  },
+  "removeFromList": "Убрать из списка",
+  "@removeFromList": {
+    "context": "AccountListTile"
+  },
+
+
+  "invitationScreenTitle": "Приглашения",
+  "@invitationScreenTitle": {
+    "context": "InvitationScreen"
+  },
+
+  "invitationsShowMenuItem": "Посмотреть приглашения",
+  "@invitationsShowMenuItem": {
+    "context": "FriendsScreen"
+  },
+
+  "confirmBeaconRemoval": "Вы уверены, что хотите удалить этот маяк?",
+  "@confirmBeaconRemoval": {
+    "context": "BeaconDeleteDialog"
+  },
+  "beaconsTitle": "Маяки",
+  "@beaconsTitle": {
+    "context": "BeaconScreen"
+  },
+  "beaconsFilterEnabled": "Активные",
+  "@beaconsFilterEnabled": {
+    "context": "BeaconScreen"
+  },
+  "beaconsFilterDisabled": "Скрытые",
+  "@beaconsFilterDisabled": {
+    "context": "BeaconScreen"
+  },
+  "noBeaconsMessage": "Мяков пока нет",
+  "@noBeaconsMessage": {
+    "context": "BeaconScreen"
+  },
+  "disableBeacon": "Скрыть маяк",
+  "@disableBeacon": {
+    "context": "BeaconMineControl"
+  },
+  "enableBeacon": "Включить маяк",
+  "@enableBeacon": {
+    "context": "BeaconMineControl"
+  },
+  "deleteBeacon": "Удалить маяк",
+  "@deleteBeacon": {
+    "context": "BeaconMineControl"
+  },
+  "showOnMap": "Показать на карте",
+  "@showOnMap": {
+    "context": "BeaconInfo"
+  },
+  "confirmBeaconPublishing": "Вы уверены, что хотите опубликовать этот маяк?",
+  "@confirmBeaconPublishing": {
+    "context": "BeaconPublishDialog"
+  },
+  "confirmBeaconPublishingHint": "После публикации маяка изменения будут невозможны. Вы уверены, что хотите опубликовать этот маяк?",
+  "@confirmBeaconPublishingHint": {
+    "context": "BeaconPublishDialog"
+  },
+  "createNewBeacon": "Создать маяк",
+  "@createNewBeacon": {
+    "context": "BeaconCreateScreen"
+  },
+  "setDisplayPeriod": "Выберите период отображения",
+  "@setDisplayPeriod": {
+    "context": "DateRangeInput"
+  },
+  "beaconTitleRequired": "Название маяка (обязательно)",
+  "@beaconTitleRequired": {
+    "context": "TitleInput"
+  },
+  "buttonPublish": "Опубликовать",
+  "@buttonPublish": {
+    "context": "PublishButton"
+  },
+  "addLocation": "Добавить место",
+  "@addLocation": {
+    "context": "LocationInput"
+  },
+  "attachImage": "Прикрепить изображение",
+  "@attachImage": {
+    "context": "LocationInput"
+  },
+
+  
+  "labelComments": "Комментарии",
+  "@labelComments": {
+    "context": "Comments"
+  },
+  "showAllComments": "Показать все комментарии",
+  "@showAllComments": {
+    "context": "Comments"
+  },
+  "writeComment": "Написать комментарий",
+  "@writeComment": {
+    "context": "Comments"
+  },
+  "chatLabelToday": "Сегодня",
+  "@chatLabelToday": {
+    "context": "ChatSeparator"
+  },
+  "submitComplaint": "Отправить жалобу",
+  "@submitComplaint": {
+    "context": "ComplaintScreen"
+  },
+  "violatesCSAE": "Нарушает политику CSAE",
+  "@violatesCSAE": {
+    "context": "ComplaintScreen"
+  },
+  "violatesPlatformRules": "Нарушает правила платформы",
+  "@violatesPlatformRules": {
+    "context": "ComplaintScreen"
+  },
+  "labelComplaintType": "Тип жалобы",
+  "@labelComplaintType": {
+    "context": "ComplaintScreen"
+  },
+  "detailsRequired": "Подробности*",
+  "@detailsRequired": {
+    "context": "ComplaintScreen"
+  },
+  "provideDetails": "Пожалуйста, укажите подробности",
+  "@provideDetails": {
+    "context": "ComplaintScreen"
+  },
+  "feedbackEmail": "Email для обратной связи (необязательно)",
+  "@feedbackEmail": {
+    "context": "ComplaintScreen"
+  },
+  "emailValidationError": "Введите корректный email",
+  "@emailValidationError": {
+    "context": "ComplaintScreen"
+  },
+  "buttonSubmitComplaint": "ОТПРАВИТЬ ЖАЛОБУ",
+  "@buttonSubmitComplaint": {
+    "context": "ComplaintScreen"
+  },
+
+  "writeCodeHere": "Если у вас есть код, введите его здесь:",
+  "@writeCodeHere": {
+    "context": "ConnectScreen"
+  },
+  "codeLengthError": "Неверная длина кода!",
+  "@codeLengthError": {
+    "context": "ConnectScreen"
+  },
+  "codePrefixError": "Неверный префикс кода!",
+  "@codePrefixError": {
+    "context": "ConnectScreen"
+  },
+  "codeNotFoundError": "Код не найден или устарел!",
+  "@codeNotFoundError": {
+    "context": "ConnectScreen"
+  },
+
+  "addNewTopic": "Добавить новую тему",
+  "@addNewTopic": {
+    "context": "Topics"
+  },
+  "topicRemovalMessage": "Тема {contextName} будет удалена из вашего списка!",
+  "@topicRemovalMessage": {
+    "context": "ContextRemoveDialog",
+    "placeholders": {
+      "contextName": {
+        "type": "String"
+      }
+    }
+  },
+  "allTopics": "Все темы",
+  "@allTopics": {
+    "context": "Topics"
+  },
+  "confirmFriendRemoval": "Вы уверены, что хотите удалить {profileTitle} из списка друзей?",
+  "@confirmFriendRemoval": {
+    "context": "FriendRemoveDialog",
+    "placeholders": {
+      "profileTitle": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmFriendAccept": "Вы уверены, что хотите принять приглашение от {profileTitle}?",
+  "@confirmFriendAccept": {
+    "context": "FriendAcceptInvitationDialog",
+    "placeholders": {
+      "profileTitle": {
+        "type": "String"
+      }
+    }
+  },
+
+  "tapToChooseLocation": "Нажмите, чтобы выбрать место",
+  "@tapToChooseLocation": {
+    "context": "ChooseLocationDialog"
+  },
+  "goToEgo": "Перейти к Эго",
+  "@goToEgo": {
+    "context": "GraphScreen"
+  },
+  "showNegative": "Показать негативные",
+  "@showNegative": {
+    "context": "GraphScreen"
+  },
+  "hideNegative": "Скрыть негативные",
+  "@hideNegative": {
+    "context": "GraphScreen"
+  },
+  "graphView": "Просмотр графа",
+  "@graphView": {
+    "context": "GraphScreen"
+  },
+  "myField": "Моё поле",
+  "@myField": {
+    "context": "HomeScreen"
+  },
+  "favorites": "Избранное",
+  "@favorites": {
+    "context": "HomeScreen"
+  },
+  "connect": "Связаться",
+  "@connect": {
+    "context": "HomeScreen"
+  },
+  "friends": "Друзья",
+  "@friends": {
+    "context": "HomeScreen"
+  },
+  "profile": "Профиль",
+  "@profile": {
+    "context": "HomeScreen"
+  },
+  "introTitle": "Стройте свою личную сеть прозрачно!",
+  "@introTitle": {
+    "context": "Intro"
+  },
+  "introText": "Каждая публикация показывает, что именно связывает вас с окружающими. Проверьте эти связи и держите ваши отношения под контролем!",
+  "@introText": {
+    "context": "Intro"
+  },
+  "buttonStart": "Начать",
+  "@buttonStart": {
+    "context": "Intro"
+  },
+  "confirmOpinionRemoval": "Вы уверены, что хотите удалить это мнение?",
+  "@confirmOpinionRemoval": {
+    "context": "OpinionDeleteDialog"
+  },
+  "noOpinions": "Мнений пока нет",
+  "@noOpinions": {
+    "context": "OpinionList"
+  },
+  "deleteOpinion": "Удалить моё мнение",
+  "@deleteOpinion": {
+    "context": "OpinionTile"
+  },
+  "confirmProfileRemoval": "Вы уверены, что хотите удалить ваш профиль?",
+  "@confirmProfileRemoval": {
+    "context": "MyProfileDelete"
+  },
+  "profileRemovalHint": "Все ваши маяки и личные данные будут полностью удалены.",
+  "@profileRemovalHint": {
+    "context": "MyProfileDelete"
+  },
+  "showConnections": "Показать связи",
+  "@showConnections": {
+    "context": "Profile"
+  },
+  "showBeacons": "Показать маяки",
+  "@showBeacons": {
+    "context": "Profile"
+  },
+  "newBeacon": "Новый маяк",
+  "@newBeacon": {
+    "context": "Profile"
+  },
+  "communityFeedback": "Отзывы сообщества",
+  "@communityFeedback": {
+    "context": "Profile"
+  },
+  "addToMyField": "Добавить в моё поле",
+  "@addToMyField": {
+    "context": "Profile"
+  },
+  "removeFromMyField": "Убрать из моего поля",
+  "@removeFromMyField": {
+    "context": "Profile"
+  },
+  "onlyOneOpinion": "Вы можете оставить только одно мнение",
+  "@onlyOneOpinion": {
+    "context": "Opinions"
+  },
+  "writeOpinion": "Написать мнение",
+  "@writeOpinion": {
+    "context": "Opinions"
+  },
+  "positiveOrNegativeOpinion": "Это мнение положительное или отрицательное?",
+  "@positiveOrNegativeOpinion": {
+    "context": "Opinions"
+  },
+  "positiveOpinion": "Положительное",
+  "@positiveOpinion": {
+    "context": "Opinions"
+  },
+  "negativeOpinion": "Отрицательное",
+  "@negativeOpinion": {
+    "context": "Opinions"
+  },
+  "rating": "Рейтинг",
+  "@rating": {
+    "context": "RatingScreen"
+  },
+  "searchBy": "Поиск по",
+  "@searchBy": {
+    "context": "RatingScreen"
+  },
+  "showIntroAgain": "Показать интро снова",
+  "@showIntroAgain": {
+    "context": "SettingsScreen"
+  },
+  "logout": "Выйти",
+  "@logout": {
+    "context": "SettingsScreen"
+  },
+  "light": "Светлая",
+  "@light": {
+    "context": "ThemeSwitchButton"
+  },
+  "system": "Системная",
+  "@system": {
+    "context": "ThemeSwitchButton"
+  },
+  "dark": "Тёмная",
+  "@dark": {
+    "context": "ThemeSwitchButton"
+  },
+  "notImplementedYet": "Ещё не реализовано",
+  "@notImplementedYet": {
+    "context": "UpdatesScreen"
+  },
+  "markAllAsRead": "Отметить всё прочитанным",
+  "@markAllAsRead": {
+    "context": "UpdatesScreen"
+  },
+  "scanQrCode": "Отсканируйте QR-код",
+  "@scanQrCode": {
+    "context": "QrScanDialog"
+  },
+  "noName": "Без имени",
+  "@noName": {
+    "context": "ProfileAppBar"
+  },
+  "copyToClipboard": "Скопировать в буфер",
+  "@copyToClipboard": {
+    "context": "ShowSeedDialog, ShareCodeDialog"
+  },
+  "seedCopied": "Seed-фраза скопирована!",
+  "@seedCopied": {
+    "context": "ShowSeedDialog"
+  },
+  "shareLink": "Поделиться ссылкой",
+  "@shareLink": {
+    "context": "ShareCodeDialog"
+  }
+}

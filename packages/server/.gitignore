@@ -1,0 +1,7 @@
+temp/
+bin/*.exe
+**.g.dart
+**.config.dart
+**.schema.dart
+**.freezed.dart
+*/jaspr_options.dart
