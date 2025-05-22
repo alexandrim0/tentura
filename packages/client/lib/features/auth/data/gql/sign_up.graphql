@@ -1,0 +1,5 @@
+mutation SignUp($authRequestToken: String!, $title: String!) {
+  signUp(authRequestToken: $authRequestToken, title: $title) {
+    subject
+  }
+}

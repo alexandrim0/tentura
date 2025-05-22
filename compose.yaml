@@ -1,0 +1,143 @@
+name: tentura
+
+services:
+  common:
+    init: true
+    image: scratch
+    network_mode: host
+    environment:
+      - POSTGRES_PASSWORD
+      - JWT_PRIVATE_PEM
+      - JWT_PUBLIC_PEM
+
+  proxy:
+    extends:
+      service: common
+    hostname: proxy
+    container_name: proxy
+    image: vbulavintsev/tentura-proxy
+    depends_on:
+      - hasura
+      - tentura
+    volumes:
+      - ./openresty/conf:/etc/nginx:ro
+      - ../tentura/build/web:/usr/local/openresty/nginx/html:ro
+    tmpfs:
+      - /tmp
+      - /var/run/openresty
+    environment:
+      - "ERROR_LOG_LEVEL=debug"
+      - "PGADMIN_ENABLED=true"
+      - "LUA_CODE_CACHE=off"
+      - "WORKERS=2"
+
+  hasura:
+    extends:
+      service: common
+    hostname: hasura
+    container_name: hasura
+    image: hasura/graphql-engine
+    depends_on:
+      - postgres
+      - tentura
+    environment:
+      - 'HASURA_GRAPHQL_DEV_MODE=true'
+      - 'HASURA_GRAPHQL_LOG_LEVEL=debug'
+      - 'HASURA_GRAPHQL_ENABLE_CONSOLE=true'
+      - 'HASURA_GRAPHQL_ADMIN_SECRET=password'
+      - 'HASURA_GRAPHQL_ENABLE_TELEMETRY=false'
+      - 'HASURA_GRAPHQL_UNAUTHORIZED_ROLE=anon'
+      - 'HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES=true'
+      - 'HASURA_GRAPHQL_INFER_FUNCTION_PERMISSIONS=false'
+      - 'HASURA_GRAPHQL_ENABLE_METADATA_QUERY_LOGGING=true'
+      - 'HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres'
+      - 'HASURA_GRAPHQL_JWT_SECRET={"type":"Ed25519", "key":"${JWT_PUBLIC_PEM}", "claims_map": {"x-hasura-allowed-roles": ["user", "admin"], "x-hasura-default-role": "user", "x-hasura-user-id": {"path": "$$.sub"}}}'
+      - 'HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=streaming_subscriptions,remove_empty_subscription_responses'
+      - 'TENTURA_GRAPHQL_URL=http://localhost:2080/api/v2/graphql'
+
+  postgres:
+    extends:
+      service: common
+    hostname: postgres
+    container_name: postgres
+    image: vbulavintsev/postgres-tentura
+    depends_on:
+      - meritrank
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      - 'MERITRANK_SERVICE_URL=tcp://localhost:10234'
+
+  meritrank:
+    extends:
+      service: common
+    hostname: meritrank
+    container_name: meritrank
+    image: vbulavintsev/meritrank-service
+    read_only: true
+    environment:
+      - 'MERITRANK_NUM_WALK=5000'
+      - 'MERITRANK_ZERO_OPINION_FACTOR=2'
+      - 'MERITRANK_SERVICE_URL=tcp://0.0.0.0:10234'
+
+  tentura:
+    extends:
+      service: common
+    hostname: tentura
+    container_name: tentura
+    image: vbulavintsev/tentura-service
+    depends_on:
+      - postgres
+    environment:
+      - SERVER_NAME
+      - IMAGES_PATH
+      - WORKERS_COUNT
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      - POSTGRES_DBNAME
+      - POSTGRES_USERNAME
+      - POSTGRES_MAXCONN
+      - JWT_PRIVATE_PEM
+      - JWT_PUBLIC_PEM
+      - JWT_EXPIRES_IN
+      - S3_ACCESS_KEY
+      - S3_SECRET_KEY
+      - 'S3_BUCKET=tentura'
+      - 'S3_ENDPOINT=ams3.digitaloceanspaces.com'
+      - 'IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com'
+      - 'DEBUG_MODE=false'
+      - 'NEED_INVITE=true'
+
+  schema_fetcher:
+    extends:
+      service: common
+    build:
+      dockerfile_inline: |
+        FROM node
+        RUN npm install -g get-graphql-schema
+    image: vbulavintsev/schema_fetcher
+    container_name: schema_fetcher
+    hostname: schema_fetcher
+    depends_on:
+      - hasura
+    volumes:
+      - ./packages/client/lib/data/gql:/gql
+    user: 1000:1000
+    command: sh -c "get-graphql-schema -h 'x-hasura-admin-secret=password' -h 'x-hasura-role=user' http://localhost:8080/v1/graphql > /gql/schema.graphql"
+
+  pgadmin:
+    extends:
+      service: common
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    hostname: pgadmin
+    depends_on:
+      - postgres
+    environment:
+      - 'PGADMIN_DEFAULT_EMAIL=admin@localhost'
+      - 'PGADMIN_DEFAULT_PASSWORD=password'
+      - 'PGADMIN_DISABLE_POSTFIX=true'
+      - 'SERVER_MODE=false'
+
+volumes:
+  pg_data:

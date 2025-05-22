@@ -2,8 +2,21 @@
   "files.exclude": {
     "**/_g": true,
     "**/*.g.dart": true,
+    "**/*.gr.dart": true,
+    "**/*.schema.dart": true,
     "**/*.freezed.dart": true,
-    "lib/app/di/di.config.dart": true,
-    "lib/app/router/root_router.gr.dart": true,
+    "**/di.config.dart": true,
+  },
+  "rest-client.environmentVariables": {
+      "$shared": {
+          "gql_path": "api/v1/graphql",
+          "gqlV2_path": "api/v2/graphql",
+      },
+      "local": {
+          "base_url": "http://localhost:2080",
+      },
+      "dev": {
+          "base_url": "https://dev.tentura.io",
+      }
   }
 }

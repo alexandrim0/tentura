@@ -7,43 +7,45 @@
         {
             "name": "tentura (debug)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
                 "--flavor",
                 "prod",
-                "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+				"--dart-define-from-file=.env",
             ],
         },
         {
-            "name": "tentura-web (debug)",
+            "name": "tentura-web (local)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
                 "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+                "SERVER_NAME=https://localhost",
+                "--dart-define",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
             "args": [
                 "-d", "chrome",
                 "--web-port", "8888",
                 "--web-browser-flag=--disable-web-security",
+                "--web-browser-flag=--ignore-certificate-errors",
             ]
         },
         {
-            "name": "tentura-wasm (debug)",
+            "name": "tentura-web (debug)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
-                "--wasm",
-                "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+				"--dart-define-from-file=.env",
             ],
             "args": [
                 "-d", "chrome",
-                "--wasm",
                 "--web-port", "8888",
                 "--web-browser-flag=--disable-web-security",
             ]
@@ -51,48 +53,51 @@
         {
             "name": "tentura-stage (debug)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
                 "--flavor",
                 "stage",
                 "--dart-define",
-                "APP_LINK_BASE=tentura-stage.intersubjective.space",
+                "SERVER_NAME=https://stage.tentura.io",
+                "--dart-define",
+				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
         },
         {
             "name": "tentura (profile)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "profile",
             "toolArgs": [
                 "--flavor",
                 "prod",
-                "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+				"--dart-define-from-file=.env",
             ],
         },
         {
             "name": "tentura (release)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "release",
             "toolArgs": [
                 "--flavor",
                 "prod",
-                "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+				"--dart-define-from-file=.env",
             ],
         },
         {
             "name": "tentura-wasm (release)",
             "request": "launch",
+            "cwd": "packages/client",
             "type": "dart",
             "flutterMode": "release",
             "toolArgs": [
                 "--wasm",
-                "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+				"--dart-define-from-file=.env",
             ],
             "args": [
                 "-d", "chrome",
@@ -104,11 +109,12 @@
         {
             "name": "tentura (widgetbook)",
             "request": "launch",
-            "program": "widgetbook/lib/main.dart",
+            "cwd": "packages/widgetbook",
             "type": "dart",
             "toolArgs": [
                 "--dart-define",
-                "APP_LINK_BASE=tentura.intersubjective.space",
+                "IS_IMPORTED=true",
+				"--dart-define-from-file=.env",
             ],
             "args": [
                 "-d", "chrome",
@@ -116,5 +122,22 @@
                 "--web-browser-flag=--disable-web-security",
             ]
         },
-  ]
+        {
+            "console": "debugConsole",
+            "cwd": "packages/server",
+            "name": "tentura-server",
+            "program":"bin/tentura.dart",
+            "request": "launch",
+            "type": "dart",
+            "env": {
+                "DEBUG_MODE": "true",
+                "TENTURA_PASSWORD": "password",
+                "POSTGRES_PASSWORD": "password",
+                "SERVER_NAME": "https://dev.tentura.io",
+                "IMAGE_SERVER": "https://tentura.ams3.cdn.digitaloceanspaces.com",
+                "S3_ENDPOINT": "ams3.digitaloceanspaces.com",
+                "S3_BUCKET": "tentura",
+            },
+        },
+  ],
 }

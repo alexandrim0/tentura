@@ -1,0 +1,62 @@
+targets:
+  $default:
+    builders:
+
+      drift_dev:
+        options:
+          named_parameters: true
+
+      auto_route_generator:auto_route_generator:
+        generate_for:
+          - lib/**_screen.dart
+
+      auto_route_generator:auto_router_generator:
+        generate_for:
+          - lib/app/router/root_router.dart
+
+      freezed:
+        options:
+          equal: true
+          copy_with: true
+          format: false
+          when: false
+          map: false
+
+      ferry_generator|graphql_builder:
+        enabled: true
+        options:
+          schema: tentura|lib/data/gql/schema.graphql
+          vars_create_factories: true
+          output_dir: "_g"
+
+          type_overrides:
+            timestamptz:
+              name: DateTime
+
+            Upload:
+              name: MultipartFile
+              import: 'package:http/http.dart'
+
+      ferry_generator|serializer_builder:
+        enabled: true
+        options:
+          schema: tentura|lib/data/gql/schema.graphql
+          output_dir: "_g"
+
+          type_overrides:
+            Date:
+              name: DateTime
+
+            timestamptz:
+              name: DateTime
+
+            Upload:
+              name: MultipartFile
+              import: 'package:http/http.dart'
+
+          custom_serializers:
+            - import: "package:tentura/data/gql/timestamptz_serializer.dart"
+              name: TimestamptzSerializer
+
+            - import: "package:tentura/data/gql/upload_serializer.dart"
+              name: UploadSerializer

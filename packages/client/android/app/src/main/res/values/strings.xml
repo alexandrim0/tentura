@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Tentura</string>
+    <string name="deep_link_hostname">tentura.io</string>
+</resources>
+

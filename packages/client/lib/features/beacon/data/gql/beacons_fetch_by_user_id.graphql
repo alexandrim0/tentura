@@ -1,0 +1,22 @@
+# import '/data/gql/beacon_model.graphql'
+
+query BeaconsFetchByUserId(
+  $user_id: String!,
+  $enabled: Boolean = true,
+  $offset: Int = 0,
+  $limit: Int = 5
+) {
+  beacon(
+    where: {
+      _and: {
+        user_id: {_eq: $user_id},
+        enabled: {_eq: $enabled}
+      }
+    },
+    order_by: {created_at: desc},
+    offset: $offset,
+    limit: $limit
+  ) {
+    ...BeaconModel
+  }
+}

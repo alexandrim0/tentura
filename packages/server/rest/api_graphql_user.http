@@ -1,0 +1,40 @@
+#
+### GQL deleteUser
+#
+POST {{base_url}}/{{gqlV2_path}}
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: application/json
+X-Request-Type: GraphQL
+
+mutation UserDelete {
+  userDelete
+}
+
+
+#
+### GQL updateUser (image)
+#
+POST {{base_url}}/{{gqlV2_path}}
+Authorization: Bearer {{$dotenv TENTURA_JWT}}
+Content-Type: multipart/form-data; boundary=gc0p4Jq0M2Yt08jU534c0p
+
+
+--gc0p4Jq0M2Yt08jU534c0p
+Content-Disposition: form-data; name="operations"
+Content-Type: application/json
+
+{
+  "query": "mutation UserUpdate($title: String, $description: String, $dropImage: Boolean = false, $image: Upload = {}) {userUpdate(title: $title, description: $description, dropImage: $dropImage, image: $image) {id}}",
+  "variables": {
+    "title": "A new one",
+    "description": "Empty description :-)",
+    "image": null
+  }
+}
+
+--gc0p4Jq0M2Yt08jU534c0p
+Content-Disposition: form-data; name="0"; filename="avatar.jpg"
+Content-Type: image/jpeg
+
+< ../../client/images/placeholder/avatar.jpg
+--gc0p4Jq0M2Yt08jU534c0p--

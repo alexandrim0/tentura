@@ -1,0 +1,3 @@
+mutation BeaconDeleteById($id: String!) {
+  beaconDeleteById(id: $id)
+}
