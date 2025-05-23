@@ -1,9 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
-import 'package:tentura/ui/l10n/l10n.dart';
-
 import 'package:tentura/ui/bloc/screen_cubit.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/bottom_text_input.dart';
 
@@ -18,7 +17,7 @@ import '../widget/profile_view_body.dart';
 
 @RoutePage()
 class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
-  const ProfileViewScreen({@queryParam this.id = '', super.key});
+  const ProfileViewScreen({@PathParam('id') this.id = '', super.key});
 
   final String id;
 
@@ -34,6 +33,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
       return MultiBlocProvider(
         providers: [
           BlocProvider.value(value: GetIt.I<ScreenCubit>()),
+          // BlocProvider(create: (_) => GetIt.I<ScreenCubit>()),
           BlocProvider(
             create: (_) => ProfileViewCubit(id: state.data!.profileId),
           ),
@@ -72,11 +72,10 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
     final opinionCubit = context.read<OpinionCubit>();
     return Scaffold(
       body: RefreshIndicator.adaptive(
-        onRefresh:
-            () async => Future.wait([
-              context.read<ProfileViewCubit>().fetch(),
-              opinionCubit.fetch(),
-            ]),
+        onRefresh: () async => Future.wait([
+          context.read<ProfileViewCubit>().fetch(),
+          opinionCubit.fetch(),
+        ]),
         child: CustomScrollView(
           slivers: [
             // Header
@@ -101,18 +100,15 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
       bottomSheet: BlocSelector<OpinionCubit, OpinionState, bool>(
         selector: (state) => state.hasMyOpinion,
         bloc: opinionCubit,
-        builder:
-            (_, hasMyOpinion) =>
-                hasMyOpinion
-                    ? BottomTextInput(hintText: l10n.onlyOneOpinion)
-                    : BottomTextInput(
-                      hintText: l10n.writeOpinion,
-                      onSend:
-                          (text) async => opinionCubit.addOpinion(
-                            amount: await OpinionPublishDialog.show(context),
-                            text: text,
-                          ),
-                    ),
+        builder: (_, hasMyOpinion) => hasMyOpinion
+            ? BottomTextInput(hintText: l10n.onlyOneOpinion)
+            : BottomTextInput(
+                hintText: l10n.writeOpinion,
+                onSend: (text) async => opinionCubit.addOpinion(
+                  amount: await OpinionPublishDialog.show(context),
+                  text: text,
+                ),
+              ),
       ),
     );
   }

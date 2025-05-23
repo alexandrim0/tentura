@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/ui/l10n/l10n.dart';
-
 import 'package:tentura/domain/entity/opinion.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
@@ -21,6 +20,7 @@ class OpinionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context)!;
+    final screenCubit = context.read<ScreenCubit>();
     return Column(
       children: [
         // Header
@@ -31,7 +31,7 @@ class OpinionTile extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 if (!isMine) {
-                  context.read<ScreenCubit>().showProfile(opinion.author.id);
+                  screenCubit.showProfile(opinion.author.id);
                 }
               },
               child: Padding(
@@ -68,29 +68,24 @@ class OpinionTile extends StatelessWidget {
 
             // More
             PopupMenuButton(
-              itemBuilder:
-                  (context) => [
-                    if (isMine)
-                      PopupMenuItem<void>(
-                        onTap: () async {
-                          final opinionCubit = context.read<OpinionCubit>();
-                          if (await OpinionDeleteDialog.show(context) ??
-                              false) {
-                            await opinionCubit.removeOpinionById(opinion.id);
-                          }
-                        },
-                        child: Text(l10n.deleteOpinion),
-                      )
-                    else
-                      // Complaint
-                      PopupMenuItem<void>(
-                        onTap:
-                            () => context.read<ScreenCubit>().showComplaint(
-                              opinion.id,
-                            ),
-                        child: Text(l10n.buttonComplaint),
-                      ),
-                  ],
+              itemBuilder: (context) => [
+                if (isMine)
+                  PopupMenuItem<void>(
+                    onTap: () async {
+                      final opinionCubit = context.read<OpinionCubit>();
+                      if (await OpinionDeleteDialog.show(context) ?? false) {
+                        await opinionCubit.removeOpinionById(opinion.id);
+                      }
+                    },
+                    child: Text(l10n.deleteOpinion),
+                  )
+                else
+                  // Complaint
+                  PopupMenuItem<void>(
+                    onTap: () => screenCubit.showComplaint(opinion.id),
+                    child: Text(l10n.buttonComplaint),
+                  ),
+              ],
             ),
           ],
         ),
@@ -105,16 +100,15 @@ class OpinionTile extends StatelessWidget {
             // Status
             Padding(
               padding: kPaddingH,
-              child:
-                  opinion.amount > 0
-                      ? Icon(
-                        Icons.sentiment_satisfied_outlined,
-                        color: Colors.green.shade300,
-                      )
-                      : Icon(
-                        Icons.sentiment_dissatisfied_outlined,
-                        color: Colors.red.shade300,
-                      ),
+              child: opinion.amount > 0
+                  ? Icon(
+                      Icons.sentiment_satisfied_outlined,
+                      color: Colors.green.shade300,
+                    )
+                  : Icon(
+                      Icons.sentiment_dissatisfied_outlined,
+                      color: Colors.red.shade300,
+                    ),
             ),
           ],
         ),

@@ -2,7 +2,7 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 1.0.7
+version: 1.0.8
 
 environment:
   sdk: '>=3.8.0 <4.0.0'
@@ -38,12 +38,12 @@ dependencies:
 
   # Platform
   http: ^1.2.2
-  drift: ^2.26.0
+  drift: ^2.26.1
   ferry: ^0.16.0
   mailto: ^2.0.0
   gql_exec: ^1.0.0
   geocoding: ^3.0.0
-  drift_dev: ^2.26.0
+  drift_dev: ^2.26.1
   geolocator: ^14.0.0
   share_plus: ^11.0.0
   image_picker: ^1.1.2
@@ -70,7 +70,6 @@ dependencies:
   blurhash_shader: ^1.1.2
   vector_graphics: ^1.1.18
   visibility_detector: ^0.4.0
-  # flutter_localizations: ^0.3.2
   flutter_native_splash: ^2.4.6
   force_directed_graphview: ^0.6.2
   scrollable_positioned_list: ^0.3.8

@@ -57,20 +57,18 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
       behavior: isFloating ? SnackBarBehavior.floating : null,
       margin: isFloating ? kPaddingAll : null,
       duration: duration,
-      backgroundColor:
-          isError
-              ? theme.colorScheme.error
-              : color ?? theme.snackBarTheme.backgroundColor,
+      backgroundColor: isError
+          ? theme.colorScheme.error
+          : color ?? theme.snackBarTheme.backgroundColor,
       content: RichText(
         text: TextSpan(
           text: text,
           children: textSpans,
-          style:
-              isError
-                  ? theme.snackBarTheme.contentTextStyle?.copyWith(
-                    color: theme.colorScheme.onError,
-                  )
-                  : theme.snackBarTheme.contentTextStyle,
+          style: isError
+              ? theme.snackBarTheme.contentTextStyle?.copyWith(
+                  color: theme.colorScheme.onError,
+                )
+              : theme.snackBarTheme.contentTextStyle,
         ),
       ),
     ),
@@ -86,7 +84,11 @@ void commonScreenBlocListener(BuildContext context, StateBase state) =>
       final StateIsNavigating s =>
         s.path == kPathBack
             ? context.back()
-            : context.navigateNamedTo(s.path, includePrefixMatches: true),
+            : context.router.pushNamed(
+                s.path,
+                includePrefixMatches: true,
+                onFailure: GetIt.I<Logger>().e,
+              ),
       final StateIsMessaging s => showSnackBar(context, text: s.message),
       final StateHasError s => showSnackBar(
         context,
