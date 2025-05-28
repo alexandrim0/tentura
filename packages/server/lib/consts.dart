@@ -32,23 +32,6 @@ final kImageServer = environment['IMAGE_SERVER'] ?? r.kImageServer;
 
 final kImageFolderPath = environment['IMAGES_PATH'] ?? r.kImagesPath;
 
-// Database connection settings
-final kPgHost = environment['POSTGRES_HOST'] ?? 'postgres';
-
-final kPgPort = int.tryParse(environment['POSTGRES_PORT'] ?? '') ?? 5432;
-
-final kPgDatabase = environment['POSTGRES_DBNAME'] ?? 'postgres';
-
-final kPgUsername = environment['POSTGRES_USERNAME'] ?? 'postgres';
-
-final kPgPassword = environment['POSTGRES_PASSWORD'] ?? 'password';
-
-final kMaxConnectionAge =
-    int.tryParse(environment['POSTGRES_MAXCONNAGE'] ?? '') ?? 600;
-
-final kMaxConnectionCount =
-    int.tryParse(environment['POSTGRES_MAXCONN'] ?? '') ?? 25;
-
 final kS3AccessKey = environment['S3_ACCESS_KEY'] ?? '';
 
 final kS3SecretKey = environment['S3_SECRET_KEY'] ?? '';

@@ -10,20 +10,15 @@ class BlurHashCalculator with ImageCaseMixin {
   const BlurHashCalculator();
 
   Future<void> calculateBlurHashes() async {
-    try {
-      configureDependencies(Environment.prod);
-    } catch (e) {
-      print(e);
-    }
+    final getIt = await configureDependencies(Environment.prod);
     final database = getIt<TenturaDb>();
     final beacons = <File>[];
     final users = <File>[];
 
     try {
-      for (final f
-          in Directory(
-            kImageFolderPath,
-          ).listSync(recursive: true).whereType<File>()) {
+      for (final f in Directory(
+        kImageFolderPath,
+      ).listSync(recursive: true).whereType<File>()) {
         f.uri.pathSegments.last == 'avatar.jpg' ? users.add(f) : beacons.add(f);
       }
     } catch (e) {
@@ -74,6 +69,6 @@ class BlurHashCalculator with ImageCaseMixin {
       'users: [${users.length}], '
       'beacons: [${beacons.length}]',
     );
-    await closeModules();
+    await getIt.reset();
   }
 }

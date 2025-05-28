@@ -3,6 +3,8 @@ include:
   - package:very_good_analysis/analysis_options.yaml
 
 analyzer:
+  errors:
+    specify_nonobvious_property_types: ignore
   exclude:
     - "**/*.gql.dart"
     - "**/*.gql.g.dart"

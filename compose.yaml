@@ -134,7 +134,7 @@ services:
     depends_on:
       - postgres
     environment:
-      - 'PGADMIN_DEFAULT_EMAIL=admin@localhost'
+      - 'PGADMIN_DEFAULT_EMAIL=admin@local.host'
       - 'PGADMIN_DEFAULT_PASSWORD=password'
       - 'PGADMIN_DISABLE_POSTFIX=true'
       - 'SERVER_MODE=false'
