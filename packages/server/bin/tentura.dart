@@ -6,12 +6,12 @@ import 'package:tentura_server/app.dart';
 import 'utils/issue_jwt.dart';
 import 'utils/calculate_blur_hashes.dart';
 
-const kBlurKeyName = 'blur';
 const kJwtKeyName = 'jwt';
+const kBlurKeyName = 'blur';
 
 Future<void> main(List<String> args) async {
   if (args.isEmpty) {
-    await App().run();
+    await const App().run();
   } else {
     ArgParser()
       ..addCommand(kBlurKeyName)
@@ -20,11 +20,9 @@ Future<void> main(List<String> args) async {
         ArgParser()..addOption('sub', callback: issueJwt),
       )
       ..parse(args);
-
     if (args.contains(kBlurKeyName)) {
       await const BlurHashCalculator().calculateBlurHashes();
     }
-
-    exit(0);
   }
+  exit(0);
 }

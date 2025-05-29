@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura_server/env.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/image_repository.dart';
 import 'package:tentura_server/data/repository/tasks_repository.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
+import 'package:tentura_server/env.dart';
 
 import '../entity/task_entity.dart';
 import 'image_case_mixin.dart';
 
-@Singleton(order: 2)
+@Singleton(env: [Environment.dev, Environment.prod], order: 2)
 class TaskWorkerCase with ImageCaseMixin {
   TaskWorkerCase(
     this._env,
@@ -79,13 +79,16 @@ class TaskWorkerCase with ImageCaseMixin {
     },
   ];
 
-  bool get _canRun => _tasks.isNotEmpty;
+  bool _canRun = true;
 
+  @disposeMethod
   Future<void> dispose() {
-    _tasks.clear();
+    _canRun = false;
+    print('Trying to stop Task Worker...');
     return _runnerCompleter.future;
   }
 
+  @PostConstruct()
   Future<void> run() async {
     print('Task Worker starts at ${DateTime.timestamp()}');
 

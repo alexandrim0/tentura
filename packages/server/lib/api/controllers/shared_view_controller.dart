@@ -1,7 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:jaspr/server.dart';
 
-import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/di/di.dart';
 import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
@@ -18,7 +17,7 @@ final class SharedViewController extends BaseController {
 
   @override
   Future<Response> handler(Request request) async {
-    if (!kRenderSharedPreview &&
+    if (!env.renderSharedPreview &&
         (request.headers['User-Agent']?.contains('Mozilla') ?? false)) {
       return Response.found(
         Uri(

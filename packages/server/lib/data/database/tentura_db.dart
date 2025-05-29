@@ -31,15 +31,7 @@ class TenturaDb extends _$TenturaDb {
     : super(
         PgDatabase.opened(
           Pool<dynamic>.withEndpoints(
-            [
-              Endpoint(
-                host: env.pgHost,
-                port: env.pgPort,
-                database: env.pgDatabase,
-                username: env.pgUsername,
-                password: env.pgPassword,
-              ),
-            ],
+            [env.pgEndpoint],
             settings: PoolSettings(
               maxConnectionAge: Duration(seconds: env.pgMaxConnectionAge),
               maxConnectionCount: env.pgMaxConnectionCount,

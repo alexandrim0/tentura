@@ -6,19 +6,13 @@ import 'package:tentura_server/env.dart';
 
 export 'package:pg_job_queue/pg_job_queue.dart' show JobStatus;
 
-@singleton
+@Singleton(env: [Environment.dev, Environment.prod])
 class TaskWorker extends PgJobQueue {
   @FactoryMethod(preResolve: true)
-  static Future<TaskWorker> create(Env env) async {
+  static Future<TaskWorker> create(Env settings) async {
     final taskWorker = TaskWorker(
       await Connection.open(
-        Endpoint(
-          host: env.pgHost,
-          port: env.pgPort,
-          database: env.pgDatabase,
-          username: env.pgUsername,
-          password: env.pgPassword,
-        ),
+        settings.pgEndpoint,
         settings: const ConnectionSettings(sslMode: SslMode.disable),
       ),
     );

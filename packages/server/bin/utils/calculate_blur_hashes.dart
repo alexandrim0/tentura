@@ -1,10 +1,10 @@
 import 'dart:io';
+import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/di/di.dart';
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/data/database/tentura_db.dart';
 import 'package:tentura_server/domain/use_case/image_case_mixin.dart';
-import 'package:tentura_server/domain/enum.dart';
 
 class BlurHashCalculator with ImageCaseMixin {
   const BlurHashCalculator();
@@ -17,7 +17,7 @@ class BlurHashCalculator with ImageCaseMixin {
 
     try {
       for (final f in Directory(
-        kImageFolderPath,
+        kImagesPath,
       ).listSync(recursive: true).whereType<File>()) {
         f.uri.pathSegments.last == 'avatar.jpg' ? users.add(f) : beacons.add(f);
       }

@@ -12,12 +12,14 @@ const kDescriptionMaxLength = 2_048;
 
 const kRatingSector = 100 / 4;
 
+/// In seconds
 const kJwtExpiresIn = 3_600;
 
 const kAuthJwtExpiresIn = 30;
 
 const kRequestTimeout = 15;
 
+/// In hours
 const kInvitationDefaultTTL = 24 * 7;
 
 // Strings

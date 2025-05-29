@@ -1,77 +1,60 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:isolate';
-import 'package:jaspr/server.dart' hide kDebugMode;
+import 'package:jaspr/server.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
-import 'domain/use_case/task_worker_case.dart';
 import 'env.dart';
 import 'di/di.dart';
-import 'consts.dart';
 import 'jaspr_options.dart';
 import 'api/route_handler.dart';
-import 'domain/enum.dart';
 
 class App {
-  App({this.env = Environment.prod, int? numberOfIsolates})
-    : _numberOfIsolates = numberOfIsolates ?? kWorkersCount;
+  const App();
 
-  final Environment env;
+  Future<void> run([Env? env]) async {
+    env ??= Env.fromSystem()..printEnvInfo();
 
-  final int _numberOfIsolates;
-
-  Future<void> run() async {
     print(
-      'Start serving at ${DateTime.timestamp()} [$kBindAddress:$kListenPort]',
+      'Start serving at ${DateTime.timestamp()} '
+      '[${env.bindAddress}:${env.listenPort}]',
     );
 
-    if (kDebugMode) {
-      await _serve(this, isMainIsolate: true);
-    } else {
-      final children = [
-        for (var i = 1; i < _numberOfIsolates; i += 1)
-          await Isolate.spawn(
-            _serve,
-            this,
-            errorsAreFatal: false,
-            debugName: 'Worker #$i',
-          ),
-      ];
+    final isolates = [
+      for (var i = 1; i < env.isolatesCount; i += 1)
+        await Isolate.spawn(
+          serve,
+          env,
+          errorsAreFatal: false,
+          debugName: 'Worker #$i',
+        ),
+    ];
 
-      await _serve(this, isMainIsolate: true);
+    await serve(env);
 
-      for (final isolate in children) {
-        isolate.kill();
-      }
+    for (final isolate in isolates) {
+      isolate.kill();
     }
 
     print('Stop serving at ${DateTime.timestamp()}.');
-    exit(0);
   }
 
-  static Future<void> _serve(App app, {bool isMainIsolate = false}) async {
+  static Future<void> serve(Env env) async {
     Jaspr.initializeApp(options: defaultJasprOptions);
-    final getIt = await configureDependencies(app.env);
-    if (isMainIsolate) {
-      getIt<Env>().printEnvInfo();
-      unawaited(getIt<TaskWorkerCase>().run());
-    }
-
+    final getIt = await configureDependencies(env.environment);
     final server = await shelfRun(
       routeHandler,
       defaultShared: true,
-      defaultBindPort: kListenPort,
-      defaultBindAddress: kBindAddress,
-      defaultEnableHotReload: kDebugMode,
+      defaultBindPort: env.listenPort,
+      defaultBindAddress: env.bindAddress,
+      defaultEnableHotReload: env.isDebugModeOn,
     );
 
     await Future.any([
       ProcessSignal.sigint.watch().first,
       ProcessSignal.sigterm.watch().first,
     ]);
-    if (isMainIsolate) {
-      unawaited(getIt<TaskWorkerCase>().dispose());
-    }
+
     await server.close();
     await getIt.reset();
   }

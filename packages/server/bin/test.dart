@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/app.dart';
-import 'package:tentura_server/domain/enum.dart';
+import 'package:tentura_server/env.dart';
 
 Future<void> main(List<String> args) async {
-  await App(env: Environment.test, numberOfIsolates: 1).run();
+  await const App().run(Env(environment: Environment.test));
 }
