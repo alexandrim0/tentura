@@ -4,9 +4,9 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura_server/di/di.dart';
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/data/database/tentura_db.dart';
-import 'package:tentura_server/domain/use_case/image_case_mixin.dart';
+import 'package:tentura_server/domain/use_case/task_worker_case.dart';
 
-class BlurHashCalculator with ImageCaseMixin {
+class BlurHashCalculator {
   const BlurHashCalculator();
 
   Future<void> calculateBlurHashes() async {
@@ -28,16 +28,17 @@ class BlurHashCalculator with ImageCaseMixin {
     for (final u in users) {
       try {
         final id = u.uri.pathSegments[u.uri.pathSegments.length - 2];
-        final image = decodeImage(await u.readAsBytes());
-        final blurHash = calculateBlurHash(image);
+        final (:hash, :height, :width) = TaskWorkerCase.processImage(
+          await u.readAsBytes(),
+        );
         await database.managers.users
             .filter((f) => f.id.equals(id))
             .update(
               (o) => o(
                 hasPicture: const Value(true),
-                blurHash: Value(blurHash),
-                picHeight: Value(image.height),
-                picWidth: Value(image.width),
+                blurHash: Value(hash),
+                picHeight: Value(height),
+                picWidth: Value(width),
               ),
             );
       } catch (e) {
@@ -48,16 +49,17 @@ class BlurHashCalculator with ImageCaseMixin {
     for (final b in beacons) {
       try {
         final beaconId = b.uri.pathSegments.last.split('.').first;
-        final image = decodeImage(await b.readAsBytes());
-        final blurHash = calculateBlurHash(image);
+        final (:hash, :height, :width) = TaskWorkerCase.processImage(
+          await b.readAsBytes(),
+        );
         await database.managers.beacons
             .filter((f) => f.id.equals(beaconId))
             .update(
               (o) => o(
                 hasPicture: const Value(true),
-                blurHash: Value(blurHash),
-                picHeight: Value(image.height),
-                picWidth: Value(image.width),
+                blurHash: Value(hash),
+                picHeight: Value(height),
+                picWidth: Value(width),
               ),
             );
       } catch (e) {

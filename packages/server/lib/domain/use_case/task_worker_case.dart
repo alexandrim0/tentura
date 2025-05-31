@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:isolate';
+import 'dart:typed_data';
+import 'package:image/image.dart' as img;
 import 'package:injectable/injectable.dart';
+import 'package:blurhash_dart/blurhash_dart.dart';
 
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/image_repository.dart';
@@ -8,10 +12,9 @@ import 'package:tentura_server/data/repository/user_repository.dart';
 import 'package:tentura_server/env.dart';
 
 import '../entity/task_entity.dart';
-import 'image_case_mixin.dart';
 
 @Singleton(env: [Environment.dev, Environment.prod], order: 2)
-class TaskWorkerCase with ImageCaseMixin {
+class TaskWorkerCase {
   TaskWorkerCase(
     this._env,
     this._beaconRepository,
@@ -41,12 +44,14 @@ class TaskWorkerCase with ImageCaseMixin {
         final imageBytes = await _imageRepository.getUserImage(
           userId: task.details.userId,
         );
-        final image = decodeImage(imageBytes);
+        final (:hash, :height, :width) = await Isolate.run(
+          () => processImage(imageBytes),
+        );
         await _userRepository.update(
           id: task.details.userId,
-          blurHash: calculateBlurHash(image),
-          imageHeight: image.height,
-          imageWidth: image.width,
+          blurHash: hash,
+          imageHeight: height,
+          imageWidth: width,
         );
         await _tasksRepository.complete(task.id);
       } catch (e) {
@@ -64,12 +69,14 @@ class TaskWorkerCase with ImageCaseMixin {
           authorId: task.details.userId,
           beaconId: task.details.beaconId,
         );
-        final image = decodeImage(imageBytes);
+        final (:hash, :height, :width) = await Isolate.run(
+          () => processImage(imageBytes),
+        );
         await _beaconRepository.updateBeaconImageDetails(
           beaconId: task.details.beaconId,
-          blurHash: calculateBlurHash(image),
-          imageHeight: image.height,
-          imageWidth: image.width,
+          blurHash: hash,
+          imageHeight: height,
+          imageWidth: width,
         );
         await _tasksRepository.complete(task.id);
       } catch (e) {
@@ -105,5 +112,29 @@ class TaskWorkerCase with ImageCaseMixin {
 
     print('Task Worker stops at ${DateTime.timestamp()}');
     _runnerCompleter.complete();
+  }
+
+  static ({String hash, int height, int width}) processImage(
+    Uint8List imageBytes, [
+    int kMaxNumCompX = 8,
+    int kMinNumCompX = 6,
+  ]) {
+    final image =
+        img.decodeImage(imageBytes) ??
+        (throw const FormatException('Cant decode image'));
+    final numComp = image.height == image.width
+        ? (x: kMaxNumCompX, y: kMaxNumCompX)
+        : image.height > image.width
+        ? (x: kMinNumCompX, y: kMaxNumCompX)
+        : (x: kMaxNumCompX, y: kMinNumCompX);
+    return (
+      hash: BlurHash.encode(
+        image,
+        numCompX: numComp.x,
+        numCompY: numComp.y,
+      ).hash,
+      height: image.height,
+      width: image.width,
+    );
   }
 }
