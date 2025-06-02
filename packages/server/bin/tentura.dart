@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:args/args.dart';
 
-import 'package:tentura_server/app.dart';
+import 'package:tentura_server/app/app.dart';
+import 'package:tentura_server/env.dart';
 
 import 'utils/issue_jwt.dart';
 import 'utils/calculate_blur_hashes.dart';
@@ -11,7 +12,7 @@ const kBlurKeyName = 'blur';
 
 Future<void> main(List<String> args) async {
   if (args.isEmpty) {
-    await const App().run();
+    await const App().run(Env());
   } else {
     ArgParser()
       ..addCommand(kBlurKeyName)

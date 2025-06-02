@@ -9,7 +9,7 @@ import 'consts.dart';
 class Env {
   Env({
     // Common
-    this.environment = Environment.prod,
+    String? environment,
     bool? isDebugModeOn,
     int? workersCount,
     Uri? serverUri,
@@ -42,6 +42,7 @@ class Env {
   }) : // Common
        printEnv = printEnv ?? _env['PRINT_ENV'] == 'true',
        isDebugModeOn = isDebugModeOn ?? _env['DEBUG_MODE'] == 'true',
+       environment = environment ?? _env['ENVIRONMENT'] ?? Environment.prod,
        serverUri = serverUri ?? Uri.dataFromString(kServerName),
        renderSharedPreview =
            renderSharedPreview ?? _env['RENDER_SHARED_PREVIEW'] == 'true',
