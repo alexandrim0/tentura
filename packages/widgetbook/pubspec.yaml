@@ -2,11 +2,11 @@ name: tentura_widgetbook
 description: Widgetbook for Tentura
 publish_to: none
 
-version: 0.0.3
+version: 0.0.4
 
 environment:
-  sdk: '>=3.7.2 <4.0.0'
-  flutter: ^3.29.3
+  sdk: '>=3.8.1 <4.0.0'
+  flutter: ^3.32.1
 
 dependencies:
   flutter:

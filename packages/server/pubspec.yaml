@@ -5,7 +5,7 @@ publish_to: none
 version: 0.2.6
 
 environment:
-  sdk: '>=3.8.0 <4.0.0'
+  sdk: '>=3.8.1 <4.0.0'
 
 dependencies:
   tentura_root:
