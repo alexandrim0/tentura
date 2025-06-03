@@ -32,8 +32,8 @@ dependencies:
   sentry_flutter: ^8.14.2
   json_annotation: ^4.9.0
   ed25519_edwards: ^0.3.1
-  dart_jsonwebtoken: ^3.2.0
   intl_translation: ^0.20.1
+  dart_jsonwebtoken: ^3.2.0
   freezed_annotation: ^2.4.4
 
   # Platform
@@ -43,7 +43,7 @@ dependencies:
   mailto: ^2.0.0
   gql_exec: ^1.0.0
   geocoding: ^4.0.0
-  drift_dev: ^2.26.1
+  drift_dev: ^2.26.0
   geolocator: ^14.0.1
   share_plus: ^11.0.0
   image_picker: ^1.1.2
