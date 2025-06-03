@@ -9,12 +9,9 @@ export 'package:pg_job_queue/pg_job_queue.dart' show JobStatus;
 @Singleton(env: [Environment.dev, Environment.prod])
 class TaskWorker extends PgJobQueue {
   @FactoryMethod(preResolve: true)
-  static Future<TaskWorker> create(Env settings) async {
+  static Future<TaskWorker> create(Env env) async {
     final taskWorker = TaskWorker(
-      await Connection.open(
-        settings.pgEndpoint,
-        settings: const ConnectionSettings(sslMode: SslMode.disable),
-      ),
+      await Connection.open(env.pgEndpoint, settings: env.pgEndpointSettings),
     );
     await taskWorker.init();
     return taskWorker;

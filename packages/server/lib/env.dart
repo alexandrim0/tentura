@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:injectable/injectable.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import 'package:postgres/postgres.dart' show Endpoint;
+import 'package:postgres/postgres.dart'
+    show ConnectionSettings, Endpoint, PoolSettings, SslMode;
 
 import 'consts.dart';
 
@@ -159,6 +160,14 @@ class Env {
   final int pgMaxConnectionAge;
 
   final int pgMaxConnectionCount;
+
+  final pgEndpointSettings = const ConnectionSettings(sslMode: SslMode.disable);
+
+  late final pgPoolSettings = PoolSettings(
+    maxConnectionAge: Duration(seconds: pgMaxConnectionAge),
+    maxConnectionCount: pgMaxConnectionCount,
+    sslMode: pgEndpointSettings.sslMode,
+  );
 
   late final pgEndpoint = Endpoint(
     host: pgHost,
