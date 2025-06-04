@@ -1,7 +1,6 @@
 import 'package:shelf_plus/shelf_plus.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 
-import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/di/di.dart';
 import 'package:tentura_server/env.dart';
 

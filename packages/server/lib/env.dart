@@ -6,7 +6,8 @@ import 'package:postgres/postgres.dart'
 
 import 'consts.dart';
 
-@singleton
+export 'consts.dart';
+
 class Env {
   Env({
     // Common
@@ -92,10 +93,22 @@ class Env {
        kS3AccessKey = kS3AccessKey ?? _env['S3_ACCESS_KEY'] ?? '',
        kS3SecretKey = kS3SecretKey ?? _env['S3_SECRET_KEY'] ?? '',
        kS3Endpoint = kS3Endpoint ?? _env['S3_ENDPOINT'] ?? '',
-       kS3Bucket = kS3Bucket ?? _env['S3_BUCKET'] ?? '';
+       kS3Bucket = kS3Bucket ?? _env['S3_BUCKET'] ?? '' {
+    _printEnvInfo();
+  }
 
-  @factoryMethod
-  Env.fromSystem() : this();
+  Env.dev() : this(environment: Environment.dev);
+
+  Env.prod() : this(environment: Environment.prod);
+
+  Env.test()
+    : this(
+        environment: Environment.test,
+        renderSharedPreview: true,
+        isDebugModeOn: true,
+        workersCount: 1,
+        printEnv: true,
+      );
 
   // Common
   final bool isDebugModeOn;
@@ -177,7 +190,7 @@ class Env {
     password: pgPassword,
   );
 
-  void printEnvInfo() {
+  void _printEnvInfo() {
     if (printEnv) {
       print('Debug Mode: [$isDebugModeOn]');
       print('Need Invitation: [$isNeedInvite]');

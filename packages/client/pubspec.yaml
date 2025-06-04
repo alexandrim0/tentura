@@ -51,7 +51,7 @@ dependencies:
   drift_flutter: ^0.2.4
   gql_http_link: ^1.1.0
   share_handler: ^0.0.22
-  mobile_scanner: ^7.0.0
+  mobile_scanner: ^7.0.1
   gql_error_link: ^1.0.0
   gql_dedupe_link: ^2.0.3
   gql_websocket_link: ^2.0.1

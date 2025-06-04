@@ -5,7 +5,7 @@ import 'package:tentura_server/env.dart';
 void issueJwt([String? userId]) {
   print(
     JWT({'sub': userId ?? 'U3ea0a229ad85'}).sign(
-      Env.fromSystem().privateKey,
+      Env.prod().privateKey,
       algorithm: JWTAlgorithm.EdDSA,
       expiresIn: const Duration(days: 365),
     ),

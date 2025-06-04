@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/env.dart';
 
 import '../storage/local_storage.dart';

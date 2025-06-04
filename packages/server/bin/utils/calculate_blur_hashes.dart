@@ -1,8 +1,7 @@
 import 'dart:io';
-import 'package:injectable/injectable.dart';
 
+import 'package:tentura_server/env.dart';
 import 'package:tentura_server/di/di.dart';
-import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/data/database/tentura_db.dart';
 import 'package:tentura_server/domain/use_case/task_worker_case.dart';
 
@@ -10,7 +9,7 @@ class BlurHashCalculator {
   const BlurHashCalculator();
 
   Future<void> calculateBlurHashes() async {
-    final getIt = await configureDependencies(Environment.prod);
+    final getIt = await configureDependencies(Env.prod());
     final database = getIt<TenturaDb>();
     final beacons = <File>[];
     final users = <File>[];

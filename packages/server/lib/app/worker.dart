@@ -27,7 +27,7 @@ class Worker {
     _isolate.kill();
   }
 
-  static Future<Worker> spawn({Env? env, String debugName = ''}) async {
+  static Future<Worker> spawn({required Env env, String debugName = ''}) async {
     final initPort = RawReceivePort(null, debugName);
     final connection = Completer<(ReceivePort, SendPort)>.sync();
     initPort.handler = (dynamic commandPort) {
@@ -40,7 +40,7 @@ class Worker {
     try {
       final isolate = await Isolate.spawn(
         _serve,
-        (sendPort: initPort.sendPort, env: env ?? Env()),
+        (sendPort: initPort.sendPort, env: env),
         debugName: debugName,
         errorsAreFatal: false,
       );
@@ -59,7 +59,7 @@ class Worker {
     params.sendPort.send(receivePort.sendPort);
 
     Jaspr.initializeApp(options: defaultJasprOptions);
-    final getIt = await configureDependencies(params.env.environment);
+    final getIt = await configureDependencies(params.env);
     final server = await shelfRun(
       routeHandler,
       defaultShared: true,

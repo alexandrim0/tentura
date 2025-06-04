@@ -2,7 +2,6 @@ import 'dart:typed_data';
 import 'package:minio/minio.dart';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/env.dart';
 
 @singleton

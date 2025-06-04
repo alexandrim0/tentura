@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:test/test.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
-import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/env.dart';
 
 void main() {
