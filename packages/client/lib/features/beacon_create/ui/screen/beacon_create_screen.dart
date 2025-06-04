@@ -9,6 +9,7 @@ import 'package:tentura/ui/utils/ui_utils.dart';
 
 import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
 import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
+import 'package:tentura/features/beacon_create/ui/widget/poll_editor.dart';
 
 import '../bloc/beacon_create_cubit.dart';
 import '../widget/date_range_input.dart';
@@ -52,6 +53,14 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
   final _locationController = TextEditingController();
   final _dateRangeController = TextEditingController();
 
+  // отображение полей опроса
+  bool _hasPoll = false;
+  final _pollQuestionController = TextEditingController();
+  final List<TextEditingController> _optionControllers = [
+    TextEditingController(),
+    TextEditingController(),
+  ];
+
   late final _l10n = L10n.of(context)!;
 
   @override
@@ -59,6 +68,11 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
     _imageController.dispose();
     _locationController.dispose();
     _dateRangeController.dispose();
+    super.dispose();
+    _pollQuestionController.dispose();
+    for (final c in _optionControllers) {
+      c.dispose();
+    }
     super.dispose();
   }
 
@@ -122,6 +136,31 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
 
           // Image Container
           const Padding(padding: EdgeInsets.all(48), child: ImageBox()),
+
+          // Add Poll
+          Padding(
+            padding: kPaddingSmallV,
+            child: CheckboxListTile(
+              title: Text(_l10n.addPollOption),
+              value: _hasPoll,
+              onChanged: (val) => setState(() => _hasPoll = val ?? false),
+            ),
+          ),
+
+          if (_hasPoll)
+            Padding(
+              padding: kPaddingSmallV,
+              child: PollEditor(
+                questionController: _pollQuestionController,
+                optionControllers: _optionControllers,
+                onAddOption: () => setState(() {
+                  _optionControllers.add(TextEditingController());
+                }),
+                onRemoveOption: (i) => setState(() {
+                  _optionControllers.removeAt(i);
+                }),
+              ),
+            ),
         ],
       ),
     ),

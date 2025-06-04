@@ -6,6 +6,7 @@ import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/author_info.dart';
+import 'package:tentura/ui/widget/poll_button.dart';
 
 import 'beacon_info.dart';
 import 'beacon_mine_control.dart';
@@ -21,6 +22,8 @@ class BeaconTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context)!;
+    const mockPollEnabled = true;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -36,10 +39,8 @@ class BeaconTile extends StatelessWidget {
                   return <PopupMenuEntry<void>>[
                     // Complaint
                     PopupMenuItem(
-                      onTap:
-                          () => context.read<ScreenCubit>().showComplaint(
-                            beacon.id,
-                          ),
+                      onTap: () =>
+                          context.read<ScreenCubit>().showComplaint(beacon.id),
                       child: Text(l10n.buttonComplaint),
                     ),
                   ];
@@ -51,13 +52,19 @@ class BeaconTile extends StatelessWidget {
         // Beacon Info
         BeaconInfo(beacon: beacon, isShowBeaconEnabled: true),
 
+        // Poll button
+        if (mockPollEnabled)
+          const Padding(
+            padding: kPaddingSmallV,
+            child: Align(alignment: Alignment.centerRight, child: PollButton()),
+          ),
+
         // Beacon Control
         Padding(
           padding: kPaddingSmallV,
-          child:
-              isMine
-                  ? BeaconMineControl(key: ValueKey(beacon.id), beacon: beacon)
-                  : BeaconTileControl(beacon: beacon),
+          child: isMine
+              ? BeaconMineControl(key: ValueKey(beacon.id), beacon: beacon)
+              : BeaconTileControl(beacon: beacon),
         ),
       ],
     );

@@ -389,4 +389,50 @@ class L10nEn extends L10n {
 
   @override
   String get shareLink => 'Share Link';
+
+  @override
+  String get addPollOption => 'Add Poll';
+
+  @override
+  String get pollSectionTitle => 'Poll';
+
+  @override
+  String get pollQuestionFieldLabel => 'Poll Question';
+
+  @override
+  String get pollOptionsLabel => 'Options:';
+
+  @override
+  String optionLabel(Object index) {
+    return 'Option $index';
+  }
+
+  @override
+  String get addOptionButton => 'Add Option';
+
+  @override
+  String get showPollButton => 'Show Poll';
+
+  @override
+  String get pollDialogTitle => 'Poll Results';
+
+  @override
+  String votedCountText(Object percentage, Object count) {
+    return 'Voted by $percentage% of your network ($count users)';
+  }
+
+  @override
+  String get immediateLabel => 'Immediate';
+
+  @override
+  String get finalLabel => 'Final';
+
+  @override
+  String get changeVoteButton => 'Change Vote';
+
+  @override
+  String get voteButton => 'Vote';
+
+  @override
+  String get closeButton => 'Close';
 }
