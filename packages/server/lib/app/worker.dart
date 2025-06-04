@@ -4,7 +4,7 @@ import 'package:jaspr/server.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import '../env.dart';
-import '../di/di.dart';
+import 'di.dart';
 import '../jaspr_options.dart';
 import '../api/route_handler.dart';
 
@@ -61,11 +61,11 @@ class Worker {
     Jaspr.initializeApp(options: defaultJasprOptions);
     final getIt = await configureDependencies(params.env);
     final server = await shelfRun(
-      routeHandler,
-      defaultShared: true,
-      defaultBindPort: params.env.listenPort,
-      defaultBindAddress: params.env.bindAddress,
+      getIt<RootRouter>().routeHandler,
       defaultEnableHotReload: params.env.isDebugModeOn,
+      defaultBindAddress: params.env.bindAddress,
+      defaultBindPort: params.env.listenPort,
+      defaultShared: true,
     );
     print('${Isolate.current.debugName} started at ${DateTime.timestamp()}');
 
