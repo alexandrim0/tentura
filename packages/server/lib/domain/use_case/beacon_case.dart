@@ -9,8 +9,15 @@ import 'package:tentura_root/domain/entity/coordinates.dart';
 
 import '../entity/task_entity.dart';
 
-@Injectable(order: 2)
+@Singleton(order: 2)
 class BeaconCase {
+  @FactoryMethod(preResolve: true)
+  static Future<BeaconCase> createInstance(
+    BeaconRepository beaconRepository,
+    ImageRepository imageRepository,
+    TasksRepository tasksRepository,
+  ) async => BeaconCase(beaconRepository, imageRepository, tasksRepository);
+
   const BeaconCase(
     this._beaconRepository,
     this._imageRepository,

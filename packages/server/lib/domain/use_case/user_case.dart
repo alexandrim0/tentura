@@ -8,8 +8,15 @@ import 'package:tentura_server/data/repository/user_repository.dart';
 
 import '../entity/task_entity.dart';
 
-@Injectable(order: 2)
+@Singleton(order: 2)
 class UserCase {
+  @FactoryMethod(preResolve: true)
+  static Future<UserCase> createInstance(
+    ImageRepository imageRepository,
+    UserRepository userRepository,
+    TasksRepository tasksRepository,
+  ) async => UserCase(imageRepository, userRepository, tasksRepository);
+
   const UserCase(
     this._imageRepository,
     this._userRepository,

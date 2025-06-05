@@ -71,6 +71,7 @@ class Worker {
     }
   }
 
+  //
   static Future<void> _serveTask(({SendPort sendPort, Env env}) params) async {
     final receivePort = ReceivePort();
     params.sendPort.send(receivePort.sendPort);
@@ -88,12 +89,14 @@ class Worker {
     print('${Isolate.current.debugName} stoped at ${DateTime.timestamp()}');
   }
 
+  //
   static Future<void> _serveWeb(({SendPort sendPort, Env env}) params) async {
     final receivePort = ReceivePort();
     params.sendPort.send(receivePort.sendPort);
 
     Jaspr.initializeApp(options: defaultJasprOptions);
     final getIt = await configureDependencies(params.env);
+    await getIt.allReady();
     final webServer = await shelfRun(
       getIt<RootRouter>().routeHandler,
       onStarted: (address, port) => print(
