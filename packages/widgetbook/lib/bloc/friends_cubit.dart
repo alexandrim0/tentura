@@ -24,4 +24,9 @@ class FriendsCubitMock extends Cubit<FriendsState> implements FriendsCubit {
     state.friends.remove(user.id);
     emit(state.copyWith(friends: state.friends));
   }
+
+  @override
+  Future<void> acceptInvitation(String id) {
+    throw UnimplementedError();
+  }
 }

@@ -2,20 +2,26 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura_root/domain/entity/coordinates.dart';
-
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/image_repository.dart';
+import 'package:tentura_server/data/repository/tasks_repository.dart';
+import 'package:tentura_root/domain/entity/coordinates.dart';
 
-import 'image_case_mixin.dart';
+import '../entity/task_entity.dart';
 
 @Injectable(order: 2)
-class BeaconCase with ImageCaseMixin {
-  const BeaconCase(this._beaconRepository, this._imageRepository);
+class BeaconCase {
+  const BeaconCase(
+    this._beaconRepository,
+    this._imageRepository,
+    this._tasksRepository,
+  );
 
   final BeaconRepository _beaconRepository;
 
   final ImageRepository _imageRepository;
+
+  final TasksRepository _tasksRepository;
 
   Future<BeaconEntity> create({
     required String userId,
@@ -44,8 +50,13 @@ class BeaconCase with ImageCaseMixin {
         beaconId: beacon.id,
         bytes: imageBytes,
       );
-      unawaited(
-        updateBlurHash(authorId: beacon.author.id, beaconId: beacon.id),
+      await _tasksRepository.schedule(
+        TaskBeaconImageHash(
+          details: TaskBeaconImageHashDetails(
+            userId: userId,
+            beaconId: beacon.id,
+          ),
+        ),
       );
     }
     return beacon;
@@ -67,26 +78,5 @@ class BeaconCase with ImageCaseMixin {
     await _beaconRepository.deleteBeaconById(beacon.id);
 
     return true;
-  }
-
-  Future<void> updateBlurHash({
-    required String authorId,
-    required String beaconId,
-  }) async {
-    try {
-      final imageBytes = await _imageRepository.getBeaconImage(
-        authorId: authorId,
-        beaconId: beaconId,
-      );
-      final image = decodeImage(imageBytes);
-      await _beaconRepository.updateBeaconImageDetails(
-        beaconId: beaconId,
-        blurHash: calculateBlurHash(image),
-        imageHeight: image.height,
-        imageWidth: image.width,
-      );
-    } catch (e) {
-      print(e);
-    }
   }
 }

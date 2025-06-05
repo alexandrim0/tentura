@@ -1,8 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:jaspr/server.dart';
 
-import 'package:tentura_server/consts.dart';
-import 'package:tentura_server/di/di.dart';
 import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/comment_repository.dart';
@@ -14,11 +12,25 @@ import '_base_controller.dart';
 
 @Injectable(order: 3)
 final class SharedViewController extends BaseController {
-  const SharedViewController(super.env);
+  const SharedViewController(
+    this._beaconRepository,
+    this._commentRepository,
+    this._userRepository,
+    this._opinionCase,
+    super.env,
+  );
+
+  final BeaconRepository _beaconRepository;
+
+  final CommentRepository _commentRepository;
+
+  final UserRepository _userRepository;
+
+  final OpinionCase _opinionCase;
 
   @override
   Future<Response> handler(Request request) async {
-    if (!kRenderSharedPreview &&
+    if (!env.renderSharedPreview &&
         (request.headers['User-Agent']?.contains('Mozilla') ?? false)) {
       return Response.found(
         Uri(
@@ -39,14 +51,12 @@ final class SharedViewController extends BaseController {
       final html = await renderComponent(
         SharedViewDocument(
           entity: switch (ogId[0]) {
-            'B' => await getIt<BeaconRepository>().getBeaconById(
-              beaconId: ogId,
-            ),
-            'C' => await getIt<CommentRepository>().getCommentById(ogId),
+            'B' => await _beaconRepository.getBeaconById(beaconId: ogId),
+            'C' => await _commentRepository.getCommentById(ogId),
             // TBD: Invitation preview
             'I' => throw UnimplementedError(),
-            'O' => await getIt<OpinionCase>().getOpinionById(ogId),
-            'U' => await getIt<UserRepository>().getById(ogId),
+            'O' => await _opinionCase.getOpinionById(ogId),
+            'U' => await _userRepository.getById(ogId),
             _ => throw IdWrongException(id: ogId),
           },
         ),

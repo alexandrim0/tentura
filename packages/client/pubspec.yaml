@@ -2,11 +2,11 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 1.0.7
+version: 1.0.8
 
 environment:
-  sdk: '>=3.8.0 <4.0.0'
-  flutter: ^3.32.0
+  sdk: '>=3.8.1 <4.0.0'
+  flutter: ^3.32.1
 
 dependencies:
   flutter:
@@ -32,26 +32,26 @@ dependencies:
   sentry_flutter: ^8.14.2
   json_annotation: ^4.9.0
   ed25519_edwards: ^0.3.1
-  dart_jsonwebtoken: ^3.2.0
   intl_translation: ^0.20.1
+  dart_jsonwebtoken: ^3.2.0
   freezed_annotation: ^2.4.4
 
   # Platform
   http: ^1.2.2
-  drift: ^2.26.0
+  drift: ^2.26.1
   ferry: ^0.16.0
   mailto: ^2.0.0
   gql_exec: ^1.0.0
-  geocoding: ^3.0.0
+  geocoding: ^4.0.0
   drift_dev: ^2.26.0
-  geolocator: ^14.0.0
+  geolocator: ^14.0.1
   share_plus: ^11.0.0
   image_picker: ^1.1.2
   url_launcher: ^6.3.1
   drift_flutter: ^0.2.4
   gql_http_link: ^1.1.0
   share_handler: ^0.0.22
-  mobile_scanner: ^7.0.0
+  mobile_scanner: ^7.0.1
   gql_error_link: ^1.0.0
   gql_dedupe_link: ^2.0.3
   gql_websocket_link: ^2.0.1
@@ -70,7 +70,6 @@ dependencies:
   blurhash_shader: ^1.1.2
   vector_graphics: ^1.1.18
   visibility_detector: ^0.4.0
-  # flutter_localizations: ^0.3.2
   flutter_native_splash: ^2.4.6
   force_directed_graphview: ^0.6.2
   scrollable_positioned_list: ^0.3.8
@@ -79,14 +78,14 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  lints: ^5.1.1
+  lints: ^6.0.0
   freezed: ^2.5.7
   build_runner: ^2.4.15
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   ferry_generator: ^0.12.0
   json_serializable: ^6.9.0
   sentry_dart_plugin: ^2.4.1
-  very_good_analysis: ^7.0.0
+  very_good_analysis: ^8.0.0
   auto_route_generator: ^9.0.0
   injectable_generator: ^2.6.2
   flutter_launcher_icons: ^0.14.3

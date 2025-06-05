@@ -8,8 +8,9 @@
             "request": "launch",
             "type": "dart",
             "env": {
+                "PRINT_ENV": "true",
                 "DEBUG_MODE": "true",
-                "NEED_INVITE": "true",
+                "NEED_INVITE": "false",
                 "TENTURA_PASSWORD": "password",
                 "POSTGRES_PASSWORD": "password",
                 "SERVER_NAME": "https://dev.tentura.io",
