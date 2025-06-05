@@ -6,9 +6,9 @@ import 'package:tentura_server/env.dart';
 
 export 'package:pg_job_queue/pg_job_queue.dart' show JobStatus;
 
-@Singleton(env: [Environment.dev, Environment.prod])
+@LazySingleton(env: [Environment.dev, Environment.prod])
 class TaskWorker extends PgJobQueue {
-  @FactoryMethod(preResolve: true)
+  @FactoryMethod()
   static Future<TaskWorker> create(Env env) async {
     final taskWorker = TaskWorker(
       await Connection.open(env.pgEndpoint, settings: env.pgEndpointSettings),

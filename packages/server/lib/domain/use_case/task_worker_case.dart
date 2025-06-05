@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:image/image.dart' as img;
 import 'package:injectable/injectable.dart';
@@ -13,7 +12,7 @@ import 'package:tentura_server/env.dart';
 
 import '../entity/task_entity.dart';
 
-@Singleton(env: [Environment.dev, Environment.prod], order: 2)
+@LazySingleton(env: [Environment.dev, Environment.prod])
 class TaskWorkerCase {
   TaskWorkerCase(
     this._env,
@@ -44,9 +43,8 @@ class TaskWorkerCase {
         final imageBytes = await _imageRepository.getUserImage(
           userId: task.details.userId,
         );
-        final (:hash, :height, :width) = await Isolate.run(
-          () => processImage(imageBytes),
-        );
+        final (:hash, :height, :width) = processImage(imageBytes);
+
         await _userRepository.update(
           id: task.details.userId,
           blurHash: hash,
@@ -69,9 +67,7 @@ class TaskWorkerCase {
           authorId: task.details.userId,
           beaconId: task.details.beaconId,
         );
-        final (:hash, :height, :width) = await Isolate.run(
-          () => processImage(imageBytes),
-        );
+        final (:hash, :height, :width) = processImage(imageBytes);
         await _beaconRepository.updateBeaconImageDetails(
           beaconId: task.details.beaconId,
           blurHash: hash,
@@ -88,29 +84,22 @@ class TaskWorkerCase {
 
   bool _canRun = true;
 
-  @disposeMethod
   Future<void> dispose() {
     _canRun = false;
-    print('Trying to stop Task Worker...');
     return _runnerCompleter.future;
   }
 
-  @PostConstruct()
   Future<void> run() async {
-    print('Task Worker starts at ${DateTime.timestamp()}');
-
     while (_canRun) {
       await Future<void>.delayed(_env.taskOnEmptyDelay);
-      for (final e in _tasks) {
+      for (final task in _tasks) {
         try {
-          if (_canRun) await e();
+          if (_canRun) await task();
         } catch (e) {
           if (_env.isDebugModeOn) print(e);
         }
       }
     }
-
-    print('Task Worker stops at ${DateTime.timestamp()}');
     _runnerCompleter.complete();
   }
 
