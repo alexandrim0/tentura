@@ -828,6 +828,90 @@ abstract class L10n {
   /// In en, this message translates to:
   /// **'Share Link'**
   String get shareLink;
+
+  /// No description provided for @addPollOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Poll'**
+  String get addPollOption;
+
+  /// No description provided for @pollSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll'**
+  String get pollSectionTitle;
+
+  /// No description provided for @pollQuestionFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll Question'**
+  String get pollQuestionFieldLabel;
+
+  /// No description provided for @pollOptionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Options:'**
+  String get pollOptionsLabel;
+
+  /// No description provided for @optionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Option {index}'**
+  String optionLabel(Object index);
+
+  /// No description provided for @addOptionButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Option'**
+  String get addOptionButton;
+
+  /// No description provided for @showPollButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Poll'**
+  String get showPollButton;
+
+  /// No description provided for @pollDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Poll Results'**
+  String get pollDialogTitle;
+
+  /// No description provided for @votedCountText.
+  ///
+  /// In en, this message translates to:
+  /// **'Voted by {percentage}% of your network ({count} users)'**
+  String votedCountText(Object percentage, Object count);
+
+  /// No description provided for @immediateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Immediate'**
+  String get immediateLabel;
+
+  /// No description provided for @finalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Final'**
+  String get finalLabel;
+
+  /// No description provided for @changeVoteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Vote'**
+  String get changeVoteButton;
+
+  /// No description provided for @voteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Vote'**
+  String get voteButton;
+
+  /// No description provided for @closeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get closeButton;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

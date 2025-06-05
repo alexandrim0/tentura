@@ -389,4 +389,50 @@ class L10nRu extends L10n {
 
   @override
   String get shareLink => 'Поделиться ссылкой';
+
+  @override
+  String get addPollOption => 'Добавить голосование';
+
+  @override
+  String get pollSectionTitle => 'Опрос';
+
+  @override
+  String get pollQuestionFieldLabel => 'Формулировка вопроса';
+
+  @override
+  String get pollOptionsLabel => 'Варианты ответа:';
+
+  @override
+  String optionLabel(Object index) {
+    return 'Вариант $index';
+  }
+
+  @override
+  String get addOptionButton => 'Добавить вариант';
+
+  @override
+  String get showPollButton => 'Показать голосование';
+
+  @override
+  String get pollDialogTitle => 'Результаты голосования';
+
+  @override
+  String votedCountText(Object percentage, Object count) {
+    return 'Проголосовало $percentage% окружения ($count чел.)';
+  }
+
+  @override
+  String get immediateLabel => 'Мнение окружения';
+
+  @override
+  String get finalLabel => 'Результат';
+
+  @override
+  String get changeVoteButton => 'Изменить мнение';
+
+  @override
+  String get voteButton => 'Проголосовать';
+
+  @override
+  String get closeButton => 'Закрыть';
 }

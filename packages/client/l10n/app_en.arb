@@ -515,5 +515,69 @@
   "shareLink": "Share Link",
   "@shareLink": {
     "context": "ShareCodeDialog"
+  },
+
+  "addPollOption": "Add Poll",
+  "@addPollOption": {
+    "context": "BeaconCreateScreen"
+  },
+  "pollSectionTitle": "Poll",
+  "@pollSectionTitle": {
+    "context": "PollEditor"
+  },
+  "pollQuestionFieldLabel": "Poll Question",
+  "@pollQuestionFieldLabel": {
+    "context": "PollEditor"
+  },
+  "pollOptionsLabel": "Options:",
+  "@pollOptionsLabel": {
+    "context": "PollEditor"
+  },
+  "optionLabel": "Option {index}",
+  "@optionLabel": {
+    "context": "PollEditor",
+    "placeholders": {
+      "index": {}
+    }
+  },
+  "addOptionButton": "Add Option",
+  "@addOptionButton": {
+    "context": "PollEditor"
+  },
+  "showPollButton": "Show Poll",
+  "@showPollButton": {
+    "context": "PollButton"
+  },
+  "pollDialogTitle": "Poll Results",
+  "@pollDialogTitle": {
+    "context": "PollDialog"
+  },
+  "votedCountText": "Voted by {percentage}% of your network ({count} users)",
+  "@votedCountText": {
+    "context": "PollDialog",
+    "placeholders": {
+      "percentage": {},
+      "count": {}
+    }
+  },
+  "immediateLabel": "Immediate",
+  "@immediateLabel": {
+    "context": "OptionTile"
+  },
+  "finalLabel": "Final",
+  "@finalLabel": {
+    "context": "OptionTile"
+  },
+  "changeVoteButton": "Change Vote",
+  "@changeVoteButton": {
+    "context": "PollDialog"
+  },
+  "voteButton": "Vote",
+  "@voteButton": {
+    "context": "PollDialog"
+  },
+  "closeButton": "Close",
+  "@closeButton": {
+    "context": "PollDialog"
   }
 }
