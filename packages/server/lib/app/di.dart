@@ -7,7 +7,7 @@ import 'di.config.dart';
 final getIt = GetIt.instance;
 
 @InjectableInit(ignoreUnregisteredTypes: [Env])
-Future<GetIt> configureDependencies(Env env) {
+Future<GetIt> configureDependencies(Env env) async {
   getIt.registerSingleton(env);
   return getIt.init(environment: env.environment);
 }

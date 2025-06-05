@@ -15,8 +15,9 @@ class App {
     await migrateDbSchema(env);
 
     final workers = await Future.wait([
+      Worker.spawnTaskWorker(env: env),
       for (var i = 0; i < env.isolatesCount; i += 1)
-        Worker.spawn(env: env, debugName: 'Worker #$i'),
+        Worker.spawnWebWorker(env: env, debugName: 'Worker #$i'),
     ]);
 
     await _stopSignal();
@@ -27,7 +28,7 @@ class App {
   Future<void> runTest([Env? env]) async {
     env ??= Env.test();
 
-    final worker = await Worker.spawn(env: env, debugName: 'Worker #Test');
+    final worker = await Worker.spawnWebWorker(env: env);
 
     await _stopSignal();
 
