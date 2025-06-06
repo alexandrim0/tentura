@@ -13,14 +13,16 @@ const kSpacingMedium = 16.0;
 const kSpacingLarge = 24.0;
 
 const kPaddingAllS = EdgeInsets.all(kSpacingSmall);
-// TBD: rename to kPaddingAllM
+
 const kPaddingAll = EdgeInsets.all(kSpacingMedium);
 const kPaddingAllL = EdgeInsets.all(kSpacingLarge);
-// TBD: rename to kPaddingHM
+
 const kPaddingH = EdgeInsets.symmetric(horizontal: kSpacingMedium);
-// TBD: rename to kPaddingVM
-const kPaddingV = EdgeInsets.symmetric(vertical: kSpacingMedium);
 const kPaddingT = EdgeInsets.only(top: kSpacingMedium);
+const kPaddingV = EdgeInsets.symmetric(vertical: kSpacingMedium);
+
+const kPaddingLargeT = EdgeInsets.only(top: kSpacingLarge);
+const kPaddingLargeV = EdgeInsets.symmetric(vertical: kSpacingLarge);
 
 const kPaddingSmallT = EdgeInsets.only(top: kSpacingSmall);
 const kPaddingSmallV = EdgeInsets.symmetric(vertical: kSpacingSmall);
@@ -28,6 +30,8 @@ const kPaddingSmallV = EdgeInsets.symmetric(vertical: kSpacingSmall);
 /// 600px in MD guideline means large screen for vertical orientation
 const kWebConstraints = BoxConstraints(minWidth: 600);
 const kWebAspectRatio = 9 / 16;
+
+const kBorderRadius = 8.0;
 
 final _fmtYMd = DateFormat.yMd();
 final _fmtHm = DateFormat.Hm();

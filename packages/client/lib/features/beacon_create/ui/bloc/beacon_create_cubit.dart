@@ -48,7 +48,23 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
 
   void clearImage() => emit(state.copyWith(image: null));
 
+  void setQuestion(String value) => emit(state.copyWith(question: value));
+
+  void addVariant() => emit(state.copyWith(variants: [...state.variants, '']));
+
+  void removeVariant(int index) =>
+      emit(state.copyWith(variants: [...state.variants]..removeAt(index)));
+
+  void setVariant(int index, String value) => state.variants[index] = value;
+
   Future<void> publish({required String context}) async {
+    state.variants.removeWhere((e) => e.isEmpty);
+    if (state.hasPolling) {
+      // TBD: validate Polling
+      if (kDebugMode) print(state.variants);
+      return;
+    }
+
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final now = DateTime.timestamp();

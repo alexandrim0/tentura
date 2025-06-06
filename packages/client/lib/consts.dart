@@ -54,3 +54,5 @@ const kOsmUrlTemplate = String.fromEnvironment(
 const kNeedInviteCode = bool.fromEnvironment('NEED_INVITE_CODE');
 
 const kAssetPackage = bool.fromEnvironment('IS_IMPORTED') ? 'tentura' : null;
+
+const kIsPollingEnabled = bool.fromEnvironment('ENABLE_POLLING');

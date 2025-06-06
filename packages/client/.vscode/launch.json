@@ -14,9 +14,11 @@
                 "prod",
 				"--dart-define-from-file=.env",
 				"--dart-define",
-				"NEED_INVITE_CODE=true",
-				"--dart-define",
 				"SERVER_NAME=https://dev.tentura.io",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
+                "--dart-define",
+                "ENABLE_POLLING=true",
             ],
         },
         {
@@ -25,12 +27,29 @@
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
+				"--dart-define-from-file=.env",
+                "--dart-define",
+                "SERVER_NAME=https://localhost",
+            ],
+            "args": [
+                "-d", "chrome",
+                "--web-port", "8888",
+                "--web-experimental-hot-reload",
+                "--web-browser-flag=--disable-web-security",
+                "--web-browser-flag=--ignore-certificate-errors",
+            ]
+        },
+        {
+            "name": "web, polling (local)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+				"--dart-define-from-file=.env",
                 "--dart-define",
                 "SERVER_NAME=https://localhost",
                 "--dart-define",
-                "NEED_INVITE_CODE=true",
-                "--dart-define",
-				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
+                "ENABLE_POLLING=true",
             ],
             "args": [
                 "-d", "chrome",
@@ -67,10 +86,9 @@
             "toolArgs": [
                 "--flavor",
                 "stage",
+				"--dart-define-from-file=.env",
                 "--dart-define",
                 "SERVER_NAME=https://stage.tentura.io",
-                "--dart-define",
-				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
         },
         {
@@ -80,8 +98,6 @@
             "flutterMode": "debug",
             "toolArgs": [
 				"--dart-define-from-file=.env",
-				"--dart-define",
-                "IMAGE_SERVER=https://static.tentura.io",
 				"--dart-define",
 				"NEED_INVITE_CODE=true",
 				"--dart-define",

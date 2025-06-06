@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
-
+import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
-import 'package:tentura/ui/utils/ui_utils.dart';
 
 import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
 import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
@@ -16,6 +16,7 @@ import '../widget/description_input.dart';
 import '../widget/image_box.dart';
 import '../widget/image_input.dart';
 import '../widget/location_input.dart';
+import '../widget/polling_expansion_tile.dart';
 import '../widget/publish_button.dart';
 import '../widget/title_input.dart';
 
@@ -48,19 +49,9 @@ class BeaconCreateScreen extends StatefulWidget implements AutoRouteWrapper {
 
 class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _imageController = TextEditingController();
-  final _locationController = TextEditingController();
-  final _dateRangeController = TextEditingController();
 
   late final _l10n = L10n.of(context)!;
-
-  @override
-  void dispose() {
-    _imageController.dispose();
-    _locationController.dispose();
-    _dateRangeController.dispose();
-    super.dispose();
-  }
+  late final _beaconCreateCubit = context.read<BeaconCreateCubit>();
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -78,12 +69,14 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(4),
         child: BlocSelector<BeaconCreateCubit, BeaconCreateState, bool>(
+          key: const Key('BeaconCreate.LoadIndicator'),
+          bloc: _beaconCreateCubit,
           selector: (state) => state.isLoading,
           builder: LinearPiActive.builder,
         ),
       ),
-      leading: const DeepBackButton(),
       centerTitle: true,
+      leading: const DeepBackButton(),
       title: Text(_l10n.createNewBeacon),
     ),
 
@@ -92,36 +85,46 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
       key: _formKey,
       child: ListView(
         padding: kPaddingAll,
-        children: [
+        children: const [
           // Title
-          const TitleInput(),
+          TitleInput(key: Key('BeaconCreate.TitleInput')),
 
           // Description
-          const DescriptionInput(),
+          DescriptionInput(key: Key('BeaconCreate.DescriptionInput')),
 
           // Context
-          const Padding(padding: kPaddingSmallV, child: ContextDropDown()),
+          Padding(
+            padding: kPaddingSmallV,
+            child: ContextDropDown(key: Key('BeaconCreate.ContextDropDown')),
+          ),
 
           // Location
           Padding(
             padding: kPaddingSmallV,
-            child: LocationInput(controller: _locationController),
+            child: LocationInput(key: Key('BeaconCreate.LocationInput')),
           ),
 
           // Date Range
           Padding(
             padding: kPaddingSmallV,
-            child: DateRangeInput(controller: _dateRangeController),
+            child: DateRangeInput(key: Key('BeaconCreate.DateRangeInput')),
           ),
 
           // Image Control
           Padding(
             padding: kPaddingSmallV,
-            child: ImageInput(controller: _imageController),
+            child: ImageInput(key: Key('BeaconCreate.ImageInput')),
           ),
 
           // Image Container
-          const Padding(padding: EdgeInsets.all(48), child: ImageBox()),
+          Padding(
+            padding: EdgeInsets.all(kSpacingLarge * 2),
+            child: ImageBox(),
+          ),
+
+          // Add Polling
+          if (kIsPollingEnabled)
+            PollingExpansionTile(key: Key('BeaconCreate.PollingExpansionTile')),
         ],
       ),
     ),
