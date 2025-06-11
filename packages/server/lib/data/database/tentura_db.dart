@@ -7,6 +7,7 @@ import 'package:tentura_server/domain/entity/beacon_entity.dart';
 import 'package:tentura_server/domain/entity/comment_entity.dart';
 import 'package:tentura_server/domain/entity/invitation_entity.dart';
 import 'package:tentura_server/domain/entity/opinion_entity.dart';
+import 'package:tentura_server/domain/entity/polling_entity.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
 import 'package:tentura_server/env.dart';
 
@@ -14,6 +15,9 @@ import 'table/beacons.dart';
 import 'table/comments.dart';
 import 'table/invitations.dart';
 import 'table/opinions.dart';
+import 'table/pollings.dart';
+import 'table/polling_acts.dart';
+import 'table/polling_variants.dart';
 import 'table/users.dart';
 import 'table/vote_users.dart';
 
@@ -23,7 +27,17 @@ part 'tentura_db.g.dart';
 
 @singleton
 @DriftDatabase(
-  tables: [Beacons, Comments, Invitations, Opinions, Users, VoteUsers],
+  tables: [
+    Beacons,
+    Comments,
+    Invitations,
+    Opinions,
+    Users,
+    VoteUsers,
+    Pollings,
+    PollingVariants,
+    PollingActs,
+  ],
 )
 class TenturaDb extends _$TenturaDb {
   @factoryMethod

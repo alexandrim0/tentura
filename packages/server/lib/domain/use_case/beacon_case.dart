@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura_root/domain/entity/coordinates.dart';
+
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/image_repository.dart';
 import 'package:tentura_server/data/repository/tasks_repository.dart';
-import 'package:tentura_root/domain/entity/coordinates.dart';
 
 import '../entity/task_entity.dart';
+import '../exception.dart';
 
 @Singleton(order: 2)
 class BeaconCase {
@@ -39,7 +41,20 @@ class BeaconCase {
     DateTime? startAt,
     Coordinates? coordinates,
     Stream<Uint8List>? imageBytes,
+    ({String? question, List<String>? variants})? polling,
   }) async {
+    if (polling != null) {
+      if (polling.question == null) {
+        throw const BeaconCreateException(description: 'Question is required');
+      }
+      if (polling.variants == null) {
+        throw const BeaconCreateException(description: 'Variants are required');
+      }
+      if (polling.variants!.length < 2) {
+        throw const BeaconCreateException(description: 'Too few variants');
+      }
+    }
+
     final beacon = await _beaconRepository.createBeacon(
       authorId: userId,
       title: title,
@@ -48,9 +63,13 @@ class BeaconCase {
       hasPicture: imageBytes != null,
       latitude: coordinates?.lat,
       longitude: coordinates?.long,
+      polling: polling == null
+          ? null
+          : (question: polling.question!, variants: polling.variants!),
       startAt: startAt,
       endAt: endAt,
     );
+
     if (imageBytes != null) {
       await _imageRepository.putBeaconImage(
         authorId: userId,
@@ -66,6 +85,7 @@ class BeaconCase {
         ),
       );
     }
+
     return beacon;
   }
 

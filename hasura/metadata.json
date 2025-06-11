@@ -1,5 +1,5 @@
 {
-  "resource_version": 9,
+  "resource_version": 19,
   "metadata": {
     "version": 3,
     "sources": [
@@ -17,6 +17,12 @@
                 "name": "author",
                 "using": {
                   "foreign_key_constraint_on": "user_id"
+                }
+              },
+              {
+                "name": "polling",
+                "using": {
+                  "foreign_key_constraint_on": "polling_id"
                 }
               }
             ],
@@ -109,6 +115,7 @@
                     "long",
                     "pic_height",
                     "pic_width",
+                    "polling_id",
                     "start_at",
                     "title",
                     "updated_at",
@@ -706,6 +713,49 @@
                       "_eq": "X-Hasura-User-Id"
                     }
                   }
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "polling",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "enabled",
+                    "author_id",
+                    "id",
+                    "question",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "polling_variant",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "description",
+                    "polling_id",
+                    "id"
+                  ],
+                  "filter": {}
                 },
                 "comment": ""
               }

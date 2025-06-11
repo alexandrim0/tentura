@@ -95,3 +95,13 @@ final class InvitationWrongException extends ExceptionBase {
         description: description ?? 'Wrong invitation code',
       );
 }
+
+final class BeaconCreateException extends ExceptionBase {
+  const BeaconCreateException({String? description})
+    : super(
+        code: const BeaconExceptionCodes(
+          BeaconExceptionCode.beaconCreateException,
+        ),
+        description: description ?? 'Beacon create error',
+      );
+}

@@ -20,11 +20,10 @@ final class MutationBeacon extends GqlNodeBase {
     'beaconDeleteById',
     graphQLBoolean.nonNullable(),
     arguments: [InputFieldId.fieldNonNullable],
-    resolve:
-        (_, args) => _beaconCase.deleteById(
-          beaconId: InputFieldId.fromArgsNonNullable(args),
-          userId: getCredentials(args).sub,
-        ),
+    resolve: (_, args) => _beaconCase.deleteById(
+      beaconId: InputFieldId.fromArgsNonNullable(args),
+      userId: getCredentials(args).sub,
+    ),
   );
 
   GraphQLObjectField<dynamic, dynamic> get create => GraphQLObjectField(
@@ -36,21 +35,22 @@ final class MutationBeacon extends GqlNodeBase {
       InputFieldCoordinates.field,
       InputFieldUpload.fieldImage,
       InputFieldContext.field,
+      InputFieldPolling.field,
       _startAt.fieldNullable,
       _endAt.fieldNullable,
     ],
-    resolve:
-        (_, args) => _beaconCase
-            .create(
-              userId: getCredentials(args).sub,
-              description: InputFieldDescription.fromArgs(args),
-              title: InputFieldTitle.fromArgsNonNullable(args),
-              coordinates: InputFieldCoordinates.fromArgs(args),
-              imageBytes: InputFieldUpload.fromArgs(args),
-              context: InputFieldContext.fromArgs(args),
-              startAt: _startAt.fromArgs(args),
-              endAt: _endAt.fromArgs(args),
-            )
-            .then((v) => v.asJson),
+    resolve: (_, args) => _beaconCase
+        .create(
+          userId: getCredentials(args).sub,
+          title: InputFieldTitle.fromArgsNonNullable(args),
+          description: InputFieldDescription.fromArgs(args),
+          coordinates: InputFieldCoordinates.fromArgs(args),
+          imageBytes: InputFieldUpload.fromArgs(args),
+          context: InputFieldContext.fromArgs(args),
+          polling: InputFieldPolling.fromArgs(args),
+          startAt: _startAt.fromArgs(args),
+          endAt: _endAt.fromArgs(args),
+        )
+        .then((v) => v.asJson),
   );
 }
