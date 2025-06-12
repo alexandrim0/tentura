@@ -1,0 +1,8 @@
+fragment PollingModel on polling {
+  id
+  author_id
+  question
+  enabled
+  created_at
+  updated_at
+}

@@ -1,10 +1,11 @@
 import 'package:drift/drift.dart';
-import 'package:drift_postgres/drift_postgres.dart';
+
+import 'package:tentura_server/domain/entity/polling_variant_entity.dart';
 
 import 'pollings.dart';
 
 class PollingVariants extends Table {
-  late final id = customType(PgTypes.uuid).withDefault(genRandomUuid())();
+  late final id = text().clientDefault(() => PollingVariantEntity.newId)();
 
   late final pollingId = text().references(Pollings, #id)();
 

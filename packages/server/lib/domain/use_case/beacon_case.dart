@@ -6,6 +6,7 @@ import 'package:tentura_root/domain/entity/coordinates.dart';
 
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/image_repository.dart';
+import 'package:tentura_server/data/repository/meritrank_repository.dart';
 import 'package:tentura_server/data/repository/tasks_repository.dart';
 
 import '../entity/task_entity.dart';
@@ -18,13 +19,22 @@ class BeaconCase {
     BeaconRepository beaconRepository,
     ImageRepository imageRepository,
     TasksRepository tasksRepository,
-  ) async => BeaconCase(beaconRepository, imageRepository, tasksRepository);
+    MeritrankRepository meritrankRepository,
+  ) async => BeaconCase(
+    beaconRepository,
+    imageRepository,
+    tasksRepository,
+    meritrankRepository,
+  );
 
   const BeaconCase(
     this._beaconRepository,
     this._imageRepository,
     this._tasksRepository,
+    this._meritrankRepository,
   );
+
+  final MeritrankRepository _meritrankRepository;
 
   final BeaconRepository _beaconRepository;
 
@@ -69,6 +79,15 @@ class BeaconCase {
       startAt: startAt,
       endAt: endAt,
     );
+
+    if (beacon.polling?.variants != null) {
+      for (final variant in beacon.polling!.variants) {
+        await _meritrankRepository.putEdge(
+          nodeA: variant.id,
+          nodeB: beacon.id,
+        );
+      }
+    }
 
     if (imageBytes != null) {
       await _imageRepository.putBeaconImage(

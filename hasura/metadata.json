@@ -1,5 +1,5 @@
 {
-  "resource_version": 19,
+  "resource_version": 30,
   "metadata": {
     "version": 3,
     "sources": [
@@ -723,6 +723,20 @@
               "name": "polling",
               "schema": "public"
             },
+            "array_relationships": [
+              {
+                "name": "variants",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "polling_id",
+                    "table": {
+                      "name": "polling_variant",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
             "select_permissions": [
               {
                 "role": "user",
@@ -743,6 +757,12 @@
           },
           {
             "table": {
+              "name": "polling_act",
+              "schema": "public"
+            }
+          },
+          {
+            "table": {
               "name": "polling_variant",
               "schema": "public"
             },
@@ -752,8 +772,8 @@
                 "permission": {
                   "columns": [
                     "description",
-                    "polling_id",
-                    "id"
+                    "id",
+                    "polling_id"
                   ],
                   "filter": {}
                 },

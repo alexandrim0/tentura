@@ -18,6 +18,7 @@ fragment BeaconModel on beacon {
   end_at
   long
   lat
+  polling_id
   author {
     ...UserModel
   }

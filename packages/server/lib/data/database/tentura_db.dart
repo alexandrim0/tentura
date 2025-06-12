@@ -8,6 +8,7 @@ import 'package:tentura_server/domain/entity/comment_entity.dart';
 import 'package:tentura_server/domain/entity/invitation_entity.dart';
 import 'package:tentura_server/domain/entity/opinion_entity.dart';
 import 'package:tentura_server/domain/entity/polling_entity.dart';
+import 'package:tentura_server/domain/entity/polling_variant_entity.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
 import 'package:tentura_server/env.dart';
 

@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:drift_postgres/drift_postgres.dart';
+import 'package:drift_postgres/drift_postgres.dart' show PgDateTime;
 
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
 import 'package:tentura_server/domain/entity/polling_entity.dart';

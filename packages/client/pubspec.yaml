@@ -6,7 +6,7 @@ version: 1.0.8
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
-  flutter: ^3.32.2
+  flutter: ^3.32.3
 
 dependencies:
   flutter:
@@ -23,8 +23,8 @@ dependencies:
   latlong2: ^0.9.1
   injectable: ^2.5.0
   auto_route: ^9.0.0
-  built_value: ^8.9.5
   collection: ^1.19.1
+  built_value: ^8.9.5
   http_parser: ^4.1.2
   flutter_bloc: ^9.1.1
   synchronized: ^3.3.0

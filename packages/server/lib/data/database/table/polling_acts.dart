@@ -2,14 +2,15 @@ import 'package:drift/drift.dart';
 import 'package:drift_postgres/drift_postgres.dart';
 
 import 'polling_variants.dart';
+import 'pollings.dart';
 import 'users.dart';
 
 class PollingActs extends Table {
   late final authorId = text().references(Users, #id)();
 
-  late final pollingVariantId = customType(
-    PgTypes.uuid,
-  ).references(PollingVariants, #id)();
+  late final pollingId = text().references(Pollings, #id)();
+
+  late final pollingVariantId = text().references(PollingVariants, #id)();
 
   late final createdAt = customType(
     PgTypes.timestampWithTimezone,

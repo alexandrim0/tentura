@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:tentura_server/utils/id.dart';
 
+import 'polling_variant_entity.dart';
 import 'user_entity.dart';
 
 part 'polling_entity.freezed.dart';
@@ -17,7 +18,7 @@ abstract class PollingEntity with _$PollingEntity {
     required DateTime createdAt,
     required DateTime updatedAt,
     @Default(true) bool isEnabled,
-    @Default([]) List<String> variants,
+    @Default([]) List<PollingVariantEntity> variants,
   }) = _PollingEntity;
 
   const PollingEntity._();

@@ -6,7 +6,7 @@
 ## Build docker image
 
   Replace version tag with actual
-  `docker build --no-cache -t vbulavintsev/tentura-service:v0.3.2 .`
+  `docker build --no-cache -t vbulavintsev/tentura-service:v0.3.3 .`
 
 ## Use REST Client
 
