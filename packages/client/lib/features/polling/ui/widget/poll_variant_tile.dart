@@ -24,60 +24,66 @@ class PollVariantTile extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      child: Row(
-        children: [
-          // визуальный индикатор выбора
-          Padding(
-            padding: const EdgeInsets.only(right: kSpacingMedium),
-            child: hasVoted
-                ? Icon(
-                    isSelected
-                        ? Icons.check_circle
-                        : Icons.radio_button_unchecked,
-                    color: isSelected
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.outline,
-                  )
-                : Radio<int>(
-                    value: row.optionId,
-                    groupValue: isSelected ? row.optionId : null,
-                    onChanged: (_) => onTap?.call(),
-                  ),
-          ),
-
-          // название опции
-          Expanded(
-            child: Text(
-              row.optionTitle,
-              style: theme.textTheme.bodyMedium!.copyWith(
-                fontWeight: FontWeight.w500,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          bottom: kSpacingSmall,
+        ),
+        child: Row(
+          children: [
+            // визуальный индикатор выбора
+            SizedBox(
+              width: 38,
+              child: Padding(
+                padding: const EdgeInsets.only(right: kSpacingMedium),
+                child: hasVoted
+                    ? Icon(
+                        isSelected ? Icons.check_circle : Icons.circle,
+                        color: isSelected
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.outline,
+                      )
+                    : Radio<int>(
+                        value: row.optionId,
+                        groupValue: isSelected ? row.optionId : null,
+                        onChanged: (_) => onTap?.call(),
+                      ),
               ),
             ),
-          ),
 
-          // проценты
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // immediate result
-              Text(
-                '${l10n.immediateLabel} ${(100 * row.immediate).round()} %',
-                style: theme.textTheme.bodySmall,
+            // название опции
+            Expanded(
+              child: Text(
+                row.optionTitle,
+                style: theme.textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              // final result
-              Text(
-                '${l10n.finalLabel} ${(100 * row.finalRes).round()} %',
-                style: theme.textTheme.bodySmall,
-              ),
-            ],
-          ),
+            ),
 
-          // голоса
-          Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Text('${row.votes}', style: theme.textTheme.bodySmall),
-          ),
-        ],
+            // проценты
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // immediate result
+                Text(
+                  '${l10n.immediateLabel} ${(100 * row.immediate).round()} %',
+                  style: theme.textTheme.bodySmall,
+                ),
+                // final result
+                Text(
+                  '${l10n.finalLabel} ${(100 * row.finalRes).round()} %',
+                  style: theme.textTheme.bodySmall,
+                ),
+              ],
+            ),
+
+            // голоса
+            Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Text('${row.votes}', style: theme.textTheme.bodySmall),
+            ),
+          ],
+        ),
       ),
     );
   }
