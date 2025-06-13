@@ -14,5 +14,6 @@ extension type const PollingModel(GPollingModel i) implements GPollingModel {
     variants: {
       for (final e in i.variants) e.id: e.description,
     },
+    selection: i.polling_acts.map((e) => e.polling_variant_id).toSet(),
   );
 }

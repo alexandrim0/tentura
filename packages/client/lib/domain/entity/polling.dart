@@ -12,11 +12,15 @@ abstract class Polling extends Identifiable with _$Polling {
     required String question,
     required DateTime createdAt,
     required DateTime updatedAt,
-    required Map<String, String> variants,
+    @Default({}) Map<String, String> variants,
+    @Default({}) Set<String> selection,
     @Default(Profile()) Profile author,
     @Default(true) bool isEnabled,
     @Default('') String id,
   }) = _Polling;
 
   const Polling._();
+
+  bool get hasChoice => selection.isNotEmpty;
+  bool get hasNoChoice => selection.isEmpty;
 }

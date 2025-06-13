@@ -35,7 +35,7 @@ class BeaconTileControl extends StatelessWidget {
         BeaconPinIconButton(key: ValueKey(beacon.author), beacon: beacon),
 
         // Poll button
-        if (beacon.hasPolling) const PollButton(),
+        PollButton(polling: beacon.polling),
 
         const Spacer(),
         // Rating bar

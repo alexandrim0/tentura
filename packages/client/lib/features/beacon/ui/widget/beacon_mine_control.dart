@@ -34,7 +34,7 @@ class BeaconMineControl extends StatelessWidget {
         ShareCodeIconButton.id(beacon.id),
 
         // Poll button
-        if (beacon.hasPolling) const PollButton(),
+        PollButton(polling: beacon.polling),
 
         // Menu
         PopupMenuButton<void>(
