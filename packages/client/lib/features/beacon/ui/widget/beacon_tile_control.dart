@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -36,7 +35,7 @@ class BeaconTileControl extends StatelessWidget {
         BeaconPinIconButton(key: ValueKey(beacon.author), beacon: beacon),
 
         // Poll button
-        if (kIsPollingEnabled) const PollButton(),
+        if (beacon.hasPolling) const PollButton(),
 
         const Spacer(),
         // Rating bar

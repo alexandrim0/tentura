@@ -2064,10 +2064,30 @@ enum order_by {
 columns and relationships of "polling"
 """
 type polling {
+  """An object relationship"""
+  author: user!
   author_id: String!
   created_at: timestamptz!
   enabled: Boolean!
   id: String!
+
+  """An array relationship"""
+  polling_acts(
+    """distinct select on columns"""
+    distinct_on: [polling_act_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [polling_act_order_by!]
+
+    """filter the rows returned"""
+    where: polling_act_bool_exp
+  ): [polling_act!]!
   question: String!
   updated_at: timestamptz!
 
@@ -2091,16 +2111,114 @@ type polling {
 }
 
 """
+columns and relationships of "polling_act"
+"""
+type polling_act {
+  author_id: String!
+  created_at: timestamptz!
+  polling_id: String!
+  polling_variant_id: String!
+}
+
+"""
+order by aggregate values of table "polling_act"
+"""
+input polling_act_aggregate_order_by {
+  count: order_by
+  max: polling_act_max_order_by
+  min: polling_act_min_order_by
+}
+
+"""
+Boolean expression to filter rows from the table "polling_act". All fields are combined with a logical 'AND'.
+"""
+input polling_act_bool_exp {
+  _and: [polling_act_bool_exp!]
+  _not: polling_act_bool_exp
+  _or: [polling_act_bool_exp!]
+  author_id: String_comparison_exp
+  created_at: timestamptz_comparison_exp
+  polling_id: String_comparison_exp
+  polling_variant_id: String_comparison_exp
+}
+
+"""
+order by max() on columns of table "polling_act"
+"""
+input polling_act_max_order_by {
+  author_id: order_by
+  created_at: order_by
+  polling_id: order_by
+  polling_variant_id: order_by
+}
+
+"""
+order by min() on columns of table "polling_act"
+"""
+input polling_act_min_order_by {
+  author_id: order_by
+  created_at: order_by
+  polling_id: order_by
+  polling_variant_id: order_by
+}
+
+"""Ordering options when selecting data from "polling_act"."""
+input polling_act_order_by {
+  author_id: order_by
+  created_at: order_by
+  polling_id: order_by
+  polling_variant_id: order_by
+}
+
+"""
+select columns of table "polling_act"
+"""
+enum polling_act_select_column {
+  """column name"""
+  author_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  polling_id
+
+  """column name"""
+  polling_variant_id
+}
+
+"""
+Streaming cursor of the table "polling_act"
+"""
+input polling_act_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: polling_act_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input polling_act_stream_cursor_value_input {
+  author_id: String
+  created_at: timestamptz
+  polling_id: String
+  polling_variant_id: String
+}
+
+"""
 Boolean expression to filter rows from the table "polling". All fields are combined with a logical 'AND'.
 """
 input polling_bool_exp {
   _and: [polling_bool_exp!]
   _not: polling_bool_exp
   _or: [polling_bool_exp!]
+  author: user_bool_exp
   author_id: String_comparison_exp
   created_at: timestamptz_comparison_exp
   enabled: Boolean_comparison_exp
   id: String_comparison_exp
+  polling_acts: polling_act_bool_exp
   question: String_comparison_exp
   updated_at: timestamptz_comparison_exp
   variants: polling_variant_bool_exp
@@ -2108,10 +2226,12 @@ input polling_bool_exp {
 
 """Ordering options when selecting data from "polling"."""
 input polling_order_by {
+  author: user_order_by
   author_id: order_by
   created_at: order_by
   enabled: order_by
   id: order_by
+  polling_acts_aggregate: polling_act_aggregate_order_by
   question: order_by
   updated_at: order_by
   variants_aggregate: polling_variant_aggregate_order_by
@@ -2527,6 +2647,29 @@ type query_root {
     """filter the rows returned"""
     where: polling_bool_exp
   ): [polling!]!
+
+  """
+  fetch data from the table: "polling_act"
+  """
+  polling_act(
+    """distinct select on columns"""
+    distinct_on: [polling_act_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [polling_act_order_by!]
+
+    """filter the rows returned"""
+    where: polling_act_bool_exp
+  ): [polling_act!]!
+
+  """fetch data from the table: "polling_act" using primary key columns"""
+  polling_act_by_pk(author_id: String!, polling_id: String!): polling_act
 
   """fetch data from the table: "polling" using primary key columns"""
   polling_by_pk(id: String!): polling
@@ -3138,6 +3281,43 @@ type subscription_root {
     """filter the rows returned"""
     where: polling_bool_exp
   ): [polling!]!
+
+  """
+  fetch data from the table: "polling_act"
+  """
+  polling_act(
+    """distinct select on columns"""
+    distinct_on: [polling_act_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [polling_act_order_by!]
+
+    """filter the rows returned"""
+    where: polling_act_bool_exp
+  ): [polling_act!]!
+
+  """fetch data from the table: "polling_act" using primary key columns"""
+  polling_act_by_pk(author_id: String!, polling_id: String!): polling_act
+
+  """
+  fetch data from the table in a streaming manner: "polling_act"
+  """
+  polling_act_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [polling_act_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: polling_act_bool_exp
+  ): [polling_act!]!
 
   """fetch data from the table: "polling" using primary key columns"""
   polling_by_pk(id: String!): polling

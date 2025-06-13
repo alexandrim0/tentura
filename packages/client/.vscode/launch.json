@@ -17,8 +17,6 @@
 				"SERVER_NAME=https://dev.tentura.io",
 				"--dart-define",
 				"NEED_INVITE_CODE=true",
-                "--dart-define",
-                "ENABLE_POLLING=true",
             ],
         },
         {
@@ -30,26 +28,6 @@
 				"--dart-define-from-file=.env",
                 "--dart-define",
                 "SERVER_NAME=https://localhost",
-            ],
-            "args": [
-                "-d", "chrome",
-                "--web-port", "8888",
-                "--web-experimental-hot-reload",
-                "--web-browser-flag=--disable-web-security",
-                "--web-browser-flag=--ignore-certificate-errors",
-            ]
-        },
-        {
-            "name": "web, polling (local)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "debug",
-            "toolArgs": [
-				"--dart-define-from-file=.env",
-                "--dart-define",
-                "SERVER_NAME=https://localhost",
-                "--dart-define",
-                "ENABLE_POLLING=true",
             ],
             "args": [
                 "-d", "chrome",

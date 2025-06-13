@@ -1,8 +1,10 @@
 import 'package:get_it/get_it.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/data/repository/image_repository.dart';
 import 'package:tentura/domain/entity/coordinates.dart';
 import 'package:tentura/domain/entity/beacon.dart';
+import 'package:tentura/domain/entity/polling.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import 'package:tentura/features/beacon/data/repository/beacon_repository.dart';
@@ -60,9 +62,24 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
   Future<void> publish({required String context}) async {
     state.variants.removeWhere((e) => e.isEmpty);
     if (state.hasPolling) {
-      // TBD: validate Polling
-      if (kDebugMode) print(state.variants);
-      return;
+      if (state.question.length < kQuestionMinLength) {
+        emit(
+          state.copyWith(
+            // TBD: l10n
+            status: StateHasError('Too shohort question.'),
+          ),
+        );
+        return;
+      }
+      if (state.variants.length < 2) {
+        emit(
+          state.copyWith(
+            // TBD: l10n
+            status: StateHasError('Too few variants. Must be at least 2.'),
+          ),
+        );
+        return;
+      }
     }
 
     emit(state.copyWith(status: StateStatus.isLoading));
@@ -79,6 +96,17 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
           startAt: state.startAt,
           endAt: state.endAt,
           hasPicture: state.image != null,
+          polling: state.hasPolling
+              ? Polling(
+                  createdAt: now,
+                  updatedAt: now,
+                  question: state.question,
+                  variants: {
+                    for (var i = 0; i < state.variants.length; i++)
+                      i.toString(): state.variants[i],
+                  },
+                )
+              : null,
         ),
         image: state.image,
       );

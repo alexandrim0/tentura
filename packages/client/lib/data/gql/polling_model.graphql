@@ -5,4 +5,12 @@ fragment PollingModel on polling {
   enabled
   created_at
   updated_at
+  variants {
+    id
+    description
+  }
+  polling_acts {
+    polling_variant_id
+    created_at
+  }
 }

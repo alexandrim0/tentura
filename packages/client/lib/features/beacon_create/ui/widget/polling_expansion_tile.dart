@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -31,6 +32,16 @@ class _PollingExpansionTileState extends State<PollingExpansionTile> {
         keyboardType: TextInputType.text,
         onTapOutside: (_) => FocusScope.of(context).unfocus(),
         onChanged: _beaconCreateCubit.setQuestion,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return null;
+          } else if (value.length < kQuestionMinLength) {
+            // TBD: l10n
+            return 'Too short question.';
+          } else {
+            return null;
+          }
+        },
       ),
 
       // Label for Variants

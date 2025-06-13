@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:tentura/consts.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/deep_back_button.dart';
@@ -123,8 +122,7 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen> {
           ),
 
           // Add Polling
-          if (kIsPollingEnabled)
-            PollingExpansionTile(key: Key('BeaconCreate.PollingExpansionTile')),
+          PollingExpansionTile(key: Key('BeaconCreate.PollingExpansionTile')),
         ],
       ),
     ),

@@ -6,7 +6,7 @@ version: 1.0.8
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
-  flutter: ^3.32.3
+  flutter: ^3.32.4
 
 dependencies:
   flutter:
@@ -32,6 +32,7 @@ dependencies:
   sentry_flutter: ^8.14.2
   json_annotation: ^4.9.0
   ed25519_edwards: ^0.3.1
+  built_collection: ^5.1.1
   intl_translation: ^0.20.1
   dart_jsonwebtoken: ^3.2.0
   freezed_annotation: ^2.4.4

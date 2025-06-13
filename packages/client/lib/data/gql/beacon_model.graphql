@@ -1,3 +1,4 @@
+# import '/data/gql/polling_model.graphql'
 # import '/data/gql/user_model.graphql'
 
 fragment BeaconModel on beacon {
@@ -18,7 +19,9 @@ fragment BeaconModel on beacon {
   end_at
   long
   lat
-  polling_id
+  polling {
+    ...PollingModel
+  }
   author {
     ...UserModel
   }

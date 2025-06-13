@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
@@ -35,7 +34,7 @@ class BeaconMineControl extends StatelessWidget {
         ShareCodeIconButton.id(beacon.id),
 
         // Poll button
-        if (kIsPollingEnabled) const PollButton(),
+        if (beacon.hasPolling) const PollButton(),
 
         // Menu
         PopupMenuButton<void>(

@@ -4,8 +4,4 @@ query Polling($id: String!) {
   polling_by_pk(id: $id) {
     ...PollingModel
   }
-  polling_variant(where: {polling_id: {_eq: $id}}) {
-    id
-    description
-  }
 }
