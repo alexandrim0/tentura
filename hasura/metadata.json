@@ -1,5 +1,5 @@
 {
-  "resource_version": 30,
+  "resource_version": 53,
   "metadata": {
     "version": 3,
     "sources": [
@@ -632,6 +632,29 @@
           },
           {
             "table": {
+              "name": "neighbors_score",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "dst_score",
+                    "src_score",
+                    "dst_cluster_score",
+                    "src_cluster_score",
+                    "dst",
+                    "src"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
               "name": "opinion",
               "schema": "public"
             },
@@ -723,7 +746,27 @@
               "name": "polling",
               "schema": "public"
             },
+            "object_relationships": [
+              {
+                "name": "author",
+                "using": {
+                  "foreign_key_constraint_on": "author_id"
+                }
+              }
+            ],
             "array_relationships": [
+              {
+                "name": "polling_acts",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "polling_id",
+                    "table": {
+                      "name": "polling_act",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
               {
                 "name": "variants",
                 "using": {
@@ -759,7 +802,26 @@
             "table": {
               "name": "polling_act",
               "schema": "public"
-            }
+            },
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "author_id",
+                    "polling_id",
+                    "polling_variant_id",
+                    "created_at"
+                  ],
+                  "filter": {
+                    "author_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": ""
+              }
+            ]
           },
           {
             "table": {
@@ -1250,6 +1312,21 @@
           {
             "function": {
               "name": "opinions",
+              "schema": "public"
+            },
+            "configuration": {
+              "custom_root_fields": {},
+              "session_argument": "hasura_session"
+            },
+            "permissions": [
+              {
+                "role": "user"
+              }
+            ]
+          },
+          {
+            "function": {
+              "name": "polling_results",
               "schema": "public"
             },
             "configuration": {

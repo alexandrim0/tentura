@@ -1,6 +1,19 @@
 part of '_migrations.dart';
 
 final m0004 = Migration('0004', [
+  // Views
+  '''
+CREATE OR REPLACE VIEW "public"."neighbors_score" AS
+  SELECT
+    '' :: text AS src,
+    '' :: text AS dst,
+    (0) :: double precision AS src_score,
+    (0) :: double precision AS dst_score,
+    (0) :: integer AS src_cluster_score,
+    (0) :: integer AS dst_cluster_score
+  WHERE false;
+''',
+
   // Tables
   '''
 CREATE TABLE IF NOT EXISTS public.polling (
@@ -48,5 +61,33 @@ CREATE TABLE IF NOT EXISTS public.polling_act (
 ALTER TABLE public.beacon ADD COLUMN IF NOT EXISTS polling_id text
   CONSTRAINT beacon__polling_id__fkey REFERENCES public.polling(id)
     ON UPDATE RESTRICT ON DELETE CASCADE;
+''',
+
+  // Functions
+  r'''
+CREATE OR REPLACE FUNCTION public.polling_results(
+  focus text,
+  hasura_session json
+) RETURNS SETOF public.neighbors_score
+  LANGUAGE sql
+  IMMUTABLE
+  AS $$
+SELECT
+  src,
+  dst,
+  score_value_of_src AS src_score,
+  score_value_of_dst AS dst_score,
+  score_cluster_of_src AS src_cluster_score,
+  score_cluster_of_dst AS dst_cluster_score
+FROM
+  mr_neighbors(
+    hasura_session ->> 'x-hasura-user-id',
+    focus,
+    2,
+    false,
+    NULL,
+    'V'
+  );
+$$;
 ''',
 ]);

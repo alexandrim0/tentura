@@ -1,7 +1,0 @@
-# import '/data/gql/polling_model.graphql'
-
-query Polling($id: String!) {
-  polling_by_pk(id: $id) {
-    ...PollingModel
-  }
-}

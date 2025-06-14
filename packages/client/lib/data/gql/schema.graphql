@@ -1870,6 +1870,87 @@ input my_field_args {
 }
 
 """
+columns and relationships of "neighbors_score"
+"""
+type neighbors_score {
+  dst: String
+  dst_cluster_score: Int
+  dst_score: float8
+  src: String
+  src_cluster_score: Int
+  src_score: float8
+}
+
+"""
+Boolean expression to filter rows from the table "neighbors_score". All fields are combined with a logical 'AND'.
+"""
+input neighbors_score_bool_exp {
+  _and: [neighbors_score_bool_exp!]
+  _not: neighbors_score_bool_exp
+  _or: [neighbors_score_bool_exp!]
+  dst: String_comparison_exp
+  dst_cluster_score: Int_comparison_exp
+  dst_score: float8_comparison_exp
+  src: String_comparison_exp
+  src_cluster_score: Int_comparison_exp
+  src_score: float8_comparison_exp
+}
+
+"""Ordering options when selecting data from "neighbors_score"."""
+input neighbors_score_order_by {
+  dst: order_by
+  dst_cluster_score: order_by
+  dst_score: order_by
+  src: order_by
+  src_cluster_score: order_by
+  src_score: order_by
+}
+
+"""
+select columns of table "neighbors_score"
+"""
+enum neighbors_score_select_column {
+  """column name"""
+  dst
+
+  """column name"""
+  dst_cluster_score
+
+  """column name"""
+  dst_score
+
+  """column name"""
+  src
+
+  """column name"""
+  src_cluster_score
+
+  """column name"""
+  src_score
+}
+
+"""
+Streaming cursor of the table "neighbors_score"
+"""
+input neighbors_score_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: neighbors_score_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input neighbors_score_stream_cursor_value_input {
+  dst: String
+  dst_cluster_score: Int
+  dst_score: float8
+  src: String
+  src_cluster_score: Int
+  src_score: float8
+}
+
+"""
 columns and relationships of "opinion"
 """
 type opinion {
@@ -2238,6 +2319,10 @@ input polling_order_by {
   variants_aggregate: polling_variant_aggregate_order_by
 }
 
+input polling_results_args {
+  focus: String
+}
+
 """
 select columns of table "polling"
 """
@@ -2582,6 +2667,26 @@ type query_root {
   ): [mutual_score!]!
 
   """
+  fetch data from the table: "neighbors_score"
+  """
+  neighbors_score(
+    """distinct select on columns"""
+    distinct_on: [neighbors_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [neighbors_score_order_by!]
+
+    """filter the rows returned"""
+    where: neighbors_score_bool_exp
+  ): [neighbors_score!]!
+
+  """
   fetch data from the table: "opinion"
   """
   opinion(
@@ -2674,6 +2779,31 @@ type query_root {
 
   """fetch data from the table: "polling" using primary key columns"""
   polling_by_pk(id: String!): polling
+
+  """
+  execute function "polling_results" which returns "neighbors_score"
+  """
+  polling_results(
+    """
+    input parameters for function "polling_results"
+    """
+    args: polling_results_args!
+
+    """distinct select on columns"""
+    distinct_on: [neighbors_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [neighbors_score_order_by!]
+
+    """filter the rows returned"""
+    where: neighbors_score_bool_exp
+  ): [neighbors_score!]!
 
   """
   fetch data from the table: "polling_variant"
@@ -3202,6 +3332,40 @@ type subscription_root {
   ): [mutual_score!]!
 
   """
+  fetch data from the table: "neighbors_score"
+  """
+  neighbors_score(
+    """distinct select on columns"""
+    distinct_on: [neighbors_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [neighbors_score_order_by!]
+
+    """filter the rows returned"""
+    where: neighbors_score_bool_exp
+  ): [neighbors_score!]!
+
+  """
+  fetch data from the table in a streaming manner: "neighbors_score"
+  """
+  neighbors_score_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [neighbors_score_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: neighbors_score_bool_exp
+  ): [neighbors_score!]!
+
+  """
   fetch data from the table: "opinion"
   """
   opinion(
@@ -3322,6 +3486,31 @@ type subscription_root {
 
   """fetch data from the table: "polling" using primary key columns"""
   polling_by_pk(id: String!): polling
+
+  """
+  execute function "polling_results" which returns "neighbors_score"
+  """
+  polling_results(
+    """
+    input parameters for function "polling_results"
+    """
+    args: polling_results_args!
+
+    """distinct select on columns"""
+    distinct_on: [neighbors_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [neighbors_score_order_by!]
+
+    """filter the rows returned"""
+    where: neighbors_score_bool_exp
+  ): [neighbors_score!]!
 
   """
   fetch data from the table in a streaming manner: "polling"

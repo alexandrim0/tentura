@@ -79,7 +79,6 @@ class PollDialogState extends State<PollDialog> {
                 // Polling Question
                 Text(
                   state.polling.question,
-                  style: _theme.textTheme.bodySmall,
                 ),
 
                 // Total votes

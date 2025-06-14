@@ -19,6 +19,7 @@ class PollingCubit extends Cubit<PollingState> {
          PollingState(
            polling: polling,
            chosenVariant: polling.selection.firstOrNull ?? '',
+           // TBD: remove when results will not empty
            results: polling.selection
                .map(
                  (e) => (
@@ -38,8 +39,14 @@ class PollingCubit extends Cubit<PollingState> {
   Future<void> fetch() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
+      final (:polling, :results) = await _pollingRepository.fetchResults(
+        pollingId: state.polling.id,
+      );
       emit(
         state.copyWith(
+          polling: polling,
+          // TBD: remove when results will not empty
+          results: results.isEmpty ? state.results : results,
           status: StateStatus.isSuccess,
         ),
       );
@@ -59,6 +66,7 @@ class PollingCubit extends Cubit<PollingState> {
         pollingId: state.polling.id,
         variantId: state.chosenVariant,
       );
+      // TBD: remove when results will not empty
       emit(
         state.copyWith(
           results: [
@@ -73,6 +81,7 @@ class PollingCubit extends Cubit<PollingState> {
           status: StateStatus.isSuccess,
         ),
       );
+      await fetch();
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }

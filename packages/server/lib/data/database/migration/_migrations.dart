@@ -17,6 +17,6 @@ Future<void> migrateDbSchema(Env env) async {
   );
   await Database(
     PostgreSQLGateway(connection),
-  ).upgrade(InMemory([m0001, m0002, m0003]));
+  ).upgrade(InMemory([m0001, m0002, m0003, m0004]));
   await connection.close();
 }
