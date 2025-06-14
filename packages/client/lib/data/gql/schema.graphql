@@ -1519,6 +1519,7 @@ type mutation_root {
   ): vote_user
   invitationAccept(id: String!): Boolean!
   invitationDelete(id: String!): Boolean!
+  pollingAct(pollingId: String!, variantId: String!): Boolean!
   signIn(authRequestToken: String!): AuthResponse!
   signOut: Boolean!
   signUp(authRequestToken: String!, title: String!): AuthResponse!

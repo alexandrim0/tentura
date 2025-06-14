@@ -6,6 +6,8 @@ import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 
+import '../bloc/polling_cubit.dart';
+
 class PollDialog extends StatefulWidget {
   static Future<void> show(
     BuildContext context, {
@@ -28,131 +30,157 @@ class PollDialog extends StatefulWidget {
 class PollDialogState extends State<PollDialog> {
   final _rng = Random.secure();
 
-  late final _theme = Theme.of(context);
-
   late final _l10n = L10n.of(context)!;
 
-  late String? _chosenVariant = widget.polling.selection.firstOrNull;
+  late final _theme = Theme.of(context);
 
-  late bool _choiceSent = _chosenVariant != null;
+  late final _pollingCubit = PollingCubit(polling: widget.polling);
 
   @override
-  Widget build(BuildContext context) => AlertDialog.adaptive(
-    insetPadding: kPaddingAll,
-    contentPadding: kPaddingV + kPaddingH,
-    scrollable: true,
+  void initState() {
+    super.initState();
+    _pollingCubit.fetch();
+  }
 
-    // Title
-    title: Text(
-      _l10n.pollDialogTitle,
-      style: _theme.textTheme.bodyMedium,
-      textAlign: TextAlign.center,
-    ),
+  @override
+  void dispose() {
+    _pollingCubit.close();
+    super.dispose();
+  }
 
-    // Body
-    content: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Loader
-          LinearPiActive.builder(context, false),
+  @override
+  Widget build(BuildContext context) => BlocProvider.value(
+    key: ObjectKey(_pollingCubit),
+    value: _pollingCubit,
+    child: AlertDialog.adaptive(
+      insetPadding: kPaddingAll,
+      contentPadding: kPaddingV + kPaddingH,
+      scrollable: true,
 
-          // Polling Question
-          Text(
-            widget.polling.question,
-            style: _theme.textTheme.bodySmall,
-          ),
+      // Title
+      title: Text(
+        _l10n.pollDialogTitle,
+        style: _theme.textTheme.bodyMedium,
+        textAlign: TextAlign.center,
+      ),
 
-          // Total votes
-          Padding(
-            padding: kPaddingT,
-            child: Text(
-              _l10n.votedCountText(
-                _rng.nextInt(100),
-                widget.polling.variants.length,
-              ),
-              style: _theme.textTheme.bodySmall!.copyWith(
-                color: _theme.colorScheme.outline,
-              ),
-            ),
-          ),
-          const Divider(),
+      // Body
+      content: BlocConsumer<PollingCubit, PollingState>(
+        listenWhen: (p, c) => p.status != c.status,
+        listener: commonScreenBlocListener,
+        builder: (context, state) {
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Loader
+                LinearPiActive.builder(context, state.isLoading),
 
-          // Variants
-          ...widget.polling.variants.entries.map(
-            (variant) => ListTile(
-              contentPadding: EdgeInsets.zero,
-              selected: variant.key == _chosenVariant,
-              leading: Icon(
-                variant.key == _chosenVariant
-                    ? Icons.radio_button_on
-                    : Icons.radio_button_off,
-              ),
-
-              // Question
-              title: Text(
-                variant.value,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: _theme.textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.w500,
+                // Polling Question
+                Text(
+                  state.polling.question,
+                  style: _theme.textTheme.bodySmall,
                 ),
-              ),
 
-              // Results
-              subtitle: _choiceSent
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // immediate result
-                        Text(
-                          '${_l10n.immediateLabel} '
-                          '${(100 * _rng.nextDouble()).round()} %',
-                          style: _theme.textTheme.bodySmall,
-                        ),
-                        // final result
-                        Text(
-                          '${_l10n.finalLabel} '
-                          '${(100 * _rng.nextDouble()).round()} %',
-                          style: _theme.textTheme.bodySmall,
-                        ),
-                      ],
-                    )
-                  : null,
+                // Total votes
+                // TBD:
+                // Padding(
+                //   padding: kPaddingT,
+                //   child: Text(
+                //     _l10n.votedCountText(
+                //       _rng.nextInt(100),
+                //       state.polling.variants.length,
+                //     ),
+                //     style: _theme.textTheme.bodySmall!.copyWith(
+                //       color: _theme.colorScheme.outline,
+                //     ),
+                //   ),
+                // ),
+                const Divider(),
 
-              // Count
-              trailing: _choiceSent
-                  ? Text(
-                      _rng.nextInt(10).toString(),
-                      style: _theme.textTheme.bodyMedium,
-                    )
-                  : null,
-              onTap: _choiceSent
-                  ? null
-                  : () => setState(() => _chosenVariant = variant.key),
+                // Variants
+                ...state.polling.variants.entries.map(
+                  (variant) {
+                    final isSelected = variant.key == state.chosenVariant;
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      selected: isSelected,
+
+                      // Radion Icon
+                      leading: Icon(
+                        isSelected
+                            ? Icons.radio_button_on
+                            : Icons.radio_button_off,
+                      ),
+
+                      // Question
+                      title: Text(
+                        variant.value,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: _theme.textTheme.bodyMedium,
+                      ),
+
+                      // Results
+                      subtitle: state.hasResults
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // immediate result
+                                Text(
+                                  '${_l10n.immediateLabel} '
+                                  '${(100 * _rng.nextDouble()).round()} %',
+                                  style: _theme.textTheme.bodySmall,
+                                ),
+                                // final result
+                                Text(
+                                  '${_l10n.finalLabel} '
+                                  '${(100 * _rng.nextDouble()).round()} %',
+                                  style: _theme.textTheme.bodySmall,
+                                ),
+                              ],
+                            )
+                          : null,
+
+                      // Count
+                      trailing: state.hasResults
+                          ? Text(
+                              _rng.nextInt(10).toString(),
+                              style: _theme.textTheme.bodyMedium,
+                            )
+                          : null,
+                      onTap: state.hasResults
+                          ? null
+                          : () => _pollingCubit.chooseVariant(variant.key),
+                    );
+                  },
+                ),
+                const Divider(),
+              ],
             ),
+          );
+        },
+      ),
+
+      // Buttons
+      actions: [
+        // Send choice
+        BlocSelector<PollingCubit, PollingState, bool>(
+          bloc: _pollingCubit,
+          selector: (state) => state.canVote,
+          builder: (_, canVote) => FilledButton(
+            onPressed: canVote ? _pollingCubit.vote : null,
+            child: Text(_l10n.voteButton),
           ),
-          const Divider(),
-        ],
-      ),
+        ),
+
+        // Close
+        TextButton(
+          onPressed: Navigator.of(context).pop,
+          child: Text(_l10n.closeButton),
+        ),
+      ],
     ),
-
-    // Buttons
-    actions: [
-      // Send choice
-      FilledButton(
-        onPressed: _choiceSent
-            ? null
-            : () => setState(() => _choiceSent = true),
-        child: Text(_l10n.voteButton),
-      ),
-
-      // Close
-      TextButton(
-        onPressed: () => Navigator.pop(context),
-        child: Text(_l10n.closeButton),
-      ),
-    ],
   );
 }
