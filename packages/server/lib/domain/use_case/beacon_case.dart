@@ -81,10 +81,11 @@ class BeaconCase {
     );
 
     if (beacon.polling?.variants != null) {
-      for (final variant in beacon.polling!.variants) {
+      final polling = beacon.polling!;
+      for (final variant in polling.variants) {
         await _meritrankRepository.putEdge(
           nodeA: variant.id,
-          nodeB: beacon.id,
+          nodeB: polling.id,
         );
       }
     }
