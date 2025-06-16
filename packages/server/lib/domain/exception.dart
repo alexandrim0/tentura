@@ -82,7 +82,7 @@ final class UnauthorizedException extends ExceptionBase {
         code: const AuthExceptionCodes(
           AuthExceptionCode.authAuthorizationHeaderWrongException,
         ),
-        description: description ?? 'Wrong Authorization header',
+        description: description ?? 'User is not authorized',
       );
 }
 

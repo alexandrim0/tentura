@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:drift_postgres/drift_postgres.dart';
 
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
@@ -9,10 +10,11 @@ class Users extends Table
     with TitleDescriptionFields, TimestampsFields, ImageFields {
   late final id = text().clientDefault(() => UserEntity.newId)();
 
-  late final publicKey =
-      text()
-          .withLength(min: kPublicKeyLength, max: kPublicKeyLength)
-          .unique()();
+  late final publicKey = text()
+      .withLength(min: kPublicKeyLength, max: kPublicKeyLength)
+      .unique()();
+
+  late final privileges = customType(PgTypes.jsonb).nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
