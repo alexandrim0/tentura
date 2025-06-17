@@ -24,6 +24,7 @@ class MeritrankCase {
   Future<int> init({
     required String userId,
     Iterable<UserRoles>? userRoles,
+    bool? forceCalculate,
   }) async {
     if ((userRoles != null && userRoles.contains(UserRoles.admin)) ||
         (await _userRepository.getById(
@@ -33,9 +34,12 @@ class MeritrankCase {
 
       final initResult = await _meritrankRepository.init();
 
-      await _meritrankRepository.calculate(
-        timeout: _env.meritrankCalculateTimeout,
-      );
+      if (forceCalculate ?? false) {
+        await _meritrankRepository.calculate(
+          timeout: _env.meritrankCalculateTimeout,
+        );
+      }
+
       return initResult;
     }
     throw const UnauthorizedException();
