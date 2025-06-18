@@ -73,24 +73,10 @@ class PollDialogState extends State<PollDialog> {
             LinearPiActive.builder(context, state.isLoading),
 
             // Polling Question
-            Text(
-              state.polling.question,
+            Padding(
+              padding: const EdgeInsets.only(bottom: kSpacingMedium),
+              child: Text(state.polling.question),
             ),
-
-            // Total votes
-            // TBD:
-            // Padding(
-            //   padding: kPaddingT,
-            //   child: Text(
-            //     _l10n.votedCountText(
-            //       _rng.nextInt(100),
-            //       state.polling.variants.length,
-            //     ),
-            //     style: _theme.textTheme.bodySmall!.copyWith(
-            //       color: _theme.colorScheme.outline,
-            //     ),
-            //   ),
-            // ),
             const Divider(),
 
             // Variants
@@ -160,6 +146,24 @@ class PollDialogState extends State<PollDialog> {
               },
             ),
             const Divider(),
+
+            // Total votes
+            Padding(
+              padding: kPaddingV,
+              child: Text(
+                _l10n.votedCountText(
+                  state.results.firstOrNull?.percentageVoted ?? 0,
+                  state.results.isEmpty
+                      ? 0
+                      : state.results
+                            .map((e) => e.votesCount)
+                            .reduce((v, e) => v + e),
+                ),
+                style: _theme.textTheme.bodySmall!.copyWith(
+                  color: _theme.colorScheme.outline,
+                ),
+              ),
+            ),
           ],
         ),
       ),
