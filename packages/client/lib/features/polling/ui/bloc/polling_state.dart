@@ -18,9 +18,10 @@ abstract class PollingState extends StateBase with _$PollingState {
 
   const PollingState._();
 
-  bool get hasResults => results.isNotEmpty;
-  bool get hasNoResults => results.isEmpty;
+  bool get hasResults => polling.selection.isNotEmpty && results.isNotEmpty;
 
   bool get canVote =>
-      chosenVariant.isNotEmpty && results.isEmpty && status is StateIsSuccess;
+      polling.selection.isEmpty &&
+      chosenVariant.isNotEmpty &&
+      status is StateIsSuccess;
 }

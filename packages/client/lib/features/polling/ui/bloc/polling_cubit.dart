@@ -19,18 +19,6 @@ class PollingCubit extends Cubit<PollingState> {
          PollingState(
            polling: polling,
            chosenVariant: polling.selection.firstOrNull ?? '',
-           // TBD: remove when results will not empty
-           results: polling.selection
-               .map(
-                 (e) => (
-                   pollingVariantId: e,
-                   immediateResult: 0.0,
-                   finalResult: 0.0,
-                   percentageVoted: 0,
-                   votesCount: 0,
-                 ),
-               )
-               .toList(),
          ),
        );
 
@@ -45,8 +33,8 @@ class PollingCubit extends Cubit<PollingState> {
       emit(
         state.copyWith(
           polling: polling,
-          // TBD: remove when results will not empty
-          results: results.isEmpty ? state.results : results,
+          results: results,
+          chosenVariant: polling.selection.firstOrNull ?? '',
           status: StateStatus.isSuccess,
         ),
       );
@@ -65,21 +53,6 @@ class PollingCubit extends Cubit<PollingState> {
       await _pollingRepository.vote(
         pollingId: state.polling.id,
         variantId: state.chosenVariant,
-      );
-      // TBD: remove when results will not empty
-      emit(
-        state.copyWith(
-          results: [
-            (
-              pollingVariantId: state.chosenVariant,
-              immediateResult: 0.0,
-              finalResult: 0.0,
-              percentageVoted: 0,
-              votesCount: 0,
-            ),
-          ],
-          status: StateStatus.isSuccess,
-        ),
       );
       await fetch();
     } catch (e) {
