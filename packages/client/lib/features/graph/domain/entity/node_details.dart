@@ -10,7 +10,15 @@ sealed class NodeDetails extends NodeBase {
   const NodeDetails({
     super.size = 40,
     super.pinned,
+    this.posHint,
   });
+
+  NodeDetails copyWithPosHint(int posHint);
+
+  @override
+  NodeDetails copyWithPinned(bool pinned);
+
+  final int? posHint;
 
   String get id;
 
@@ -30,7 +38,8 @@ sealed class NodeDetails extends NodeBase {
       label.hashCode ^
       score.hashCode ^
       userId.hashCode ^
-      hasImage.hashCode;
+      hasImage.hashCode ^
+      posHint.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -41,7 +50,8 @@ sealed class NodeDetails extends NodeBase {
           label == other.label &&
           score == other.score &&
           userId == other.userId &&
-          hasImage == other.hasImage;
+          hasImage == other.hasImage &&
+          posHint == other.posHint;
 }
 
 final class UserNode extends NodeDetails {
@@ -49,6 +59,7 @@ final class UserNode extends NodeDetails {
     required this.user,
     super.pinned,
     super.size,
+    super.posHint,
   });
 
   final Profile user;
@@ -76,7 +87,16 @@ final class UserNode extends NodeDetails {
         pinned: pinned,
         size: size,
         user: user,
+        posHint: posHint,
       );
+
+  @override
+  UserNode copyWithPosHint(int posHint) => UserNode(
+    user: user,
+    pinned: pinned,
+    size: size,
+    posHint: posHint,
+  );
 }
 
 final class BeaconNode extends NodeDetails {
@@ -84,6 +104,7 @@ final class BeaconNode extends NodeDetails {
     required this.beacon,
     super.pinned,
     super.size,
+    super.posHint,
   });
 
   final Beacon beacon;
@@ -111,5 +132,14 @@ final class BeaconNode extends NodeDetails {
         beacon: beacon,
         pinned: pinned,
         size: size,
+        posHint: posHint,
       );
+
+  @override
+  BeaconNode copyWithPosHint(int posHint) => BeaconNode(
+    beacon: beacon,
+    pinned: pinned,
+    size: size,
+    posHint: posHint,
+  );
 }

@@ -9,6 +9,7 @@ import '../utils/animated_highlighted_edge_painter.dart';
 import '../utils/ease_in_out_reynolds.dart';
 import '../bloc/graph_cubit.dart';
 import 'graph_node_widget.dart';
+import 'dart:math' as math;
 
 class GraphBody extends StatefulWidget {
   const GraphBody({
@@ -22,6 +23,7 @@ class GraphBody extends StatefulWidget {
       temperature: 500,
       optimalDistance: 100,
       showIterations: true,
+      initialPositionExtractor: _initialPositionExtractor,
     ),
     super.key,
   });
@@ -33,8 +35,32 @@ class GraphBody extends StatefulWidget {
   final GraphCanvasSize canvasSize;
   final GraphLayoutAlgorithm layoutAlgorithm;
 
+  static final _random = math.Random();
+
   @override
   GraphBodyState createState() => GraphBodyState();
+
+  static Offset _initialPositionExtractor(NodeBase node, Size canvasSize) {
+    if (node is NodeDetails && node.posHint != null) {
+      final centerX = canvasSize.width / 2;
+      final centerY = canvasSize.height / 2;
+      const optimalDistance = 100;
+      const verticalShift = -200; // fit better to vertical screen
+
+      final verticalPosition = verticalShift + optimalDistance * node.posHint!;
+
+      // This is needed to prevent degenerate vertical layouts
+      final horizontalDisplacement = ((_random.nextDouble() * 2) - 1) * (optimalDistance * 0.01);
+
+      return Offset(
+          centerX + horizontalDisplacement,
+          centerY - verticalPosition // Subtract to move upwards from the center
+      );
+
+    }
+    // Fall back to default behavior for unpinned nodes or nodes without posHint
+    return FruchtermanReingoldAlgorithm.defaultInitialPositionExtractor(node, canvasSize);
+  }
 }
 
 class GraphBodyState extends State<GraphBody>
@@ -50,18 +76,6 @@ class GraphBodyState extends State<GraphBody>
   void initState() {
     super.initState();
     if (_cubit.state.isAnimated) _animationController.repeat();
-
-    // Schedule a callback to be executed after the first frame is built
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _setFocusOnFirstNode();
-    });
-  }
-
-  void _setFocusOnFirstNode() {
-    final nodes = _cubit.graphController.nodes;
-    if (nodes.isNotEmpty) {
-      _cubit.setFocus(nodes.first);
-    }
   }
 
   @override
