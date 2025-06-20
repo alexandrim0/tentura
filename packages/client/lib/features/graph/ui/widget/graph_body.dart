@@ -50,6 +50,18 @@ class GraphBodyState extends State<GraphBody>
   void initState() {
     super.initState();
     if (_cubit.state.isAnimated) _animationController.repeat();
+
+    // Schedule a callback to be executed after the first frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setFocusOnFirstNode();
+    });
+  }
+
+  void _setFocusOnFirstNode() {
+    final nodes = _cubit.graphController.nodes;
+    if (nodes.isNotEmpty) {
+      _cubit.setFocus(nodes.first);
+    }
   }
 
   @override
