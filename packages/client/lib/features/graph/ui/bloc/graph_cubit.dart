@@ -31,6 +31,7 @@ class GraphCubit extends Cubit<GraphState> {
          user: me.copyWith(title: 'Me', score: 2),
          pinned: true,
          size: 80,
+         posHint: 0,
        ),
        _graphRepository = graphRepository ?? GetIt.I<GraphRepository>(),
        _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
@@ -102,21 +103,6 @@ class GraphCubit extends Cubit<GraphState> {
   Future<void> _fetch() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      // Fetch FocusNode
-      if (state.focus.isNotEmpty && !_nodes.containsKey(state.focus)) {
-        _nodes[state.focus] = switch (state.focus[0]) {
-          'U' => UserNode(
-            user: await _profileRepository.fetchById(state.focus),
-            pinned: true,
-          ),
-          'B' => BeaconNode(
-            beacon: await _beaconRepository.fetchBeaconById(state.focus),
-            pinned: true,
-          ),
-          _ => throw Exception('Unsupported Node type!'),
-        };
-      }
-
       // Fetch Edges
       final edges = await _graphRepository.fetch(
         positiveOnly: state.positiveOnly,
@@ -125,12 +111,32 @@ class GraphCubit extends Cubit<GraphState> {
         limit: _fetchLimits[state.focus] = (_fetchLimits[state.focus] ?? 0) + 5,
       );
 
-      emit(state.copyWith(status: StateStatus.isSuccess));
-      if (edges.isEmpty) return;
-
       for (final e in edges) {
-        _nodes.putIfAbsent(e.dst, () => e.node);
+        _nodes.putIfAbsent(e.dst, () {
+          final isFocus = state.focus.isNotEmpty && state.focus == e.dst;
+          return e.node.copyWithPinned(isFocus).copyWithPosHint(_nodes.length);
+        });
       }
+
+      // Fetch FocusNode
+      if (state.focus.isNotEmpty && !_nodes.containsKey(state.focus)) {
+        _nodes[state.focus] = switch (state.focus[0]) {
+          'U' => UserNode(
+            user: await _profileRepository.fetchById(state.focus),
+            pinned: true,
+            posHint: _nodes.length,
+          ),
+          'B' => BeaconNode(
+            beacon: await _beaconRepository.fetchBeaconById(state.focus),
+            pinned: true,
+            posHint: _nodes.length,
+          ),
+          _ => throw Exception('Unsupported Node type!'),
+        };
+      }
+
+      emit(state.copyWith(status: StateStatus.isSuccess));
+
       _updateGraph(edges);
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
@@ -150,12 +156,11 @@ class GraphCubit extends Cubit<GraphState> {
         source: src,
         destination: dst,
         strokeWidth: (src == _egoNode || dst == _egoNode) ? 3 : 2,
-        color:
-            e.weight < 0
-                ? Colors.redAccent
-                : src == _egoNode || dst == _egoNode
-                ? Colors.amberAccent
-                : Colors.cyanAccent,
+        color: e.weight < 0
+            ? Colors.redAccent
+            : src == _egoNode || dst == _egoNode
+            ? Colors.amberAccent
+            : Colors.cyanAccent,
       );
       if (!mutator.controller.nodes.contains(src)) mutator.addNode(src);
       if (!mutator.controller.nodes.contains(dst)) mutator.addNode(dst);
