@@ -50,16 +50,19 @@ class GraphBody extends StatefulWidget {
       final verticalPosition = verticalShift + optimalDistance * node.posHint!;
 
       // This is needed to prevent degenerate vertical layouts
-      final horizontalDisplacement = ((_random.nextDouble() * 2) - 1) * (optimalDistance * 0.01);
+      final horizontalDisplacement =
+          ((_random.nextDouble() * 2) - 1) * (optimalDistance * 0.01);
 
       return Offset(
-          centerX + horizontalDisplacement,
-          centerY - verticalPosition // Subtract to move upwards from the center
+        centerX + horizontalDisplacement,
+        centerY - verticalPosition, // Subtract to move upwards from the center
       );
-
     }
     // Fall back to default behavior for unpinned nodes or nodes without posHint
-    return FruchtermanReingoldAlgorithm.defaultInitialPositionExtractor(node, canvasSize);
+    return FruchtermanReingoldAlgorithm.defaultInitialPositionExtractor(
+      node,
+      canvasSize,
+    );
   }
 }
 
@@ -106,11 +109,11 @@ class GraphBodyState extends State<GraphBody>
                 labelSize: widget.labelSize,
                 builder: (context, node) => switch (node) {
                   final UserNode node => Text(
-                      key: ValueKey(node),
-                      node.label,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    key: ValueKey(node),
+                    node.label,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   _ => nil,
                 },
               )

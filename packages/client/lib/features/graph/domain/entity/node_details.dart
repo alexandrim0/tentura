@@ -84,11 +84,11 @@ final class UserNode extends NodeDetails {
 
   @override
   UserNode copyWithPinned(bool pinned) => UserNode(
-        pinned: pinned,
-        size: size,
-        user: user,
-        posHint: posHint,
-      );
+    pinned: pinned,
+    size: size,
+    user: user,
+    posHint: posHint,
+  );
 
   @override
   UserNode copyWithPosHint(int posHint) => UserNode(
@@ -129,11 +129,11 @@ final class BeaconNode extends NodeDetails {
 
   @override
   BeaconNode copyWithPinned(bool pinned) => BeaconNode(
-        beacon: beacon,
-        pinned: pinned,
-        size: size,
-        posHint: posHint,
-      );
+    beacon: beacon,
+    pinned: pinned,
+    size: size,
+    posHint: posHint,
+  );
 
   @override
   BeaconNode copyWithPosHint(int posHint) => BeaconNode(
