@@ -3,17 +3,31 @@ import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/data/repository/image_repository.dart';
+import 'package:tentura_server/data/repository/tasks_repository.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
 
-import 'image_case_mixin.dart';
+import '../entity/task_entity.dart';
 
-@Injectable(order: 2)
-class UserCase with ImageCaseMixin {
-  const UserCase(this._imageRepository, this._userRepository);
+@Singleton(order: 2)
+class UserCase {
+  @FactoryMethod(preResolve: true)
+  static Future<UserCase> createInstance(
+    ImageRepository imageRepository,
+    UserRepository userRepository,
+    TasksRepository tasksRepository,
+  ) async => UserCase(imageRepository, userRepository, tasksRepository);
+
+  const UserCase(
+    this._imageRepository,
+    this._userRepository,
+    this._tasksRepository,
+  );
 
   final ImageRepository _imageRepository;
 
   final UserRepository _userRepository;
+
+  final TasksRepository _tasksRepository;
 
   Future<UserEntity> updateProfile({
     required String id,
@@ -44,7 +58,9 @@ class UserCase with ImageCaseMixin {
         imageHeight: 0,
         imageWidth: 0,
       );
-      unawaited(updateBlurHash(userId: id));
+      await _tasksRepository.schedule(
+        TaskProfileImageHash(details: TaskProfileImageHashDetails(userId: id)),
+      );
     } else {
       await _userRepository.update(
         id: id,
@@ -59,20 +75,5 @@ class UserCase with ImageCaseMixin {
     await _userRepository.deleteById(id: id);
     await _imageRepository.deleteUserImageAll(userId: id);
     return true;
-  }
-
-  Future<void> updateBlurHash({required String userId}) async {
-    try {
-      final imageBytes = await _imageRepository.getUserImage(userId: userId);
-      final image = decodeImage(imageBytes);
-      await _userRepository.update(
-        id: userId,
-        blurHash: calculateBlurHash(image),
-        imageHeight: image.height,
-        imageWidth: image.width,
-      );
-    } catch (e) {
-      print(e);
-    }
   }
 }

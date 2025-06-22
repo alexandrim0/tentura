@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:http/http.dart' show MultipartFile;
 import 'package:http_parser/http_parser.dart' show MediaType;
+import 'package:built_collection/built_collection.dart' show ListBuilder;
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/consts.dart';
@@ -40,12 +41,11 @@ class BeaconRepository {
     int limit = kFetchWindowSize,
   }) async {
     final request = GBeaconsFetchByUserIdReq(
-      (b) =>
-          b.vars
-            ..user_id = profileId
-            ..enabled = isEnabled
-            ..offset = offset
-            ..limit = limit,
+      (b) => b.vars
+        ..user_id = profileId
+        ..enabled = isEnabled
+        ..offset = offset
+        ..limit = limit,
     );
     return _remoteApiService
         .request(request)
@@ -72,21 +72,24 @@ class BeaconRepository {
         ..context = beacon.context.isEmpty ? null : beacon.context
         ..startAt = beacon.startAt?.toIso8601String()
         ..endAt = beacon.endAt?.toIso8601String()
-        ..coordinates =
-            beacon.coordinates == null
-                ? null
-                : (GCoordinatesBuilder()
-                  ..lat = beacon.coordinates!.lat
-                  ..long = beacon.coordinates!.long)
-        ..image =
-            image == null
-                ? null
-                : MultipartFile.fromBytes(
-                  'image',
-                  image.imageBytes,
-                  contentType: MediaType.parse(image.mimeType),
-                  filename: image.fileName,
-                );
+        ..coordinates = beacon.coordinates == null
+            ? null
+            : (GCoordinatesBuilder()
+                ..lat = beacon.coordinates!.lat
+                ..long = beacon.coordinates!.long)
+        ..polling = beacon.polling == null
+            ? null
+            : (GPollingInputBuilder()
+                ..question = beacon.polling!.question
+                ..variants = ListBuilder(beacon.polling!.variants.values))
+        ..image = image == null
+            ? null
+            : MultipartFile.fromBytes(
+                'image',
+                image.imageBytes,
+                contentType: MediaType.parse(image.mimeType),
+                filename: image.fileName,
+              );
     });
     final beaconId = await _remoteApiService
         .request(request)

@@ -5,7 +5,6 @@ import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
 import 'package:tentura_root/domain/entity/auth_request_intent.dart';
 
-import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/env.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
 import 'package:tentura_server/domain/exception.dart';
@@ -20,6 +19,9 @@ class AuthCase {
   final Env _env;
 
   final UserRepository _userRepository;
+
+  late final roles = {UserRoles.user};
+  late final issuer = _env.serverUri.toString();
 
   ///
   /// Parse and verify JWT issued before and signed with server private key
@@ -53,20 +55,18 @@ class AuthCase {
     final jwt = _verifyAuthRequest(token: authRequestToken);
     final payload = jwt.payload as Map<String, dynamic>;
     final publicKey = payload[AuthRequestIntent.keyPublicKey]! as String;
-    final newUser =
-        _env.isNeedInvite
-            ? switch (payload[AuthRequestIntentSignUp.keyCode]) {
-              final String invitationId => await _userRepository.createInvited(
-                invitationId: invitationId,
-                publicKey: publicKey,
-                title: title,
-              ),
-              _ =>
-                throw const IdWrongException(
-                  description: 'Invite attribute not found!',
-                ),
-            }
-            : await _userRepository.create(publicKey: publicKey, title: title);
+    final newUser = _env.isNeedInvite
+        ? switch (payload[AuthRequestIntentSignUp.keyCode]) {
+            final String invitationId => await _userRepository.createInvited(
+              invitationId: invitationId,
+              publicKey: publicKey,
+              title: title,
+            ),
+            _ => throw const IdWrongException(
+              description: 'Invite attribute not found!',
+            ),
+          }
+        : await _userRepository.create(publicKey: publicKey, title: title);
     return _issueJwt(subject: newUser.id);
   }
 
@@ -94,23 +94,23 @@ class AuthCase {
 
   JwtEntity _issueJwt({required String subject}) {
     final jwtId = _uuid.v8();
-    final roles = {UserRoles.user};
     return JwtEntity(
       jti: jwtId,
       sub: subject,
-      iss: kServerName,
-      exp: kJwtExpiresIn,
       roles: roles,
-      rawToken: JWT(
-        {AuthRequestIntent.keyRoles: roles.join(',')},
-        jwtId: jwtId,
-        subject: subject,
-        issuer: kServerName,
-      ).sign(
-        _env.privateKey,
-        algorithm: JWTAlgorithm.EdDSA,
-        expiresIn: const Duration(seconds: kJwtExpiresIn),
-      ),
+      iss: issuer,
+      exp: _env.jwtExpiresIn.inSeconds,
+      rawToken:
+          JWT(
+            {AuthRequestIntent.keyRoles: roles.join(',')},
+            jwtId: jwtId,
+            subject: subject,
+            issuer: issuer,
+          ).sign(
+            _env.privateKey,
+            algorithm: JWTAlgorithm.EdDSA,
+            expiresIn: _env.jwtExpiresIn,
+          ),
     );
   }
 

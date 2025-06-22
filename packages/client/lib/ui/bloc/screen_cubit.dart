@@ -29,7 +29,7 @@ class ScreenCubit extends Cubit<ScreenState> {
       emit(state.navigateTo('$kPathBeaconView?id=$id'));
 
   void showProfile(String id) =>
-      emit(state.navigateTo('$kPathProfileView?id=$id'));
+      emit(state.navigateTo('$kPathProfileView/$id'));
 
   void showProfileEditor() => emit(state.navigateTo(kPathProfileEdit));
 

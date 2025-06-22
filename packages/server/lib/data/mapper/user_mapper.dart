@@ -1,4 +1,5 @@
 import 'package:tentura_server/domain/entity/user_entity.dart';
+import 'package:tentura_server/domain/enum.dart';
 
 import '../database/tentura_db.dart';
 
@@ -12,5 +13,11 @@ mixin UserMapper {
     picHeight: model.picHeight,
     picWidth: model.picWidth,
     blurHash: model.blurHash,
+    privileges: model.privileges == null
+        ? null
+        : {
+            for (final p in model.privileges! as List<dynamic>)
+              UserPrivileges.values.firstWhere((e) => e.name == p),
+          },
   );
 }

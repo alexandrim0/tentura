@@ -22,22 +22,21 @@ class FriendsScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = L10n.of(context)!;
     return Scaffold(
-      appBar:
-          kNeedInviteCode
-              ? AppBar(
-                actions: [
-                  PopupMenuButton<void>(
-                    itemBuilder:
-                        (_) => <PopupMenuEntry<void>>[
-                          PopupMenuItem(
-                            onTap: screenCubit.showInvitations,
-                            child: Text(l10n.invitationsShowMenuItem),
-                          ),
-                        ],
-                  ),
-                ],
-              )
-              : null,
+      appBar: kNeedInviteCode
+          ? AppBar(
+              actions: [
+                PopupMenuButton<void>(
+                  itemBuilder: (_) => <PopupMenuEntry<void>>[
+                    PopupMenuItem(
+                      onTap: screenCubit.showInvitations,
+                      child: Text(l10n.invitationsShowMenuItem),
+                    ),
+                  ],
+                ),
+              ],
+              automaticallyImplyLeading: false,
+            )
+          : null,
       body: BlocBuilder<FriendsCubit, FriendsState>(
         bloc: friendsCubit,
         buildWhen: (_, c) => c.isSuccess,
@@ -45,28 +44,27 @@ class FriendsScreen extends StatelessWidget {
           late final friends = state.friends.values.toList();
           return RefreshIndicator.adaptive(
             onRefresh: friendsCubit.fetch,
-            child:
-                state.friends.isEmpty
-                    // Empty state
-                    ? Center(
-                      child: Text(
-                        l10n.labelNothingHere,
-                        style: theme.textTheme.displaySmall,
-                        textAlign: TextAlign.center,
-                      ),
-                    )
-                    // Friends List
-                    : ListView.separated(
-                      itemCount: friends.length,
-                      itemBuilder: (_, i) {
-                        final profile = friends[i];
-                        return ChatPeerListTile(
-                          key: ValueKey(profile),
-                          profile: profile,
-                        );
-                      },
-                      separatorBuilder: separatorBuilder,
+            child: state.friends.isEmpty
+                // Empty state
+                ? Center(
+                    child: Text(
+                      l10n.labelNothingHere,
+                      style: theme.textTheme.displaySmall,
+                      textAlign: TextAlign.center,
                     ),
+                  )
+                // Friends List
+                : ListView.separated(
+                    itemCount: friends.length,
+                    itemBuilder: (_, i) {
+                      final profile = friends[i];
+                      return ChatPeerListTile(
+                        key: ValueKey(profile),
+                        profile: profile,
+                      );
+                    },
+                    separatorBuilder: separatorBuilder,
+                  ),
           );
         },
       ),

@@ -1,5 +1,3 @@
-import 'package:tentura_root/consts.dart' as r;
-
 export 'package:tentura_root/consts.dart';
 
 const kMaxLines = 3;
@@ -26,21 +24,25 @@ const kSettingsThemeMode = 'themeMode';
 const kSettingsIsIntroEnabledKey = 'isIntroEnabled';
 
 // Routes
-const kPathRoot = '/';
 const kPathBack = '/back';
+const kPathHome = '/home';
+const kPathMyField = '/home/field';
+const kPathConnect = '/home/connect';
+const kPathFriends = '/home/friends';
+const kPathProfile = '/home/profile';
+const kPathFavorites = '/home/favorites';
 const kPathGraph = '/graph';
 const kPathRating = '/rating';
 const kPathSignIn = '/sign/in';
 const kPathSignUp = '/sign/up';
-const kPathConnect = '/connect';
 const kPathSettings = '/settings';
 const kPathComplaint = '/complaint';
 const kPathBeaconNew = '/beacon/new';
-const kPathBeaconView = r.kPathBeaconView;
+const kPathBeaconView = '/beacon/view';
 const kPathBeaconViewAll = '/beacon/all';
 const kPathProfileChat = '/profile/chat';
 const kPathProfileEdit = '/profile/edit';
-const kPathProfileView = r.kPathProfileView;
+const kPathProfileView = '/profile/view';
 const kPathInvitations = '/invitations';
 
 const kComplaintEmail = String.fromEnvironment(

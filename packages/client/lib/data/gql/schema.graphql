@@ -86,6 +86,10 @@ type beacon {
   pic_height: Int!
   pic_width: Int!
 
+  """An object relationship"""
+  polling: polling
+  polling_id: String
+
   """
   A computed field, executes function "beacon_get_scores"
   """
@@ -184,6 +188,8 @@ input beacon_bool_exp {
   my_vote: Int_comparison_exp
   pic_height: Int_comparison_exp
   pic_width: Int_comparison_exp
+  polling: polling_bool_exp
+  polling_id: String_comparison_exp
   scores: mutual_score_bool_exp
   start_at: timestamptz_comparison_exp
   title: String_comparison_exp
@@ -206,6 +212,7 @@ input beacon_max_order_by {
   long: order_by
   pic_height: order_by
   pic_width: order_by
+  polling_id: order_by
   start_at: order_by
   title: order_by
   updated_at: order_by
@@ -226,6 +233,7 @@ input beacon_min_order_by {
   long: order_by
   pic_height: order_by
   pic_width: order_by
+  polling_id: order_by
   start_at: order_by
   title: order_by
   updated_at: order_by
@@ -262,6 +270,8 @@ input beacon_order_by {
   my_vote: order_by
   pic_height: order_by
   pic_width: order_by
+  polling: polling_order_by
+  polling_id: order_by
   scores_aggregate: mutual_score_aggregate_order_by
   start_at: order_by
   title: order_by
@@ -448,6 +458,9 @@ enum beacon_select_column {
   pic_width
 
   """column name"""
+  polling_id
+
+  """column name"""
   start_at
 
   """column name"""
@@ -522,6 +535,7 @@ input beacon_stream_cursor_value_input {
   long: float8
   pic_height: Int
   pic_width: Int
+  polling_id: String
   start_at: timestamptz
   title: String
   updated_at: timestamptz
@@ -1079,8 +1093,6 @@ enum invitation_update_column {
   _PLACEHOLDER
 }
 
-scalar json
-
 """
 columns and relationships of "message"
 """
@@ -1227,7 +1239,7 @@ input message_updates {
 
 """mutation root"""
 type mutation_root {
-  beaconCreate(context: String, coordinates: Coordinates = {}, description: String, endAt: String, image: Upload = {}, startAt: String, title: String!): Beacon!
+  beaconCreate(context: String, coordinates: Coordinates = {}, description: String, endAt: String, image: Upload = {}, polling: PollingInput, startAt: String, title: String!): Beacon!
   beaconDeleteById(id: String!): Boolean!
 
   """
@@ -1507,6 +1519,7 @@ type mutation_root {
   ): vote_user
   invitationAccept(id: String!): Boolean!
   invitationDelete(id: String!): Boolean!
+  pollingAct(pollingId: String!, variantId: String!): Boolean!
   signIn(authRequestToken: String!): AuthResponse!
   signOut: Boolean!
   signUp(authRequestToken: String!, title: String!): AuthResponse!
@@ -1661,31 +1674,6 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [vote_user_updates!]!
   ): [vote_user_mutation_response]
-
-  """
-  execute VOLATILE function "updates" which returns "edge"
-  """
-  updates(
-    """
-    input parameters for function "updates"
-    """
-    args: updates_args!
-
-    """distinct select on columns"""
-    distinct_on: [edge_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [edge_order_by!]
-
-    """filter the rows returned"""
-    where: edge_bool_exp
-  ): [edge!]!
   userDelete: Boolean!
   userUpdate(description: String, dropImage: Boolean, image: Upload = {}, title: String): User!
 }
@@ -1882,6 +1870,87 @@ input my_field_args {
 }
 
 """
+columns and relationships of "neighbors_score"
+"""
+type neighbors_score {
+  dst: String
+  dst_cluster_score: Int
+  dst_score: float8
+  src: String
+  src_cluster_score: Int
+  src_score: float8
+}
+
+"""
+Boolean expression to filter rows from the table "neighbors_score". All fields are combined with a logical 'AND'.
+"""
+input neighbors_score_bool_exp {
+  _and: [neighbors_score_bool_exp!]
+  _not: neighbors_score_bool_exp
+  _or: [neighbors_score_bool_exp!]
+  dst: String_comparison_exp
+  dst_cluster_score: Int_comparison_exp
+  dst_score: float8_comparison_exp
+  src: String_comparison_exp
+  src_cluster_score: Int_comparison_exp
+  src_score: float8_comparison_exp
+}
+
+"""Ordering options when selecting data from "neighbors_score"."""
+input neighbors_score_order_by {
+  dst: order_by
+  dst_cluster_score: order_by
+  dst_score: order_by
+  src: order_by
+  src_cluster_score: order_by
+  src_score: order_by
+}
+
+"""
+select columns of table "neighbors_score"
+"""
+enum neighbors_score_select_column {
+  """column name"""
+  dst
+
+  """column name"""
+  dst_cluster_score
+
+  """column name"""
+  dst_score
+
+  """column name"""
+  src
+
+  """column name"""
+  src_cluster_score
+
+  """column name"""
+  src_score
+}
+
+"""
+Streaming cursor of the table "neighbors_score"
+"""
+input neighbors_score_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: neighbors_score_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input neighbors_score_stream_cursor_value_input {
+  dst: String
+  dst_cluster_score: Int
+  dst_score: float8
+  src: String
+  src_cluster_score: Int
+  src_score: float8
+}
+
+"""
 columns and relationships of "opinion"
 """
 type opinion {
@@ -2071,6 +2140,323 @@ enum order_by {
 
   """in descending order, nulls last"""
   desc_nulls_last
+}
+
+"""
+columns and relationships of "polling"
+"""
+type polling {
+  """An object relationship"""
+  author: user!
+  author_id: String!
+  created_at: timestamptz!
+  enabled: Boolean!
+  id: String!
+
+  """An array relationship"""
+  polling_acts(
+    """distinct select on columns"""
+    distinct_on: [polling_act_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [polling_act_order_by!]
+
+    """filter the rows returned"""
+    where: polling_act_bool_exp
+  ): [polling_act!]!
+  question: String!
+  updated_at: timestamptz!
+
+  """An array relationship"""
+  variants(
+    """distinct select on columns"""
+    distinct_on: [polling_variant_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [polling_variant_order_by!]
+
+    """filter the rows returned"""
+    where: polling_variant_bool_exp
+  ): [polling_variant!]!
+}
+
+"""
+columns and relationships of "polling_act"
+"""
+type polling_act {
+  author_id: String!
+  created_at: timestamptz!
+  polling_id: String!
+  polling_variant_id: String!
+}
+
+"""
+order by aggregate values of table "polling_act"
+"""
+input polling_act_aggregate_order_by {
+  count: order_by
+  max: polling_act_max_order_by
+  min: polling_act_min_order_by
+}
+
+"""
+Boolean expression to filter rows from the table "polling_act". All fields are combined with a logical 'AND'.
+"""
+input polling_act_bool_exp {
+  _and: [polling_act_bool_exp!]
+  _not: polling_act_bool_exp
+  _or: [polling_act_bool_exp!]
+  author_id: String_comparison_exp
+  created_at: timestamptz_comparison_exp
+  polling_id: String_comparison_exp
+  polling_variant_id: String_comparison_exp
+}
+
+"""
+order by max() on columns of table "polling_act"
+"""
+input polling_act_max_order_by {
+  author_id: order_by
+  created_at: order_by
+  polling_id: order_by
+  polling_variant_id: order_by
+}
+
+"""
+order by min() on columns of table "polling_act"
+"""
+input polling_act_min_order_by {
+  author_id: order_by
+  created_at: order_by
+  polling_id: order_by
+  polling_variant_id: order_by
+}
+
+"""Ordering options when selecting data from "polling_act"."""
+input polling_act_order_by {
+  author_id: order_by
+  created_at: order_by
+  polling_id: order_by
+  polling_variant_id: order_by
+}
+
+"""
+select columns of table "polling_act"
+"""
+enum polling_act_select_column {
+  """column name"""
+  author_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  polling_id
+
+  """column name"""
+  polling_variant_id
+}
+
+"""
+Streaming cursor of the table "polling_act"
+"""
+input polling_act_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: polling_act_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input polling_act_stream_cursor_value_input {
+  author_id: String
+  created_at: timestamptz
+  polling_id: String
+  polling_variant_id: String
+}
+
+"""
+Boolean expression to filter rows from the table "polling". All fields are combined with a logical 'AND'.
+"""
+input polling_bool_exp {
+  _and: [polling_bool_exp!]
+  _not: polling_bool_exp
+  _or: [polling_bool_exp!]
+  author: user_bool_exp
+  author_id: String_comparison_exp
+  created_at: timestamptz_comparison_exp
+  enabled: Boolean_comparison_exp
+  id: String_comparison_exp
+  polling_acts: polling_act_bool_exp
+  question: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  variants: polling_variant_bool_exp
+}
+
+"""Ordering options when selecting data from "polling"."""
+input polling_order_by {
+  author: user_order_by
+  author_id: order_by
+  created_at: order_by
+  enabled: order_by
+  id: order_by
+  polling_acts_aggregate: polling_act_aggregate_order_by
+  question: order_by
+  updated_at: order_by
+  variants_aggregate: polling_variant_aggregate_order_by
+}
+
+input polling_results_args {
+  focus: String
+}
+
+"""
+select columns of table "polling"
+"""
+enum polling_select_column {
+  """column name"""
+  author_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  enabled
+
+  """column name"""
+  id
+
+  """column name"""
+  question
+
+  """column name"""
+  updated_at
+}
+
+"""
+Streaming cursor of the table "polling"
+"""
+input polling_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: polling_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input polling_stream_cursor_value_input {
+  author_id: String
+  created_at: timestamptz
+  enabled: Boolean
+  id: String
+  question: String
+  updated_at: timestamptz
+}
+
+"""
+columns and relationships of "polling_variant"
+"""
+type polling_variant {
+  description: String!
+  id: String!
+  polling_id: String!
+}
+
+"""
+order by aggregate values of table "polling_variant"
+"""
+input polling_variant_aggregate_order_by {
+  count: order_by
+  max: polling_variant_max_order_by
+  min: polling_variant_min_order_by
+}
+
+"""
+Boolean expression to filter rows from the table "polling_variant". All fields are combined with a logical 'AND'.
+"""
+input polling_variant_bool_exp {
+  _and: [polling_variant_bool_exp!]
+  _not: polling_variant_bool_exp
+  _or: [polling_variant_bool_exp!]
+  description: String_comparison_exp
+  id: String_comparison_exp
+  polling_id: String_comparison_exp
+}
+
+"""
+order by max() on columns of table "polling_variant"
+"""
+input polling_variant_max_order_by {
+  description: order_by
+  id: order_by
+  polling_id: order_by
+}
+
+"""
+order by min() on columns of table "polling_variant"
+"""
+input polling_variant_min_order_by {
+  description: order_by
+  id: order_by
+  polling_id: order_by
+}
+
+"""Ordering options when selecting data from "polling_variant"."""
+input polling_variant_order_by {
+  description: order_by
+  id: order_by
+  polling_id: order_by
+}
+
+"""
+select columns of table "polling_variant"
+"""
+enum polling_variant_select_column {
+  """column name"""
+  description
+
+  """column name"""
+  id
+
+  """column name"""
+  polling_id
+}
+
+"""
+Streaming cursor of the table "polling_variant"
+"""
+input polling_variant_stream_cursor_input {
+  """Stream column input with initial value"""
+  initial_value: polling_variant_stream_cursor_value_input!
+
+  """cursor ordering"""
+  ordering: cursor_ordering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input polling_variant_stream_cursor_value_input {
+  description: String
+  id: String
+  polling_id: String
+}
+
+input PollingInput {
+  question: String
+  variants: [String]
 }
 
 type query_root {
@@ -2281,6 +2667,26 @@ type query_root {
   ): [mutual_score!]!
 
   """
+  fetch data from the table: "neighbors_score"
+  """
+  neighbors_score(
+    """distinct select on columns"""
+    distinct_on: [neighbors_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [neighbors_score_order_by!]
+
+    """filter the rows returned"""
+    where: neighbors_score_bool_exp
+  ): [neighbors_score!]!
+
+  """
   fetch data from the table: "opinion"
   """
   opinion(
@@ -2327,6 +2733,100 @@ type query_root {
     """filter the rows returned"""
     where: mutual_score_bool_exp
   ): [mutual_score!]!
+
+  """
+  fetch data from the table: "polling"
+  """
+  polling(
+    """distinct select on columns"""
+    distinct_on: [polling_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [polling_order_by!]
+
+    """filter the rows returned"""
+    where: polling_bool_exp
+  ): [polling!]!
+
+  """
+  fetch data from the table: "polling_act"
+  """
+  polling_act(
+    """distinct select on columns"""
+    distinct_on: [polling_act_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [polling_act_order_by!]
+
+    """filter the rows returned"""
+    where: polling_act_bool_exp
+  ): [polling_act!]!
+
+  """fetch data from the table: "polling_act" using primary key columns"""
+  polling_act_by_pk(author_id: String!, polling_id: String!): polling_act
+
+  """fetch data from the table: "polling" using primary key columns"""
+  polling_by_pk(id: String!): polling
+
+  """
+  execute function "polling_results" which returns "neighbors_score"
+  """
+  polling_results(
+    """
+    input parameters for function "polling_results"
+    """
+    args: polling_results_args!
+
+    """distinct select on columns"""
+    distinct_on: [neighbors_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [neighbors_score_order_by!]
+
+    """filter the rows returned"""
+    where: neighbors_score_bool_exp
+  ): [neighbors_score!]!
+
+  """
+  fetch data from the table: "polling_variant"
+  """
+  polling_variant(
+    """distinct select on columns"""
+    distinct_on: [polling_variant_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [polling_variant_order_by!]
+
+    """filter the rows returned"""
+    where: polling_variant_bool_exp
+  ): [polling_variant!]!
+
+  """fetch data from the table: "polling_variant" using primary key columns"""
+  polling_variant_by_pk(id: String!): polling_variant
 
   """
   execute function "rating" which returns "mutual_score"
@@ -2832,6 +3332,40 @@ type subscription_root {
   ): [mutual_score!]!
 
   """
+  fetch data from the table: "neighbors_score"
+  """
+  neighbors_score(
+    """distinct select on columns"""
+    distinct_on: [neighbors_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [neighbors_score_order_by!]
+
+    """filter the rows returned"""
+    where: neighbors_score_bool_exp
+  ): [neighbors_score!]!
+
+  """
+  fetch data from the table in a streaming manner: "neighbors_score"
+  """
+  neighbors_score_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [neighbors_score_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: neighbors_score_bool_exp
+  ): [neighbors_score!]!
+
+  """
   fetch data from the table: "opinion"
   """
   opinion(
@@ -2892,6 +3426,142 @@ type subscription_root {
     """filter the rows returned"""
     where: mutual_score_bool_exp
   ): [mutual_score!]!
+
+  """
+  fetch data from the table: "polling"
+  """
+  polling(
+    """distinct select on columns"""
+    distinct_on: [polling_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [polling_order_by!]
+
+    """filter the rows returned"""
+    where: polling_bool_exp
+  ): [polling!]!
+
+  """
+  fetch data from the table: "polling_act"
+  """
+  polling_act(
+    """distinct select on columns"""
+    distinct_on: [polling_act_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [polling_act_order_by!]
+
+    """filter the rows returned"""
+    where: polling_act_bool_exp
+  ): [polling_act!]!
+
+  """fetch data from the table: "polling_act" using primary key columns"""
+  polling_act_by_pk(author_id: String!, polling_id: String!): polling_act
+
+  """
+  fetch data from the table in a streaming manner: "polling_act"
+  """
+  polling_act_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [polling_act_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: polling_act_bool_exp
+  ): [polling_act!]!
+
+  """fetch data from the table: "polling" using primary key columns"""
+  polling_by_pk(id: String!): polling
+
+  """
+  execute function "polling_results" which returns "neighbors_score"
+  """
+  polling_results(
+    """
+    input parameters for function "polling_results"
+    """
+    args: polling_results_args!
+
+    """distinct select on columns"""
+    distinct_on: [neighbors_score_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [neighbors_score_order_by!]
+
+    """filter the rows returned"""
+    where: neighbors_score_bool_exp
+  ): [neighbors_score!]!
+
+  """
+  fetch data from the table in a streaming manner: "polling"
+  """
+  polling_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [polling_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: polling_bool_exp
+  ): [polling!]!
+
+  """
+  fetch data from the table: "polling_variant"
+  """
+  polling_variant(
+    """distinct select on columns"""
+    distinct_on: [polling_variant_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [polling_variant_order_by!]
+
+    """filter the rows returned"""
+    where: polling_variant_bool_exp
+  ): [polling_variant!]!
+
+  """fetch data from the table: "polling_variant" using primary key columns"""
+  polling_variant_by_pk(id: String!): polling_variant
+
+  """
+  fetch data from the table in a streaming manner: "polling_variant"
+  """
+  polling_variant_stream(
+    """maximum number of rows returned in a single batch"""
+    batch_size: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [polling_variant_stream_cursor_input]!
+
+    """filter the rows returned"""
+    where: polling_variant_bool_exp
+  ): [polling_variant!]!
 
   """
   execute function "rating" which returns "mutual_score"
@@ -3119,11 +3789,6 @@ input timestamptz_comparison_exp {
   _lte: timestamptz
   _neq: timestamptz
   _nin: [timestamptz!]
-}
-
-input updates_args {
-  hasura_session: json
-  prefix: String
 }
 
 input Upload {

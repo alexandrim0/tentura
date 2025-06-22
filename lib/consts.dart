@@ -1,4 +1,6 @@
+//
 // Numbers
+//
 
 const kIdLength = 13;
 
@@ -10,17 +12,27 @@ const kPublicKeyLength = 44;
 
 const kDescriptionMaxLength = 2_048;
 
-const kRatingSector = 100 / 4;
+const kQuestionMinLength = 8;
 
+const kQuestionMaxLength = 256;
+
+const kVariantMaxLength = 64;
+
+const int kRatingSector = 100 ~/ 4;
+
+/// In seconds
 const kJwtExpiresIn = 3_600;
 
 const kAuthJwtExpiresIn = 30;
 
 const kRequestTimeout = 15;
 
-const kInvitationDefaultTTL = 24 * 7;
+/// In hours
+const int kInvitationDefaultTTL = 24 * 7;
 
+//
 // Strings
+//
 
 const kAppTitle = 'Tentura';
 
@@ -29,10 +41,8 @@ const kPathIcons = '/icons';
 const kPathAppLinkView = '/shared/view';
 const kPathGraphQLEndpoint = '/api/v1/graphql';
 const kPathGraphQLEndpointV2 = '/api/v2/graphql';
-const kPathBeaconView = '/beacon/view';
-const kPathProfileView = '/profile/view';
 
-const kUserAgent = kAppTitle;
+const String kUserAgent = kAppTitle;
 
 const kContentTypeHtml = 'text/html';
 const kContentTypeJpeg = 'image/jpeg';
