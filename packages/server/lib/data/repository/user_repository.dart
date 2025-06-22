@@ -11,11 +11,11 @@ export 'package:tentura_server/domain/entity/user_entity.dart';
 
 @Injectable(env: [Environment.dev, Environment.prod], order: 1)
 class UserRepository with UserMapper {
-  const UserRepository(this._database, this._env);
+  const UserRepository(this._database, this._settings);
 
   final TenturaDb _database;
 
-  final Env _env;
+  final Env _settings;
 
   Future<UserEntity> create({
     required String publicKey,
@@ -30,17 +30,16 @@ class UserRepository with UserMapper {
     required String publicKey,
     required String title,
   }) => _database.transaction<UserEntity>(() async {
-    final invitation =
-        await _database.managers.invitations
-            .filter((e) => e.id(invitationId))
-            .getSingle();
+    final invitation = await _database.managers.invitations
+        .filter((e) => e.id(invitationId))
+        .getSingle();
     if (invitation.invitedId != null) {
       throw const InvitationWrongException(
         description: 'Invitation already used!',
       );
     }
     if (invitation.createdAt.dateTime
-        .add(_env.invitationTTL)
+        .add(_settings.invitationTTL)
         .isBefore(DateTime.timestamp())) {
       throw const InvitationWrongException(description: 'Invitation expired!');
     }
@@ -88,8 +87,9 @@ class UserRepository with UserMapper {
     int? imageHeight,
     int? imageWidth,
   }) async {
-    final user =
-        await _database.managers.users.filter((e) => e.id(id)).getSingle();
+    final user = await _database.managers.users
+        .filter((e) => e.id(id))
+        .getSingle();
     await _database.managers.users.replace(
       user.copyWith(
         title: title ?? user.title,
@@ -110,24 +110,22 @@ class UserRepository with UserMapper {
     required String invitationId,
     required String userId,
   }) => _database.transaction<bool>(() async {
-    final invitation =
-        await _database.managers.invitations
-            .filter((e) => e.id(invitationId))
-            .getSingle();
+    final invitation = await _database.managers.invitations
+        .filter((e) => e.id(invitationId))
+        .getSingle();
     if (invitation.invitedId != null) {
       throw const InvitationWrongException(
         description: 'Invitation already used!',
       );
     } else if (invitation.createdAt.dateTime
-        .add(_env.invitationTTL)
+        .add(_settings.invitationTTL)
         .isBefore(DateTime.timestamp())) {
       throw const InvitationWrongException(description: 'Invitation expired!');
     }
 
-    final invitationsDeletedCount =
-        await _database.managers.invitations
-            .filter((e) => e.id(invitationId))
-            .delete();
+    final invitationsDeletedCount = await _database.managers.invitations
+        .filter((e) => e.id(invitationId))
+        .delete();
 
     await _database.managers.voteUsers.bulkCreate(
       (o) => [

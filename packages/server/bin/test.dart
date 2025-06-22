@@ -1,10 +1,8 @@
-import 'dart:async';
+import 'dart:io';
 
-import 'package:tentura_server/app.dart';
+import 'package:tentura_server/app/app.dart';
 
 Future<void> main(List<String> args) async {
-  await App(
-    env: Environment.test,
-    numberOfIsolates: 1,
-  ).run();
+  await const App().runTest();
+  exit(0);
 }

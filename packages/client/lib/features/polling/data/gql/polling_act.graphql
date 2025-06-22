@@ -1,0 +1,9 @@
+mutation PollingAct(
+  $pollingId: String!,
+  $variantId: String!
+) {
+  pollingAct(
+    pollingId: $pollingId,
+    variantId: $variantId
+  )
+}

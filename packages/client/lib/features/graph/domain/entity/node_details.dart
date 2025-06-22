@@ -10,7 +10,15 @@ sealed class NodeDetails extends NodeBase {
   const NodeDetails({
     super.size = 40,
     super.pinned,
+    this.positionHint = 0,
   });
+
+  final int positionHint;
+
+  NodeDetails copyWithPositionHint(int positionHint);
+
+  @override
+  NodeDetails copyWithPinned(bool isPinned);
 
   String get id;
 
@@ -30,7 +38,8 @@ sealed class NodeDetails extends NodeBase {
       label.hashCode ^
       score.hashCode ^
       userId.hashCode ^
-      hasImage.hashCode;
+      hasImage.hashCode ^
+      positionHint.hashCode;
 
   @override
   bool operator ==(Object other) =>
@@ -41,7 +50,8 @@ sealed class NodeDetails extends NodeBase {
           label == other.label &&
           score == other.score &&
           userId == other.userId &&
-          hasImage == other.hasImage;
+          hasImage == other.hasImage &&
+          positionHint == other.positionHint;
 }
 
 final class UserNode extends NodeDetails {
@@ -49,6 +59,7 @@ final class UserNode extends NodeDetails {
     required this.user,
     super.pinned,
     super.size,
+    super.positionHint,
   });
 
   final Profile user;
@@ -72,16 +83,26 @@ final class UserNode extends NodeDetails {
   double get rScore => user.rScore;
 
   @override
-  UserNode copyWithPinned(bool pinned) => UserNode(
-        pinned: pinned,
-        size: size,
-        user: user,
-      );
+  UserNode copyWithPinned(bool isPinned) => UserNode(
+    size: size,
+    user: user,
+    pinned: isPinned,
+    positionHint: positionHint,
+  );
+
+  @override
+  UserNode copyWithPositionHint(int positionHint) => UserNode(
+    user: user,
+    size: size,
+    pinned: pinned,
+    positionHint: positionHint,
+  );
 }
 
 final class BeaconNode extends NodeDetails {
   const BeaconNode({
     required this.beacon,
+    super.positionHint,
     super.pinned,
     super.size,
   });
@@ -107,9 +128,18 @@ final class BeaconNode extends NodeDetails {
   double get score => beacon.score;
 
   @override
-  BeaconNode copyWithPinned(bool pinned) => BeaconNode(
-        beacon: beacon,
-        pinned: pinned,
-        size: size,
-      );
+  BeaconNode copyWithPinned(bool isPinned) => BeaconNode(
+    beacon: beacon,
+    pinned: isPinned,
+    positionHint: positionHint,
+    size: size,
+  );
+
+  @override
+  BeaconNode copyWithPositionHint(int positionHint) => BeaconNode(
+    beacon: beacon,
+    pinned: pinned,
+    positionHint: positionHint,
+    size: size,
+  );
 }

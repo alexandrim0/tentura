@@ -27,15 +27,17 @@ mutation BeaconCreate(
   $context: String = "",
   $description: String = "",
   $coordinates: Coordinates = {},
-  $image: Upload = {}
+  $polling: PollingInput = {},
+  $image: Upload = {},
   $startAt: String,
-  $endAt: String,
+  $endAt: String
 ) {
   beaconCreate(
     title: $title,
     description: $description,
     coordinates: $coordinates,
     context: $context,
+    polling: $polling,
     startAt: $startAt,
     endAt: $endAt,
     image: $image
@@ -48,5 +50,14 @@ mutation BeaconCreate(
   "title": "From rest",
   "description": "Just for test",
   "startAt": "2025-04-05T00:00:00.000",
-  "endAt": "2025-04-05T00:00:00.000"
+  "endAt": "2025-04-05T00:00:00.000",
+  "polling": {
+    "question": "Quo vadis?",
+    "variants": [
+      "North",
+      "South",
+      "West",
+      "East"
+    ]
+  }
 }

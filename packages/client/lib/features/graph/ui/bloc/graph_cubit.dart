@@ -102,35 +102,43 @@ class GraphCubit extends Cubit<GraphState> {
   Future<void> _fetch() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
+      // Fetch Edges
+      final edges = await _graphRepository.fetch(
+        positiveOnly: state.positiveOnly,
+        context: state.context,
+        focus: state.focus,
+        limit: _fetchLimits[state.focus] =
+            (_fetchLimits[state.focus] ?? 0) + kFetchWindowSize,
+      );
+
+      for (final e in edges) {
+        _nodes.putIfAbsent(e.dst, () {
+          final isFocus = state.focus.isNotEmpty && state.focus == e.dst;
+          return e.node
+              .copyWithPinned(isFocus)
+              .copyWithPositionHint(_nodes.length);
+        });
+      }
+
       // Fetch FocusNode
       if (state.focus.isNotEmpty && !_nodes.containsKey(state.focus)) {
         _nodes[state.focus] = switch (state.focus[0]) {
           'U' => UserNode(
             user: await _profileRepository.fetchById(state.focus),
+            positionHint: _nodes.length,
             pinned: true,
           ),
           'B' => BeaconNode(
             beacon: await _beaconRepository.fetchBeaconById(state.focus),
+            positionHint: _nodes.length,
             pinned: true,
           ),
           _ => throw Exception('Unsupported Node type!'),
         };
       }
 
-      // Fetch Edges
-      final edges = await _graphRepository.fetch(
-        positiveOnly: state.positiveOnly,
-        context: state.context,
-        focus: state.focus,
-        limit: _fetchLimits[state.focus] = (_fetchLimits[state.focus] ?? 0) + 5,
-      );
-
       emit(state.copyWith(status: StateStatus.isSuccess));
-      if (edges.isEmpty) return;
 
-      for (final e in edges) {
-        _nodes.putIfAbsent(e.dst, () => e.node);
-      }
       _updateGraph(edges);
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
@@ -141,24 +149,33 @@ class GraphCubit extends Cubit<GraphState> {
     mutator,
   ) {
     for (final e in edges) {
-      if (state.positiveOnly && e.weight < 0) continue;
+      if (state.positiveOnly && e.weight < 0) {
+        continue;
+      }
       final src = _nodes[e.src];
-      if (src == null) continue;
+      if (src == null) {
+        continue;
+      }
       final dst = _nodes[e.dst];
-      if (dst == null) continue;
+      if (dst == null) {
+        continue;
+      }
       final edge = EdgeDetails<NodeDetails>(
         source: src,
         destination: dst,
         strokeWidth: (src == _egoNode || dst == _egoNode) ? 3 : 2,
-        color:
-            e.weight < 0
-                ? Colors.redAccent
-                : src == _egoNode || dst == _egoNode
-                ? Colors.amberAccent
-                : Colors.cyanAccent,
+        color: e.weight < 0
+            ? Colors.redAccent
+            : src == _egoNode || dst == _egoNode
+            ? Colors.amberAccent
+            : Colors.cyanAccent,
       );
-      if (!mutator.controller.nodes.contains(src)) mutator.addNode(src);
-      if (!mutator.controller.nodes.contains(dst)) mutator.addNode(dst);
+      if (!mutator.controller.nodes.contains(src)) {
+        mutator.addNode(src);
+      }
+      if (!mutator.controller.nodes.contains(dst)) {
+        mutator.addNode(dst);
+      }
       if (src.id != dst.id && !mutator.controller.edges.contains(edge)) {
         mutator.addEdge(edge);
       }

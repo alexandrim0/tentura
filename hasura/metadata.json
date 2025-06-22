@@ -1,5 +1,5 @@
 {
-  "resource_version": 98,
+  "resource_version": 62,
   "metadata": {
     "version": 3,
     "sources": [
@@ -17,6 +17,12 @@
                 "name": "author",
                 "using": {
                   "foreign_key_constraint_on": "user_id"
+                }
+              },
+              {
+                "name": "polling",
+                "using": {
+                  "foreign_key_constraint_on": "polling_id"
                 }
               }
             ],
@@ -109,6 +115,7 @@
                     "long",
                     "pic_height",
                     "pic_width",
+                    "polling_id",
                     "start_at",
                     "title",
                     "updated_at",
@@ -376,12 +383,6 @@
           },
           {
             "table": {
-              "name": "image",
-              "schema": "public"
-            }
-          },
-          {
-            "table": {
               "name": "invitation",
               "schema": "public"
             },
@@ -631,6 +632,29 @@
           },
           {
             "table": {
+              "name": "neighbors_score",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "dst_score",
+                    "src_score",
+                    "dst_cluster_score",
+                    "src_cluster_score",
+                    "dst",
+                    "src"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
               "name": "opinion",
               "schema": "public"
             },
@@ -712,6 +736,108 @@
                       "_eq": "X-Hasura-User-Id"
                     }
                   }
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "polling",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "author",
+                "using": {
+                  "foreign_key_constraint_on": "author_id"
+                }
+              }
+            ],
+            "array_relationships": [
+              {
+                "name": "polling_acts",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "polling_id",
+                    "table": {
+                      "name": "polling_act",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "variants",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "polling_id",
+                    "table": {
+                      "name": "polling_variant",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "enabled",
+                    "author_id",
+                    "id",
+                    "question",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "polling_act",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "author_id",
+                    "polling_id",
+                    "polling_variant_id",
+                    "created_at"
+                  ],
+                  "filter": {
+                    "author_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "polling_variant",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "description",
+                    "id",
+                    "polling_id"
+                  ],
+                  "filter": {}
                 },
                 "comment": ""
               }
@@ -1200,7 +1326,7 @@
           },
           {
             "function": {
-              "name": "rating",
+              "name": "polling_results",
               "schema": "public"
             },
             "configuration": {
@@ -1215,55 +1341,18 @@
           },
           {
             "function": {
-              "name": "updates",
+              "name": "rating",
               "schema": "public"
+            },
+            "configuration": {
+              "custom_root_fields": {},
+              "session_argument": "hasura_session"
             },
             "permissions": [
               {
                 "role": "user"
               }
             ]
-          }
-        ],
-        "native_queries": [
-          {
-            "arguments": {},
-            "code": "SELECT true as is_ok, mr_zerorec(true)::text as message;",
-            "returns": "Result",
-            "root_field_name": "mr_calculate"
-          },
-          {
-            "arguments": {},
-            "code": "SELECT true AS is_ok, meritrank_init()::text AS message",
-            "returns": "Result",
-            "root_field_name": "mr_init"
-          },
-          {
-            "arguments": {},
-            "code": "SELECT true as is_ok, mr_reset()::text as message;",
-            "returns": "Result",
-            "root_field_name": "mr_reset"
-          }
-        ],
-        "logical_models": [
-          {
-            "fields": [
-              {
-                "name": "is_ok",
-                "type": {
-                  "nullable": false,
-                  "scalar": "boolean"
-                }
-              },
-              {
-                "name": "message",
-                "type": {
-                  "nullable": false,
-                  "scalar": "text"
-                }
-              }
-            ],
-            "name": "Result"
           }
         ],
         "configuration": {

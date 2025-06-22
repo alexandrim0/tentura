@@ -1,9 +1,9 @@
 # import '/data/gql/beacon_model.graphql'
 
-mutation UpdatedBeaconsFetch {
-  updates(args: {prefix: "B"}) {
-    beacon {
-      ...BeaconModel
-    }
-  }
-}
+# mutation UpdatedBeaconsFetch {
+#   updates(args: {prefix: "B"}) {
+#     beacon {
+#       ...BeaconModel
+#     }
+#   }
+# }

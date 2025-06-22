@@ -3,6 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/utils/id.dart';
 
+import '../enum.dart';
+
 part 'user_entity.freezed.dart';
 
 @freezed
@@ -18,14 +20,17 @@ abstract class UserEntity with _$UserEntity {
     @Default('') String blurHash,
     @Default(0) int picHeight,
     @Default(0) int picWidth,
+    Set<UserPrivileges>? privileges,
   }) = _UserEntity;
 
   const UserEntity._();
 
   Map<String, Object> get asJson => {'id': id};
 
-  String get imageUrl =>
-      hasPicture
-          ? '$kImageServer/$kImagesPath/$id/avatar.$kImageExt'
-          : kImageServer + kAvatarPlaceholderUrl;
+  String get imageUrl => hasPicture
+      ? '$kImageServer/$kImagesPath/$id/avatar.$kImageExt'
+      : kImageServer + kAvatarPlaceholderUrl;
+
+  bool hasPrivilege(UserPrivileges value) =>
+      privileges?.contains(value) ?? false;
 }

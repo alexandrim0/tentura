@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/ui/l10n/l10n.dart';
-
 import 'package:tentura/consts.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/string_input_validator.dart';
 
 import '../bloc/beacon_create_cubit.dart';

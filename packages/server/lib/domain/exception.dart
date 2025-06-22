@@ -82,7 +82,7 @@ final class UnauthorizedException extends ExceptionBase {
         code: const AuthExceptionCodes(
           AuthExceptionCode.authAuthorizationHeaderWrongException,
         ),
-        description: description ?? 'Wrong Authorization header',
+        description: description ?? 'User is not authorized',
       );
 }
 
@@ -93,5 +93,15 @@ final class InvitationWrongException extends ExceptionBase {
           AuthExceptionCode.authInvitationWrongException,
         ),
         description: description ?? 'Wrong invitation code',
+      );
+}
+
+final class BeaconCreateException extends ExceptionBase {
+  const BeaconCreateException({String? description})
+    : super(
+        code: const BeaconExceptionCodes(
+          BeaconExceptionCode.beaconCreateException,
+        ),
+        description: description ?? 'Beacon create error',
       );
 }

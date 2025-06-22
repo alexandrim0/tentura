@@ -6,16 +6,41 @@ import 'package:tentura_root/domain/entity/coordinates.dart';
 
 import 'package:tentura_server/data/repository/beacon_repository.dart';
 import 'package:tentura_server/data/repository/image_repository.dart';
+import 'package:tentura_server/data/repository/meritrank_repository.dart';
+import 'package:tentura_server/data/repository/tasks_repository.dart';
 
-import 'image_case_mixin.dart';
+import '../entity/task_entity.dart';
+import '../exception.dart';
 
-@Injectable(order: 2)
-class BeaconCase with ImageCaseMixin {
-  const BeaconCase(this._beaconRepository, this._imageRepository);
+@Singleton(order: 2)
+class BeaconCase {
+  @FactoryMethod(preResolve: true)
+  static Future<BeaconCase> createInstance(
+    BeaconRepository beaconRepository,
+    ImageRepository imageRepository,
+    TasksRepository tasksRepository,
+    MeritrankRepository meritrankRepository,
+  ) async => BeaconCase(
+    beaconRepository,
+    imageRepository,
+    tasksRepository,
+    meritrankRepository,
+  );
+
+  const BeaconCase(
+    this._beaconRepository,
+    this._imageRepository,
+    this._tasksRepository,
+    this._meritrankRepository,
+  );
+
+  final MeritrankRepository _meritrankRepository;
 
   final BeaconRepository _beaconRepository;
 
   final ImageRepository _imageRepository;
+
+  final TasksRepository _tasksRepository;
 
   Future<BeaconEntity> create({
     required String userId,
@@ -26,7 +51,20 @@ class BeaconCase with ImageCaseMixin {
     DateTime? startAt,
     Coordinates? coordinates,
     Stream<Uint8List>? imageBytes,
+    ({String? question, List<String>? variants})? polling,
   }) async {
+    if (polling != null) {
+      if (polling.question == null) {
+        throw const BeaconCreateException(description: 'Question is required');
+      }
+      if (polling.variants == null) {
+        throw const BeaconCreateException(description: 'Variants are required');
+      }
+      if (polling.variants!.length < 2) {
+        throw const BeaconCreateException(description: 'Too few variants');
+      }
+    }
+
     final beacon = await _beaconRepository.createBeacon(
       authorId: userId,
       title: title,
@@ -35,19 +73,39 @@ class BeaconCase with ImageCaseMixin {
       hasPicture: imageBytes != null,
       latitude: coordinates?.lat,
       longitude: coordinates?.long,
+      polling: polling == null
+          ? null
+          : (question: polling.question!, variants: polling.variants!),
       startAt: startAt,
       endAt: endAt,
     );
+
+    if (beacon.polling?.variants != null) {
+      final polling = beacon.polling!;
+      for (final variant in polling.variants) {
+        await _meritrankRepository.putEdge(
+          nodeA: variant.id,
+          nodeB: polling.id,
+        );
+      }
+    }
+
     if (imageBytes != null) {
       await _imageRepository.putBeaconImage(
         authorId: userId,
         beaconId: beacon.id,
         bytes: imageBytes,
       );
-      unawaited(
-        updateBlurHash(authorId: beacon.author.id, beaconId: beacon.id),
+      await _tasksRepository.schedule(
+        TaskBeaconImageHash(
+          details: TaskBeaconImageHashDetails(
+            userId: userId,
+            beaconId: beacon.id,
+          ),
+        ),
       );
     }
+
     return beacon;
   }
 
@@ -67,26 +125,5 @@ class BeaconCase with ImageCaseMixin {
     await _beaconRepository.deleteBeaconById(beacon.id);
 
     return true;
-  }
-
-  Future<void> updateBlurHash({
-    required String authorId,
-    required String beaconId,
-  }) async {
-    try {
-      final imageBytes = await _imageRepository.getBeaconImage(
-        authorId: authorId,
-        beaconId: beaconId,
-      );
-      final image = decodeImage(imageBytes);
-      await _beaconRepository.updateBeaconImageDetails(
-        beaconId: beaconId,
-        blurHash: calculateBlurHash(image),
-        imageHeight: image.height,
-        imageWidth: image.width,
-      );
-    } catch (e) {
-      print(e);
-    }
   }
 }
