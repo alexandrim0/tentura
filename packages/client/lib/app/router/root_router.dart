@@ -46,18 +46,34 @@ class RootRouter extends RootStackRouter {
     AutoRoute(
       initial: true,
       page: HomeRoute.page,
-      path: kPathRoot,
+      path: kPathHome,
       children: [
         // Field
-        AutoRoute(page: MyFieldRoute.page),
+        AutoRoute(
+          page: MyFieldRoute.page,
+          path: kPathMyField.split('/').last,
+        ),
         // Favorites
-        AutoRoute(page: FavoritesRoute.page),
+        AutoRoute(
+          page: FavoritesRoute.page,
+          path: kPathFavorites.split('/').last,
+        ),
         // Connect
-        AutoRoute(page: ConnectRoute.page),
+        AutoRoute(
+          page: ConnectRoute.page,
+          path: kPathConnect.split('/').last,
+        ),
         // Friends
-        AutoRoute(page: FriendsRoute.page),
+        AutoRoute(
+          page: FriendsRoute.page,
+          path: kPathFriends.split('/').last,
+        ),
         // Profile
-        AutoRoute(initial: true, page: ProfileRoute.page),
+        AutoRoute(
+          initial: true,
+          page: ProfileRoute.page,
+          path: kPathProfile.split('/').last,
+        ),
       ],
       guards: [
         AutoRouteGuard.redirect(
@@ -212,7 +228,7 @@ class RootRouter extends RootStackRouter {
     ),
 
     // default
-    RedirectRoute(path: '*', redirectTo: kPathRoot),
+    RedirectRoute(path: '*', redirectTo: kPathHome),
   ];
 
   FutureOr<DeepLink> deepLinkBuilder(PlatformDeepLink deepLink) {

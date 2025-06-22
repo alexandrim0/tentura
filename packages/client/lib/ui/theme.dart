@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'utils/ui_utils.dart';
+
 const primaryColor = Color(0xFF3A1E5C);
 
 final themeLight = _createAppTheme(
@@ -10,11 +12,16 @@ final themeDark = _createAppTheme(
   ColorScheme.fromSeed(brightness: Brightness.dark, seedColor: primaryColor),
 );
 
-final _buttonShape = RoundedRectangleBorder(
-  borderRadius: BorderRadius.circular(8),
-);
-
 ThemeData _createAppTheme(ColorScheme colorScheme) {
+  final buttonShape = RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(kBorderRadius),
+  );
+
+  final expansionTileShape = RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(kBorderRadius),
+    side: BorderSide(color: colorScheme.outline),
+  );
+
   return ThemeData(
     colorScheme: colorScheme,
     brightness: colorScheme.brightness,
@@ -27,11 +34,16 @@ ThemeData _createAppTheme(ColorScheme colorScheme) {
 
     // Elevated Button
     elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(shape: _buttonShape),
+      style: ElevatedButton.styleFrom(shape: buttonShape),
+    ),
+
+    expansionTileTheme: ExpansionTileThemeData(
+      collapsedShape: expansionTileShape,
+      shape: expansionTileShape,
     ),
 
     filledButtonTheme: FilledButtonThemeData(
-      style: ElevatedButton.styleFrom(shape: _buttonShape),
+      style: ElevatedButton.styleFrom(shape: buttonShape),
     ),
 
     // Icon

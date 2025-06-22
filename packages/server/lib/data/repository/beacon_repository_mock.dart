@@ -6,12 +6,13 @@ import 'package:tentura_server/domain/entity/user_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
 
 import '../mapper/beacon_mapper.dart';
+import '../mapper/polling_mapper.dart';
 import '../mapper/user_mapper.dart';
 import 'beacon_repository.dart';
 
 @Injectable(as: BeaconRepository, env: [Environment.test], order: 1)
 class BeaconRepositoryMock
-    with UserMapper, BeaconMapper
+    with UserMapper, PollingMapper, BeaconMapper
     implements BeaconRepository {
   static final storageById = <String, BeaconEntity>{};
 
@@ -28,6 +29,7 @@ class BeaconRepositoryMock
     double? longitude,
     DateTime? startAt,
     DateTime? endAt,
+    ({String question, List<String> variants})? polling,
     int ticker = 0,
   }) async {
     final now = DateTime.timestamp();
@@ -37,10 +39,9 @@ class BeaconRepositoryMock
       context: context,
       description: description ?? '',
       author: UserEntity(id: authorId),
-      coordinates:
-          latitude != null && longitude != null
-              ? Coordinates(lat: latitude, long: longitude)
-              : null,
+      coordinates: latitude != null && longitude != null
+          ? Coordinates(lat: latitude, long: longitude)
+          : null,
       hasPicture: hasPicture,
       startAt: startAt,
       endAt: endAt,

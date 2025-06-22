@@ -1,4 +1,6 @@
+//
 // Numbers
+//
 
 const kIdLength = 13;
 
@@ -9,6 +11,12 @@ const kTitleMaxLength = 32;
 const kPublicKeyLength = 44;
 
 const kDescriptionMaxLength = 2_048;
+
+const kQuestionMinLength = 8;
+
+const kQuestionMaxLength = 256;
+
+const kVariantMaxLength = 64;
 
 const int kRatingSector = 100 ~/ 4;
 
@@ -22,7 +30,9 @@ const kRequestTimeout = 15;
 /// In hours
 const int kInvitationDefaultTTL = 24 * 7;
 
+//
 // Strings
+//
 
 const kAppTitle = 'Tentura';
 

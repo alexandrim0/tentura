@@ -3,8 +3,9 @@ import 'package:graphql_schema2/graphql_schema2.dart';
 import 'input/_input_types.dart';
 
 List<GraphQLType<dynamic, dynamic>> get customTypes => [
-  InputFieldUpload.type,
   InputFieldCoordinates.type,
+  InputFieldPolling.type,
+  InputFieldUpload.type,
   gqlTypeAuthResponse,
   gqlTypeInvitation,
   gqlTypeProfile,

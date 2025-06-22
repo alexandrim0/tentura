@@ -14,9 +14,9 @@
                 "prod",
 				"--dart-define-from-file=.env",
 				"--dart-define",
-				"NEED_INVITE_CODE=true",
-				"--dart-define",
 				"SERVER_NAME=https://dev.tentura.io",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
             ],
         },
         {
@@ -25,12 +25,9 @@
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
+				"--dart-define-from-file=.env",
                 "--dart-define",
                 "SERVER_NAME=https://localhost",
-                "--dart-define",
-                "NEED_INVITE_CODE=true",
-                "--dart-define",
-				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
             "args": [
                 "-d", "chrome",
@@ -67,10 +64,9 @@
             "toolArgs": [
                 "--flavor",
                 "stage",
+				"--dart-define-from-file=.env",
                 "--dart-define",
                 "SERVER_NAME=https://stage.tentura.io",
-                "--dart-define",
-				"IMAGE_SERVER=https://tentura.ams3.cdn.digitaloceanspaces.com",
             ],
         },
         {
@@ -80,8 +76,6 @@
             "flutterMode": "debug",
             "toolArgs": [
 				"--dart-define-from-file=.env",
-				"--dart-define",
-                "IMAGE_SERVER=https://static.tentura.io",
 				"--dart-define",
 				"NEED_INVITE_CODE=true",
 				"--dart-define",

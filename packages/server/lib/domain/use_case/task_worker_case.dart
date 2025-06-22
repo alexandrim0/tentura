@@ -12,7 +12,7 @@ import 'package:tentura_server/env.dart';
 
 import '../entity/task_entity.dart';
 
-@LazySingleton(env: [Environment.dev, Environment.prod])
+@LazySingleton()
 class TaskWorkerCase {
   TaskWorkerCase(
     this._env,

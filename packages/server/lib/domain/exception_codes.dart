@@ -21,6 +21,8 @@ class GeneralExceptionCodes extends ExceptionCodes {
   int get codeNumber => codeSpace + exceptionCode.index;
 }
 
+//Auth
+
 enum AuthExceptionCode {
   unspecifiedException,
   authPemKeyWrongException,
@@ -35,6 +37,40 @@ class AuthExceptionCodes extends ExceptionCodes {
   const AuthExceptionCodes(this.exceptionCode);
 
   final AuthExceptionCode exceptionCode;
+
+  @override
+  int get codeNumber => codeSpace + exceptionCode.index;
+}
+
+// User
+enum UserExceptionCode {
+  unspecifiedException,
+}
+
+class UserExceptionCodes extends ExceptionCodes {
+  static const codeSpace = 1200;
+
+  UserExceptionCodes(this.exceptionCode);
+
+  final UserExceptionCode exceptionCode;
+
+  @override
+  int get codeNumber => codeSpace + exceptionCode.index;
+}
+
+// Beacon
+
+enum BeaconExceptionCode {
+  unspecifiedException,
+  beaconCreateException,
+}
+
+class BeaconExceptionCodes extends ExceptionCodes {
+  static const codeSpace = 1300;
+
+  const BeaconExceptionCodes(this.exceptionCode);
+
+  final BeaconExceptionCode exceptionCode;
 
   @override
   int get codeNumber => codeSpace + exceptionCode.index;

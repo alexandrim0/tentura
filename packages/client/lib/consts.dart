@@ -24,13 +24,17 @@ const kSettingsThemeMode = 'themeMode';
 const kSettingsIsIntroEnabledKey = 'isIntroEnabled';
 
 // Routes
-const kPathRoot = '/';
 const kPathBack = '/back';
+const kPathHome = '/home';
+const kPathMyField = '/home/field';
+const kPathConnect = '/home/connect';
+const kPathFriends = '/home/friends';
+const kPathProfile = '/home/profile';
+const kPathFavorites = '/home/favorites';
 const kPathGraph = '/graph';
 const kPathRating = '/rating';
 const kPathSignIn = '/sign/in';
 const kPathSignUp = '/sign/up';
-const kPathConnect = '/connect';
 const kPathSettings = '/settings';
 const kPathComplaint = '/complaint';
 const kPathBeaconNew = '/beacon/new';

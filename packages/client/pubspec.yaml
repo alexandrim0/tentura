@@ -2,11 +2,11 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 1.0.8
+version: 1.1.4
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
-  flutter: ^3.32.1
+  flutter: ^3.32.4
 
 dependencies:
   flutter:
@@ -23,15 +23,16 @@ dependencies:
   latlong2: ^0.9.1
   injectable: ^2.5.0
   auto_route: ^9.0.0
-  built_value: ^8.9.5
   collection: ^1.19.1
+  built_value: ^8.9.5
   http_parser: ^4.1.2
   flutter_bloc: ^9.1.1
   synchronized: ^3.3.0
-  sentry_drift: ^8.14.2
-  sentry_flutter: ^8.14.2
+  sentry_drift: ^9.0.0
+  sentry_flutter: ^9.0.0
   json_annotation: ^4.9.0
   ed25519_edwards: ^0.3.1
+  built_collection: ^5.1.1
   intl_translation: ^0.20.1
   dart_jsonwebtoken: ^3.2.0
   freezed_annotation: ^2.4.4
@@ -64,11 +65,11 @@ dependencies:
   readmore: ^3.0.0
   qr_flutter: ^4.1.0
   flutter_map: ^8.1.1
-  flutter_svg: ^2.1.0
+  flutter_svg: ^2.2.0
   google_fonts: ^6.2.1
   validatorless: ^1.2.4
   blurhash_shader: ^1.1.2
-  vector_graphics: ^1.1.18
+  vector_graphics: ^1.1.19
   visibility_detector: ^0.4.0
   flutter_native_splash: ^2.4.6
   force_directed_graphview: ^0.6.2
@@ -80,15 +81,15 @@ dev_dependencies:
     sdk: flutter
   lints: ^6.0.0
   freezed: ^2.5.7
-  build_runner: ^2.4.15
+  build_runner: ^2.5.3
   flutter_lints: ^6.0.0
   ferry_generator: ^0.12.0
   json_serializable: ^6.9.0
   sentry_dart_plugin: ^2.4.1
-  very_good_analysis: ^8.0.0
+  very_good_analysis: ^9.0.0
   auto_route_generator: ^9.0.0
   injectable_generator: ^2.6.2
-  flutter_launcher_icons: ^0.14.3
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   generate: true

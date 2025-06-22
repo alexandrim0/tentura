@@ -5,12 +5,14 @@ import 'package:tentura_server/domain/entity/comment_entity.dart';
 import '../database/tentura_db.dart';
 import '../mapper/beacon_mapper.dart';
 import '../mapper/comment_mapper.dart';
+import '../mapper/polling_mapper.dart';
 import '../mapper/user_mapper.dart';
 
 export 'package:tentura_server/domain/entity/comment_entity.dart';
 
 @Injectable(env: [Environment.dev, Environment.prod], order: 1)
-class CommentRepository with UserMapper, BeaconMapper, CommentMapper {
+class CommentRepository
+    with UserMapper, PollingMapper, BeaconMapper, CommentMapper {
   CommentRepository(this._database);
 
   final TenturaDb _database;
@@ -28,15 +30,13 @@ class CommentRepository with UserMapper, BeaconMapper, CommentMapper {
   }
 
   Future<CommentEntity> getCommentById(String id) async {
-    final (comment, commentRefs) =
-        await _database.managers.comments
-            .filter((e) => e.id.equals(id))
-            .withReferences((p) => p(userId: true, beaconId: true))
-            .getSingle();
-    final (beacon, beaconRefs) =
-        await commentRefs.beaconId
-            .withReferences((p) => p(userId: true))
-            .getSingle();
+    final (comment, commentRefs) = await _database.managers.comments
+        .filter((e) => e.id.equals(id))
+        .withReferences((p) => p(userId: true, beaconId: true))
+        .getSingle();
+    final (beacon, beaconRefs) = await commentRefs.beaconId
+        .withReferences((p) => p(userId: true))
+        .getSingle();
     return commentModelToEntity(
       comment,
       beacon: beacon,

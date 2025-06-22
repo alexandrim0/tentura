@@ -5,6 +5,7 @@ import 'package:tentura_root/domain/entity/coordinates.dart';
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/utils/id.dart';
 
+import 'polling_entity.dart';
 import 'user_entity.dart';
 
 part 'beacon_entity.freezed.dart';
@@ -26,6 +27,7 @@ abstract class BeaconEntity with _$BeaconEntity {
     @Default(0) int picHeight,
     @Default(0) int picWidth,
     Coordinates? coordinates,
+    PollingEntity? polling,
     DateTime? startAt,
     DateTime? endAt,
     String? context,
@@ -33,10 +35,9 @@ abstract class BeaconEntity with _$BeaconEntity {
 
   const BeaconEntity._();
 
-  String get imageUrl =>
-      hasPicture
-          ? '$kImageServer/$kImagesPath/${author.id}/$id.$kImageExt'
-          : kImageServer + kBeaconPlaceholderUrl;
+  String get imageUrl => hasPicture
+      ? '$kImageServer/$kImagesPath/${author.id}/$id.$kImageExt'
+      : kImageServer + kBeaconPlaceholderUrl;
 
   Map<String, Object> get asJson => {'id': id};
 }

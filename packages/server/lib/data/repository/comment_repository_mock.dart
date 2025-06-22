@@ -4,6 +4,7 @@ import 'package:tentura_server/domain/entity/beacon_entity.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
 
+import '../mapper/polling_mapper.dart';
 import 'comment_repository.dart';
 import '../mapper/beacon_mapper.dart';
 import '../mapper/comment_mapper.dart';
@@ -13,7 +14,7 @@ export 'package:tentura_server/domain/entity/comment_entity.dart';
 
 @Injectable(as: CommentRepository, env: [Environment.test], order: 1)
 class CommentRepositoryMock
-    with UserMapper, BeaconMapper, CommentMapper
+    with UserMapper, PollingMapper, BeaconMapper, CommentMapper
     implements CommentRepository {
   static final storageById = <String, CommentEntity>{};
 

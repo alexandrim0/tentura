@@ -41,6 +41,8 @@ class Env {
     String? kS3Bucket,
     // Task Worker
     Duration? taskOnEmptyDelay,
+    // Meritrank service
+    Duration? meritrankCalculateTimeout,
   }) : // Common
        printEnv = printEnv ?? _env['PRINT_ENV'] == 'true',
        isDebugModeOn = isDebugModeOn ?? _env['DEBUG_MODE'] == 'true',
@@ -93,7 +95,13 @@ class Env {
        kS3AccessKey = kS3AccessKey ?? _env['S3_ACCESS_KEY'] ?? '',
        kS3SecretKey = kS3SecretKey ?? _env['S3_SECRET_KEY'] ?? '',
        kS3Endpoint = kS3Endpoint ?? _env['S3_ENDPOINT'] ?? '',
-       kS3Bucket = kS3Bucket ?? _env['S3_BUCKET'] ?? '' {
+       kS3Bucket = kS3Bucket ?? _env['S3_BUCKET'] ?? '',
+       // Meritrank service
+       meritrankCalculateTimeout =
+           meritrankCalculateTimeout ??
+           Duration(
+             minutes: int.tryParse(_env['MR_CALCULATE_TIMEOUT'] ?? '') ?? 10,
+           ) {
     _printEnvInfo();
   }
 
@@ -189,6 +197,9 @@ class Env {
     username: pgUsername,
     password: pgPassword,
   );
+
+  // Meritrank service
+  final Duration meritrankCalculateTimeout;
 
   void _printEnvInfo() {
     if (printEnv) {

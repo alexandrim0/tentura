@@ -5,6 +5,7 @@ import 'package:tentura/consts.dart';
 
 import 'coordinates.dart';
 import 'likable.dart';
+import 'polling.dart';
 import 'profile.dart';
 
 part 'beacon.freezed.dart';
@@ -29,6 +30,7 @@ abstract class Beacon with _$Beacon implements Likable {
     @Default(0) int myVote,
     @Default(Profile()) Profile author,
     Coordinates? coordinates,
+    Polling? polling,
     DateTime? startAt,
     DateTime? endAt,
   }) = _Beacon;
@@ -40,10 +42,13 @@ abstract class Beacon with _$Beacon implements Likable {
 
   bool get hasNoPicture => !hasPicture;
 
-  String get imageUrl =>
-      hasPicture
-          ? '$kImageServer/$kImagesPath/${author.id}/$id.$kImageExt'
-          : kBeaconPlaceholderUrl;
+  bool get hasPolling => polling != null;
+
+  bool get hasNoPolling => polling == null;
+
+  String get imageUrl => hasPicture
+      ? '$kImageServer/$kImagesPath/${author.id}/$id.$kImageExt'
+      : kBeaconPlaceholderUrl;
 }
 
 final emptyBeacon = Beacon(
