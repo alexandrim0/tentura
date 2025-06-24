@@ -10,6 +10,19 @@ class AvatarRated extends StatelessWidget {
 
   static const sizeSmall = sizeBig / 4;
 
+  static Widget getAvatarPlaceholder({
+    int? cacheHeight,
+    int? cacheWidth,
+    BoxFit? fit,
+  }) => Image.asset(
+    'images/placeholder/avatar.jpg',
+    // ignore: avoid_redundant_argument_values //
+    package: kAssetPackage,
+    cacheHeight: cacheHeight,
+    cacheWidth: cacheWidth,
+    fit: fit,
+  );
+
   AvatarRated({
     required this.profile,
     this.withRating = true,
@@ -37,41 +50,38 @@ class AvatarRated extends StatelessWidget {
   late final _cacheSize = size.ceil();
 
   late final _avatar = ClipOval(
-    child:
-        profile.hasNoAvatar
-            ? _placeholder
-            : profile.blurhash.isEmpty
-            ? _imageNetwork
-            : BlurHash(profile.blurhash, child: _imageNetwork),
+    child: profile.hasNoAvatar
+        ? getAvatarPlaceholder(
+            cacheHeight: _cacheSize,
+            cacheWidth: _cacheSize,
+            fit: boxFit,
+          )
+        : profile.blurhash.isEmpty
+        ? _imageNetwork
+        : BlurHash(profile.blurhash, child: _imageNetwork),
   );
 
   @override
   Widget build(BuildContext context) => SizedBox.square(
     dimension: size,
-    child:
-        withRating && profile.score >= kRatingSector
-            ? CustomPaint(
-              painter: _RatingPainter(
-                color: Theme.of(context).colorScheme.primary,
-                score: profile.score,
-              ),
-              child: Padding(padding: EdgeInsets.all(size / 8), child: _avatar),
-            )
-            : _avatar,
+    child: withRating && profile.score >= kRatingSector
+        ? CustomPaint(
+            painter: _RatingPainter(
+              color: Theme.of(context).colorScheme.primary,
+              score: profile.score,
+            ),
+            child: Padding(padding: EdgeInsets.all(size / 8), child: _avatar),
+          )
+        : _avatar,
   );
 
   Widget get _imageNetwork => Image.network(
     profile.avatarUrl,
-    errorBuilder: (_, _, _) => _placeholder,
-    cacheHeight: _cacheSize,
-    cacheWidth: _cacheSize,
-    fit: boxFit,
-  );
-
-  Widget get _placeholder => Image.asset(
-    kAssetAvatarPlaceholder,
-    // ignore: avoid_redundant_argument_values // set from env
-    package: kAssetPackage,
+    errorBuilder: (_, _, _) => getAvatarPlaceholder(
+      cacheHeight: _cacheSize,
+      cacheWidth: _cacheSize,
+      fit: boxFit,
+    ),
     cacheHeight: _cacheSize,
     cacheWidth: _cacheSize,
     fit: boxFit,
@@ -87,13 +97,12 @@ class _RatingPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final paint =
-        Paint()
-          ..color = color
-          ..isAntiAlias = true
-          ..strokeWidth = size.height / 10
-          ..strokeCap = StrokeCap.round
-          ..style = PaintingStyle.stroke;
+    final paint = Paint()
+      ..color = color
+      ..isAntiAlias = true
+      ..strokeWidth = size.height / 10
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
 
     // first arc
     canvas.drawArc(
