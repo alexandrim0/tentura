@@ -2,7 +2,7 @@ name: tentura_server
 description: Tentura server API
 publish_to: none
 
-version: 0.4.3
+version: 0.4.4
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
@@ -43,11 +43,11 @@ dev_dependencies:
   test: ^1.26.0
   freezed: ^3.0.6
   drift_dev: ^2.27.0
-  build_runner: ^2.5.3
+  build_runner: ^2.5.4
   jaspr_builder: ^0.19.1
   json_serializable: ^6.9.0
   very_good_analysis: ^9.0.0
-  build_web_compilers: ^4.1.5
+  build_web_compilers: ^4.1.6
   injectable_generator: ^2.6.2
 
 jaspr:

@@ -19,7 +19,7 @@ dependencies:
   # Common
   uuid: ^4.4.2
   get_it: ^8.0.3
-  logger: ^2.5.0
+  logger: ^2.6.0
   latlong2: ^0.9.1
   injectable: ^2.5.0
   auto_route: ^9.0.0
@@ -81,7 +81,7 @@ dev_dependencies:
     sdk: flutter
   lints: ^6.0.0
   freezed: ^2.5.7
-  build_runner: ^2.5.3
+  build_runner: ^2.5.4
   flutter_lints: ^6.0.0
   ferry_generator: ^0.12.0
   json_serializable: ^6.9.0
