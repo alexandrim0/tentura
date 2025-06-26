@@ -17,46 +17,36 @@ class TasksRepository with TaskStatusMapper {
 
   Future<T?> acquire<T extends TaskEntity>() async {
     switch (T) {
-      case const (TaskProfileImageHash):
-        final task = await _taskWorker.acquire(queue: _queueProfileImageHash);
-        return task == null
-            ? null
-            : TaskProfileImageHash(
-                    id: task.id,
-                    status: taskStatusFromJobStatus(task.status),
-                    details: TaskProfileImageHashDetails.fromJson(task.payload),
-                  )
-                  as T;
+      case const (TaskCalculateImageHashDetails):
+        final task = await _taskWorker.acquire(queue: _queueCalculateImageHash);
+        if (task != null) {
+          return TaskEntity(
+                id: task.id,
+                status: taskStatusFromJobStatus(task.status),
+                details: TaskCalculateImageHashDetails.fromJson(
+                  task.payload,
+                ),
+              )
+              as T;
+        }
 
-      case const (TaskBeaconImageHash):
-        final task = await _taskWorker.acquire(queue: _queueBeaconImageHash);
-        return task == null
-            ? null
-            : TaskBeaconImageHash(
-                    id: task.id,
-                    status: taskStatusFromJobStatus(task.status),
-                    details: TaskBeaconImageHashDetails.fromJson(task.payload),
-                  )
-                  as T;
+      default:
+        throw UnimplementedError();
     }
     return null;
   }
 
-  Future<String> schedule(TaskEntity task) => switch (task) {
-    TaskProfileImageHash() => _taskWorker.schedule(
-      task.details.toJson(),
-      queue: _queueProfileImageHash,
+  Future<String> schedule(TaskEntity task) => switch (task.details) {
+    final TaskCalculateImageHashDetails details => _taskWorker.schedule(
+      details.toJson(),
+      queue: _queueCalculateImageHash,
     ),
-    TaskBeaconImageHash() => _taskWorker.schedule(
-      task.details.toJson(),
-      queue: _queueBeaconImageHash,
-    ),
+    _ => throw UnimplementedError(),
   };
 
   Future<void> complete(String id) => _taskWorker.complete(id);
 
   Future<void> fail(String id) => _taskWorker.fail(id);
 
-  static const _queueProfileImageHash = 'profile_image_hash';
-  static const _queueBeaconImageHash = 'beacon_image_hash';
+  static const _queueCalculateImageHash = 'calculate_image_hash';
 }

@@ -3,11 +3,12 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura_server/domain/entity/invitation_entity.dart';
 
 import '../database/tentura_db.dart';
+import '../mapper/image_mapper.dart';
 import '../mapper/invitation_mapper.dart';
 import '../mapper/user_mapper.dart';
 
 @Injectable(env: [Environment.dev, Environment.prod], order: 1)
-class InvitationRepository with UserMapper, InvitationMapper {
+class InvitationRepository with ImageMapper, UserMapper, InvitationMapper {
   const InvitationRepository(this._database);
 
   final TenturaDb _database;
@@ -16,18 +17,17 @@ class InvitationRepository with UserMapper, InvitationMapper {
     required String invitationId,
     required String userId,
   }) async {
-    final result =
-        await _database.managers.invitations
-            .filter((f) => f.id(invitationId))
-            .withReferences((p) => p(userId: true, invitedId: true))
-            .getSingleOrNull();
+    final result = await _database.managers.invitations
+        .filter((f) => f.id(invitationId))
+        .withReferences((p) => p(userId: true, invitedId: true))
+        .getSingleOrNull();
     return result == null
         ? null
         : invitationModelToEntity(
-          result.$1,
-          issuer: await result.$2.userId.getSingle(),
-          invited: await result.$2.invitedId?.getSingleOrNull(),
-        );
+            result.$1,
+            issuer: await result.$2.userId.getSingle(),
+            invited: await result.$2.invitedId?.getSingleOrNull(),
+          );
   }
 
   Future<bool> deleteById({

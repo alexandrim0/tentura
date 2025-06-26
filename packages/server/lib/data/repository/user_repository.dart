@@ -1,3 +1,4 @@
+import 'package:drift_postgres/drift_postgres.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/domain/entity/user_entity.dart';
@@ -5,18 +6,20 @@ import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/env.dart';
 
 import '../database/tentura_db.dart';
+import '../mapper/image_mapper.dart';
 import '../mapper/user_mapper.dart';
 
 export 'package:tentura_server/domain/entity/user_entity.dart';
 
 @Injectable(env: [Environment.dev, Environment.prod], order: 1)
-class UserRepository with UserMapper {
+class UserRepository with ImageMapper, UserMapper {
   const UserRepository(this._database, this._settings);
 
   final TenturaDb _database;
 
   final Env _settings;
 
+  //
   Future<UserEntity> create({
     required String publicKey,
     required String title,
@@ -66,11 +69,13 @@ class UserRepository with UserMapper {
     return userModelToEntity(user);
   });
 
+  //
   Future<UserEntity> getById(String id) => _database.managers.users
       .filter((e) => e.id(id))
       .getSingle()
       .then(userModelToEntity);
 
+  //
   Future<UserEntity> getByPublicKey(String publicKey) => _database
       .managers
       .users
@@ -78,29 +83,24 @@ class UserRepository with UserMapper {
       .getSingle()
       .then(userModelToEntity);
 
+  //
   Future<void> update({
     required String id,
     String? title,
     String? description,
-    bool? hasImage,
-    String? blurHash,
-    int? imageHeight,
-    int? imageWidth,
-  }) async {
-    final user = await _database.managers.users
-        .filter((e) => e.id(id))
-        .getSingle();
-    await _database.managers.users.replace(
-      user.copyWith(
-        title: title ?? user.title,
-        description: description ?? user.description,
-        hasPicture: hasImage ?? user.hasPicture,
-        blurHash: blurHash ?? user.blurHash,
-        picHeight: imageHeight ?? user.picHeight,
-        picWidth: imageWidth ?? user.picWidth,
-      ),
-    );
-  }
+    String? imageId,
+    bool dropImage = false,
+  }) => _database.managers.users
+      .filter((e) => e.id(id))
+      .update(
+        (o) => o(
+          title: Value.absentIfNull(title),
+          description: Value.absentIfNull(description),
+          imageId: dropImage
+              ? const Value(null)
+              : Value(UuidValue.fromString(imageId!)),
+        ),
+      );
 
   Future<void> deleteById({required String id}) =>
       _database.managers.users.filter((e) => e.id(id)).delete();

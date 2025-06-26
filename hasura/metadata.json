@@ -1,5 +1,5 @@
 {
-  "resource_version": 62,
+  "resource_version": 73,
   "metadata": {
     "version": 3,
     "sources": [
@@ -17,6 +17,12 @@
                 "name": "author",
                 "using": {
                   "foreign_key_constraint_on": "user_id"
+                }
+              },
+              {
+                "name": "image",
+                "using": {
+                  "foreign_key_constraint_on": "image_id"
                 }
               },
               {
@@ -103,18 +109,15 @@
                 "role": "user",
                 "permission": {
                   "columns": [
-                    "blur_hash",
                     "context",
                     "created_at",
                     "description",
                     "enabled",
                     "end_at",
-                    "has_picture",
                     "id",
+                    "image_id",
                     "lat",
                     "long",
-                    "pic_height",
-                    "pic_width",
                     "polling_id",
                     "start_at",
                     "title",
@@ -374,6 +377,27 @@
                     "score",
                     "dst",
                     "src"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "image",
+              "schema": "public"
+            },
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "hash",
+                    "height",
+                    "id",
+                    "width"
                   ],
                   "filter": {}
                 },
@@ -848,6 +872,14 @@
               "name": "user",
               "schema": "public"
             },
+            "object_relationships": [
+              {
+                "name": "image",
+                "using": {
+                  "foreign_key_constraint_on": "image_id"
+                }
+              }
+            ],
             "array_relationships": [
               {
                 "name": "beacon_pinneds",
@@ -962,13 +994,10 @@
                 "role": "user",
                 "permission": {
                   "columns": [
-                    "blur_hash",
                     "created_at",
                     "description",
-                    "has_picture",
                     "id",
-                    "pic_height",
-                    "pic_width",
+                    "image_id",
                     "public_key",
                     "title",
                     "updated_at"

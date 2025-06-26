@@ -15,7 +15,6 @@ const kUserByPublicKey = <String, UserEntity>{
     id: 'U286f94380611',
     title: 'Thorin Oakenshield',
     description: 'Son of Thrain, son of Thror, King under the Mountain',
-    hasPicture: true,
     // TBD: add image parameters
   ),
 
@@ -25,7 +24,6 @@ const kUserByPublicKey = <String, UserEntity>{
     title: 'Dain Ironfoot',
     description: '''
 CEO of Ironfoot Industries and the Lord of the Iron Hills. Veteran in resource extraction and heavy manufacturing. When the chips are down, I’m the guy you want in your corner. Tough decisions? I make them every day. 👊 Always looking for the next big opportunity in heavy industry and infrastructure.''',
-    hasPicture: true,
     // TBD: add image parameters
   ),
 
@@ -35,7 +33,6 @@ CEO of Ironfoot Industries and the Lord of the Iron Hills. Veteran in resource e
     title: 'Gandalf the Gray',
     description: '''
 Experienced business angel and startup mentor with a knack for turning risky ventures into legendary success stories. Disrupting the market since before it was cool. Occasionally disappear to let teams find their own path, but always return at the right moment. DM for networking and strategic advice.''',
-    hasPicture: true,
     // TBD: add image parameters
   ),
 
@@ -76,7 +73,6 @@ If you are bold enough to stand among dwarves of valor, reply to this call or se
     updatedAt: DateTime(2024, 10, 03),
     startAt: DateTime(2024, 10, 03),
     endAt: DateTime(2025, 10, 03),
-    hasPicture: true,
     // TBD: add image parameters
     author: kUserByPublicKey[kThorinKey]!,
   ),

@@ -5,6 +5,7 @@ import 'package:tentura_server/domain/entity/comment_entity.dart';
 import '../database/tentura_db.dart';
 import '../mapper/beacon_mapper.dart';
 import '../mapper/comment_mapper.dart';
+import '../mapper/image_mapper.dart';
 import '../mapper/polling_mapper.dart';
 import '../mapper/user_mapper.dart';
 
@@ -12,7 +13,7 @@ export 'package:tentura_server/domain/entity/comment_entity.dart';
 
 @Injectable(env: [Environment.dev, Environment.prod], order: 1)
 class CommentRepository
-    with UserMapper, PollingMapper, BeaconMapper, CommentMapper {
+    with ImageMapper, UserMapper, PollingMapper, BeaconMapper, CommentMapper {
   CommentRepository(this._database);
 
   final TenturaDb _database;

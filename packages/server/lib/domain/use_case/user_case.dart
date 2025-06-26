@@ -29,6 +29,7 @@ class UserCase {
 
   final TasksRepository _tasksRepository;
 
+  //
   Future<UserEntity> updateProfile({
     required String id,
     String? title,
@@ -36,44 +37,44 @@ class UserCase {
     Stream<Uint8List>? imageBytes,
     bool? dropImage,
   }) async {
-    if (dropImage ?? false) {
-      await _imageRepository.deleteUserImage(userId: id);
-      await _userRepository.update(
-        id: id,
-        title: title,
-        description: description,
-        hasImage: false,
-        blurHash: '',
-        imageHeight: 0,
-        imageWidth: 0,
-      );
+    String? imageId;
+    final needDropImage = dropImage ?? false;
+
+    if (needDropImage) {
+      final user = await _userRepository.getById(id);
+      if (user.image != null) {
+        await _imageRepository.delete(
+          authorId: id,
+          imageId: user.image!.id,
+        );
+      }
     } else if (imageBytes != null) {
-      await _imageRepository.putUserImage(userId: id, bytes: imageBytes);
-      await _userRepository.update(
-        id: id,
-        title: title,
-        description: description,
-        hasImage: true,
-        blurHash: '',
-        imageHeight: 0,
-        imageWidth: 0,
+      imageId = await _imageRepository.put(
+        authorId: id,
+        bytes: imageBytes,
       );
       await _tasksRepository.schedule(
-        TaskProfileImageHash(details: TaskProfileImageHashDetails(userId: id)),
-      );
-    } else {
-      await _userRepository.update(
-        id: id,
-        title: title,
-        description: description,
+        TaskEntity(
+          details: TaskCalculateImageHashDetails(imageId: imageId),
+        ),
       );
     }
+
+    await _userRepository.update(
+      id: id,
+      title: title,
+      description: description,
+      dropImage: needDropImage,
+      imageId: imageId,
+    );
+
     return UserEntity(id: id);
   }
 
+  //
   Future<bool> deleteById({required String id}) async {
     await _userRepository.deleteById(id: id);
-    await _imageRepository.deleteUserImageAll(userId: id);
+    await _imageRepository.deleteAllOf(userId: id);
     return true;
   }
 }

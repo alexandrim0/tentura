@@ -3,10 +3,13 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura_server/data/mapper/user_mapper.dart';
 import 'package:tentura_server/domain/exception.dart';
 
+import '../mapper/image_mapper.dart';
 import 'user_repository.dart';
 
 @Injectable(as: UserRepository, env: [Environment.test], order: 1)
-class UserRepositoryMock with UserMapper implements UserRepository {
+class UserRepositoryMock
+    with ImageMapper, UserMapper
+    implements UserRepository {
   static final storageByPublicKey = <String, UserEntity>{};
 
   const UserRepositoryMock();
@@ -15,14 +18,13 @@ class UserRepositoryMock with UserMapper implements UserRepository {
   Future<UserEntity> create({
     required String publicKey,
     required String title,
-  }) async =>
-      storageByPublicKey.containsKey(publicKey)
-          ? throw Exception('Key already exists [$publicKey]')
-          : storageByPublicKey[publicKey] = UserEntity(
-            id: UserEntity.newId,
-            publicKey: publicKey,
-            title: title,
-          );
+  }) async => storageByPublicKey.containsKey(publicKey)
+      ? throw Exception('Key already exists [$publicKey]')
+      : storageByPublicKey[publicKey] = UserEntity(
+          id: UserEntity.newId,
+          publicKey: publicKey,
+          title: title,
+        );
 
   @override
   Future<UserEntity> createInvited({
@@ -48,19 +50,13 @@ class UserRepositoryMock with UserMapper implements UserRepository {
     required String id,
     String? title,
     String? description,
-    bool? hasImage,
-    String? blurHash,
-    int? imageHeight,
-    int? imageWidth,
+    String? imageId,
+    bool dropImage = false,
   }) async {
     final user = await getById(id);
     storageByPublicKey[user.publicKey] = user.copyWith(
       title: title ?? user.title,
       description: description ?? user.description,
-      hasPicture: hasImage ?? user.hasPicture,
-      blurHash: blurHash ?? user.blurHash,
-      picHeight: imageHeight ?? user.picHeight,
-      picWidth: imageWidth ?? user.picWidth,
     );
   }
 

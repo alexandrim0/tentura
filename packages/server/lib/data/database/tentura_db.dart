@@ -14,6 +14,7 @@ import 'package:tentura_server/env.dart';
 
 import 'table/beacons.dart';
 import 'table/comments.dart';
+import 'table/images.dart';
 import 'table/invitations.dart';
 import 'table/opinions.dart';
 import 'table/pollings.dart';
@@ -31,6 +32,7 @@ part 'tentura_db.g.dart';
   tables: [
     Beacons,
     Comments,
+    Images,
     Invitations,
     Opinions,
     Users,

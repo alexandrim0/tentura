@@ -6,7 +6,7 @@ version: 1.1.4
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
-  flutter: ^3.32.4
+  flutter: ^3.32.5
 
 dependencies:
   flutter:
@@ -28,8 +28,8 @@ dependencies:
   http_parser: ^4.1.2
   flutter_bloc: ^9.1.1
   synchronized: ^3.3.0
-  sentry_drift: ^9.0.0
-  sentry_flutter: ^9.0.0
+  sentry_drift: ^9.1.0
+  sentry_flutter: ^9.1.0
   json_annotation: ^4.9.0
   ed25519_edwards: ^0.3.1
   built_collection: ^5.1.1
@@ -85,7 +85,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   ferry_generator: ^0.12.0
   json_serializable: ^6.9.0
-  sentry_dart_plugin: ^2.4.1
+  sentry_dart_plugin: ^3.0.0
   very_good_analysis: ^9.0.0
   auto_route_generator: ^9.0.0
   injectable_generator: ^2.6.2
