@@ -82,7 +82,7 @@ class ProfileEditScreen extends StatelessWidget
                             ? AvatarRated.getAvatarPlaceholder()
                             // New Avatar
                             : Image.memory(
-                                state.image!.imageBytes,
+                                state.image!.imageBytes!,
                                 fit: BoxFit.cover,
                               ),
                       ),

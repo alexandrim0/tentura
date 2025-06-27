@@ -17,23 +17,22 @@ class TasksRepository with TaskStatusMapper {
 
   Future<T?> acquire<T extends TaskEntity>() async {
     switch (T) {
-      case const (TaskCalculateImageHashDetails):
+      case const (TaskEntity<TaskCalculateImageHashDetails>):
         final task = await _taskWorker.acquire(queue: _queueCalculateImageHash);
-        if (task != null) {
-          return TaskEntity(
-                id: task.id,
-                status: taskStatusFromJobStatus(task.status),
-                details: TaskCalculateImageHashDetails.fromJson(
-                  task.payload,
-                ),
-              )
-              as T;
-        }
+        return task == null
+            ? null
+            : TaskEntity(
+                    id: task.id,
+                    status: taskStatusFromJobStatus(task.status),
+                    details: TaskCalculateImageHashDetails.fromJson(
+                      task.payload,
+                    ),
+                  )
+                  as T;
 
       default:
         throw UnimplementedError();
     }
-    return null;
   }
 
   Future<String> schedule(TaskEntity task) => switch (task.details) {

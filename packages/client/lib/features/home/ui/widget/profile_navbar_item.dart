@@ -38,10 +38,9 @@ class ProfileNavBarItem extends StatelessWidget {
               fit: BoxFit.scaleDown,
               child: BlocBuilder<ProfileCubit, ProfileState>(
                 bloc: GetIt.I<ProfileCubit>(),
-                buildWhen:
-                    (p, c) =>
-                        p.profile.hasAvatar != c.profile.hasAvatar ||
-                        p.profile.blurhash != c.profile.blurhash,
+                buildWhen: (p, c) =>
+                    p.profile.hasAvatar != c.profile.hasAvatar ||
+                    p.profile.image?.blurHash != c.profile.image?.blurHash,
                 builder: (context, state) {
                   return AvatarRated(
                     profile: state.profile,

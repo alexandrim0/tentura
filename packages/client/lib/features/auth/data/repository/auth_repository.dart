@@ -10,6 +10,7 @@ import 'package:tentura/data/database/database.dart';
 import 'package:tentura/data/service/local_secure_storage.dart';
 import 'package:tentura/data/service/remote_api_client/credentials.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
+import 'package:tentura/domain/entity/image_entity.dart';
 import 'package:tentura/domain/entity/profile.dart';
 
 import '../../domain/exception.dart';
@@ -40,6 +41,8 @@ class AuthRepository {
   @disposeMethod
   Future<void> dispose() => _controller.close();
 
+  //
+  //
   Stream<String> currentAccountChanges() async* {
     yield _currentAccountId.isNotEmpty
         ? _currentAccountId
@@ -48,33 +51,57 @@ class AuthRepository {
     yield* _controller.stream;
   }
 
+  //
+  //
   Future<String> getSeedByAccountId(String id) async =>
       await _localSecureStorage.read(_getAccountKey(id)) ?? '';
 
-  Future<String> getCurrentAccountId() async =>
-      _currentAccountId.isEmpty
-          ? _localSecureStorage
-              .read(_currentAccountKey)
-              .then((v) => _currentAccountId = v ?? '')
-          : _currentAccountId;
+  //
+  //
+  Future<String> getCurrentAccountId() async => _currentAccountId.isEmpty
+      ? _localSecureStorage
+            .read(_currentAccountKey)
+            .then((v) => _currentAccountId = v ?? '')
+      : _currentAccountId;
 
+  //
+  //
   Future<List<Profile>> getAccountsAll() async => [
     for (final account in await _database.managers.accounts.get())
       Profile(
         id: account.id,
         title: account.title,
-        hasAvatar: account.hasAvatar,
+        image: account.hasAvatar
+            ? ImageEntity(
+                id: account.imageId,
+                blurHash: account.blurHash,
+                height: account.height,
+                width: account.width,
+              )
+            : null,
       ),
   ];
 
+  //
+  //
   Future<Profile?> getAccountById(String id) => _database.managers.accounts
       .filter((f) => f.id.equals(id))
       .getSingleOrNull()
       .then(
-        (e) =>
-            e == null
-                ? null
-                : Profile(id: e.id, title: e.title, hasAvatar: e.hasAvatar),
+        (e) => e == null
+            ? null
+            : Profile(
+                id: e.id,
+                title: e.title,
+                image: e.hasAvatar
+                    ? ImageEntity(
+                        id: e.imageId,
+                        blurHash: e.blurHash,
+                        height: e.height,
+                        width: e.width,
+                      )
+                    : null,
+              ),
       );
 
   Future<String> addAccount(String seed) async {
@@ -88,7 +115,9 @@ class AuthRepository {
     return id;
   }
 
+  ///
   /// Returns id of actual account
+  ///
   Future<String> signUp({
     required String title,
     required String invitationCode,
@@ -118,6 +147,8 @@ class AuthRepository {
     return _signIn(seed);
   }
 
+  //
+  //
   Future<void> signIn(String id) async {
     await _signIn(
       await _localSecureStorage.read(_getAccountKey(id)) ??
@@ -125,6 +156,8 @@ class AuthRepository {
     );
   }
 
+  //
+  //
   Future<void> signOut() async {
     if (_currentAccountId.isEmpty) {
       return;
@@ -136,7 +169,9 @@ class AuthRepository {
     await _setCurrentAccountId(null);
   }
 
+  ///
   /// Remove account only from local storage
+  ///
   Future<void> removeAccount(String id) async {
     await signOut();
 
@@ -149,6 +184,8 @@ class AuthRepository {
     }
   }
 
+  //
+  //
   Future<void> updateAccount(Profile account) => _database.managers.accounts
       .filter((f) => f.id.equals(account.id))
       .update(
@@ -156,6 +193,8 @@ class AuthRepository {
             o(title: Value(account.title), hasAvatar: Value(account.hasAvatar)),
       );
 
+  //
+  //
   Future<String> _signIn(String seed) async {
     await _remoteApiService.setAuth(
       seed: seed,
@@ -166,6 +205,8 @@ class AuthRepository {
     return credentials.userId;
   }
 
+  //
+  //
   Future<void> _setCurrentAccountId(String? id) async {
     await _localSecureStorage.write(
       _currentAccountKey,
@@ -175,6 +216,8 @@ class AuthRepository {
     log('Current User Id: $id');
   }
 
+  //
+  //
   Future<void> _addAccount(String id, String seed, [String? title]) async {
     await _localSecureStorage.write(_getAccountKey(id), seed);
     await _database.managers.accounts.create(
@@ -183,6 +226,8 @@ class AuthRepository {
     );
   }
 
+  //
+  //
   static Future<Credentials> authTokenFetcher(
     GqlFetcher fetcher,
     String authRequestToken,
@@ -205,15 +250,17 @@ class AuthRepository {
         );
   }
 
-  String _base64Padded(String value) => switch (value.length % 4) {
-    2 => '$value==',
-    3 => '$value=',
-    _ => value,
-  };
-
   static const _repositoryKey = 'Auth';
 
   static const _currentAccountKey = '$_repositoryKey:currentAccountId';
 
+  //
   static String _getAccountKey(String id) => '$_repositoryKey:Id:$id';
+
+  //
+  static String _base64Padded(String value) => switch (value.length % 4) {
+    2 => '$value==',
+    3 => '$value=',
+    _ => value,
+  };
 }

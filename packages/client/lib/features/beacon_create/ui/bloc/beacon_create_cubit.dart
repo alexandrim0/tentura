@@ -86,7 +86,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
     try {
       final now = DateTime.timestamp();
       await _beaconRepository.create(
-        beacon: Beacon(
+        Beacon(
           createdAt: now,
           updatedAt: now,
           context: context,
@@ -95,7 +95,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
           description: state.description,
           startAt: state.startAt,
           endAt: state.endAt,
-          hasPicture: state.image != null,
+          image: state.image,
           polling: state.hasPolling
               ? Polling(
                   createdAt: now,
@@ -108,7 +108,6 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
                 )
               : null,
         ),
-        image: state.image,
       );
       emit(state.copyWith(status: StateIsNavigating.back()));
     } catch (e) {

@@ -5,6 +5,9 @@ targets:
       drift_dev:
         options:
           named_parameters: true
+          databases:
+            tentura: lib/data/database/database.dart
+          schema_dir: lib/data/database/schema/
 
       auto_route_generator:auto_route_generator:
         generate_for:

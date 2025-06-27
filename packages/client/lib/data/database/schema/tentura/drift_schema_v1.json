@@ -12,119 +12,6 @@
       "references": [],
       "type": "table",
       "data": {
-        "name": "accounts",
-        "was_declared_in_moor": false,
-        "columns": [
-          {
-            "name": "id",
-            "getter_name": "id",
-            "moor_type": "string",
-            "nullable": false,
-            "customConstraints": null,
-            "default_dart": null,
-            "default_client_dart": null,
-            "dsl_features": []
-          },
-          {
-            "name": "title",
-            "getter_name": "title",
-            "moor_type": "string",
-            "nullable": false,
-            "customConstraints": null,
-            "default_dart": "const Constant('')",
-            "default_client_dart": null,
-            "dsl_features": []
-          },
-          {
-            "name": "has_avatar",
-            "getter_name": "hasAvatar",
-            "moor_type": "bool",
-            "nullable": false,
-            "customConstraints": null,
-            "defaultConstraints": "CHECK (\"has_avatar\" IN (0, 1))",
-            "dialectAwareDefaultConstraints": {
-              "sqlite": "CHECK (\"has_avatar\" IN (0, 1))"
-            },
-            "default_dart": "const Constant(false)",
-            "default_client_dart": null,
-            "dsl_features": []
-          }
-        ],
-        "is_virtual": false,
-        "without_rowid": true,
-        "constraints": [],
-        "explicit_pk": [
-          "id"
-        ]
-      }
-    },
-    {
-      "id": 1,
-      "references": [],
-      "type": "table",
-      "data": {
-        "name": "friends",
-        "was_declared_in_moor": false,
-        "columns": [
-          {
-            "name": "subject_id",
-            "getter_name": "subjectId",
-            "moor_type": "string",
-            "nullable": false,
-            "customConstraints": null,
-            "default_dart": null,
-            "default_client_dart": null,
-            "dsl_features": []
-          },
-          {
-            "name": "object_id",
-            "getter_name": "objectId",
-            "moor_type": "string",
-            "nullable": false,
-            "customConstraints": null,
-            "default_dart": null,
-            "default_client_dart": null,
-            "dsl_features": []
-          },
-          {
-            "name": "title",
-            "getter_name": "title",
-            "moor_type": "string",
-            "nullable": false,
-            "customConstraints": null,
-            "default_dart": "const Constant('')",
-            "default_client_dart": null,
-            "dsl_features": []
-          },
-          {
-            "name": "has_avatar",
-            "getter_name": "hasAvatar",
-            "moor_type": "bool",
-            "nullable": false,
-            "customConstraints": null,
-            "defaultConstraints": "CHECK (\"has_avatar\" IN (0, 1))",
-            "dialectAwareDefaultConstraints": {
-              "sqlite": "CHECK (\"has_avatar\" IN (0, 1))"
-            },
-            "default_dart": "const Constant(false)",
-            "default_client_dart": null,
-            "dsl_features": []
-          }
-        ],
-        "is_virtual": false,
-        "without_rowid": true,
-        "constraints": [],
-        "explicit_pk": [
-          "subject_id",
-          "object_id"
-        ]
-      }
-    },
-    {
-      "id": 2,
-      "references": [],
-      "type": "table",
-      "data": {
         "name": "messages",
         "was_declared_in_moor": false,
         "columns": [
@@ -178,8 +65,8 @@
             "default_client_dart": null,
             "dsl_features": [],
             "type_converter": {
-              "dart_expr": "const EnumIndexConverter<Status>(Status.values)",
-              "dart_type_name": "Status"
+              "dart_expr": "const EnumIndexConverter<ChatMessageStatus>(ChatMessageStatus.values)",
+              "dart_type_name": "ChatMessageStatus"
             }
           },
           {
@@ -212,7 +99,7 @@
       }
     },
     {
-      "id": 3,
+      "id": 1,
       "references": [],
       "type": "table",
       "data": {
@@ -273,13 +160,13 @@
       }
     },
     {
-      "id": 4,
+      "id": 2,
       "references": [
-        2
+        0
       ],
       "type": "index",
       "data": {
-        "on": 2,
+        "on": 0,
         "name": "messages_object",
         "sql": null,
         "unique": false,
@@ -289,13 +176,13 @@
       }
     },
     {
-      "id": 5,
+      "id": 3,
       "references": [
-        2
+        0
       ],
       "type": "index",
       "data": {
-        "on": 2,
+        "on": 0,
         "name": "messages_subject",
         "sql": null,
         "unique": false,
@@ -305,18 +192,131 @@
       }
     },
     {
-      "id": 6,
+      "id": 4,
       "references": [
-        2
+        0
       ],
       "type": "index",
       "data": {
-        "on": 2,
+        "on": 0,
         "name": "messages_updatedAt",
         "sql": null,
         "unique": false,
         "columns": [
           "updated_at"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "friends",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "subject_id",
+            "getter_name": "subjectId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "object_id",
+            "getter_name": "objectId",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "title",
+            "getter_name": "title",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "has_avatar",
+            "getter_name": "hasAvatar",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"has_avatar\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"has_avatar\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": true,
+        "constraints": [],
+        "explicit_pk": [
+          "subject_id",
+          "object_id"
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "references": [],
+      "type": "table",
+      "data": {
+        "name": "accounts",
+        "was_declared_in_moor": false,
+        "columns": [
+          {
+            "name": "id",
+            "getter_name": "id",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": null,
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "title",
+            "getter_name": "title",
+            "moor_type": "string",
+            "nullable": false,
+            "customConstraints": null,
+            "default_dart": "const CustomExpression('\\'\\'')",
+            "default_client_dart": null,
+            "dsl_features": []
+          },
+          {
+            "name": "has_avatar",
+            "getter_name": "hasAvatar",
+            "moor_type": "bool",
+            "nullable": false,
+            "customConstraints": null,
+            "defaultConstraints": "CHECK (\"has_avatar\" IN (0, 1))",
+            "dialectAwareDefaultConstraints": {
+              "sqlite": "CHECK (\"has_avatar\" IN (0, 1))"
+            },
+            "default_dart": "const CustomExpression('0')",
+            "default_client_dart": null,
+            "dsl_features": []
+          }
+        ],
+        "is_virtual": false,
+        "without_rowid": true,
+        "constraints": [],
+        "explicit_pk": [
+          "id"
         ]
       }
     }

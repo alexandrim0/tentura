@@ -3,12 +3,13 @@ import 'package:injectable/injectable.dart';
 
 import 'package:tentura/domain/enum.dart';
 
-import 'schema/schema_versions.dart';
+import 'database.steps.dart';
 import 'tables/_tables.dart';
 
 export 'package:drift/drift.dart';
 
 part 'database.g.dart';
+part 'database.extensions.dart';
 
 @DriftDatabase(
   include: {
@@ -26,7 +27,7 @@ final class Database extends _$Database {
   Database(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -36,7 +37,19 @@ final class Database extends _$Database {
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON;');
     },
-    onUpgrade: stepByStep(),
+    onUpgrade: stepByStep(
+      from1To2: (m, schema) async {
+        await m.addColumn(schema.accounts, schema.accounts.imageId);
+        await m.addColumn(schema.accounts, schema.accounts.blurHash);
+        await m.addColumn(schema.accounts, schema.accounts.height);
+        await m.addColumn(schema.accounts, schema.accounts.width);
+
+        await m.addColumn(schema.friends, schema.friends.imageId);
+        await m.addColumn(schema.friends, schema.friends.blurHash);
+        await m.addColumn(schema.friends, schema.friends.height);
+        await m.addColumn(schema.friends, schema.friends.width);
+      },
+    ),
   );
 
   @disposeMethod

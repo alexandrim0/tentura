@@ -1,5 +1,5 @@
 {
-  "resource_version": 73,
+  "resource_version": 80,
   "metadata": {
     "version": 3,
     "sources": [
@@ -394,6 +394,8 @@
                 "role": "user",
                 "permission": {
                   "columns": [
+                    "author_id",
+                    "created_at",
                     "hash",
                     "height",
                     "id",

@@ -10,6 +10,7 @@ class AvatarRated extends StatelessWidget {
 
   static const sizeSmall = sizeBig / 4;
 
+  // TBD: remove assets
   static Widget getAvatarPlaceholder({
     int? cacheHeight,
     int? cacheWidth,
@@ -56,9 +57,9 @@ class AvatarRated extends StatelessWidget {
             cacheWidth: _cacheSize,
             fit: boxFit,
           )
-        : profile.blurhash.isEmpty
+        : profile.image?.blurHash.isEmpty ?? true
         ? _imageNetwork
-        : BlurHash(profile.blurhash, child: _imageNetwork),
+        : BlurHash(profile.image!.blurHash, child: _imageNetwork),
   );
 
   @override

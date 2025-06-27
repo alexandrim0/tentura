@@ -76,13 +76,21 @@ class AuthCubit extends Cubit<AuthState> {
     return close();
   }
 
+  //
+  //
   bool checkIfIsMe(String id) => id == state.currentAccountId;
 
+  //
+  //
   bool checkIfIsNotMe(String id) => id != state.currentAccountId;
 
+  //
+  //
   Future<String> getSeedByAccountId(String id) =>
       _authRepository.getSeedByAccountId(id);
 
+  //
+  //
   Future<void> addAccount(String? seed) async {
     if (seed == null || seed.isEmpty) {
       return;
@@ -105,6 +113,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  //
+  //
   Future<void> signUp({
     required String title,
     required String invitationCode,
@@ -141,6 +151,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  //
+  //
   Future<void> signIn(String id) async {
     if (state.currentAccountId == id) return;
     emit(state.copyWith(status: StateStatus.isLoading));
@@ -151,6 +163,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  //
+  //
   Future<void> signOut() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
@@ -160,7 +174,9 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  ///
   /// Remove account from local storage
+  ///
   Future<void> removeAccount(String id) async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
@@ -176,12 +192,18 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  //
+  //
   Future<void> getSeedFromClipboard() async =>
       addAccount(await _clipboardCase.getSeedFromClipboard());
 
+  //
+  //
   Future<String> getCodeFromClipboard() =>
       _clipboardCase.getCodeFromClipboard(prefix: 'I');
 
+  //
+  //
   void _onAuthChanged(String id) => emit(
     AuthState(
       accounts: state.accounts,
@@ -190,6 +212,8 @@ class AuthCubit extends Cubit<AuthState> {
     ),
   );
 
+  //
+  //
   Future<void> _onProfileChanged(RepositoryEvent<Profile> event) async {
     switch (event) {
       case RepositoryEventDelete<Profile>():
@@ -201,16 +225,16 @@ class AuthCubit extends Cubit<AuthState> {
 
         if (index < 0) return;
 
-        final account = state.accounts[index];
+        final profile = state.accounts[index];
 
-        if (account.title == event.value.title &&
-            account.hasAvatar == event.value.hasAvatar) {
+        if (profile.title == event.value.title &&
+            profile.hasAvatar == event.value.hasAvatar) {
           return;
         }
         try {
-          state.accounts[index] = account.copyWith(
+          state.accounts[index] = profile.copyWith(
             title: event.value.title,
-            hasAvatar: event.value.hasAvatar,
+            image: event.value.image,
           );
           emit(
             AuthState(
@@ -219,7 +243,7 @@ class AuthCubit extends Cubit<AuthState> {
               updatedAt: DateTime.timestamp(),
             ),
           );
-          await _authRepository.updateAccount(account);
+          await _authRepository.updateAccount(profile);
         } catch (e) {
           emit(state.copyWith(status: StateHasError(e)));
         }
@@ -228,5 +252,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  //
+  //
   static int _compareProfile(Profile p1, Profile p2) => p1.id.compareTo(p2.id);
 }

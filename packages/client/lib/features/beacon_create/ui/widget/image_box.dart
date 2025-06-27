@@ -11,7 +11,7 @@ class ImageBox extends StatelessWidget {
   Widget build(BuildContext context) =>
       BlocSelector<BeaconCreateCubit, BeaconCreateState, ImageEntity?>(
         selector: (state) => state.image,
-        builder: (context, image) => image == null
+        builder: (_, image) => image?.imageBytes == null
             ? DecoratedBox(
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -24,7 +24,7 @@ class ImageBox extends StatelessWidget {
                 ),
               )
             : Image.memory(
-                image.imageBytes,
+                image!.imageBytes!,
                 key: ObjectKey(image),
                 fit: BoxFit.fitWidth,
               ),

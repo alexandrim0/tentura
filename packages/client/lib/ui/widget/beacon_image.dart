@@ -18,13 +18,13 @@ class BeaconImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => beacon.hasNoPicture
       ? _placeholder
-      : beacon.blurhash.isEmpty
+      : beacon.image?.blurHash.isEmpty ?? true
       ? _imageNetwork
       : AspectRatio(
-          aspectRatio: beacon.imageHeight > 0
-              ? beacon.imageWidth / beacon.imageHeight
+          aspectRatio: beacon.image!.height > 0
+              ? beacon.image!.width / beacon.image!.height
               : 1,
-          child: BlurHash(beacon.blurhash, child: _imageNetwork),
+          child: BlurHash(beacon.image!.blurHash, child: _imageNetwork),
         );
 
   Widget get _imageNetwork => Image.network(
@@ -33,6 +33,7 @@ class BeaconImage extends StatelessWidget {
     errorBuilder: (_, _, _) => _placeholder,
   );
 
+  // TBD: remove assets
   Widget get _placeholder => Image.asset(
     'images/placeholder/beacon.jpg',
     // ignore: avoid_redundant_argument_values // set from env

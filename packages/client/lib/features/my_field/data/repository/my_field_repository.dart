@@ -18,15 +18,14 @@ class MyFieldRepository {
   Future<Iterable<Beacon>> fetch({required String context}) => _remoteApiService
       .request(
         GMyFieldFetchReq(
-          (r) =>
-              r
-                ..context = const Context().withEntry(
-                  HttpLinkHeaders(headers: {kHeaderQueryContext: context}),
-                )
-                ..vars.context = context,
+          (r) => r
+            ..context = const Context().withEntry(
+              HttpLinkHeaders(headers: {kHeaderQueryContext: context}),
+            )
+            ..vars.context = context,
         ),
       )
       .firstWhere((e) => e.dataSource == DataSource.Link)
       .then((r) => r.dataOrThrow(label: _label).my_field.nonNulls)
-      .then((v) => v.map((e) => (e.beacon! as BeaconModel).toEntity));
+      .then((v) => v.map((e) => (e.beacon! as BeaconModel).toEntity()));
 }
