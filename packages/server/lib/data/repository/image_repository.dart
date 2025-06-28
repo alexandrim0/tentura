@@ -71,7 +71,7 @@ class ImageRepository {
 
   Future<void> deleteAllOf({required String userId}) =>
       _remoteStorageService.removeObject(
-        '$kImageServer/$kImagesPath/$userId',
+        '$kImagesPath/$userId',
       );
 
   static String _getImagePath({

@@ -14,7 +14,7 @@
                 "TENTURA_PASSWORD": "password",
                 "POSTGRES_PASSWORD": "password",
                 "SERVER_NAME": "https://dev.tentura.io",
-                "IMAGE_SERVER": "https://tentura.ams3.cdn.digitaloceanspaces.com",
+                "IMAGE_SERVER": "https://static.tentura.io",
                 "S3_ENDPOINT": "ams3.digitaloceanspaces.com",
                 "S3_BUCKET": "tentura",
             },
