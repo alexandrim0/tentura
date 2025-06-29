@@ -1,5 +1,5 @@
 {
-  "resource_version": 80,
+  "resource_version": 81,
   "metadata": {
     "version": 3,
     "sources": [
@@ -1068,12 +1068,6 @@
                 "comment": ""
               }
             ]
-          },
-          {
-            "table": {
-              "name": "user_vsids",
-              "schema": "public"
-            }
           },
           {
             "table": {

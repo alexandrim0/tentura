@@ -6,29 +6,30 @@ import 'package:tentura/ui/utils/ui_utils.dart';
 
 import '../bloc/beacon_create_cubit.dart';
 
-class PollingExpansionTile extends StatefulWidget {
-  const PollingExpansionTile({super.key});
+class PollingTab extends StatefulWidget {
+  const PollingTab({super.key});
 
   @override
-  State<PollingExpansionTile> createState() => _PollingExpansionTileState();
+  State<PollingTab> createState() => _PollingTabState();
 }
 
-class _PollingExpansionTileState extends State<PollingExpansionTile> {
-  final _keyVariants = <Key>[];
+class _PollingTabState extends State<PollingTab> {
+  final _keyVariants = <Key>[
+    UniqueKey(),
+  ];
 
   late final _l10n = L10n.of(context)!;
   late final _theme = Theme.of(context);
   late final _beaconCreateCubit = context.read<BeaconCreateCubit>();
 
   @override
-  Widget build(BuildContext context) => ExpansionTile(
-    title: Text(_l10n.addPollOption),
-    childrenPadding: kPaddingH,
-    maintainState: true,
+  Widget build(BuildContext context) => ListView(
     children: [
       // Poll Question
       TextFormField(
-        decoration: InputDecoration(labelText: _l10n.pollQuestionFieldLabel),
+        decoration: InputDecoration(
+          labelText: _l10n.pollQuestionFieldLabel,
+        ),
         keyboardType: TextInputType.text,
         onTapOutside: (_) => FocusScope.of(context).unfocus(),
         onChanged: _beaconCreateCubit.setQuestion,
@@ -36,8 +37,7 @@ class _PollingExpansionTileState extends State<PollingExpansionTile> {
           if (value == null || value.isEmpty) {
             return null;
           } else if (value.length < kQuestionMinLength) {
-            // TBD: l10n
-            return 'Too short question.';
+            return _l10n.createBeaconErrorTooShortQuestion;
           } else {
             return null;
           }
@@ -47,7 +47,10 @@ class _PollingExpansionTileState extends State<PollingExpansionTile> {
       // Label for Variants
       Padding(
         padding: kPaddingT,
-        child: Text(_l10n.pollOptionsLabel, style: _theme.textTheme.bodyLarge),
+        child: Text(
+          _l10n.pollOptionsLabel,
+          style: _theme.textTheme.bodyLarge,
+        ),
       ),
 
       // Variants

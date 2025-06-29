@@ -21,7 +21,8 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
     BeaconRepository? beaconRepository,
   }) : _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
        _imageRepository = imageRepository ?? GetIt.I<ImageRepository>(),
-       super(const BeaconCreateState());
+       // ignore: prefer_const_constructors // need non const list
+       super(BeaconCreateState(variants: ['']));
 
   final BeaconRepository _beaconRepository;
 
