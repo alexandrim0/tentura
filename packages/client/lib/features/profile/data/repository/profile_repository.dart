@@ -27,6 +27,7 @@ class ProfileRepository {
   @disposeMethod
   Future<void> dispose() => _controller.close();
 
+  //
   Future<Profile> fetchById(String id) async {
     final request = GUserFetchByIdReq((b) => b.vars.id = id);
     final response = await _remoteApiService
@@ -39,6 +40,7 @@ class ProfileRepository {
     return response;
   }
 
+  //
   Future<void> update(
     Profile profile, {
     String? title,
@@ -61,21 +63,16 @@ class ProfileRepository {
                 filename: image.fileName,
               );
     });
+
     await _remoteApiService
         .request(request)
         .firstWhere((e) => e.dataSource == DataSource.Link)
         .then((r) => r.dataOrThrow(label: _label));
-    _controller.add(
-      RepositoryEventUpdate(
-        profile.copyWith(
-          title: title ?? profile.title,
-          description: description ?? profile.description,
-          image: image,
-        ),
-      ),
-    );
+
+    _controller.add(RepositoryEventUpdate(await fetchById(profile.id)));
   }
 
+  //
   Future<void> delete(String id) async {
     final isOk = await _remoteApiService
         .request(GProfileDeleteReq())

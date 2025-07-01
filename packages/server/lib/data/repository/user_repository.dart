@@ -98,7 +98,9 @@ class UserRepository with ImageMapper, UserMapper {
           description: Value.absentIfNull(description),
           imageId: dropImage
               ? const Value(null)
-              : Value(UuidValue.fromString(imageId!)),
+              : imageId == null
+              ? const Value.absent()
+              : Value(UuidValue.fromString(imageId)),
         ),
       );
 

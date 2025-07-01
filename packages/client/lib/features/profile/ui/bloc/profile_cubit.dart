@@ -47,6 +47,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     return super.close();
   }
 
+  //
   Future<void> fetch() async {
     if (state.profile.id.isEmpty) return;
     emit(state.copyWith(status: StateStatus.isLoading));
@@ -58,6 +59,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  //
   Future<void> delete() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
@@ -68,11 +70,13 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  //
   Future<void> _onAuthChanges(String id) async {
     emit(ProfileState(profile: Profile(id: id)));
     if (id.isNotEmpty) await fetch();
   }
 
+  //
   void _onProfileChanges(RepositoryEvent<Profile> event) => switch (event) {
     RepositoryEventFetch<Profile>(value: final profile)
         when profile.id == state.profile.id =>

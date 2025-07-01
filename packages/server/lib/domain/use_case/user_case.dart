@@ -40,19 +40,15 @@ class UserCase {
     String? imageId;
     final needDropImage = dropImage ?? false;
 
-    if (needDropImage) {
+    if (needDropImage || imageBytes != null) {
       final user = await _userRepository.getById(id);
       if (user.image != null) {
-        await _imageRepository.delete(
-          authorId: id,
-          imageId: user.image!.id,
-        );
+        await _imageRepository.delete(authorId: id, imageId: user.image!.id);
       }
-    } else if (imageBytes != null) {
-      imageId = await _imageRepository.put(
-        authorId: id,
-        bytes: imageBytes,
-      );
+    }
+
+    if (imageBytes != null) {
+      imageId = await _imageRepository.put(authorId: id, bytes: imageBytes);
       await _tasksRepository.schedule(
         TaskEntity(
           details: TaskCalculateImageHashDetails(imageId: imageId),
