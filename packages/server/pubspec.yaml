@@ -34,13 +34,13 @@ dependencies:
   json_annotation: ^4.9.0
   shelf_multipart: ^2.0.1
   dart_jsonwebtoken: ^3.2.0
-  freezed_annotation: ^3.0.0
+  freezed_annotation: ^3.1.0
   shelf_cors_headers: ^0.1.5
   migrant_db_postgresql: ^0.3.0
 
 dev_dependencies:
   test: ^1.26.0
-  freezed: ^3.0.6
+  freezed: ^3.1.0
   drift_dev: ^2.27.0
   build_runner: ^2.5.4
   jaspr_builder: ^0.19.1

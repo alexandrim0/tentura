@@ -33,11 +33,10 @@ const int kInvitationDefaultTTL = 24 * 7;
 //
 // Strings
 //
-
 const kAppTitle = 'Tentura';
 
 const kPathIcons = '/icons';
-
+const kPathChatEndpoint = '/ws/chat';
 const kPathAppLinkView = '/shared/view';
 const kPathGraphQLEndpoint = '/api/v1/graphql';
 const kPathGraphQLEndpointV2 = '/api/v2/graphql';

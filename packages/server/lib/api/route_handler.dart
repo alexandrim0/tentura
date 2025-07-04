@@ -4,6 +4,7 @@ import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 
 import 'package:tentura_server/env.dart';
 
+import 'controllers/chat_controller.dart';
 import 'controllers/graphiql_controller.dart';
 import 'controllers/graphql_controller.dart';
 import 'controllers/shared_view_controller.dart';
@@ -14,6 +15,7 @@ class RootRouter {
   RootRouter(
     this._env,
     this._authMiddleware,
+    this._chatController,
     this._graphqlController,
     this._graphiqlController,
     this._sharedViewController,
@@ -22,6 +24,8 @@ class RootRouter {
   final Env _env;
 
   final AuthMiddleware _authMiddleware;
+
+  final ChatController _chatController;
 
   final GraphqlController _graphqlController;
 
@@ -42,6 +46,7 @@ class RootRouter {
       )
       ..get('/health', () => 'I`m fine!')
       ..get('/graphiql', _graphiqlController.handler)
+      ..get(kPathChatEndpoint, _chatController.handler)
       ..get(kPathAppLinkView, _sharedViewController.handler)
       ..post(
         kPathGraphQLEndpointV2,

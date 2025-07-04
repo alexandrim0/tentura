@@ -16,6 +16,7 @@ import 'table/beacons.dart';
 import 'table/comments.dart';
 import 'table/images.dart';
 import 'table/invitations.dart';
+import 'table/messages.dart';
 import 'table/opinions.dart';
 import 'table/pollings.dart';
 import 'table/polling_acts.dart';
@@ -34,6 +35,7 @@ part 'tentura_db.g.dart';
     Comments,
     Images,
     Invitations,
+    Messages,
     Opinions,
     Users,
     VoteUsers,

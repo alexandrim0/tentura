@@ -43,6 +43,8 @@ class Env {
     Duration? taskOnEmptyDelay,
     // Meritrank service
     Duration? meritrankCalculateTimeout,
+    // Chat
+    Duration? chatPollingInterval,
   }) : // Common
        printEnv = printEnv ?? _env['PRINT_ENV'] == 'true',
        isDebugModeOn = isDebugModeOn ?? _env['DEBUG_MODE'] == 'true',
@@ -101,7 +103,15 @@ class Env {
            meritrankCalculateTimeout ??
            Duration(
              minutes: int.tryParse(_env['MR_CALCULATE_TIMEOUT'] ?? '') ?? 10,
-           ) {
+           ),
+       // Chat
+       chatPollingInterval =
+           chatPollingInterval ??
+           Duration(
+             seconds: int.tryParse(_env['CHAT_POLLING_INTERVAL'] ?? '') ?? 1,
+           )
+  //
+  {
     _printEnvInfo();
   }
 
@@ -200,6 +210,8 @@ class Env {
 
   // Meritrank service
   final Duration meritrankCalculateTimeout;
+
+  final Duration chatPollingInterval;
 
   void _printEnvInfo() {
     if (printEnv) {
