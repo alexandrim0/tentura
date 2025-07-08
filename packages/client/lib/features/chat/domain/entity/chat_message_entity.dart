@@ -4,11 +4,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tentura/domain/entity/identifiable.dart';
 import 'package:tentura/domain/enum.dart';
 
-part 'chat_message.freezed.dart';
+part 'chat_message_entity.freezed.dart';
 
 @freezed
-abstract class ChatMessage with _$ChatMessage implements Identifiable {
-  const factory ChatMessage({
+abstract class ChatMessageEntity
+    with _$ChatMessageEntity
+    implements Identifiable {
+  const factory ChatMessageEntity({
     required String id,
     required String sender,
     required String content,
@@ -16,12 +18,12 @@ abstract class ChatMessage with _$ChatMessage implements Identifiable {
     required DateTime createdAt,
     required DateTime updatedAt,
     @Default(ChatMessageStatus.init) ChatMessageStatus status,
-  }) = _ChatMessage;
+  }) = _ChatMessageEntity;
 
-  const ChatMessage._();
+  const ChatMessageEntity._();
 }
 
-final emptyMessage = ChatMessage(
+final emptyMessage = ChatMessageEntity(
   id: '',
   reciever: '',
   sender: '',

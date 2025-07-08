@@ -1,17 +1,19 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/data/database/database.dart';
 import 'package:tentura/data/gql/_g/schema.schema.gql.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 import 'package:tentura/domain/enum.dart';
 
-import '../../domain/entity/chat_message.dart';
+import '../../domain/entity/chat_message_entity.dart';
 import '../gql/_g/message_create.req.gql.dart';
 import '../gql/_g/message_set_delivered.req.gql.dart';
 import '../gql/_g/messages_fetch.req.gql.dart';
 import '../gql/_g/messages_stream.req.gql.dart';
-import '../service/chat_mappers.dart';
+import '../model/chat_message_local_model.dart';
+import '../model/chat_message_remote_model.dart';
 
 @singleton
 class ChatRepository {
@@ -24,51 +26,80 @@ class ChatRepository {
 
   final RemoteApiService _remoteApiService;
 
-  Stream<Iterable<ChatMessage>> watchUpdates({
+  //
+  //
+  Stream<Iterable<ChatMessageEntity>> watchUpdates({
     required DateTime fromMoment,
-  }) =>
-      _remoteApiService
-          .request(GMessageStreamReq((b) => b.vars.updated_at = fromMoment))
-          .map((r) => r.dataOrThrow(label: _label).message_stream)
-          .map((v) => v.map(toEntityFrom));
-
-  Future<void> sendMessage(ChatMessage message) => _remoteApiService
+    int batchSize = 10,
+  }) => _remoteApiService
       .request(
-        GMessageCreateReq((b) => b.vars
-          ..object = message.reciever
-          ..message = message.content),
+        GMessageStreamReq(
+          (b) => b.vars
+            ..updated_at = fromMoment
+            ..batch_size = batchSize,
+        ),
+      )
+      .map((r) => r.dataOrThrow(label: _label).message_stream)
+      .map((v) => v.map((e) => (e as ChatMessageRemoteModel).toEntity()));
+
+  //
+  //
+  Future<void> sendMessage({
+    required String receiverId,
+    required String content,
+  }) => _remoteApiService
+      .request(
+        GMessageCreateReq(
+          (b) => b.vars
+            ..object = receiverId
+            ..message = content,
+        ),
       )
       .firstWhere((e) => e.dataSource == DataSource.Link)
       .then((r) => r.dataOrThrow(label: _label));
 
+  //
+  //
   Future<void> setMessageSeen({
     required String messageId,
-  }) =>
-      _remoteApiService
-          .request(GMessageSetDeliveredReq(
-            (b) => b.vars.id = (GuuidBuilder()..value = messageId),
-          ))
-          .firstWhere((e) => e.dataSource == DataSource.Link)
-          .then((r) => r.dataOrThrow(label: _label).update_message_by_pk);
+  }) => _remoteApiService
+      .request(
+        GMessageSetDeliveredReq(
+          (b) => b.vars.id = (GuuidBuilder()..value = messageId),
+        ),
+      )
+      .firstWhere((e) => e.dataSource == DataSource.Link)
+      .then((r) => r.dataOrThrow(label: _label).update_message_by_pk);
 
+  //
+  //
+  Future<void> saveMessages({
+    required Iterable<ChatMessageEntity> messages,
+  }) => _database.managers.messages.bulkCreate(
+    (messageCompanion) => [
+      for (final message in messages)
+        messageCompanion(
+          id: message.id,
+          objectId: message.reciever,
+          subjectId: message.sender,
+          content: message.content,
+          createdAt: message.createdAt,
+          updatedAt: message.updatedAt,
+          status: message.status,
+        ),
+    ],
+    mode: InsertMode.replace,
+  );
+
+  ///
   /// Fetch all messages from last updated and saves into local DB
+  ///
   Future<void> syncMessagesFor({
     required String userId,
   }) async {
-    final table = _database.messages;
-    final expr = table.updatedAt.max();
-    final last = await (_database.selectOnly(table)
-          ..addColumns([expr])
-          ..where(
-            table.objectId.equals(userId) | table.subjectId.equals(userId),
-          ))
-        .map((r) => r.read(expr))
-        .getSingleOrNull();
-
+    final cursor = await getLastUpdatedMessageTimestamp(userId: userId);
     final newMessages = await _remoteApiService
-        .request(
-          GMessagesFetchReq((b) => b.vars.from = last?.toUtc() ?? _zeroAge),
-        )
+        .request(GMessagesFetchReq((b) => b.vars.from = cursor))
         .firstWhere((e) => e.dataSource == DataSource.Link)
         .then((r) => r.dataOrThrow(label: _label));
 
@@ -91,31 +122,43 @@ class ChatRepository {
     );
   }
 
+  ///
   /// Get all messages for pair from local DB
-  Future<Iterable<ChatMessage>> getChatMessagesFor({
+  ///
+  Future<Iterable<ChatMessageEntity>> getChatMessagesFor({
     required String objectId,
     required String subjectId,
-  }) =>
-      _database.managers.messages
-          .filter((f) =>
-              f.objectId.equals(objectId) & f.subjectId.equals(subjectId) |
-              f.objectId.equals(subjectId) & f.subjectId.equals(objectId))
-          .orderBy((o) => o.createdAt.asc())
-          .get()
-          .then((v) => v.map(toEntityFrom));
+  }) => _database.managers.messages
+      .filter(
+        (f) =>
+            (f.objectId(objectId) & f.subjectId(subjectId)) |
+            (f.objectId(subjectId) & f.subjectId(objectId)),
+      )
+      .orderBy((o) => o.createdAt.asc())
+      .get()
+      .then((v) => v.map((e) => (e as ChatMessageLocalModel).toEntity()));
 
+  ///
   /// Get all unseen messages for user from local DB
-  Future<Iterable<ChatMessage>> getAllNewMessagesFor({
-    required String objectId,
-  }) =>
-      _database.managers.messages
-          .filter((f) =>
-              f.objectId.equals(objectId) &
-              f.status.equals(ChatMessageStatus.sent))
-          .get()
-          .then((v) => v.map(toEntityFrom));
+  ///
+  Future<Iterable<ChatMessageEntity>> getAllNewMessagesFor({
+    required String userId,
+  }) => _database.managers.messages
+      .filter((f) => f.objectId(userId) & f.status(ChatMessageStatus.sent))
+      .get()
+      .then((v) => v.map((e) => (e as ChatMessageLocalModel).toEntity()));
+
+  ///
+  /// Get last updated message timestamp
+  ///
+  Future<DateTime> getLastUpdatedMessageTimestamp({
+    required String userId,
+  }) => _database.managers.messages
+      .filter((f) => f.objectId(userId) | f.subjectId(userId))
+      .orderBy((o) => o.updatedAt.desc())
+      .limit(1)
+      .getSingleOrNull()
+      .then((e) => e?.updatedAt.toUtc() ?? zeroAge);
 
   static const _label = 'Chat';
-
-  static final _zeroAge = DateTime.fromMillisecondsSinceEpoch(0);
 }

@@ -7,7 +7,7 @@ import 'package:tentura/ui/bloc/state_base.dart';
 import 'package:tentura/features/auth/data/repository/auth_repository.dart';
 
 import '../../data/repository/chat_repository.dart';
-import '../../domain/entity/chat_message.dart';
+import '../../domain/entity/chat_message_entity.dart';
 import 'chat_news_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,10 +16,18 @@ export 'package:get_it/get_it.dart';
 export 'chat_news_state.dart';
 
 /// Global Cubit
-@lazySingleton
+@singleton
 class ChatNewsCubit extends Cubit<ChatNewsState> {
-  ChatNewsCubit(this._authRepository, this._chatRepository)
-    : super(ChatNewsState(cursor: _zeroAge, messages: {}, myId: '')) {
+  ChatNewsCubit(
+    this._authRepository,
+    this._chatRepository,
+  ) : super(
+        ChatNewsState(
+          myId: '',
+          messages: {},
+          lastUpdate: DateTime.timestamp(),
+        ),
+      ) {
     _authChanges.resume();
   }
 
@@ -27,7 +35,8 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
 
   final ChatRepository _chatRepository;
 
-  final _messagesUpdatesController = StreamController<ChatMessage>.broadcast();
+  final _messagesUpdatesController =
+      StreamController<ChatMessageEntity>.broadcast();
 
   late final _authChanges = _authRepository.currentAccountChanges().listen(
     _onAuthChanges,
@@ -35,9 +44,9 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
     onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
   );
 
-  StreamSubscription<Iterable<ChatMessage>>? _messagesUpdatesSubscription;
+  StreamSubscription<Iterable<ChatMessageEntity>>? _messagesUpdatesSubscription;
 
-  Stream<ChatMessage> get updates => _messagesUpdatesController.stream;
+  Stream<ChatMessageEntity> get updates => _messagesUpdatesController.stream;
 
   @override
   Future<void> close() async {
@@ -47,73 +56,94 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
     return super.close();
   }
 
+  //
+  //
   Future<void> _onAuthChanges(String userId) async {
     if (userId.isEmpty) {
       // User logged out
-      emit(ChatNewsState(cursor: _zeroAge, messages: {}, myId: userId));
+      emit(
+        ChatNewsState(
+          myId: '',
+          messages: {},
+          lastUpdate: DateTime.timestamp(),
+        ),
+      );
       await _messagesUpdatesSubscription?.cancel();
       _messagesUpdatesSubscription = null;
     } else {
       // User logged in
-      emit(state.copyWith(status: StateStatus.isLoading));
-      await _chatRepository.syncMessagesFor(userId: userId);
-
-      var oldest = _zeroAge;
-      for (final message in await _chatRepository.getAllNewMessagesFor(
-        objectId: userId,
-      )) {
-        if (message.updatedAt.isAfter(oldest)) oldest = message.updatedAt;
-        _processMessage(message);
-      }
       emit(
-        state.copyWith(
+        ChatNewsState(
           myId: userId,
-          cursor: DateTime.timestamp(),
-          status: StateStatus.isSuccess,
+          messages: {},
+          lastUpdate: DateTime.timestamp(),
+          status: StateStatus.isLoading,
         ),
       );
-      _messagesUpdatesSubscription = _chatRepository
-          .watchUpdates(fromMoment: oldest.toUtc())
-          .listen(
-            _onMessagesUpdate,
-            cancelOnError: false,
-            onError:
-                (Object e) => emit(state.copyWith(status: StateHasError(e))),
-          );
+      try {
+        await _chatRepository.syncMessagesFor(userId: userId);
+
+        (await _chatRepository.getAllNewMessagesFor(
+          userId: userId,
+        )).forEach(_updateStateWithMessage);
+
+        await _listenUpdates();
+      } catch (e) {
+        emit(state.copyWith(status: StateHasError(e)));
+      }
+      emit(state.copyWith(status: StateStatus.isSuccess));
     }
   }
 
-  Future<void> _onMessagesUpdate(Iterable<ChatMessage> messages) async {
+  Future<void> _listenUpdates() async {
+    final cursor = await _chatRepository.getLastUpdatedMessageTimestamp(
+      userId: state.myId,
+    );
+    _messagesUpdatesSubscription = _chatRepository
+        .watchUpdates(fromMoment: cursor)
+        .listen(
+          _onMessagesUpdate,
+          cancelOnError: true,
+          onError: (Object e) {
+            emit(state.copyWith(status: StateHasError(e)));
+            _listenUpdates();
+          },
+        );
+  }
+
+  //
+  //
+  Future<void> _onMessagesUpdate(Iterable<ChatMessageEntity> messages) async {
+    if (messages.isEmpty) return;
+
     for (final message in messages) {
       _messagesUpdatesController.add(message);
-      if (message.sender != state.myId) _processMessage(message);
+      _updateStateWithMessage(message);
     }
-    emit(
-      ChatNewsState(
-        cursor: DateTime.timestamp(),
-        messages: state.messages,
-        myId: state.myId,
-      ),
-    );
+    emit(state.copyWith(lastUpdate: DateTime.timestamp()));
+    await _chatRepository.saveMessages(messages: messages);
   }
 
-  void _processMessage(ChatMessage message) {
-    if (message.status == ChatMessageStatus.sent) {
-      if (state.messages.containsKey(message.sender)) {
-        final messagesOfSender = state.messages[message.sender]!;
-        final index = messagesOfSender.indexWhere((e) => e.id == message.id);
-        if (index < 0) {
-          messagesOfSender.add(message);
+  //
+  //
+  void _updateStateWithMessage(ChatMessageEntity message) {
+    switch (message.status) {
+      case ChatMessageStatus.seen:
+        state.messages[message.sender]?.removeWhere((e) => e.id == message.id);
+
+      case ChatMessageStatus.sent:
+        if (state.messages.containsKey(message.sender)) {
+          final messagesOfSender = state.messages[message.sender]!;
+          final index = messagesOfSender.indexWhere((e) => e.id == message.id);
+          index < 0
+              ? messagesOfSender.add(message)
+              : messagesOfSender[index] = message;
         } else {
-          messagesOfSender[index] = message;
+          state.messages[message.sender] = [message];
         }
-      } else {
-        state.messages[message.sender] = [message];
-      }
-    } else if (message.status == ChatMessageStatus.seen) {
-      state.messages[message.sender]?.removeWhere((e) => e.id == message.id);
+
+      // ignore: no_default_cases //
+      default:
     }
   }
-
-  static final _zeroAge = DateTime.fromMillisecondsSinceEpoch(0);
 }
