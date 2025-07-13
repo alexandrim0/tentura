@@ -1,12 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
-
-import 'package:tentura/ui/l10n/l10n.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/coordinates.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 
 import '../../data/repository/geo_repository.dart';
 import '../../domain/entity/location.dart';
@@ -16,13 +14,11 @@ class ChooseLocationDialog extends StatefulWidget {
       showDialog<Location>(
         context: context,
         useSafeArea: false,
-        builder:
-            (_) => ChooseLocationDialog(
-              center:
-                  center == null
-                      ? null
-                      : Coordinates(lat: center.lat, long: center.long),
-            ),
+        builder: (_) => ChooseLocationDialog(
+          center: center == null
+              ? null
+              : Coordinates(lat: center.lat, long: center.long),
+        ),
       );
 
   final Coordinates? center;
@@ -88,7 +84,7 @@ class _ChooseLocationDialogState extends State<ChooseLocationDialog> {
           TileLayer(
             urlTemplate: kOsmUrlTemplate,
             userAgentPackageName: kUserAgent,
-            tileProvider: CancellableNetworkTileProvider(
+            tileProvider: NetworkTileProvider(
               silenceExceptions: true,
             ),
           ),
