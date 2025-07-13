@@ -12,6 +12,35 @@ class MessageRepository with ChatMessageMapper {
 
   final TenturaDb _database;
 
+  Future<ChatMessageEntity> create({
+    required String content,
+    required String subjectId,
+    required String objectId,
+  }) async {
+    final message = await _database.managers.messages.createReturning(
+      (o) => o(
+        object: objectId,
+        subject: subjectId,
+        message: content,
+      ),
+    );
+    return messageModelToEntity(message);
+  }
+
+  Future<void> markAsDelivered({
+    required String id,
+    required String receiverId,
+  }) => _database.managers.messages
+      .filter((e) => e.id(UuidValue.fromString(id)) & e.object.id(receiverId))
+      .update(
+        (o) => o(
+          delivered: const Value(true),
+          updatedAt: Value(
+            PgDateTime(DateTime.timestamp()),
+          ),
+        ),
+      );
+
   Future<ChatMessageEntity> fetchById(String id) => _database.managers.messages
       .filter((e) => e.id(UuidValue.fromString(id)))
       .getSingle()

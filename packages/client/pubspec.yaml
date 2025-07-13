@@ -6,7 +6,7 @@ version: 1.2.3
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
-  flutter: ^3.32.5
+  flutter: ^3.32.6
 
 dependencies:
   flutter:
@@ -33,7 +33,7 @@ dependencies:
 
   # Platform related
   web: ^1.1.1
-  http: ^1.2.2
+  http: ^1.4.0
   drift: ^2.26.1
   mailto: ^2.0.0
   geocoding: ^4.0.0
@@ -41,7 +41,7 @@ dependencies:
   geolocator: ^14.0.2
   share_plus: ^11.0.0
   image_picker: ^1.1.2
-  url_launcher: ^6.3.1
+  url_launcher: ^6.3.2
   drift_flutter: ^0.2.4
   share_handler: ^0.0.23
   mobile_scanner: ^7.0.1
@@ -49,8 +49,8 @@ dependencies:
 
   # Logs & Stats
   logger: ^2.6.0
-  sentry_drift: ^9.3.0
-  sentry_flutter: ^9.3.0
+  sentry_drift: ^9.4.0
+  sentry_flutter: ^9.4.0
 
   # Remote API related
   ferry: ^0.16.0
@@ -68,7 +68,7 @@ dependencies:
   image: ^4.5.4
   readmore: ^3.0.0
   qr_flutter: ^4.1.0
-  flutter_map: ^8.1.1
+  flutter_map: ^8.2.1
   flutter_svg: ^2.2.0
   google_fonts: ^6.2.1
   validatorless: ^1.2.4

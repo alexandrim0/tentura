@@ -25,7 +25,9 @@ class Env {
     String? privateKey,
     // Web server
     String? bindAddress,
-    int? listenPort,
+    int? listenWebPort,
+    // gRPC server
+    int? listenGrpcPort,
     // Postgres
     String? pgHost,
     int? pgPort,
@@ -74,7 +76,11 @@ class Env {
        ),
        // Web server
        bindAddress = bindAddress ?? _env['HOST'] ?? '0.0.0.0',
-       listenPort = listenPort ?? int.tryParse(_env['PORT'] ?? '') ?? 2080,
+       listenWebPort =
+           listenWebPort ?? int.tryParse(_env['PORT'] ?? '') ?? 2080,
+       // gRPC server
+       listenGrpcPort =
+           listenGrpcPort ?? int.tryParse(_env['GRPC_PORT'] ?? '') ?? 2090,
        // Postgres
        pgHost = pgHost ?? _env['POSTGRES_HOST'] ?? 'postgres',
        pgPort = pgPort ?? int.tryParse(_env['POSTGRES_PORT'] ?? '') ?? 5432,
@@ -157,7 +163,10 @@ class Env {
   // Web server
   final String bindAddress;
 
-  final int listenPort;
+  final int listenWebPort;
+
+  // gRPC server
+  final int listenGrpcPort;
 
   // Task Worker
   final Duration taskOnEmptyDelay;

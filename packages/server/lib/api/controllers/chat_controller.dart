@@ -8,9 +8,9 @@ import '_base_controller.dart';
 
 @Singleton(order: 3)
 final class ChatController {
-  ChatController(this.env, this._chatCase);
+  ChatController(this._env, this._chatCase);
 
-  final Env env;
+  final Env _env;
 
   final ChatCase _chatCase;
 
@@ -20,7 +20,7 @@ final class ChatController {
     onOpen: (session) {
       _sessions[session] = (
         timer: Timer.periodic(
-          env.chatPollingInterval,
+          _env.chatPollingInterval,
           // TBD: poll updates from DB
           (timer) {},
         ),

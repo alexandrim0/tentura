@@ -1,13 +1,16 @@
 name: tentura_root
 publish_to: none
 
-version: 0.0.0
+version: 0.0.1
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
 
 dependencies:
+  grpc: ^4.1.0
+  fixnum: ^1.1.1
   latlong2: ^0.9.1
+  protobuf: ^4.1.0
 
 dev_dependencies:
   very_good_analysis: ^9.0.0

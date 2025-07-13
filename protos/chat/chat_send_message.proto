@@ -1,0 +1,14 @@
+syntax="proto3";
+
+package tentura.chat;
+
+message ChatSendMessageRequest {
+  bytes client_id = 1;
+  string receiver = 2;
+  string content = 3;
+}
+
+message ChatSendMessageResponse {
+  bytes server_id = 1;
+  int64 created_at = 2;
+}

@@ -20,6 +20,21 @@
             ],
         },
         {
+            "name": "tentura (local)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+                "--flavor",
+                "prod",
+				"--dart-define-from-file=.env",
+				"--dart-define",
+                "SERVER_NAME=https://localhost",
+				"--dart-define",
+				"NEED_INVITE_CODE=true",
+            ],
+        },
+        {
             "name": "tentura-web (local)",
             "request": "launch",
             "type": "dart",

@@ -1,0 +1,14 @@
+syntax="proto3";
+
+package tentura.chat;
+
+import "chat/chat_message_status.proto";
+
+message ChatUpdateMessageRequest {
+  bytes client_id = 1;
+  ChatMessageStatus status = 2;
+}
+
+message ChatUpdateMessageResponse {
+  int64 updated_at = 1;
+}

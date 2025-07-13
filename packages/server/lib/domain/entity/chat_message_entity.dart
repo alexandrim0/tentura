@@ -14,5 +14,5 @@ abstract class ChatMessageEntity with _$ChatMessageEntity {
     required bool isDelivered,
   }) = _ChatMessageEntity;
 
-  ChatMessageEntity._();
+  const ChatMessageEntity._();
 }
