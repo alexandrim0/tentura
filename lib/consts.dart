@@ -36,10 +36,10 @@ const int kInvitationDefaultTTL = 24 * 7;
 const kAppTitle = 'Tentura';
 
 const kPathIcons = '/icons';
-const kPathChatEndpoint = '/ws/chat';
 const kPathAppLinkView = '/shared/view';
 const kPathGraphQLEndpoint = '/api/v1/graphql';
 const kPathGraphQLEndpointV2 = '/api/v2/graphql';
+const kPathWebSocketEndpoint = '/api/v2/ws';
 
 const String kUserAgent = kAppTitle;
 
@@ -61,7 +61,10 @@ const kBeaconPlaceholderUrl =
     '$kImageServer/$kImagesPath/placeholder/beacon.$kImageExt';
 
 /// First part of FQDN: `https://app.server.name`
-const kServerName = String.fromEnvironment('SERVER_NAME');
+const kServerName = String.fromEnvironment(
+  'SERVER_NAME',
+  defaultValue: 'http://localhost:2080',
+);
 
 /// First part of FQDN: `https://image.server.name`
 const kImageServer = String.fromEnvironment('IMAGE_SERVER');

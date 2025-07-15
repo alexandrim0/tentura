@@ -50,4 +50,6 @@ const kNeedInviteCode = bool.fromEnvironment('NEED_INVITE_CODE');
 
 const kAssetPackage = bool.fromEnvironment('IS_IMPORTED') ? 'tentura' : null;
 
+const kWsPingInterval = Duration(seconds: 3);
+
 final zeroAge = DateTime.fromMillisecondsSinceEpoch(0);

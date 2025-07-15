@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:ferry/ferry.dart' show OperationRequest, OperationResponse;
 import 'package:flutter/foundation.dart';
+import 'package:web_socket_client/web_socket_client.dart';
 
 import 'auth_box.dart';
 import 'credentials.dart';
@@ -19,39 +20,82 @@ abstract class RemoteApiClientBase {
   RemoteApiClientBase({
     required this.authJwtExpiresIn,
     required this.apiEndpointUrl,
+    required this.wsEndpointUrl,
+    required this.wsPingInterval,
     required this.requestTimeout,
     required this.userAgent,
-  });
+  }) {
+    _webSocket = WebSocket(Uri.parse(wsEndpointUrl));
+    _wsPingTimer = Timer.periodic(
+      wsPingInterval,
+      (_) => _webSocket.send('{"type":"ping"}'),
+    );
+  }
 
   final String userAgent;
+  final String wsEndpointUrl;
   final String apiEndpointUrl;
   final Duration requestTimeout;
+  final Duration wsPingInterval;
   final Duration authJwtExpiresIn;
+
+  late final Timer _wsPingTimer;
+  late final WebSocket _webSocket;
 
   bool _tokenLocked = false;
 
   AuthBox? _authBox;
 
+  Stream<dynamic> get webSocketMessages => _webSocket.messages;
+
+  Stream<ConnectionState> get webSocketConnection => _webSocket.connection;
+
+  void webSocketSend(dynamic message) => _webSocket.send(message);
+
+  ///
   /// Returns Auth Request JWT
+  ///
   @mustCallSuper
   Future<String?> setAuth({
     required String seed,
     required AuthTokenFetcher authTokenFetcher,
     AuthRequestIntent? returnAuthRequestToken,
   }) async {
+    if (seed.isEmpty) {
+      throw const AuthenticationNoKeyException();
+    }
     _tokenLocked = false;
-    _authBox = AuthBox.fromSeed(seed: seed, authTokenFetcher: authTokenFetcher);
+    _authBox = AuthBox.fromSeed(
+      seed: seed,
+      authTokenFetcher: authTokenFetcher,
+    );
     return returnAuthRequestToken == null
         ? null
         : _authBox!.getAuthRequestToken(returnAuthRequestToken);
   }
 
+  //
+  //
+  //
   @mustCallSuper
-  Future<void> close() async {
+  void dropAuth() {
     _authBox = null;
     _tokenLocked = false;
   }
 
+  //
+  //
+  //
+  @mustCallSuper
+  Future<void> close() async {
+    dropAuth();
+    _wsPingTimer.cancel();
+    _webSocket.close();
+  }
+
+  //
+  //
+  //
   @mustCallSuper
   Future<Credentials> getAuthToken() async {
     if (_authBox == null) {
@@ -80,6 +124,9 @@ abstract class RemoteApiClientBase {
     }
   }
 
+  //
+  //
+  //
   Stream<OperationResponse<TData, TVars>> request<TData, TVars>(
     OperationRequest<TData, TVars> request, [
     Stream<OperationResponse<TData, TVars>> Function(

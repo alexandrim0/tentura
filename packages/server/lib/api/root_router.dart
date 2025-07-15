@@ -46,8 +46,8 @@ class RootRouter {
       )
       ..get('/health', () => 'I`m fine!')
       ..get('/graphiql', _graphiqlController.handler)
-      ..get(kPathChatEndpoint, _chatController.handler)
       ..get(kPathAppLinkView, _sharedViewController.handler)
+      ..get(kPathWebSocketEndpoint, _chatController.handler)
       ..post(
         kPathGraphQLEndpointV2,
         _graphqlController.handler,

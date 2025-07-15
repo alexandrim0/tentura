@@ -12,14 +12,9 @@ final class GraphiqlController extends BaseController {
   @override
   Future<Response> handler(Request request) async {
     try {
-      final response = renderGraphiql(
-        graphqlEndpoint: kServerName + kPathGraphQLEndpointV2,
-      );
       return Response.ok(
-        response,
-        headers: {
-          kHeaderContentType: kContentTypeHtml,
-        },
+        renderGraphiql(graphqlEndpoint: kServerName + kPathGraphQLEndpointV2),
+        headers: {kHeaderContentType: kContentTypeHtml},
       );
     } catch (e) {
       return Response.badRequest(body: e);

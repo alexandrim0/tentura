@@ -17,9 +17,11 @@ typedef GetTokenResponse = ({Credentials? data, Object? error});
 
 abstract base class RemoteApiClient extends RemoteApiClientBase {
   RemoteApiClient({
+    required super.wsEndpointUrl,
     required super.apiEndpointUrl,
     required super.authJwtExpiresIn,
     required super.requestTimeout,
+    required super.wsPingInterval,
     required super.userAgent,
   });
 
@@ -90,11 +92,10 @@ abstract base class RemoteApiClient extends RemoteApiClientBase {
     Credentials? credentials;
     final receivePort = ReceivePort();
     sendPort?.send(receivePort.sendPort);
-    final tokenStream =
-        receivePort
-            .where((e) => e is GetTokenResponse)
-            .cast<GetTokenResponse>()
-            .asBroadcastStream();
+    final tokenStream = receivePort
+        .where((e) => e is GetTokenResponse)
+        .cast<GetTokenResponse>()
+        .asBroadcastStream();
 
     return buildClient(
       params: params,

@@ -38,7 +38,8 @@ class ChatCase {
         : throw const UnauthorizedException();
   }
 
-  Future<Object> onMessage(dynamic message) async {
-    return _messageRepository.fetchById(_env.environment);
+  Future<Object?> onMessage(dynamic message) async {
+    print('${message.runtimeType} [$message]');
+    return _env.environment;
   }
 }

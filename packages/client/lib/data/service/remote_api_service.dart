@@ -12,6 +12,7 @@ import 'remote_api_client/remote_api_client_web.dart';
 export 'package:ferry/ferry.dart'
     show DataSource, FetchPolicy, OperationResponse;
 export 'package:gql_exec/gql_exec.dart' show Context, HttpLinkHeaders;
+export 'package:web_socket_client/src/connection_state.dart';
 
 export 'remote_api_client/auth_link.dart' show AuthHeaderMode, HttpAuthHeaders;
 export 'remote_api_client/remote_api_client_base.dart';
@@ -22,8 +23,10 @@ final class RemoteApiService extends RemoteApiClient {
     : super(
         userAgent: kUserAgent,
         apiEndpointUrl: kServerName + kPathGraphQLEndpoint,
-        authJwtExpiresIn: const Duration(seconds: kAuthJwtExpiresIn),
+        wsEndpointUrl: kServerName + kPathWebSocketEndpoint,
         requestTimeout: const Duration(seconds: kRequestTimeout),
+        authJwtExpiresIn: const Duration(seconds: kAuthJwtExpiresIn),
+        wsPingInterval: kWsPingInterval,
       );
 
   @override

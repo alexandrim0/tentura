@@ -49,8 +49,8 @@ dependencies:
 
   # Logs & Stats
   logger: ^2.6.0
-  sentry_drift: ^9.4.0
-  sentry_flutter: ^9.4.0
+  sentry_drift: ^9.4.1
+  sentry_flutter: ^9.4.1
 
   # Remote API related
   ferry: ^0.16.0
@@ -60,6 +60,7 @@ dependencies:
   gql_dedupe_link: ^2.0.3
   ed25519_edwards: ^0.3.1
   dart_jsonwebtoken: ^3.2.0
+  web_socket_client: ^0.2.1
   gql_websocket_link: ^2.0.1
 
   # UI related

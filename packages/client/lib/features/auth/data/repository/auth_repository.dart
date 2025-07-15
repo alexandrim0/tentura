@@ -24,7 +24,9 @@ class AuthRepository {
     this._database,
     this._remoteApiService,
     this._localSecureStorage,
-  );
+  ) {
+    _wsConnectionStateChangesSubscription.resume();
+  }
 
   final Database _database;
 
@@ -36,10 +38,23 @@ class AuthRepository {
 
   final _random = Random.secure();
 
+  late final _wsConnectionStateChangesSubscription = _remoteApiService
+      .webSocketConnection
+      .listen(
+        _onWebSocketConnectionChanged,
+        cancelOnError: false,
+        onError: print,
+      );
+
   String _currentAccountId = '';
 
+  //
+  //
   @disposeMethod
-  Future<void> dispose() => _controller.close();
+  Future<void> dispose() async {
+    await _wsConnectionStateChangesSubscription.cancel();
+    await _controller.close();
+  }
 
   //
   //
@@ -162,10 +177,22 @@ class AuthRepository {
     if (_currentAccountId.isEmpty) {
       return;
     }
+    _remoteApiService.webSocketSend(
+      // TBD: move to Model
+      jsonEncode({
+        'type': 'message',
+        'path': 'auth',
+        'payload': {
+          'intent': const AuthRequestIntentSignOut().cname,
+        },
+      }),
+    );
     await _remoteApiService
         .request(GSignOutReq())
         .firstWhere((e) => e.dataSource == DataSource.Link);
-    await _remoteApiService.close();
+
+    _remoteApiService.dropAuth();
+
     await _setCurrentAccountId(null);
   }
 
@@ -189,8 +216,10 @@ class AuthRepository {
   Future<void> updateAccount(Profile account) => _database.managers.accounts
       .filter((f) => f.id.equals(account.id))
       .update(
-        (o) =>
-            o(title: Value(account.title), hasAvatar: Value(account.hasAvatar)),
+        (o) => o(
+          title: Value(account.title),
+          hasAvatar: Value(account.hasAvatar),
+        ),
       );
 
   //
@@ -200,8 +229,17 @@ class AuthRepository {
       seed: seed,
       authTokenFetcher: authTokenFetcher,
     );
+
     final credentials = await _remoteApiService.getAuthToken();
     await _setCurrentAccountId(credentials.userId);
+    {
+      await _remoteApiService.webSocketConnection.firstWhere(
+        (state) => state is Connected,
+      );
+      _remoteApiService.webSocketSend(
+        await _buildAuthMessage('SignIn', credentials.accessToken),
+      );
+    }
     return credentials.userId;
   }
 
@@ -225,6 +263,29 @@ class AuthRepository {
       mode: InsertMode.insert,
     );
   }
+
+  Future<void> _onWebSocketConnectionChanged(ConnectionState event) async {
+    if (_currentAccountId.isNotEmpty) {
+      if (event case Connected() || Reconnected()) {
+        _remoteApiService.webSocketSend(
+          await _buildAuthMessage(event.runtimeType.toString()),
+        );
+      }
+    }
+  }
+
+  // TBD: move to Model
+  Future<String> _buildAuthMessage(String event, [String? token]) async =>
+      jsonEncode({
+        'type': 'message',
+        'path': 'auth',
+        'meta': event,
+        'payload': {
+          'intent': const AuthRequestIntentSignIn().cname,
+          'token':
+              token ?? (await _remoteApiService.getAuthToken()).accessToken,
+        },
+      });
 
   //
   //

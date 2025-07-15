@@ -10,9 +10,11 @@ import 'remote_api_client_base.dart';
 
 abstract base class RemoteApiClient extends RemoteApiClientBase {
   RemoteApiClient({
+    required super.wsEndpointUrl,
     required super.apiEndpointUrl,
     required super.authJwtExpiresIn,
     required super.requestTimeout,
+    required super.wsPingInterval,
     required super.userAgent,
   });
 

@@ -26,6 +26,7 @@ class Env {
     // Web server
     String? bindAddress,
     int? listenWebPort,
+    bool? isPongEnabled,
     // gRPC server
     int? listenGrpcPort,
     // Postgres
@@ -78,6 +79,7 @@ class Env {
        bindAddress = bindAddress ?? _env['HOST'] ?? '0.0.0.0',
        listenWebPort =
            listenWebPort ?? int.tryParse(_env['PORT'] ?? '') ?? 2080,
+       isPongEnabled = isPongEnabled ?? _env['PONG_ENABLED'] != 'false',
        // gRPC server
        listenGrpcPort =
            listenGrpcPort ?? int.tryParse(_env['GRPC_PORT'] ?? '') ?? 2090,
@@ -164,6 +166,8 @@ class Env {
   final String bindAddress;
 
   final int listenWebPort;
+
+  final bool isPongEnabled;
 
   // gRPC server
   final int listenGrpcPort;
