@@ -27,71 +27,72 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (_) => ChatCubit(
-          me: GetIt.I<AuthCubit>().state.currentAccount,
-          friend: GetIt.I<FriendsCubit>().state.friends[id]!,
-          updatesStream: GetIt.I<ChatNewsCubit>().updates,
-        ),
-        child: BlocListener<ChatCubit, ChatState>(
-          listener: commonScreenBlocListener,
-          child: this,
-        ),
-      );
+    create: (_) => ChatCubit(
+      me: GetIt.I<AuthCubit>().state.currentAccount,
+      friend: GetIt.I<FriendsCubit>().state.friends[id]!,
+      updatesStream: GetIt.I<ChatNewsCubit>().updates,
+    ),
+    child: BlocListener<ChatCubit, ChatState>(
+      listener: commonScreenBlocListener,
+      child: this,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          leading: const DeepBackButton(),
-          title: BlocSelector<ChatCubit, ChatState, Profile>(
-            selector: (state) => state.friend,
-            builder: (context, profile) => Row(
-              children: [
-                AvatarRated(
-                  profile: profile,
-                  size: 32,
-                ),
-                Padding(
-                  padding: kPaddingH,
-                  child: Text(
-                    profile.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+    appBar: AppBar(
+      leading: const DeepBackButton(),
+      title: BlocSelector<ChatCubit, ChatState, Profile>(
+        selector: (state) => state.friend,
+        builder: (_, profile) => Row(
+          children: [
+            AvatarRated(
+              profile: profile,
+              size: 32,
             ),
-          ),
-          actions: [
-            PopupMenuButton<void>(
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  onTap: () async {
-                    if (await OnChatClearDialog.show(context) ?? false) {
-                      if (context.mounted) {
-                        // TBD: remove when implemented
-                        showSnackBar(
-                          context,
-                          text: 'Not implemented yet...',
-                        );
-                        await context.read<ChatCubit>().onChatClear();
-                      }
-                    }
-                  },
-                  child: const Text('Clear chat'),
+            Expanded(
+              child: Padding(
+                padding: kPaddingH,
+                child: Text(
+                  profile.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
+              ),
             ),
           ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(4),
-            child: BlocSelector<ChatCubit, ChatState, bool>(
-              selector: (state) => state.isLoading,
-              builder: (context, isLoading) => isLoading
-                  ? const LinearPiActive()
-                  : const SizedBox(height: 4),
-            ),
-          ),
         ),
-        body: const ChatList(),
-      );
+      ),
+      actions: [
+        PopupMenuButton<void>(
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              onTap: () async {
+                if (await OnChatClearDialog.show(context) ?? false) {
+                  if (context.mounted) {
+                    // TBD: remove when implemented
+                    showSnackBar(
+                      context,
+                      text: 'Not implemented yet...',
+                    );
+                    await context.read<ChatCubit>().onChatClear();
+                  }
+                }
+              },
+              child: const Text('Clear chat'),
+            ),
+          ],
+        ),
+      ],
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(4),
+        child: BlocSelector<ChatCubit, ChatState, bool>(
+          selector: (state) => state.isLoading,
+          builder: (context, isLoading) =>
+              isLoading ? const LinearPiActive() : const SizedBox(height: 4),
+        ),
+      ),
+    ),
+    body: const ChatList(),
+  );
 }

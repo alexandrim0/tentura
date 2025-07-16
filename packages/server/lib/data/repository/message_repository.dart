@@ -12,6 +12,8 @@ class MessageRepository with ChatMessageMapper {
 
   final TenturaDb _database;
 
+  //
+  //
   Future<ChatMessageEntity> create({
     required String content,
     required String subjectId,
@@ -27,11 +29,14 @@ class MessageRepository with ChatMessageMapper {
     return messageModelToEntity(message);
   }
 
-  Future<void> markAsDelivered({
+  ///
+  /// Return number of affected rows
+  ///
+  Future<int> markAsDelivered({
     required String id,
-    required String receiverId,
+    required String objectId,
   }) => _database.managers.messages
-      .filter((e) => e.id(UuidValue.fromString(id)) & e.object.id(receiverId))
+      .filter((e) => e.id(UuidValue.fromString(id)) & e.object.id(objectId))
       .update(
         (o) => o(
           delivered: const Value(true),
@@ -41,10 +46,10 @@ class MessageRepository with ChatMessageMapper {
         ),
       );
 
-  Future<ChatMessageEntity> fetchById(String id) => _database.managers.messages
+  Future<ChatMessageEntity?> fetchById(String id) => _database.managers.messages
       .filter((e) => e.id(UuidValue.fromString(id)))
-      .getSingle()
-      .then(messageModelToEntity);
+      .getSingleOrNull()
+      .then((e) => e == null ? null : messageModelToEntity(e));
 
   Future<void> fetchBySubjectId({
     required String id,

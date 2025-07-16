@@ -15,4 +15,14 @@ abstract class ChatMessageEntity with _$ChatMessageEntity {
   }) = _ChatMessageEntity;
 
   const ChatMessageEntity._();
+
+  Map<String, Object> get asJson => {
+    'id': id,
+    'message': message,
+    'subject_id': subjectId,
+    'object_id': objectId,
+    'created_at': createdAt.toIso8601String(),
+    'updated_at': updatedAt.toIso8601String(),
+    'is_delivered': isDelivered,
+  };
 }

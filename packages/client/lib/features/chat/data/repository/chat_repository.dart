@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/consts.dart';
+import 'package:tentura/domain/enum.dart';
 import 'package:tentura/data/database/database.dart';
 import 'package:tentura/data/gql/_g/schema.schema.gql.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
-import 'package:tentura/domain/enum.dart';
 
 import '../../domain/entity/chat_message_entity.dart';
 import '../gql/_g/message_create.req.gql.dart';
@@ -57,6 +58,44 @@ class ChatRepository {
       )
       .firstWhere((e) => e.dataSource == DataSource.Link)
       .then((r) => r.dataOrThrow(label: _label));
+
+  //
+  //
+  Future<void> sendMessageWs({
+    required String receiverId,
+    required String content,
+  }) async => _remoteApiService.webSocketSend(
+    jsonEncode({
+      'type': 'message',
+      'path': 'chat',
+      'payload': {
+        'type': 'request',
+        'intent': 'send_message',
+        'message': {
+          'receiver_id': receiverId,
+          'content': content,
+        },
+      },
+    }),
+  );
+
+  //
+  //
+  Future<void> setMessageSeenWs({
+    required String messageId,
+  }) async => _remoteApiService.webSocketSend(
+    jsonEncode({
+      'type': 'message',
+      'path': 'chat',
+      'payload': {
+        'type': 'request',
+        'intent': 'mark_as_delivered',
+        'message': {
+          'message_id': messageId,
+        },
+      },
+    }),
+  );
 
   //
   //

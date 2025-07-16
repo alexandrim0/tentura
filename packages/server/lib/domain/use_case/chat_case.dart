@@ -19,8 +19,8 @@ class ChatCase {
     required String senderId,
     required String content,
   }) => _messageRepository.create(
-    subjectId: receiverId,
-    objectId: senderId,
+    objectId: receiverId,
+    subjectId: senderId,
     content: content,
   );
 
@@ -30,12 +30,17 @@ class ChatCase {
   }) async {
     await _messageRepository.markAsDelivered(
       id: messageId,
-      receiverId: receiverId,
+      objectId: receiverId,
     );
+
     final message = await _messageRepository.fetchById(messageId);
-    return message.objectId == receiverId
-        ? message
-        : throw const UnauthorizedException();
+    if (message == null) {
+      throw const IdNotFoundException();
+    }
+    if (message.objectId != receiverId) {
+      throw const UnauthorizedException();
+    }
+    return message;
   }
 
   Future<Object?> onMessage(dynamic message) async {

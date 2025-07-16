@@ -183,6 +183,7 @@ class AuthRepository {
         'type': 'message',
         'path': 'auth',
         'payload': {
+          'type': 'request',
           'intent': const AuthRequestIntentSignOut().cname,
         },
       }),
@@ -237,7 +238,7 @@ class AuthRepository {
         (state) => state is Connected,
       );
       _remoteApiService.webSocketSend(
-        await _buildAuthMessage('SignIn', credentials.accessToken),
+        _buildAuthMessage('SignIn', credentials.accessToken),
       );
     }
     return credentials.userId;
@@ -268,24 +269,26 @@ class AuthRepository {
     if (_currentAccountId.isNotEmpty) {
       if (event case Connected() || Reconnected()) {
         _remoteApiService.webSocketSend(
-          await _buildAuthMessage(event.runtimeType.toString()),
+          _buildAuthMessage(
+            event.runtimeType.toString(),
+            (await _remoteApiService.getAuthToken()).accessToken,
+          ),
         );
       }
     }
   }
 
   // TBD: move to Model
-  Future<String> _buildAuthMessage(String event, [String? token]) async =>
-      jsonEncode({
-        'type': 'message',
-        'path': 'auth',
-        'meta': event,
-        'payload': {
-          'intent': const AuthRequestIntentSignIn().cname,
-          'token':
-              token ?? (await _remoteApiService.getAuthToken()).accessToken,
-        },
-      });
+  String _buildAuthMessage(String event, String token) => jsonEncode({
+    'type': 'message',
+    'path': 'auth',
+    'meta': event,
+    'payload': {
+      'type': 'request',
+      'intent': const AuthRequestIntentSignIn().cname,
+      'token': token,
+    },
+  });
 
   //
   //

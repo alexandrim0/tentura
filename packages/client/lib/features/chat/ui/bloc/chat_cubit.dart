@@ -38,7 +38,9 @@ class ChatCubit extends Cubit<ChatState> {
 
   late final _updatesSubscription = _updatesStream
       .where(
-        (m) => m.reciever == state.friend.id || m.sender == state.friend.id,
+        (m) =>
+            (m.reciever == state.friend.id && m.sender == state.me.id) ||
+            (m.reciever == state.me.id && m.sender == state.friend.id),
       )
       .listen(
         _onMessage,
@@ -56,7 +58,7 @@ class ChatCubit extends Cubit<ChatState> {
   //
   Future<void> onSendPressed(String text) async {
     try {
-      await _chatRepository.sendMessage(
+      await _chatRepository.sendMessageWs(
         receiverId: state.friend.id,
         content: text.trim(),
       );
@@ -68,12 +70,10 @@ class ChatCubit extends Cubit<ChatState> {
   //
   //
   Future<void> onMessageShown(ChatMessageEntity message) async {
-    if (message.sender != state.me.id) {
-      try {
-        await _chatRepository.setMessageSeen(messageId: message.id);
-      } catch (e) {
-        emit(state.copyWith(status: StateHasError(e)));
-      }
+    try {
+      await _chatRepository.setMessageSeenWs(messageId: message.id);
+    } catch (e) {
+      emit(state.copyWith(status: StateHasError(e)));
     }
   }
 

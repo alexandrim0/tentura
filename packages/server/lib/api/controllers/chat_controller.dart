@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import 'package:tentura_server/env.dart';
+import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/domain/entity/jwt_entity.dart';
 import 'package:tentura_server/domain/use_case/auth_case.dart';
 import 'package:tentura_server/domain/use_case/chat_case.dart';
@@ -26,6 +27,9 @@ final class ChatController {
 
   final _sessions = <WebSocketSession, UserSession>{};
 
+  ///
+  ///
+  ///
   WebSocketSession handler() => WebSocketSession(
     onClose: (session) {
       _sessions.remove(session)?.timer.cancel();
@@ -45,6 +49,9 @@ final class ChatController {
     },
   );
 
+  //
+  //
+  //
   Future<void> _onTextMessage(
     WebSocketSession session,
     Map<String, dynamic> message,
@@ -70,7 +77,10 @@ final class ChatController {
               session,
               message['payload'] as Map<String, dynamic>,
             ),
-            'chat' => await _chatCase.onMessage(message),
+            'chat' => await _onChat(
+              session,
+              message['payload'] as Map<String, dynamic>,
+            ),
             _ => throw UnsupportedError('Unsupported path'),
           };
           if (response != null) {
@@ -84,6 +94,9 @@ final class ChatController {
     }
   }
 
+  //
+  //
+  //
   Future<void> _onBinaryMessage(
     WebSocketSession session,
     List<int> message,
@@ -91,6 +104,9 @@ final class ChatController {
     print('${message.runtimeType} [$message]');
   }
 
+  //
+  //
+  //
   Future<Map<String, dynamic>?> _onAuth(
     WebSocketSession session,
     Map<String, dynamic> payload,
@@ -113,6 +129,7 @@ final class ChatController {
           'type': 'message',
           'path': 'auth',
           'payload': {
+            'type': 'response',
             'intent': intent,
             'userId': jwt.sub,
             'roles': jwt.roles.map((e) => e.name).toList(),
@@ -125,6 +142,7 @@ final class ChatController {
           'type': 'message',
           'path': 'auth',
           'payload': {
+            'type': 'response',
             'intent': intent,
           },
         };
@@ -133,4 +151,66 @@ final class ChatController {
         return null;
     }
   }
+
+  //
+  //
+  //
+  Future<Map<String, dynamic>?> _onChat(
+    WebSocketSession session,
+    Map<String, dynamic> payload,
+  ) async {
+    final jwt = _getJwtBySession(session);
+    final intent = payload['intent']! as String;
+    final message = payload['message']! as Map<String, dynamic>;
+    switch (intent) {
+      case 'send_message':
+        final chatMessage = await _chatCase.create(
+          senderId: jwt.sub,
+          receiverId: message['receiver_id']! as String,
+          content: message['content']! as String,
+        );
+        return {
+          'type': 'message',
+          'path': 'chat',
+          'payload': {
+            'type': 'response',
+            'intent': intent,
+            'result': 'success',
+            'message': {
+              'id': chatMessage.id,
+              'createdAt': chatMessage.createdAt.toIso8601String(),
+            },
+          },
+        };
+
+      case 'mark_as_delivered':
+        final chatMessage = await _chatCase.markAsDelivered(
+          messageId: message['message_id']! as String,
+          receiverId: jwt.sub,
+        );
+        return {
+          'type': 'message',
+          'path': 'chat',
+          'payload': {
+            'type': 'response',
+            'intent': intent,
+            'result': 'success',
+            'message': {
+              'id': chatMessage.id,
+              'isDelivered': chatMessage.isDelivered,
+              'updatedAt': chatMessage.updatedAt.toIso8601String(),
+            },
+          },
+        };
+
+      default:
+        return null;
+    }
+  }
+
+  //
+  //
+  //
+  JwtEntity _getJwtBySession(WebSocketSession session) =>
+      _sessions[session]?.jwt ?? (throw const UnauthorizedException());
 }
