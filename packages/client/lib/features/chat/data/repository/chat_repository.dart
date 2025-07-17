@@ -5,13 +5,9 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/enum.dart';
 import 'package:tentura/data/database/database.dart';
-import 'package:tentura/data/gql/_g/schema.schema.gql.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 
 import '../../domain/entity/chat_message_entity.dart';
-import '../gql/_g/message_create.req.gql.dart';
-import '../gql/_g/message_set_delivered.req.gql.dart';
-import '../gql/_g/messages_fetch.req.gql.dart';
 import '../gql/_g/messages_stream.req.gql.dart';
 import '../model/chat_message_local_model.dart';
 import '../model/chat_message_remote_model.dart';
@@ -48,26 +44,10 @@ class ChatRepository {
   Future<void> sendMessage({
     required String receiverId,
     required String content,
-  }) => _remoteApiService
-      .request(
-        GMessageCreateReq(
-          (b) => b.vars
-            ..object = receiverId
-            ..message = content,
-        ),
-      )
-      .firstWhere((e) => e.dataSource == DataSource.Link)
-      .then((r) => r.dataOrThrow(label: _label));
-
-  //
-  //
-  Future<void> sendMessageWs({
-    required String receiverId,
-    required String content,
   }) async => _remoteApiService.webSocketSend(
     jsonEncode({
       'type': 'message',
-      'path': 'chat',
+      'path': 'p2p_chat',
       'payload': {
         'type': 'request',
         'intent': 'send_message',
@@ -81,12 +61,12 @@ class ChatRepository {
 
   //
   //
-  Future<void> setMessageSeenWs({
+  Future<void> setMessageSeen({
     required String messageId,
   }) async => _remoteApiService.webSocketSend(
     jsonEncode({
       'type': 'message',
-      'path': 'chat',
+      'path': 'p2p_chat',
       'payload': {
         'type': 'request',
         'intent': 'mark_as_delivered',
@@ -96,19 +76,6 @@ class ChatRepository {
       },
     }),
   );
-
-  //
-  //
-  Future<void> setMessageSeen({
-    required String messageId,
-  }) => _remoteApiService
-      .request(
-        GMessageSetDeliveredReq(
-          (b) => b.vars.id = (GuuidBuilder()..value = messageId),
-        ),
-      )
-      .firstWhere((e) => e.dataSource == DataSource.Link)
-      .then((r) => r.dataOrThrow(label: _label).update_message_by_pk);
 
   //
   //
@@ -129,37 +96,6 @@ class ChatRepository {
     ],
     mode: InsertMode.replace,
   );
-
-  ///
-  /// Fetch all messages from last updated and saves into local DB
-  ///
-  Future<void> syncMessagesFor({
-    required String userId,
-  }) async {
-    final cursor = await getLastUpdatedMessageTimestamp(userId: userId);
-    final newMessages = await _remoteApiService
-        .request(GMessagesFetchReq((b) => b.vars.from = cursor))
-        .firstWhere((e) => e.dataSource == DataSource.Link)
-        .then((r) => r.dataOrThrow(label: _label));
-
-    await _database.managers.messages.bulkCreate(
-      (messageCompanion) => [
-        for (final message in newMessages.message)
-          messageCompanion(
-            id: message.id.value,
-            objectId: message.object,
-            subjectId: message.subject,
-            content: message.message,
-            createdAt: message.created_at,
-            updatedAt: message.updated_at,
-            status: message.delivered
-                ? ChatMessageStatus.seen
-                : ChatMessageStatus.sent,
-          ),
-      ],
-      mode: InsertMode.replace,
-    );
-  }
 
   ///
   /// Get all messages for pair from local DB

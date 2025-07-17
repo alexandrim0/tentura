@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:isolate';
 import 'package:jaspr/server.dart';
 import 'package:shelf_plus/shelf_plus.dart';
@@ -16,15 +17,21 @@ Future<void> serveWeb(({SendPort sendPort, Env env}) params) async {
   final getIt = await configureDependencies(params.env);
   await getIt.allReady();
 
-  final webServer = await shelfRun(
-    getIt<RootRouter>().routeHandler,
-    onStarted: (address, port) => print(
-      '${Isolate.current.debugName} web server listen [$address:$port]',
-    ),
-    defaultEnableHotReload: params.env.isDebugModeOn,
-    defaultBindAddress: params.env.bindAddress,
-    defaultBindPort: params.env.listenWebPort,
-    defaultShared: true,
+  late ShelfRunContext webServer;
+  await runZonedGuarded(
+    () async {
+      webServer = await shelfRun(
+        getIt<RootRouter>().routeHandler,
+        onStarted: (address, port) => print(
+          '${Isolate.current.debugName} web server listen [$address:$port]',
+        ),
+        defaultEnableHotReload: params.env.isDebugModeOn,
+        defaultBindAddress: params.env.bindAddress,
+        defaultBindPort: params.env.listenWebPort,
+        defaultShared: true,
+      );
+    },
+    (e, _) => print(e),
   );
   print(
     '${Isolate.current.debugName} server started at ${DateTime.timestamp()} ',

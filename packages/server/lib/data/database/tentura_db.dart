@@ -16,8 +16,8 @@ import 'table/beacons.dart';
 import 'table/comments.dart';
 import 'table/images.dart';
 import 'table/invitations.dart';
-import 'table/messages.dart';
 import 'table/opinions.dart';
+import 'table/p2p_messages.dart';
 import 'table/pollings.dart';
 import 'table/polling_acts.dart';
 import 'table/polling_variants.dart';
@@ -35,13 +35,13 @@ part 'tentura_db.g.dart';
     Comments,
     Images,
     Invitations,
-    Messages,
     Opinions,
+    P2pMessages,
+    Pollings,
+    PollingActs,
+    PollingVariants,
     Users,
     VoteUsers,
-    Pollings,
-    PollingVariants,
-    PollingActs,
   ],
 )
 class TenturaDb extends _$TenturaDb {

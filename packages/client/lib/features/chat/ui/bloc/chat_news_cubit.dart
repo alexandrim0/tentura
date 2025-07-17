@@ -1,3 +1,6 @@
+// TBD: move not void public methods into state
+// ignore_for_file: prefer_void_public_cubit_methods
+
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
@@ -38,11 +41,13 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
   final _messagesUpdatesController =
       StreamController<ChatMessageEntity>.broadcast();
 
-  late final _authChanges = _authRepository.currentAccountChanges().listen(
-    _onAuthChanges,
-    cancelOnError: false,
-    onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
-  );
+  late final StreamSubscription<String> _authChanges = _authRepository
+      .currentAccountChanges()
+      .listen(
+        _onAuthChanges,
+        cancelOnError: false,
+        onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
+      );
 
   StreamSubscription<Iterable<ChatMessageEntity>>? _messagesUpdatesSubscription;
 
@@ -81,8 +86,6 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
         ),
       );
       try {
-        await _chatRepository.syncMessagesFor(userId: userId);
-
         (await _chatRepository.getAllNewMessagesFor(
           userId: userId,
         )).forEach(_updateStateWithMessage);

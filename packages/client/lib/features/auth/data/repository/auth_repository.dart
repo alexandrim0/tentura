@@ -15,7 +15,7 @@ import 'package:tentura/domain/entity/profile.dart';
 
 import '../../domain/exception.dart';
 import '../gql/_g/sign_in.req.gql.dart';
-import '../gql/_g/sign_out.req.gql.dart';
+// import '../gql/_g/sign_out.req.gql.dart';
 import '../gql/_g/sign_up.req.gql.dart';
 
 @singleton
@@ -177,22 +177,15 @@ class AuthRepository {
     if (_currentAccountId.isEmpty) {
       return;
     }
-    _remoteApiService.webSocketSend(
-      // TBD: move to Model
-      jsonEncode({
-        'type': 'message',
-        'path': 'auth',
-        'payload': {
-          'type': 'request',
-          'intent': const AuthRequestIntentSignOut().cname,
-        },
-      }),
-    );
-    await _remoteApiService
-        .request(GSignOutReq())
-        .firstWhere((e) => e.dataSource == DataSource.Link);
+    _remoteApiService
+      ..webSocketSend(_logOutMessage)
+      ..dropAuth();
 
-    _remoteApiService.dropAuth();
+    // TBD: remove
+    // await _remoteApiService
+    //     .request(GSignOutReq())
+    //     .firstWhere((e) => e.dataSource == DataSource.Link);
+    // _remoteApiService.dropAuth();
 
     await _setCurrentAccountId(null);
   }
@@ -233,14 +226,14 @@ class AuthRepository {
 
     final credentials = await _remoteApiService.getAuthToken();
     await _setCurrentAccountId(credentials.userId);
-    {
-      await _remoteApiService.webSocketConnection.firstWhere(
-        (state) => state is Connected,
-      );
-      _remoteApiService.webSocketSend(
-        _buildAuthMessage('SignIn', credentials.accessToken),
-      );
-    }
+
+    await _remoteApiService.webSocketConnection.firstWhere(
+      (state) => state is Connected,
+    );
+    _remoteApiService.webSocketSend(
+      _buildAuthMessage('SignIn', credentials.accessToken),
+    );
+
     return credentials.userId;
   }
 
@@ -265,6 +258,8 @@ class AuthRepository {
     );
   }
 
+  //
+  //
   Future<void> _onWebSocketConnectionChanged(ConnectionState event) async {
     if (_currentAccountId.isNotEmpty) {
       if (event case Connected() || Reconnected()) {
@@ -279,15 +274,12 @@ class AuthRepository {
   }
 
   // TBD: move to Model
+  //
   String _buildAuthMessage(String event, String token) => jsonEncode({
-    'type': 'message',
-    'path': 'auth',
-    'meta': event,
-    'payload': {
-      'type': 'request',
-      'intent': const AuthRequestIntentSignIn().cname,
-      'token': token,
-    },
+    'type': 'auth',
+    'event': event,
+    'intent': const AuthRequestIntentSignIn().cname,
+    'token': token,
   });
 
   //
@@ -317,6 +309,11 @@ class AuthRepository {
   static const _repositoryKey = 'Auth';
 
   static const _currentAccountKey = '$_repositoryKey:currentAccountId';
+
+  static final _logOutMessage = jsonEncode({
+    'type': 'auth',
+    'intent': const AuthRequestIntentSignOut().cname,
+  });
 
   //
   static String _getAccountKey(String id) => '$_repositoryKey:Id:$id';

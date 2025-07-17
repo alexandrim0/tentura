@@ -1,3 +1,5 @@
+// TBD: move not void public methods into state
+// ignore_for_file: prefer_void_public_cubit_methods
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
@@ -59,15 +61,18 @@ class AuthCubit extends Cubit<AuthState> {
 
   final ProfileRepository _profileRepository;
 
-  late final _authChanges = _authRepository.currentAccountChanges().listen(
-    _onAuthChanged,
-    cancelOnError: false,
-  );
+  late final StreamSubscription<String> _authChanges = _authRepository
+      .currentAccountChanges()
+      .listen(
+        _onAuthChanged,
+        cancelOnError: false,
+      );
 
-  late final _profileChanges = _profileRepository.changes.listen(
-    _onProfileChanged,
-    cancelOnError: false,
-  );
+  late final StreamSubscription<RepositoryEvent<Profile>> _profileChanges =
+      _profileRepository.changes.listen(
+        _onProfileChanged,
+        cancelOnError: false,
+      );
 
   @disposeMethod
   Future<void> dispose() async {

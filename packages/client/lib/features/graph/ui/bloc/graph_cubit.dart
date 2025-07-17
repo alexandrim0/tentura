@@ -1,6 +1,11 @@
+// graphController should be here
+// ignore_for_file: avoid_public_fields
+
 import 'dart:async';
 import 'package:get_it/get_it.dart';
-import 'package:flutter/material.dart';
+// TBD: return int instead of Colors?
+// ignore: avoid_flutter_imports
+import 'package:flutter/material.dart' show Colors;
 import 'package:force_directed_graphview/force_directed_graphview.dart';
 
 import 'package:tentura/consts.dart';
@@ -52,7 +57,9 @@ class GraphCubit extends Cubit<GraphState> {
 
   final _fetchLimits = <String, int>{};
 
-  late final _nodes = <String, NodeDetails>{_egoNode.id: _egoNode};
+  late final Map<String, NodeDetails> _nodes = <String, NodeDetails>{
+    _egoNode.id: _egoNode,
+  };
 
   @override
   Future<void> close() {

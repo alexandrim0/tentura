@@ -1,3 +1,8 @@
+// TBD: move not void public methods into state
+// ignore_for_file: prefer_void_public_cubit_methods
+
+// TBD: return string instead of ThemeMode?
+// ignore: avoid_flutter_imports
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 

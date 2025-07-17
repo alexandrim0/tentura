@@ -36,17 +36,19 @@ class ChatCubit extends Cubit<ChatState> {
 
   final Stream<ChatMessageEntity> _updatesStream;
 
-  late final _updatesSubscription = _updatesStream
-      .where(
-        (m) =>
-            (m.reciever == state.friend.id && m.sender == state.me.id) ||
-            (m.reciever == state.me.id && m.sender == state.friend.id),
-      )
-      .listen(
-        _onMessage,
-        cancelOnError: false,
-        onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
-      );
+  late final StreamSubscription<ChatMessageEntity> _updatesSubscription =
+      _updatesStream
+          .where(
+            (m) =>
+                (m.reciever == state.friend.id && m.sender == state.me.id) ||
+                (m.reciever == state.me.id && m.sender == state.friend.id),
+          )
+          .listen(
+            _onMessage,
+            cancelOnError: false,
+            onError: (Object e) =>
+                emit(state.copyWith(status: StateHasError(e))),
+          );
 
   @override
   Future<void> close() async {
@@ -58,7 +60,7 @@ class ChatCubit extends Cubit<ChatState> {
   //
   Future<void> onSendPressed(String text) async {
     try {
-      await _chatRepository.sendMessageWs(
+      await _chatRepository.sendMessage(
         receiverId: state.friend.id,
         content: text.trim(),
       );
@@ -71,7 +73,7 @@ class ChatCubit extends Cubit<ChatState> {
   //
   Future<void> onMessageShown(ChatMessageEntity message) async {
     try {
-      await _chatRepository.setMessageSeenWs(messageId: message.id);
+      await _chatRepository.setMessageSeen(messageId: message.id);
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }

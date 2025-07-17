@@ -1,3 +1,6 @@
+// TBD: move not void public methods into state
+// ignore_for_file: prefer_void_public_cubit_methods
+
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
@@ -26,31 +29,33 @@ class FavoritesCubit extends Cubit<FavoritesState> {
 
   final FavoritesRemoteRepository _favoritesRemoteRepository;
 
-  late final _authChanges = _authRepository.currentAccountChanges().listen((
-    userId,
-  ) async {
-    emit(
-      FavoritesState(
-        beacons: [],
-        userId: userId,
-        status: StateStatus.isLoading,
-      ),
-    );
-    if (userId.isNotEmpty) await fetch();
-  }, cancelOnError: false);
+  late final StreamSubscription<String> _authChanges = _authRepository
+      .currentAccountChanges()
+      .listen((
+        userId,
+      ) async {
+        emit(
+          FavoritesState(
+            beacons: [],
+            userId: userId,
+            status: StateStatus.isLoading,
+          ),
+        );
+        if (userId.isNotEmpty) await fetch();
+      }, cancelOnError: false);
 
-  late final _favoritesChanges = _favoritesRemoteRepository.changes.listen(
-    (beacon) => emit(
-      state.copyWith(
-        beacons:
-            beacon.isPinned
+  late final StreamSubscription<Beacon> _favoritesChanges =
+      _favoritesRemoteRepository.changes.listen(
+        (beacon) => emit(
+          state.copyWith(
+            beacons: beacon.isPinned
                 ? [beacon, ...state.beacons]
                 : state.beacons.where((e) => e.id != beacon.id).toList(),
-        status: StateStatus.isSuccess,
-      ),
-    ),
-    cancelOnError: false,
-  );
+            status: StateStatus.isSuccess,
+          ),
+        ),
+        cancelOnError: false,
+      );
 
   Stream<Beacon> get favoritesChanges => _favoritesRemoteRepository.changes;
 

@@ -15,7 +15,12 @@ Future<void> serveTask(({SendPort sendPort, Env env}) params) async {
 
   final getIt = await configureDependencies(params.env);
   final taskWorker = await getIt.getAsync<TaskWorkerCase>();
-  unawaited(taskWorker.run());
+  unawaited(
+    runZonedGuarded(
+      taskWorker.run,
+      (e, _) => print(e),
+    ),
+  );
   print('${Isolate.current.debugName} started at ${DateTime.timestamp()}');
 
   // First message means stop command

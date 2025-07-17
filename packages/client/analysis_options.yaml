@@ -21,3 +21,10 @@ linter:
     lines_longer_than_80_chars: false
     avoid_catches_without_on_clauses: false
     avoid_positional_boolean_parameters: false
+
+bloc:
+  rules:
+    - avoid_public_fields
+    - avoid_flutter_imports
+    - avoid_public_bloc_methods
+    - prefer_void_public_cubit_methods
