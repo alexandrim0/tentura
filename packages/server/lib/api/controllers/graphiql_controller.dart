@@ -13,7 +13,7 @@ final class GraphiqlController extends BaseController {
   Future<Response> handler(Request request) async {
     try {
       return Response.ok(
-        renderGraphiql(graphqlEndpoint: kServerName + kPathGraphQLEndpointV2),
+        renderGraphiql(graphqlEndpoint: kServerName + kPathGraphQLEndpoint),
         headers: {kHeaderContentType: kContentTypeHtml},
       );
     } catch (e) {

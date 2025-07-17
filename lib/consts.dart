@@ -37,9 +37,9 @@ const kAppTitle = 'Tentura';
 
 const kPathIcons = '/icons';
 const kPathAppLinkView = '/shared/view';
+const kPathWebSocketEndpoint = '/api/v2/ws';
 const kPathGraphQLEndpoint = '/api/v1/graphql';
 const kPathGraphQLEndpointV2 = '/api/v2/graphql';
-const kPathWebSocketEndpoint = '/api/v2/ws';
 
 const String kUserAgent = kAppTitle;
 

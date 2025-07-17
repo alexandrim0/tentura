@@ -1,4 +1,3 @@
-import 'package:grpc/grpc.dart' as grpc;
 import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
@@ -50,27 +49,6 @@ class AuthMiddleware {
         }
         return innerHandler(request);
       };
-
-  ///
-  /// Check JWT, if success then place claims into request metadata as serialized JSON
-  ///
-  Future<grpc.GrpcError?> authInterceptor(grpc.ServiceCall call, _) async {
-    if (call.clientMetadata == null) {
-      return const grpc.GrpcError.unauthenticated('Auth header not found');
-    }
-
-    try {
-      call.clientMetadata![kContextJwtKey] = _authCase
-          .parseAndVerifyJwt(
-            token: _extractAuthTokenFromHeaders(call.clientMetadata!),
-          )
-          .asJson;
-    } catch (e) {
-      return grpc.GrpcError.unauthenticated(e.toString());
-    }
-
-    return null;
-  }
 
   //
   //

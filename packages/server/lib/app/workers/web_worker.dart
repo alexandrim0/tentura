@@ -5,7 +5,6 @@ import 'package:shelf_plus/shelf_plus.dart';
 import 'package:tentura_server/env.dart';
 import 'package:tentura_server/jaspr_options.dart';
 import 'package:tentura_server/api/root_router.dart';
-// import 'package:tentura_server/api/grpc_server.dart';
 
 import '../di.dart';
 
@@ -16,13 +15,6 @@ Future<void> serveWeb(({SendPort sendPort, Env env}) params) async {
   Jaspr.initializeApp(options: defaultJasprOptions);
   final getIt = await configureDependencies(params.env);
   await getIt.allReady();
-
-  // final grpcServer = getIt<GrpcServer>();
-  // await grpcServer.serve();
-  // print(
-  //   '${Isolate.current.debugName} grpc server listen '
-  //   '[${params.env.bindAddress}:${params.env.listenGrpcPort}]',
-  // );
 
   final webServer = await shelfRun(
     getIt<RootRouter>().routeHandler,
@@ -43,7 +35,6 @@ Future<void> serveWeb(({SendPort sendPort, Env env}) params) async {
 
   receivePort.close();
   await webServer.close();
-  // await grpcServer.shutdown();
   await getIt.reset();
   params.sendPort.send(null);
   print('${Isolate.current.debugName} stoped at ${DateTime.timestamp()}');

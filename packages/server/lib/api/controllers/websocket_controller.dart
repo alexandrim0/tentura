@@ -12,8 +12,8 @@ import 'package:tentura_server/domain/use_case/chat_case.dart';
 typedef UserSession = ({Timer timer, JwtEntity jwt, DateTime lastSeen});
 
 @Singleton(order: 3)
-final class ChatController {
-  ChatController(
+final class WebSocketController {
+  WebSocketController(
     this._env,
     this._authCase,
     this._chatCase,
@@ -40,11 +40,10 @@ final class ChatController {
       session.sender.close(1000, err);
     },
     onMessage: (session, data) => switch (data) {
-      final String value => _onTextMessage(
+      final String message => _onTextMessage(
         session,
-        jsonDecode(value) as Map<String, dynamic>,
+        jsonDecode(message) as Map<String, dynamic>,
       ),
-      final List<int> value => _onBinaryMessage(session, value),
       _ => throw UnsupportedError('Unsupported payload type'),
     },
   );
@@ -92,16 +91,6 @@ final class ChatController {
     } catch (e) {
       print(e);
     }
-  }
-
-  //
-  //
-  //
-  Future<void> _onBinaryMessage(
-    WebSocketSession session,
-    List<int> message,
-  ) async {
-    print('${message.runtimeType} [$message]');
   }
 
   //

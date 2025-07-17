@@ -4,7 +4,7 @@ import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 
 import 'package:tentura_server/env.dart';
 
-import 'controllers/chat_controller.dart';
+import 'controllers/websocket_controller.dart';
 import 'controllers/graphiql_controller.dart';
 import 'controllers/graphql_controller.dart';
 import 'controllers/shared_view_controller.dart';
@@ -25,7 +25,7 @@ class RootRouter {
 
   final AuthMiddleware _authMiddleware;
 
-  final ChatController _chatController;
+  final WebSocketController _chatController;
 
   final GraphqlController _graphqlController;
 
