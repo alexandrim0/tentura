@@ -49,7 +49,6 @@ class ChatRepository {
       'type': 'message',
       'path': 'p2p_chat',
       'payload': {
-        'type': 'request',
         'intent': 'send_message',
         'message': {
           'receiver_id': receiverId,
@@ -68,7 +67,6 @@ class ChatRepository {
       'type': 'message',
       'path': 'p2p_chat',
       'payload': {
-        'type': 'request',
         'intent': 'mark_as_delivered',
         'message': {
           'message_id': messageId,

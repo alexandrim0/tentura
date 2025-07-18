@@ -3,17 +3,14 @@ import 'package:uuid/uuid_value.dart';
 import 'package:tentura_server/domain/entity/jwt_entity.dart';
 import 'package:tentura_server/domain/use_case/p2p_chat_case.dart';
 
-mixin WebsocketPathP2pChat {
+base mixin WebsocketPathP2pChat {
   P2pChatCase get p2pChatCase;
 
-  //
-  //
-  //
   Future<void> onP2pChat(
     JwtEntity jwt,
     Map<String, dynamic> payload,
   ) async {
-    final intent = payload['intent']! as String;
+    final intent = payload['intent'];
     final message = payload['message']! as Map<String, dynamic>;
     switch (intent) {
       case 'send_message':
@@ -32,6 +29,7 @@ mixin WebsocketPathP2pChat {
         );
 
       default:
+        throw UnsupportedError('$intent is not supported!');
     }
   }
 }

@@ -8,6 +8,7 @@ final class WebSocketController extends WebsocketRouter {
   WebSocketController(
     super.env,
     super.authCase,
+    super.userPresenceCase,
     super.p2pChatCase,
   );
 
@@ -22,6 +23,7 @@ final class WebSocketController extends WebsocketRouter {
     },
     onMessage: (session, data) => switch (data) {
       final String message => onTextMessage(session, message),
+      final List<int> message => onBinaryMessage(session, message),
       _ => throw UnsupportedError('Unsupported payload type'),
     },
   );
