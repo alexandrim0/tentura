@@ -27,8 +27,6 @@ class Env {
     String? bindAddress,
     int? listenWebPort,
     bool? isPongEnabled,
-    // gRPC server
-    int? listenGrpcPort,
     // Postgres
     String? pgHost,
     int? pgPort,
@@ -48,6 +46,7 @@ class Env {
     Duration? meritrankCalculateTimeout,
     // Chat
     Duration? chatPollingInterval,
+    int? chatDefaultBatchSize,
   }) : // Common
        printEnv = printEnv ?? _env['PRINT_ENV'] == 'true',
        isDebugModeOn = isDebugModeOn ?? _env['DEBUG_MODE'] == 'true',
@@ -80,9 +79,6 @@ class Env {
        listenWebPort =
            listenWebPort ?? int.tryParse(_env['PORT'] ?? '') ?? 2080,
        isPongEnabled = isPongEnabled ?? _env['PONG_ENABLED'] != 'false',
-       // gRPC server
-       listenGrpcPort =
-           listenGrpcPort ?? int.tryParse(_env['GRPC_PORT'] ?? '') ?? 2090,
        // Postgres
        pgHost = pgHost ?? _env['POSTGRES_HOST'] ?? 'postgres',
        pgPort = pgPort ?? int.tryParse(_env['POSTGRES_PORT'] ?? '') ?? 5432,
@@ -117,7 +113,11 @@ class Env {
            chatPollingInterval ??
            Duration(
              seconds: int.tryParse(_env['CHAT_POLLING_INTERVAL'] ?? '') ?? 1,
-           )
+           ),
+       chatDefaultBatchSize =
+           chatDefaultBatchSize ??
+           int.tryParse(_env['CHAT_DEFAULT_BATCH_SIZE'] ?? '') ??
+           10
   //
   {
     _printEnvInfo();
@@ -168,9 +168,6 @@ class Env {
   final int listenWebPort;
 
   final bool isPongEnabled;
-
-  // gRPC server
-  final int listenGrpcPort;
 
   // Task Worker
   final Duration taskOnEmptyDelay;
@@ -224,8 +221,13 @@ class Env {
   // Meritrank service
   final Duration meritrankCalculateTimeout;
 
+  // Chat
   final Duration chatPollingInterval;
 
+  final int chatDefaultBatchSize;
+
+  //
+  //
   void _printEnvInfo() {
     if (printEnv) {
       print('Debug Mode: [$isDebugModeOn]');

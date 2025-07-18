@@ -2,15 +2,29 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:shelf_plus/shelf_plus.dart';
 
-import 'websocket_message_handler.dart';
+import 'package:tentura_server/domain/use_case/p2p_chat_case.dart';
 
-base class WebsocketRouter extends WebsocketMessageHandler {
-  WebsocketRouter(
+import 'path_handler/websocket_path_p2p_chat.dart';
+import 'path_handler/websocket_path_user_presence.dart';
+import 'websocket_message_router.dart';
+import 'websocket_session_handler_base.dart';
+import 'websocket_subscription_router.dart';
+
+base class WebsocketRouterBase extends WebsocketSessionHandlerBase
+    with
+        WebsocketPathP2pChat,
+        WebsocketPathUserPresence,
+        WebsocketMessageRouter,
+        WebsocketSubscriptionRouter {
+  WebsocketRouterBase(
     super.env,
     super.authCase,
     super.userPresenceCase,
-    super.p2pChatCase,
+    this.p2pChatCase,
   );
+
+  @override
+  final P2pChatCase p2pChatCase;
 
   ///
   /// Process text message
@@ -52,6 +66,7 @@ base class WebsocketRouter extends WebsocketMessageHandler {
     'ping' => onPing(session, message),
     'auth' => onAuth(session, message),
     'message' => onMessage(session, message),
+    'subscription' => onSubscription(session, message),
     _ => throw UnsupportedError('Unsupported message type'),
   };
 }

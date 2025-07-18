@@ -41,8 +41,12 @@ class P2pChatCase {
     }
   }
 
-  Future<Object?> onMessage(dynamic message) async {
-    print('${message.runtimeType} [$message]');
-    return _env.environment;
+  Future<void> onUpdatesSubscription({
+    required DateTime from,
+    required String userId,
+    int? batchSize,
+  }) async {
+    // TBD: create timer worker
+    batchSize ??= _env.chatDefaultBatchSize;
   }
 }

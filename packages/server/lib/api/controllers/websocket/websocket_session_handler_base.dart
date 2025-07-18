@@ -9,8 +9,8 @@ import 'package:tentura_server/domain/entity/jwt_entity.dart';
 import 'package:tentura_server/domain/use_case/auth_case.dart';
 import 'package:tentura_server/domain/use_case/user_presence_case.dart';
 
-base class WebsocketSessionHandler {
-  WebsocketSessionHandler(
+base class WebsocketSessionHandlerBase {
+  WebsocketSessionHandlerBase(
     this.env,
     this.authCase,
     this.userPresenceCase,
@@ -130,6 +130,7 @@ base class WebsocketSessionHandler {
       '"intent":"${AuthRequestIntent.cnameSignOut}"}';
 }
 
+// TBD: move to entities, create <TimerWorker>[]
 class _UserSession {
   _UserSession({
     required this.timer,

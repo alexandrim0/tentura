@@ -41,10 +41,39 @@ class ChatRepository {
 
   //
   //
+  Stream<Iterable<ChatMessageEntity>> watchUpdatesWs({
+    required DateTime fromMoment,
+    int batchSize = 10,
+  }) {
+    _remoteApiService.webSocketSend(
+      // TBD: move to Model
+      jsonEncode({
+        'type': 'subscription',
+        'path': 'p2p_chat',
+        'payload': {
+          'intent': 'watch_updates',
+          'params': {
+            'batch_size': batchSize,
+            'from_timestamp': fromMoment.toIso8601String(),
+          },
+        },
+      }),
+    );
+    return _remoteApiService.webSocketTextualMessages
+    // TBD: create stream router to listen special kind of messages
+    .map(
+      // TBD: create Model and mapper
+      (e) => <ChatMessageEntity>[],
+    );
+  }
+
+  //
+  //
   Future<void> sendMessage({
     required String receiverId,
     required String content,
   }) async => _remoteApiService.webSocketSend(
+    // TBD: move to Model
     jsonEncode({
       'type': 'message',
       'path': 'p2p_chat',
@@ -63,6 +92,7 @@ class ChatRepository {
   Future<void> setMessageSeen({
     required String messageId,
   }) async => _remoteApiService.webSocketSend(
+    // TBD: move to Model
     jsonEncode({
       'type': 'message',
       'path': 'p2p_chat',

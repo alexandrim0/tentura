@@ -46,7 +46,12 @@ abstract class RemoteApiClientBase {
 
   AuthBox? _authBox;
 
-  Stream<dynamic> get webSocketMessages => _webSocket.messages;
+  Stream<String> get webSocketTextualMessages =>
+      _webSocket.messages.where((e) => e is String).map((e) => e as String);
+
+  Stream<Uint8List> get webSocketBinaryMessages => _webSocket.messages
+      .where((e) => e is Uint8List)
+      .map((e) => e as Uint8List);
 
   Stream<ConnectionState> get webSocketConnection => _webSocket.connection;
 
