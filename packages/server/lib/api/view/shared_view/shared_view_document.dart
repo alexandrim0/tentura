@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use //
-
 import 'package:jaspr/server.dart';
 
 import 'package:tentura_server/consts.dart';
@@ -87,7 +85,7 @@ class SharedViewDocument extends StatelessComponent {
     body: div(
       body,
       classes: 'card',
-      styles: const Styles.box(
+      styles: const Styles(
         width: Unit.percent(100),
         overflow: Overflow.hidden,
       ),

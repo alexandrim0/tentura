@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use //
-
 import 'package:jaspr/server.dart';
 
 import 'package:tentura_server/domain/entity/comment_entity.dart';
@@ -14,12 +12,12 @@ class CommentViewComponent extends StatelessComponent {
   @override
   Iterable<Component> build(BuildContext context) => [
     hr(
-      styles: const Styles.box(
+      styles: const Styles(
         border: Border.only(
           bottom: BorderSide.none(),
-          top: BorderSide.solid(color: Color.hex('#78839C')),
+          top: BorderSide.solid(color: Color('#78839C')),
         ),
-        margin: EdgeInsets.zero,
+        margin: Spacing.zero,
       ),
     ),
     div(
@@ -27,7 +25,7 @@ class CommentViewComponent extends StatelessComponent {
         img(
           src: comment.author.imageUrl,
           classes: 'card-avatar__image',
-          styles: const Styles.box(
+          styles: const Styles(
             width: Unit.pixels(60),
             height: Unit.pixels(60),
             minWidth: Unit.pixels(60),
@@ -38,31 +36,35 @@ class CommentViewComponent extends StatelessComponent {
             p(
               [text(comment.author.title)],
               classes: 'card-avatar__text',
-              styles: const Styles.combine([
-                Styles.text(fontWeight: FontWeight.bolder),
-                Styles.box(margin: EdgeInsets.only(bottom: kEdgeInsetsSXS)),
-              ]),
+              styles: const Styles(
+                fontWeight: FontWeight.bolder,
+                margin: Spacing.only(bottom: kEdgeInsetsSXS),
+              ),
             ),
-            p([text(comment.content)]),
+            p([
+              text(comment.content),
+            ]),
           ],
-          styles: const Styles.box(
-            margin: EdgeInsets.only(left: kEdgeInsetsM, top: kEdgeInsetsXS),
+          styles: const Styles(
+            margin: Spacing.only(
+              left: kEdgeInsetsM,
+              top: kEdgeInsetsXS,
+            ),
           ),
         ),
       ],
-      styles: const Styles.combine([
-        Styles.flexbox(direction: FlexDirection.row),
-        Styles.raw({'flex-grow': '1'}),
-        Styles.box(
-          padding: EdgeInsets.only(
-            left: kEdgeInsetsM,
-            right: kEdgeInsetsM,
-            bottom: kEdgeInsetsMS,
-            top: kEdgeInsetsSXS,
-          ),
+      styles: const Styles(
+        display: Display.flex,
+        flex: Flex(grow: 1),
+        flexDirection: FlexDirection.row,
+        padding: Spacing.only(
+          left: kEdgeInsetsM,
+          right: kEdgeInsetsM,
+          bottom: kEdgeInsetsMS,
+          top: kEdgeInsetsSXS,
         ),
-        Styles.background(color: Color.variable('--comment-bg')),
-      ]),
+        color: Color.variable('--comment-bg'),
+      ),
     ),
   ];
 }
