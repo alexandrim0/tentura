@@ -1,16 +1,14 @@
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid_value.dart';
 
-import 'package:tentura_server/env.dart';
 import 'package:tentura_server/data/repository/p2p_message_repository.dart';
 
+import '../entity/p2p_message_entity.dart';
 import '../exception.dart';
 
 @Injectable(order: 2)
 class P2pChatCase {
-  P2pChatCase(this._env, this._p2pMessageRepository);
-
-  final Env _env;
+  P2pChatCase(this._p2pMessageRepository);
 
   final P2pMessageRepository _p2pMessageRepository;
 
@@ -41,12 +39,13 @@ class P2pChatCase {
     }
   }
 
-  Future<void> onUpdatesSubscription({
+  Future<Iterable<P2pMessageEntity>> fetchByUserId({
     required DateTime from,
     required String userId,
-    int? batchSize,
-  }) async {
-    // TBD: create timer worker
-    batchSize ??= _env.chatDefaultBatchSize;
-  }
+    required int batchSize,
+  }) => _p2pMessageRepository.fetchByUserId(
+    id: userId,
+    from: from,
+    limit: batchSize,
+  );
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:uuid/uuid.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:tentura/consts.dart';
@@ -40,8 +41,9 @@ class ChatCubit extends Cubit<ChatState> {
       _updatesStream
           .where(
             (m) =>
-                (m.reciever == state.friend.id && m.sender == state.me.id) ||
-                (m.reciever == state.me.id && m.sender == state.friend.id),
+                (m.receiverId == state.friend.id &&
+                    m.senderId == state.me.id) ||
+                (m.receiverId == state.me.id && m.senderId == state.friend.id),
           )
           .listen(
             _onMessage,
@@ -62,6 +64,7 @@ class ChatCubit extends Cubit<ChatState> {
     try {
       await _chatRepository.sendMessage(
         receiverId: state.friend.id,
+        clientId: const Uuid().v4(),
         content: text.trim(),
       );
     } catch (e) {

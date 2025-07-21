@@ -1,3 +1,4 @@
+import 'package:uuid/uuid.dart';
 import 'package:drift/drift.dart';
 import 'package:postgres/postgres.dart';
 import 'package:injectable/injectable.dart';

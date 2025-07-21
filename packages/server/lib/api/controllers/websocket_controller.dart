@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
-import 'websocket/websocket_router_base.dart';
+import 'websocket/router/websocket_router_base.dart';
 
 @Singleton(order: 3)
 final class WebSocketController extends WebsocketRouterBase {

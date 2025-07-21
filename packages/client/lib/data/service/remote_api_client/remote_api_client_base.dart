@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:ferry/ferry.dart' show OperationRequest, OperationResponse;
 import 'package:flutter/foundation.dart';
 import 'package:web_socket_client/web_socket_client.dart';
@@ -30,6 +31,7 @@ abstract class RemoteApiClientBase {
       wsPingInterval,
       (_) => _webSocket.send('{"type":"ping"}'),
     );
+    _messagesSubscription.resume();
   }
 
   final String userAgent;
@@ -39,22 +41,53 @@ abstract class RemoteApiClientBase {
   final Duration wsPingInterval;
   final Duration authJwtExpiresIn;
 
+  final _messagesController =
+      StreamController<Map<String, dynamic>>.broadcast();
+
   late final Timer _wsPingTimer;
+
   late final WebSocket _webSocket;
+
+  late final _messagesSubscription = _webSocket.messages.listen(
+    (event) {
+      if (event is String) {
+        final json = jsonDecode(event);
+        if (json is Map<String, dynamic>) {
+          _messagesController.add(json);
+        }
+      } else if (event is Uint8List) {
+        // TBD:
+        // _messagesController.add(event);
+      }
+    },
+    cancelOnError: false,
+    onDone: _messagesController.close,
+  );
 
   bool _tokenLocked = false;
 
   AuthBox? _authBox;
 
-  Stream<String> get webSocketTextualMessages =>
-      _webSocket.messages.where((e) => e is String).map((e) => e as String);
-
-  Stream<Uint8List> get webSocketBinaryMessages => _webSocket.messages
-      .where((e) => e is Uint8List)
-      .map((e) => e as Uint8List);
+  Stream<Map<String, dynamic>> get webSocketMessages =>
+      _messagesController.stream;
 
   Stream<ConnectionState> get webSocketConnection => _webSocket.connection;
 
+  //
+  //
+  //
+  @mustCallSuper
+  Future<void> close() async {
+    await _messagesSubscription.cancel();
+    await _messagesController.close();
+    _wsPingTimer.cancel();
+    _webSocket.close();
+    dropAuth();
+  }
+
+  ///
+  ///
+  ///
   void webSocketSend(dynamic message) => _webSocket.send(message);
 
   ///
@@ -86,16 +119,6 @@ abstract class RemoteApiClientBase {
   void dropAuth() {
     _authBox = null;
     _tokenLocked = false;
-  }
-
-  //
-  //
-  //
-  @mustCallSuper
-  Future<void> close() async {
-    dropAuth();
-    _wsPingTimer.cancel();
-    _webSocket.close();
   }
 
   //

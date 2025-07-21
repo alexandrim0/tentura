@@ -1,9 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:uuid/uuid_value.dart';
 
 import 'package:tentura_server/domain/entity/jwt_entity.dart';
 import 'package:tentura_server/domain/use_case/p2p_chat_case.dart';
 
-base mixin WebsocketPathP2pChat {
+import '../session/websocket_session_handler_base.dart';
+
+base mixin WebsocketPathP2pChat on WebsocketSessionHandlerBase {
   P2pChatCase get p2pChatCase;
 
   Future<void> onP2pChatMessage(
@@ -31,20 +35,47 @@ base mixin WebsocketPathP2pChat {
   }
 
   Future<void> onP2pChatSubscription(
-    JwtEntity jwt,
+    WebSocketSession session,
     Map<String, dynamic> payload,
-  ) {
+  ) async {
+    final jwt = getJwtBySession(session);
     final params = payload['params'];
-    if (params is Map<String, dynamic>) {
-      return switch (payload['intent']) {
-        'watch_updates' => p2pChatCase.onUpdatesSubscription(
-          userId: jwt.sub,
-          batchSize: params['batch_size'] as int?,
-          from: DateTime.parse(params['from_timestamp']! as String),
-        ),
-        final intent => throw UnsupportedError('$intent is not supported!'),
-      };
+    if (params is! Map<String, dynamic>) {
+      throw const FormatException('Invalid params');
     }
-    throw const FormatException('Invalid params');
+
+    final batchSize = params['batch_size'] as int? ?? env.chatDefaultBatchSize;
+
+    var fromTimestamp = DateTime.parse(params['from_timestamp']! as String);
+
+    return switch (payload['intent']) {
+      'watch_updates' => addWorker(
+        session,
+        worker: Timer.periodic(
+          env.chatPollingInterval,
+          (_) async {
+            final messages = await p2pChatCase.fetchByUserId(
+              userId: jwt.sub,
+              from: fromTimestamp,
+              batchSize: batchSize,
+            );
+            if (messages.isNotEmpty) {
+              fromTimestamp = messages.last.createdAt;
+              session.send(
+                jsonEncode({
+                  'type': 'subscription',
+                  'path': 'p2p_chat',
+                  'payload': {
+                    'intent': 'watch_updates',
+                    'messages': messages.map((e) => e.toJson()).toList(),
+                  },
+                }),
+              );
+            }
+          },
+        ),
+      ),
+      final intent => throw UnsupportedError('$intent is not supported!'),
+    };
   }
 }

@@ -4,11 +4,12 @@ import '../../domain/entity/chat_message_entity.dart';
 
 extension type const ChatMessageLocalModel(Message i) implements Message {
   ChatMessageEntity toEntity() => ChatMessageEntity(
-    id: i.id,
-    sender: i.subjectId,
-    reciever: i.objectId,
+    clientId: i.id,
+    serverId: i.id,
+    senderId: i.subjectId,
+    receiverId: i.objectId,
     createdAt: i.createdAt,
-    updatedAt: i.updatedAt,
+    deliveredAt: i.updatedAt,
     content: i.content,
     status: i.status,
   );

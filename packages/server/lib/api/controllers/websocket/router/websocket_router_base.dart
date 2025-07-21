@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:shelf_plus/shelf_plus.dart';
 
 import 'package:tentura_server/domain/use_case/p2p_chat_case.dart';
 
-import 'path_handler/websocket_path_p2p_chat.dart';
-import 'path_handler/websocket_path_user_presence.dart';
+import '../path_handler/websocket_path_p2p_chat.dart';
+import '../path_handler/websocket_path_user_presence.dart';
 import 'websocket_message_router.dart';
-import 'websocket_session_handler_base.dart';
+import '../session/websocket_session_handler_base.dart';
 import 'websocket_subscription_router.dart';
 
 base class WebsocketRouterBase extends WebsocketSessionHandlerBase

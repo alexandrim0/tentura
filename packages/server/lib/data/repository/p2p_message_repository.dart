@@ -1,7 +1,10 @@
 import 'package:drift_postgres/drift_postgres.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura_server/domain/entity/p2p_message_entity.dart';
+
 import '../database/tentura_db.dart';
+import '../mapper/p2p_message_mapper.dart';
 
 @Injectable(
   env: [
@@ -53,38 +56,23 @@ class P2pMessageRepository {
         ),
       );
 
-  // Future<P2pMessageEntity?> fetchById(String id) => _database
-  //     .managers
-  //     .p2pMessages
-  //     .filter((e) => e.id(UuidValue.fromString(id)))
-  //     .getSingleOrNull()
-  //     .then((e) => e == null ? null : p2pMessageModelToEntity(e));
-
-  // Future<void> fetchBySubjectId({
-  //   required String id,
-  //   required DateTime from,
-  //   int limit = 10,
-  // }) async {
-  //   await _database.managers.p2pMessages
-  //       .filter(
-  //         (e) =>
-  //             e.subject.id(id) &
-  //             e.createdAt.column.isBiggerThanValue(PgDateTime(from)),
-  //       )
-  //       .get(limit: limit);
-  // }
-
-  // Future<void> fetchByObjectId({
-  //   required String id,
-  //   required DateTime from,
-  //   int limit = 10,
-  // }) async {
-  //   await _database.managers.p2pMessages
-  //       .filter(
-  //         (e) =>
-  //             e.object.id(id) &
-  //             e.createdAt.column.isBiggerThanValue(PgDateTime(from)),
-  //       )
-  //       .get(limit: limit);
-  // }
+  //
+  //
+  Future<Iterable<P2pMessageEntity>> fetchByUserId({
+    required DateTime from,
+    required String id,
+    required int limit,
+  }) => _database.managers.p2pMessages
+      .filter(
+        (e) =>
+            (e.receiverId.id(id) &
+                e.createdAt.column.isBiggerThanValue(PgDateTime(from))) |
+            (e.senderId.id(id) &
+                e.createdAt.column.isBiggerThanValue(PgDateTime(from))) |
+            (e.senderId.id(id) &
+                e.deliveredAt.column.isBiggerThanValue(PgDateTime(from))),
+      )
+      .orderBy((o) => o.createdAt.asc())
+      .get(limit: limit)
+      .then((e) => e.map(p2pMessageModelToEntity));
 }

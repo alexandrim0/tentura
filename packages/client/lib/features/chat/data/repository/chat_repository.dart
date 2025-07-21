@@ -8,7 +8,6 @@ import 'package:tentura/data/database/database.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 
 import '../../domain/entity/chat_message_entity.dart';
-import '../gql/_g/messages_stream.req.gql.dart';
 import '../model/chat_message_local_model.dart';
 import '../model/chat_message_remote_model.dart';
 
@@ -28,22 +27,6 @@ class ChatRepository {
   Stream<Iterable<ChatMessageEntity>> watchUpdates({
     required DateTime fromMoment,
     int batchSize = 10,
-  }) => _remoteApiService
-      .request(
-        GMessageStreamReq(
-          (b) => b.vars
-            ..updated_at = fromMoment
-            ..batch_size = batchSize,
-        ),
-      )
-      .map((r) => r.dataOrThrow(label: _label).message_stream)
-      .map((v) => v.map((e) => (e as ChatMessageRemoteModel).toEntity()));
-
-  //
-  //
-  Stream<Iterable<ChatMessageEntity>> watchUpdatesWs({
-    required DateTime fromMoment,
-    int batchSize = 10,
   }) {
     _remoteApiService.webSocketSend(
       // TBD: move to Model
@@ -59,18 +42,33 @@ class ChatRepository {
         },
       }),
     );
-    return _remoteApiService.webSocketTextualMessages
-    // TBD: create stream router to listen special kind of messages
-    .map(
-      // TBD: create Model and mapper
-      (e) => <ChatMessageEntity>[],
-    );
+    return _remoteApiService.webSocketMessages
+        .where(
+          (e) =>
+              e['type'] == 'subscription' &&
+              e['path'] == 'p2p_chat' &&
+              e['payload'] is Map<String, dynamic> &&
+              // ignore: avoid_dynamic_calls // temporary
+              e['payload']['intent'] == 'watch_updates' &&
+              // ignore: avoid_dynamic_calls // temporary
+              e['payload']['messages'] is List<dynamic>,
+        )
+        // ignore: avoid_dynamic_calls // temporary
+        .map((e) => e['payload']['messages'] as List<dynamic>)
+        .map(
+          (e) => e.map(
+            (m) => ChatMessageRemoteModel.fromJson(
+              m as Map<String, dynamic>,
+            ).asEntity,
+          ),
+        );
   }
 
   //
   //
   Future<void> sendMessage({
     required String receiverId,
+    required String clientId,
     required String content,
   }) async => _remoteApiService.webSocketSend(
     // TBD: move to Model
@@ -81,6 +79,7 @@ class ChatRepository {
         'intent': 'send_message',
         'message': {
           'receiver_id': receiverId,
+          'client_id': clientId,
           'content': content,
         },
       },
@@ -114,11 +113,11 @@ class ChatRepository {
       for (final message in messages)
         messageCompanion(
           id: message.id,
-          objectId: message.reciever,
-          subjectId: message.sender,
+          objectId: message.receiverId,
+          subjectId: message.senderId,
           content: message.content,
           createdAt: message.createdAt,
-          updatedAt: message.updatedAt,
+          updatedAt: message.deliveredAt ?? message.createdAt,
           status: message.status,
         ),
     ],
@@ -163,5 +162,5 @@ class ChatRepository {
       .getSingleOrNull()
       .then((e) => e?.updatedAt.toUtc() ?? zeroAge);
 
-  static const _label = 'Chat';
+  // static const _label = 'Chat';
 }

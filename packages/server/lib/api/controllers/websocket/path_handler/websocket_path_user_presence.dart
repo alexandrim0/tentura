@@ -1,9 +1,10 @@
+import 'package:tentura_root/domain/enums.dart';
+
 import 'package:tentura_server/domain/entity/jwt_entity.dart';
-import 'package:tentura_server/domain/use_case/user_presence_case.dart';
 
-base mixin WebsocketPathUserPresence {
-  UserPresenceCase get userPresenceCase;
+import '../session/websocket_session_handler_base.dart';
 
+base mixin WebsocketPathUserPresence on WebsocketSessionHandlerBase {
   Future<void> onUserPresence(
     JwtEntity jwt,
     Map<String, dynamic> payload,

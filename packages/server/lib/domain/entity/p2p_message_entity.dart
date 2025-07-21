@@ -17,4 +17,14 @@ abstract class P2pMessageEntity with _$P2pMessageEntity {
   const P2pMessageEntity._();
 
   bool get isDelivered => deliveredAt != null;
+
+  Map<String, dynamic> toJson() => {
+    'client_id': clientId,
+    'server_id': serverId,
+    'sender_id': senderId,
+    'receiver_id': recieverId,
+    'created_at': createdAt.toIso8601String(),
+    'delivered_at': deliveredAt?.toIso8601String(),
+    'content': content,
+  };
 }

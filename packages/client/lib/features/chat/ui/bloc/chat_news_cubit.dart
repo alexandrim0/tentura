@@ -132,17 +132,19 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
   void _updateStateWithMessage(ChatMessageEntity message) {
     switch (message.status) {
       case ChatMessageStatus.seen:
-        state.messages[message.sender]?.removeWhere((e) => e.id == message.id);
+        state.messages[message.senderId]?.removeWhere(
+          (e) => e.id == message.id,
+        );
 
       case ChatMessageStatus.sent:
-        if (state.messages.containsKey(message.sender)) {
-          final messagesOfSender = state.messages[message.sender]!;
+        if (state.messages.containsKey(message.senderId)) {
+          final messagesOfSender = state.messages[message.senderId]!;
           final index = messagesOfSender.indexWhere((e) => e.id == message.id);
           index < 0
               ? messagesOfSender.add(message)
               : messagesOfSender[index] = message;
         } else {
-          state.messages[message.sender] = [message];
+          state.messages[message.senderId] = [message];
         }
 
       // ignore: no_default_cases //

@@ -9,6 +9,10 @@ import 'package:tentura_server/domain/entity/jwt_entity.dart';
 import 'package:tentura_server/domain/use_case/auth_case.dart';
 import 'package:tentura_server/domain/use_case/user_presence_case.dart';
 
+import 'websocket_user_session.dart';
+
+export 'package:shelf_plus/shelf_plus.dart' show WebSocketSession;
+
 base class WebsocketSessionHandlerBase {
   WebsocketSessionHandlerBase(
     this.env,
@@ -22,17 +26,15 @@ base class WebsocketSessionHandlerBase {
 
   final UserPresenceCase userPresenceCase;
 
-  final _sessions = <WebSocketSession, _UserSession>{};
+  final _sessions = <WebSocketSession, WebsocketUserSession>{};
 
   ///
   /// Updates last seen timestamp
   ///
   JwtEntity? touchSession(WebSocketSession session) {
-    final jwt = _sessions[session]?.jwt;
-    if (jwt != null) {
-      _sessions[session]?.lastSeen = DateTime.now();
-    }
-    return jwt;
+    final userSession = _sessions[session];
+    userSession?.touch();
+    return userSession?.jwt;
   }
 
   ///
@@ -40,7 +42,7 @@ base class WebsocketSessionHandlerBase {
   ///
   JwtEntity? removeSession(WebSocketSession session) {
     final removedSession = _sessions.remove(session);
-    removedSession?.timer.cancel();
+    removedSession?.cancel();
     return removedSession?.jwt;
   }
 
@@ -49,6 +51,14 @@ base class WebsocketSessionHandlerBase {
   ///
   JwtEntity getJwtBySession(WebSocketSession session) =>
       _sessions[session]?.jwt ?? (throw const UnauthorizedException());
+
+  ///
+  /// Add Timer worker for given session
+  ///
+  void addWorker(
+    WebSocketSession session, {
+    required Timer worker,
+  }) => _sessions[session]?.addWorker(worker);
 
   ///
   /// Process type 'ping' and update presence
@@ -78,7 +88,8 @@ base class WebsocketSessionHandlerBase {
         final jwt = authCase.parseAndVerifyJwt(
           token: message['token']! as String,
         );
-        _addSession(session, jwt: jwt);
+        removeSession(session);
+        _sessions[session] = WebsocketUserSession(jwt);
         session.send(_authLogInResponse);
         await userPresenceCase.update(
           userId: jwt.sub,
@@ -99,26 +110,6 @@ base class WebsocketSessionHandlerBase {
     }
   }
 
-  ///
-  /// Remove session if exists, then add the new one
-  ///
-  void _addSession(
-    WebSocketSession session, {
-    required JwtEntity jwt,
-  }) {
-    removeSession(session);
-    _sessions[session] = _UserSession(
-      lastSeen: DateTime.now(),
-      timer: Timer.periodic(
-        env.chatPollingInterval,
-        (timer) {
-          // TBD: poll updates from DB
-        },
-      ),
-      jwt: jwt,
-    );
-  }
-
   static const _authLogInResponse =
       '{"type":"auth", '
       '"result":"success", '
@@ -128,18 +119,4 @@ base class WebsocketSessionHandlerBase {
       '{"type":"auth", '
       '"result":"success", '
       '"intent":"${AuthRequestIntent.cnameSignOut}"}';
-}
-
-// TBD: move to entities, create <TimerWorker>[]
-class _UserSession {
-  _UserSession({
-    required this.timer,
-    required this.jwt,
-    required this.lastSeen,
-  });
-
-  final Timer timer;
-  final JwtEntity jwt;
-
-  DateTime lastSeen;
 }
