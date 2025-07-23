@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print //
-
 import 'package:injectable/injectable.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -9,7 +7,7 @@ import 'package:tentura/env.dart';
 @singleton
 class FirebaseService {
   @FactoryMethod(preResolve: true)
-  static Future<FirebaseService> initializeFirebase(Env env) async {
+  static Future<FirebaseService> create(Env env) async {
     if (env.firebaseApiKey.isEmpty) {
       return _FirebaseServiceFake(env);
     }
@@ -25,29 +23,23 @@ class FirebaseService {
       ),
     );
 
-    FirebaseMessaging.instance.onTokenRefresh.listen(
-      // ignore: unnecessary_lambdas //
-      (fcmToken) {
-        print('Refreshed FCM token: [$fcmToken]');
-      },
-      onError: print,
-      cancelOnError: false,
-    );
-
-    await FirebaseMessaging.instance.requestPermission(
-      provisional: true,
-    );
-
-    final fcmToken = await FirebaseMessaging.instance.getToken();
-    print('FCM token: [$fcmToken]');
-
     return FirebaseService(env);
   }
 
   FirebaseService(this._env);
 
+  Stream<String> get onTokenRefresh => _firebaseMessaging.onTokenRefresh;
+
+  Future<void> requestPermission() => _firebaseMessaging.requestPermission(
+    provisional: true,
+  );
+
+  Future<String?> getToken() => _firebaseMessaging.getToken();
+
   // ignore: unused_field //
   final Env _env;
+
+  static final _firebaseMessaging = FirebaseMessaging.instance;
 }
 
 class _FirebaseServiceFake implements FirebaseService {
@@ -56,4 +48,13 @@ class _FirebaseServiceFake implements FirebaseService {
   @override
   // ignore: unused_field //
   final Env _env;
+
+  @override
+  Stream<String> get onTokenRefresh => const Stream.empty();
+
+  @override
+  Future<String?> getToken() => Future.value();
+
+  @override
+  Future<void> requestPermission() => Future.value();
 }

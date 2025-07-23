@@ -40,13 +40,17 @@ const kPathAppLinkView = '/shared/view';
 const kPathWebSocketEndpoint = '/api/v2/ws';
 const kPathGraphQLEndpoint = '/api/v1/graphql';
 const kPathGraphQLEndpointV2 = '/api/v2/graphql';
+const kPathFirebaseSwJs = '/firebase-messaging-sw.js';
 
 const String kUserAgent = kAppTitle;
 
 const kContentTypeHtml = 'text/html';
+const kContentTextPlain = 'text/plain';
 const kContentTypeJpeg = 'image/jpeg';
 const kContentApplicationJson = 'application/json';
+const kContentApplicationJavaScript = 'application/javascript';
 
+const kHeaderEtag = 'Etag';
 const kHeaderAccept = 'Accept';
 const kHeaderUserAgent = 'User-Agent';
 const kHeaderContentType = 'Content-Type';

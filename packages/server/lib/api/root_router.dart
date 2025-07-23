@@ -4,6 +4,7 @@ import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 
 import 'package:tentura_server/env.dart';
 
+import 'controllers/firebase_sw_controller.dart';
 import 'controllers/websocket_controller.dart';
 import 'controllers/graphiql_controller.dart';
 import 'controllers/graphql_controller.dart';
@@ -18,6 +19,7 @@ class RootRouter {
     this._chatController,
     this._graphqlController,
     this._graphiqlController,
+    this._firebaseSwController,
     this._sharedViewController,
   );
 
@@ -30,6 +32,8 @@ class RootRouter {
   final GraphqlController _graphqlController;
 
   final GraphiqlController _graphiqlController;
+
+  final FirebaseSwController _firebaseSwController;
 
   final SharedViewController _sharedViewController;
 
@@ -47,6 +51,7 @@ class RootRouter {
       ..get('/health', () => 'I`m fine!')
       ..get('/graphiql', _graphiqlController.handler)
       ..get(kPathAppLinkView, _sharedViewController.handler)
+      ..get(kPathFirebaseSwJs, _firebaseSwController.handler)
       ..get(kPathWebSocketEndpoint, _chatController.handler)
       ..post(
         kPathGraphQLEndpointV2,

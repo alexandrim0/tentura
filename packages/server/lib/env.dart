@@ -17,16 +17,19 @@ class Env {
     Uri? serverUri,
     bool? printEnv,
     bool? renderSharedPreview,
+
     // Auth
     bool? isNeedInvite,
     Duration? jwtExpiresIn,
     Duration? invitationTTL,
     String? publicKey,
     String? privateKey,
+
     // Web server
     String? bindAddress,
     int? listenWebPort,
     bool? isPongEnabled,
+
     // Postgres
     String? pgHost,
     int? pgPort,
@@ -35,18 +38,30 @@ class Env {
     String? pgPassword,
     int? maxConnectionAge,
     int? maxConnectionCount,
+
     // S3 storage
     String? kS3AccessKey,
     String? kS3SecretKey,
     String? kS3Endpoint,
     String? kS3Bucket,
+
     // Task Worker
     Duration? taskOnEmptyDelay,
+
     // Meritrank service
     Duration? meritrankCalculateTimeout,
+
     // Chat
     Duration? chatPollingInterval,
     int? chatDefaultBatchSize,
+
+    // Firebase
+    String? fbAppId,
+    String? fbApiKey,
+    String? fbSenderId,
+    String? fbProjectId,
+    String? fbAuthDomain,
+    String? fbStorageBucket,
   }) : // Common
        printEnv = printEnv ?? _env['PRINT_ENV'] == 'true',
        isDebugModeOn = isDebugModeOn ?? _env['DEBUG_MODE'] == 'true',
@@ -58,6 +73,7 @@ class Env {
            workersCount ??
            int.tryParse(_env['WORKERS_COUNT'] ?? '') ??
            Platform.numberOfProcessors,
+
        // Auth
        invitationTTL = invitationTTL ?? kInvitationTTL,
        jwtExpiresIn = jwtExpiresIn ?? const Duration(seconds: kJwtExpiresIn),
@@ -74,11 +90,13 @@ class Env {
            '\n',
          ),
        ),
+
        // Web server
        bindAddress = bindAddress ?? _env['HOST'] ?? '0.0.0.0',
        listenWebPort =
            listenWebPort ?? int.tryParse(_env['PORT'] ?? '') ?? 2080,
        isPongEnabled = isPongEnabled ?? _env['PONG_ENABLED'] != 'false',
+
        // Postgres
        pgHost = pgHost ?? _env['POSTGRES_HOST'] ?? 'postgres',
        pgPort = pgPort ?? int.tryParse(_env['POSTGRES_PORT'] ?? '') ?? 5432,
@@ -93,21 +111,25 @@ class Env {
            maxConnectionCount ??
            int.tryParse(_env['POSTGRES_MAXCONN'] ?? '') ??
            25,
+
        // Task Worker
        taskOnEmptyDelay =
            taskOnEmptyDelay ??
            Duration(seconds: int.tryParse(_env['TASK_DELAY'] ?? '') ?? 1),
+
        // S3 storage
        kS3AccessKey = kS3AccessKey ?? _env['S3_ACCESS_KEY'] ?? '',
        kS3SecretKey = kS3SecretKey ?? _env['S3_SECRET_KEY'] ?? '',
        kS3Endpoint = kS3Endpoint ?? _env['S3_ENDPOINT'] ?? '',
        kS3Bucket = kS3Bucket ?? _env['S3_BUCKET'] ?? '',
+
        // Meritrank service
        meritrankCalculateTimeout =
            meritrankCalculateTimeout ??
            Duration(
              minutes: int.tryParse(_env['MR_CALCULATE_TIMEOUT'] ?? '') ?? 10,
            ),
+
        // Chat
        chatPollingInterval =
            chatPollingInterval ??
@@ -117,7 +139,14 @@ class Env {
        chatDefaultBatchSize =
            chatDefaultBatchSize ??
            int.tryParse(_env['CHAT_DEFAULT_BATCH_SIZE'] ?? '') ??
-           10
+           10,
+       // Firebase
+       fbAppId = fbAppId ?? _env['FB_APP_ID'] ?? '',
+       fbApiKey = fbApiKey ?? _env['FB_API_KEY'] ?? '',
+       fbSenderId = fbSenderId ?? _env['FB_SENDER_ID'] ?? '',
+       fbProjectId = fbProjectId ?? _env['FB_PROJECT_ID'] ?? '',
+       fbAuthDomain = fbAuthDomain ?? _env['FB_AUTH_DOMAIN'] ?? '',
+       fbStorageBucket = fbStorageBucket ?? _env['FB_STORAGE_BUCKET'] ?? ''
   //
   {
     _printEnvInfo();
@@ -225,6 +254,19 @@ class Env {
   final Duration chatPollingInterval;
 
   final int chatDefaultBatchSize;
+
+  // Firebase
+  final String fbAppId;
+
+  final String fbApiKey;
+
+  final String fbSenderId;
+
+  final String fbProjectId;
+
+  final String fbAuthDomain;
+
+  final String fbStorageBucket;
 
   //
   //

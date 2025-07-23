@@ -61,7 +61,11 @@ final class SharedViewController extends BaseController {
           },
         ),
       );
-      return Response(html.statusCode, body: html.body, headers: html.headers);
+      return Response(
+        html.statusCode,
+        body: html.body,
+        headers: html.headers,
+      );
     } on IdWrongException catch (e) {
       return Response.badRequest(body: e.toString());
     } on IdNotFoundException catch (e) {

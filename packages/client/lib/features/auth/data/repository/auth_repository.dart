@@ -15,7 +15,7 @@ import 'package:tentura/domain/entity/profile.dart';
 
 import '../../domain/exception.dart';
 import '../gql/_g/sign_in.req.gql.dart';
-// import '../gql/_g/sign_out.req.gql.dart';
+import '../gql/_g/sign_out.req.gql.dart';
 import '../gql/_g/sign_up.req.gql.dart';
 
 @singleton
@@ -35,8 +35,6 @@ class AuthRepository {
   final LocalSecureStorage _localSecureStorage;
 
   final _controller = StreamController<String>.broadcast();
-
-  final _random = Random.secure();
 
   late final _wsConnectionStateChangesSubscription = _remoteApiService
       .webSocketConnection
@@ -181,11 +179,10 @@ class AuthRepository {
       ..webSocketSend(_logOutMessage)
       ..dropAuth();
 
-    // TBD: remove
-    // await _remoteApiService
-    //     .request(GSignOutReq())
-    //     .firstWhere((e) => e.dataSource == DataSource.Link);
-    // _remoteApiService.dropAuth();
+    await _remoteApiService
+        .request(GSignOutReq())
+        .firstWhere((e) => e.dataSource == DataSource.Link);
+    _remoteApiService.dropAuth();
 
     await _setCurrentAccountId(null);
   }
@@ -314,6 +311,8 @@ class AuthRepository {
     'type': 'auth',
     'intent': const AuthRequestIntentSignOut().cname,
   });
+
+  static final _random = Random.secure();
 
   //
   static String _getAccountKey(String id) => '$_repositoryKey:Id:$id';
