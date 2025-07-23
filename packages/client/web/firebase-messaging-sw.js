@@ -4,12 +4,12 @@ importScripts("https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"
 importScripts("https://www.gstatic.com/firebasejs/11.9.1/firebase-messaging-compat.js");
 
 firebase.initializeApp({
-  appId: "{*os.getenv'FB_APP_ID'*}",
-  apiKey: "{*os.getenv'FB_API_KEY'*}",
-  projectId: "{*os.getenv'FB_PROJECT_ID'*}",
-  authDomain: "{*os.getenv'FB_AUTH_DOMAIN'*}",
-  storageBucket: "{*os.getenv'FB_STORAGE_BUCKET'*}",
-  messagingSenderId: "{*os.getenv'FB_SENDER_ID'*}",
+  appId: "",
+  apiKey: "",
+  projectId: "",
+  authDomain: "",
+  storageBucket: "",
+  messagingSenderId: "",
 });
 
 const messaging = firebase.messaging();
