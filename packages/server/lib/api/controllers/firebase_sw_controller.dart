@@ -43,7 +43,7 @@ messaging.onBackgroundMessage((payload) => {
     return Response.ok(
       _firebaseSwJs,
       headers: {
-        kHeaderContentType: kContentApplicationJson,
+        kHeaderContentType: kContentApplicationJavaScript,
         kHeaderEtag: _eTag,
       },
     );
