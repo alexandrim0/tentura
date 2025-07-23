@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'package:uuid/uuid.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import '../../data/repository/chat_repository.dart';
 import '../../domain/entity/chat_message_entity.dart';
+import '../../domain/use_case/chat_case.dart';
 import 'chat_state.dart';
 
 export 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,9 +18,9 @@ class ChatCubit extends Cubit<ChatState> {
     required Profile me,
     required Profile friend,
     required Stream<ChatMessageEntity> updatesStream,
-    ChatRepository? chatRepository,
+    ChatCase? chatCase,
   }) : _updatesStream = updatesStream,
-       _chatRepository = chatRepository ?? GetIt.I<ChatRepository>(),
+       _chatCase = chatCase ?? GetIt.I<ChatCase>(),
        super(
          ChatState(
            me: me,
@@ -33,7 +32,7 @@ class ChatCubit extends Cubit<ChatState> {
     _fetch();
   }
 
-  final ChatRepository _chatRepository;
+  final ChatCase _chatCase;
 
   final Stream<ChatMessageEntity> _updatesStream;
 
@@ -62,9 +61,8 @@ class ChatCubit extends Cubit<ChatState> {
   //
   Future<void> onSendPressed(String text) async {
     try {
-      await _chatRepository.sendMessage(
+      await _chatCase.sendMessage(
         receiverId: state.friend.id,
-        clientId: const Uuid().v4(),
         content: text.trim(),
       );
     } catch (e) {
@@ -76,7 +74,7 @@ class ChatCubit extends Cubit<ChatState> {
   //
   Future<void> onMessageShown(ChatMessageEntity message) async {
     try {
-      await _chatRepository.setMessageSeen(messageId: message.id);
+      await _chatCase.setMessageSeen(messageId: message.id);
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }
@@ -91,7 +89,7 @@ class ChatCubit extends Cubit<ChatState> {
   Future<void> _fetch() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final result = await _chatRepository.getChatMessagesFor(
+      final result = await _chatCase.getChatMessagesFor(
         subjectId: state.me.id,
         objectId: state.friend.id,
       );
