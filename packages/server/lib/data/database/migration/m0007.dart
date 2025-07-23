@@ -39,6 +39,18 @@ CREATE TABLE IF NOT EXISTS public.p2p_message (
     REFERENCES public."user"(id) ON UPDATE RESTRICT ON DELETE CASCADE
 );
 ''',
+    '''
+CREATE TABLE IF NOT EXISTS public.fcm_token (
+  user_id text NOT NULL,
+  app_id uuid NOT NULL,
+  token text NOT NULL,
+  platform text NOT NULL,
+  created_at timestamp with time zone DEFAULT now() NOT NULL,
+  PRIMARY KEY (user_id, app_id),
+  CONSTRAINT fcm_token_user_id_fkey FOREIGN KEY (user_id)
+    REFERENCES public."user"(id) ON UPDATE RESTRICT ON DELETE CASCADE
+);
+''',
     // Data
     '''
 INSERT INTO public.user_presence (user_id)

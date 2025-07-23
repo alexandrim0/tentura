@@ -2,7 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
-import 'package:tentura/consts.dart';
+import 'package:tentura/env.dart';
 import 'package:tentura/domain/entity/coordinates.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 
@@ -30,6 +30,7 @@ class ChooseLocationDialog extends StatefulWidget {
 }
 
 class _ChooseLocationDialogState extends State<ChooseLocationDialog> {
+  final _env = GetIt.I<Env>();
   final _mapController = MapController();
   final _geoRepository = GetIt.I<GeoRepository>();
 
@@ -82,7 +83,7 @@ class _ChooseLocationDialogState extends State<ChooseLocationDialog> {
         ),
         children: [
           TileLayer(
-            urlTemplate: kOsmUrlTemplate,
+            urlTemplate: _env.osmUrlTemplate,
             userAgentPackageName: kUserAgent,
             tileProvider: NetworkTileProvider(
               silenceExceptions: true,

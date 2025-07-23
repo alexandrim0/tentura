@@ -7,7 +7,7 @@ P2pMessageEntity p2pMessageModelToEntity(P2pMessage model) => P2pMessageEntity(
   serverId: model.serverId.uuid,
   content: model.content,
   senderId: model.senderId,
-  recieverId: model.receiverId,
+  receiverId: model.receiverId,
   createdAt: model.createdAt.dateTime,
   deliveredAt: model.deliveredAt?.dateTime,
 );

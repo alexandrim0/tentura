@@ -1,17 +1,11 @@
 export 'package:tentura_root/consts.dart';
 
+// Numbers
 const kMaxLines = 3;
-
 const kCommentsShown = 3;
-
-const kSnackBarDuration = 5;
-
 const kFetchWindowSize = 5;
-
+const kSnackBarDuration = 5;
 const kFetchListOffset = 0.9;
-
-// Images
-const kImageQuality = 95;
 const kImageMaxDimension = 600;
 
 // Routes
@@ -36,20 +30,6 @@ const kPathProfileEdit = '/profile/edit';
 const kPathProfileView = '/profile/view';
 const kPathInvitations = '/invitations';
 
-const kComplaintEmail = String.fromEnvironment(
-  'COMPLAINT_EMAIL',
-  defaultValue: 'complaint@intersubjective.space',
-);
-
-const kOsmUrlTemplate = String.fromEnvironment(
-  'OSM_LINK_BASE',
-  defaultValue: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-);
-
-const kNeedInviteCode = bool.fromEnvironment('NEED_INVITE_CODE');
-
 const kAssetPackage = bool.fromEnvironment('IS_IMPORTED') ? 'tentura' : null;
-
-const kWsPingInterval = Duration(seconds: 10);
 
 final zeroAge = DateTime.fromMillisecondsSinceEpoch(0);

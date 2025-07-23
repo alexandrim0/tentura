@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:ferry/ferry.dart' show OperationResponse;
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura/consts.dart';
+import 'package:tentura/env.dart';
 
 import 'remote_api_client/exception.dart';
 import 'remote_api_client/remote_api_client_web.dart';
@@ -19,14 +19,14 @@ export 'remote_api_client/remote_api_client_base.dart';
 
 @singleton
 final class RemoteApiService extends RemoteApiClient {
-  RemoteApiService()
+  RemoteApiService(Env env)
     : super(
         userAgent: kUserAgent,
         apiEndpointUrl: kServerName + kPathGraphQLEndpoint,
         wsEndpointUrl: kServerName + kPathWebSocketEndpoint,
         requestTimeout: const Duration(seconds: kRequestTimeout),
         authJwtExpiresIn: const Duration(seconds: kAuthJwtExpiresIn),
-        wsPingInterval: kWsPingInterval,
+        wsPingInterval: env.wsPingInterval,
       );
 
   @override

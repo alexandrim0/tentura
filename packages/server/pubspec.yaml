@@ -2,7 +2,7 @@ name: tentura_server
 description: Tentura server API
 publish_to: none
 
-version: 0.5.1
+version: 0.5.3
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
@@ -39,7 +39,7 @@ dependencies:
   migrant_db_postgresql: ^0.3.0
 
 dev_dependencies:
-  test: ^1.26.0
+  test: ^1.26.3
   freezed: ^3.1.0
   drift_dev: ^2.28.0
   build_runner: ^2.5.4

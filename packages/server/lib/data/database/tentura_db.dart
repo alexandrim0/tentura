@@ -17,6 +17,7 @@ import 'package:tentura_server/domain/entity/user_entity.dart';
 
 import 'table/beacons.dart';
 import 'table/comments.dart';
+import 'table/fcm_tokens.dart';
 import 'table/images.dart';
 import 'table/invitations.dart';
 import 'table/opinions.dart';
@@ -37,6 +38,7 @@ part 'tentura_db.g.dart';
   tables: [
     Beacons,
     Comments,
+    FcmTokens,
     Images,
     Invitations,
     Opinions,

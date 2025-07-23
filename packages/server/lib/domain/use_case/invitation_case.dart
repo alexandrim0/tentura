@@ -26,12 +26,19 @@ class InvitationCase {
     return invitation;
   }
 
-  Future<bool> accept({required String invitationId, required String userId}) =>
-      _userRepository.bindMutual(invitationId: invitationId, userId: userId);
+  Future<bool> accept({
+    required String invitationId,
+    required String userId,
+  }) => _userRepository.bindMutual(
+    invitationId: invitationId,
+    userId: userId,
+  );
 
-  Future<bool> delete({required String invitationId, required String userId}) =>
-      _invitationRepository.deleteById(
-        invitationId: invitationId,
-        userId: userId,
-      );
+  Future<bool> delete({
+    required String invitationId,
+    required String userId,
+  }) => _invitationRepository.deleteById(
+    invitationId: invitationId,
+    userId: userId,
+  );
 }

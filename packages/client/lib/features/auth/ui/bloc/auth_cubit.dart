@@ -3,7 +3,7 @@
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura/consts.dart';
+import 'package:tentura/env.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/domain/use_case/clipboard_case.dart';
@@ -25,6 +25,7 @@ export 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   @FactoryMethod(preResolve: true)
   static Future<AuthCubit> hydrated(
+    Env env,
     ClipboardCase clipboardCase,
     AuthRepository authRepository,
     ProfileRepository profileRepository,
@@ -42,10 +43,17 @@ class AuthCubit extends Cubit<AuthState> {
         state = state.copyWith(currentAccountId: '');
       }
     }
-    return AuthCubit(clipboardCase, authRepository, profileRepository, state);
+    return AuthCubit(
+      env,
+      clipboardCase,
+      authRepository,
+      profileRepository,
+      state,
+    );
   }
 
   AuthCubit(
+    this._env,
     this._clipboardCase,
     this._authRepository,
     this._profileRepository,
@@ -54,6 +62,8 @@ class AuthCubit extends Cubit<AuthState> {
     _authChanges.resume();
     _profileChanges.resume();
   }
+
+  final Env _env;
 
   final ClipboardCase _clipboardCase;
 
@@ -124,7 +134,7 @@ class AuthCubit extends Cubit<AuthState> {
     required String title,
     required String invitationCode,
   }) async {
-    if (kNeedInviteCode && invitationCode.isEmpty) {
+    if (_env.needInviteCode && invitationCode.isEmpty) {
       emit(
         state.copyWith(
           status: StateHasError(const InvitationCodeIsWrongException()),

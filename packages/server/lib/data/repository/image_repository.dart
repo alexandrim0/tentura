@@ -31,12 +31,13 @@ class ImageRepository {
     required Stream<Uint8List> bytes,
   }) async {
     final imageModel = await _database.managers.images.createReturning(
-      (o) => o(
-        authorId: authorId,
-      ),
+      (o) => o(authorId: authorId),
     );
     await _remoteStorageService.putObject(
-      _getImagePath(authorId: authorId, imageId: imageModel.id.uuid),
+      _getImagePath(
+        authorId: authorId,
+        imageId: imageModel.id.uuid,
+      ),
       bytes,
     );
     return imageModel.id.uuid;

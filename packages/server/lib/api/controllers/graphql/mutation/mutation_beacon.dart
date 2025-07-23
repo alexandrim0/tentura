@@ -19,7 +19,7 @@ final class MutationBeacon extends GqlNodeBase {
   GraphQLObjectField<dynamic, dynamic> get deleteById => GraphQLObjectField(
     'beaconDeleteById',
     graphQLBoolean.nonNullable(),
-    arguments: [InputFieldId.fieldNonNullable],
+    arguments: [InputFieldId.field],
     resolve: (_, args) => _beaconCase.deleteById(
       beaconId: InputFieldId.fromArgsNonNullable(args),
       userId: getCredentials(args).sub,

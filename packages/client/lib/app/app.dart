@@ -21,7 +21,9 @@ class App extends StatefulWidget {
     FlutterNativeSplash.preserve(
       widgetsBinding: WidgetsFlutterBinding.ensureInitialized(),
     );
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     await configureDependencies();
     FlutterNativeSplash.remove();
     runApp(const App());
