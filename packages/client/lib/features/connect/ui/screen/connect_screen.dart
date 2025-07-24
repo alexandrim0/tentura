@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/app/router/root_router.dart';
-import 'package:tentura/domain/use_case/clipboard_case.dart';
+import 'package:tentura/data/repository/clipboard_repository.dart';
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -22,7 +22,7 @@ class ConnectScreen extends StatefulWidget {
 class _ConnectScreenState extends State<ConnectScreen> {
   final _inputController = TextEditingController();
 
-  final _clipboardCase = GetIt.I<ClipboardCase>();
+  final _clipboardRepository = GetIt.I<ClipboardRepository>();
 
   final _invitationRepository = GetIt.I<InvitationRepository>();
 
@@ -53,8 +53,8 @@ class _ConnectScreenState extends State<ConnectScreen> {
               padding: kPaddingT,
               child: TextFormField(
                 controller: _inputController,
-                contextMenuBuilder:
-                    (_, state) => AdaptiveTextSelectionToolbar.buttonItems(
+                contextMenuBuilder: (_, state) =>
+                    AdaptiveTextSelectionToolbar.buttonItems(
                       anchors: state.contextMenuAnchors,
                       buttonItems: [
                         ContextMenuButtonItem(
@@ -118,7 +118,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
   );
 
   Future<void> _getCodeFromClipboard() async =>
-      _inputController.text = await _clipboardCase.getCodeFromClipboard();
+      _inputController.text = await _clipboardRepository.getCodeFromClipboard();
 
   Future<void> _goWithCode(String code) async {
     if (code.length != kIdLength) {

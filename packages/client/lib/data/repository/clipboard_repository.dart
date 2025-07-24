@@ -4,8 +4,8 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura/consts.dart';
 
 @injectable
-class ClipboardCase {
-  const ClipboardCase();
+class ClipboardRepository {
+  const ClipboardRepository();
 
   Future<String> getSeedFromClipboard() async {
     if (await Clipboard.hasStrings()) {

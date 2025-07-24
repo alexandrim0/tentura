@@ -37,6 +37,13 @@ base mixin RemoteApiClientWs on RemoteApiClientBase {
 
   Stream<WebSocketState> get webSocketState => _stateController.stream;
 
+  Future<bool> get webSocketIsReady => webSocketState
+      .firstWhere((e) => e == WebSocketState.connected)
+      .then(
+        (_) => true,
+        onError: (_) => false,
+      );
+
   ///
   @override
   @mustCallSuper

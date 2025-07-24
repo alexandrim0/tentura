@@ -18,6 +18,7 @@ import '../gql/_g/sign_in.req.gql.dart';
 import '../gql/_g/sign_out.req.gql.dart';
 import '../gql/_g/sign_up.req.gql.dart';
 
+// TBD: rename to AuthLocalRepository, remove remote methods
 @singleton
 class AuthRepository {
   AuthRepository(
@@ -32,7 +33,7 @@ class AuthRepository {
 
   final LocalSecureStorage _localSecureStorage;
 
-  final _controller = StreamController<String>.broadcast();
+  final _controllerIdChanges = StreamController<String>.broadcast();
 
   String _currentAccountId = '';
 
@@ -40,7 +41,7 @@ class AuthRepository {
   //
   @disposeMethod
   Future<void> dispose() async {
-    await _controller.close();
+    await _controllerIdChanges.close();
   }
 
   //
@@ -50,7 +51,7 @@ class AuthRepository {
         ? _currentAccountId
         : await getCurrentAccountId();
 
-    yield* _controller.stream;
+    yield* _controllerIdChanges.stream;
   }
 
   //
@@ -220,7 +221,7 @@ class AuthRepository {
       _currentAccountKey,
       _currentAccountId = id ?? '',
     );
-    _controller.add(_currentAccountId);
+    _controllerIdChanges.add(_currentAccountId);
     log('Current User Id: $id');
   }
 
