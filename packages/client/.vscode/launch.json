@@ -13,11 +13,7 @@
             "toolArgs": [
                 "--flavor",
                 "prod",
-				"--dart-define-from-file=.env",
-				"--dart-define",
-                "SERVER_NAME=https://localhost",
-				"--dart-define",
-				"NEED_INVITE_CODE=true",
+				"--dart-define-from-file=env/local.env",
             ],
         },
         {
@@ -26,9 +22,7 @@
             "type": "dart",
             "flutterMode": "debug",
             "toolArgs": [
-				"--dart-define-from-file=.env",
-                "--dart-define",
-                "SERVER_NAME=https://localhost",
+				"--dart-define-from-file=env/local-web.env",
             ],
             "args": [
                 "-d", "chrome",

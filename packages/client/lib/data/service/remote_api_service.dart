@@ -6,6 +6,7 @@ import 'package:tentura/env.dart';
 
 import 'remote_api_client/exception.dart';
 import 'remote_api_client/remote_api_client_web.dart';
+import 'remote_api_client/remote_api_client_ws.dart';
 // import 'remote_api_client/remote_api_client_native.dart'
 //     if (dart.library.js_interop) 'remote_api_client/remote_api_client_web.dart';
 
@@ -16,18 +17,25 @@ export 'package:web_socket_client/src/connection_state.dart';
 
 export 'remote_api_client/auth_link.dart' show AuthHeaderMode, HttpAuthHeaders;
 export 'remote_api_client/remote_api_client_base.dart';
+export 'remote_api_client/enum.dart';
 
 @singleton
-final class RemoteApiService extends RemoteApiClient {
+final class RemoteApiService extends RemoteApiClient with RemoteApiClientWs {
   RemoteApiService(Env env)
-    : super(
+    : wsPingInterval = env.wsPingInterval,
+      wsEndpointUrl = kServerName + kPathWebSocketEndpoint,
+      super(
         userAgent: kUserAgent,
         apiEndpointUrl: kServerName + kPathGraphQLEndpoint,
-        wsEndpointUrl: kServerName + kPathWebSocketEndpoint,
         requestTimeout: const Duration(seconds: kRequestTimeout),
         authJwtExpiresIn: const Duration(seconds: kAuthJwtExpiresIn),
-        wsPingInterval: env.wsPingInterval,
       );
+
+  @override
+  final String wsEndpointUrl;
+
+  @override
+  final Duration wsPingInterval;
 
   @override
   @disposeMethod

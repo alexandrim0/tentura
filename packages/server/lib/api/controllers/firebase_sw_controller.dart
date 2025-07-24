@@ -39,13 +39,20 @@ messaging.onBackgroundMessage((payload) => {
   late final _eTag = md5.convert(utf8.encode(_firebaseSwJs)).toString();
 
   @override
-  Future<Response> handler(Request request) async {
-    return Response.ok(
-      _firebaseSwJs,
-      headers: {
-        kHeaderContentType: kContentApplicationJavaScript,
-        kHeaderEtag: _eTag,
-      },
-    );
-  }
+  Future<Response> handler(Request request) async => env.fbApiKey.isEmpty
+      ? _emptyResponse
+      : Response.ok(
+          _firebaseSwJs,
+          headers: {
+            kHeaderContentType: kContentApplicationJavaScript,
+            kHeaderEtag: _eTag,
+          },
+        );
+
+  static final _emptyResponse = Response.ok(
+    '',
+    headers: {
+      kHeaderContentType: kContentApplicationJavaScript,
+    },
+  );
 }

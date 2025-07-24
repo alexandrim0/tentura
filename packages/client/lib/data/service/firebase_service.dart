@@ -1,3 +1,4 @@
+import 'package:logger/logger.dart';
 import 'package:injectable/injectable.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -7,9 +8,13 @@ import 'package:tentura/env.dart';
 @singleton
 class FirebaseService {
   @FactoryMethod(preResolve: true)
-  static Future<FirebaseService> create(Env env) async {
+  static Future<FirebaseService> create({
+    required Env env,
+    required Logger logger,
+  }) async {
     if (env.firebaseApiKey.isEmpty) {
-      return _FirebaseServiceFake(env);
+      logger.i('Firebase configured with fake service');
+      return _FirebaseServiceFake();
     }
 
     await Firebase.initializeApp(
@@ -23,32 +28,21 @@ class FirebaseService {
       ),
     );
 
-    return FirebaseService(env);
+    return FirebaseService();
   }
 
-  FirebaseService(this._env);
+  Stream<String> get onTokenRefresh =>
+      FirebaseMessaging.instance.onTokenRefresh;
 
-  Stream<String> get onTokenRefresh => _firebaseMessaging.onTokenRefresh;
+  Future<void> requestPermission() =>
+      FirebaseMessaging.instance.requestPermission(
+        provisional: true,
+      );
 
-  Future<void> requestPermission() => _firebaseMessaging.requestPermission(
-    provisional: true,
-  );
-
-  Future<String?> getToken() => _firebaseMessaging.getToken();
-
-  // ignore: unused_field //
-  final Env _env;
-
-  static final _firebaseMessaging = FirebaseMessaging.instance;
+  Future<String?> getToken() => FirebaseMessaging.instance.getToken();
 }
 
 class _FirebaseServiceFake implements FirebaseService {
-  _FirebaseServiceFake(this._env);
-
-  @override
-  // ignore: unused_field //
-  final Env _env;
-
   @override
   Stream<String> get onTokenRefresh => const Stream.empty();
 

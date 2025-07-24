@@ -24,9 +24,7 @@ class AuthRepository {
     this._database,
     this._remoteApiService,
     this._localSecureStorage,
-  ) {
-    _wsConnectionStateChangesSubscription.resume();
-  }
+  );
 
   final Database _database;
 
@@ -36,21 +34,12 @@ class AuthRepository {
 
   final _controller = StreamController<String>.broadcast();
 
-  late final _wsConnectionStateChangesSubscription = _remoteApiService
-      .webSocketConnection
-      .listen(
-        _onWebSocketConnectionChanged,
-        cancelOnError: false,
-        onError: print,
-      );
-
   String _currentAccountId = '';
 
   //
   //
   @disposeMethod
   Future<void> dispose() async {
-    await _wsConnectionStateChangesSubscription.cancel();
     await _controller.close();
   }
 
@@ -175,14 +164,11 @@ class AuthRepository {
     if (_currentAccountId.isEmpty) {
       return;
     }
-    _remoteApiService
-      ..webSocketSend(_logOutMessage)
-      ..dropAuth();
-
     await _remoteApiService
         .request(GSignOutReq())
         .firstWhere((e) => e.dataSource == DataSource.Link);
-    _remoteApiService.dropAuth();
+
+    await _remoteApiService.dropAuth();
 
     await _setCurrentAccountId(null);
   }
@@ -224,13 +210,6 @@ class AuthRepository {
     final credentials = await _remoteApiService.getAuthToken();
     await _setCurrentAccountId(credentials.userId);
 
-    await _remoteApiService.webSocketConnection.firstWhere(
-      (state) => state is Connected,
-    );
-    _remoteApiService.webSocketSend(
-      _buildAuthMessage('SignIn', credentials.accessToken),
-    );
-
     return credentials.userId;
   }
 
@@ -254,30 +233,6 @@ class AuthRepository {
       mode: InsertMode.insert,
     );
   }
-
-  //
-  //
-  Future<void> _onWebSocketConnectionChanged(ConnectionState event) async {
-    if (_currentAccountId.isNotEmpty) {
-      if (event case Connected() || Reconnected()) {
-        _remoteApiService.webSocketSend(
-          _buildAuthMessage(
-            event.runtimeType.toString(),
-            (await _remoteApiService.getAuthToken()).accessToken,
-          ),
-        );
-      }
-    }
-  }
-
-  // TBD: move to Model
-  //
-  String _buildAuthMessage(String event, String token) => jsonEncode({
-    'type': 'auth',
-    'event': event,
-    'intent': const AuthRequestIntentSignIn().cname,
-    'token': token,
-  });
 
   //
   //
@@ -306,11 +261,6 @@ class AuthRepository {
   static const _repositoryKey = 'Auth';
 
   static const _currentAccountKey = '$_repositoryKey:currentAccountId';
-
-  static final _logOutMessage = jsonEncode({
-    'type': 'auth',
-    'intent': const AuthRequestIntentSignOut().cname,
-  });
 
   static final _random = Random.secure();
 

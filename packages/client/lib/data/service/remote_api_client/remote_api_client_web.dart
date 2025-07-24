@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'package:meta/meta.dart';
 import 'package:ferry/ferry.dart'
     show Client, OperationRequest, OperationResponse;
-import 'package:flutter/foundation.dart';
 
 import 'auth_box.dart';
 import 'build_client.dart';
@@ -10,17 +10,16 @@ import 'remote_api_client_base.dart';
 
 abstract base class RemoteApiClient extends RemoteApiClientBase {
   RemoteApiClient({
-    required super.wsEndpointUrl,
     required super.apiEndpointUrl,
     required super.authJwtExpiresIn,
     required super.requestTimeout,
-    required super.wsPingInterval,
     required super.userAgent,
   });
 
   Client? _gqlClient;
 
   @override
+  @mustCallSuper
   Future<String?> setAuth({
     required String seed,
     required AuthTokenFetcher authTokenFetcher,

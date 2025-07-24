@@ -70,7 +70,7 @@ base class WebsocketSessionHandlerBase {
     final jwt = touchSession(session);
     if (jwt != null) {
       if (env.isPongEnabled) {
-        session.send('{"type": "pong"}');
+        session.send('{"type":"pong"}');
       }
       await userPresenceCase.update(userId: jwt.sub);
     }

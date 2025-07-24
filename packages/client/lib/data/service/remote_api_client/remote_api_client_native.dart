@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:isolate';
+import 'package:meta/meta.dart';
 import 'package:ferry/ferry.dart'
     show Client, OperationRequest, OperationResponse;
 import 'package:ferry/ferry_isolate.dart';
-import 'package:flutter/foundation.dart';
 
 import 'auth_box.dart';
 import 'build_client.dart';
@@ -17,11 +17,9 @@ typedef GetTokenResponse = ({Credentials? data, Object? error});
 
 abstract base class RemoteApiClient extends RemoteApiClientBase {
   RemoteApiClient({
-    required super.wsEndpointUrl,
     required super.apiEndpointUrl,
     required super.authJwtExpiresIn,
     required super.requestTimeout,
-    required super.wsPingInterval,
     required super.userAgent,
   });
 
@@ -30,6 +28,7 @@ abstract base class RemoteApiClient extends RemoteApiClientBase {
   SendPort? _replyPort;
 
   @override
+  @mustCallSuper
   Future<String?> setAuth({
     required String seed,
     required AuthTokenFetcher authTokenFetcher,
