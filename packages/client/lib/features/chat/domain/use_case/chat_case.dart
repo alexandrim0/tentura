@@ -1,9 +1,8 @@
 import 'dart:async';
-
-import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
+import 'package:injectable/injectable.dart';
 
-import 'package:tentura/features/auth/data/repository/auth_repository.dart';
+import 'package:tentura/features/auth/domain/use_case/auth_case.dart';
 
 import '../../data/repository/chat_local_repository.dart';
 import '../../data/repository/chat_remote_repository.dart';
@@ -12,18 +11,18 @@ import '../entity/chat_message_entity.dart';
 @singleton
 class ChatCase {
   ChatCase(
-    this._authRepository,
+    this._authCase,
     this._chatLocalRepository,
     this._chatRemoteRepository,
   );
 
-  final AuthRepository _authRepository;
+  final AuthCase _authCase;
 
   final ChatLocalRepository _chatLocalRepository;
 
   final ChatRemoteRepository _chatRemoteRepository;
 
-  Stream<String> get authChanges => _authRepository.currentAccountChanges();
+  Stream<String> get authChanges => _authCase.currentAccountChanges();
 
   ///
   Stream<Iterable<ChatMessageEntity>> watchRemoteUpdates({

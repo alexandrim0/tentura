@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
 
-import 'package:tentura/features/auth/data/repository/auth_repository.dart';
+import 'package:tentura/features/auth/domain/use_case/auth_case.dart';
 import 'package:tentura/features/friends/data/repository/friends_remote_repository.dart';
 import 'package:tentura/features/invitation/data/repository/invitation_repository.dart';
 import 'package:tentura/features/like/data/repository/like_remote_repository.dart';
@@ -19,9 +19,9 @@ class FriendsCubit extends Cubit<FriendsState> {
     this._invitationRepository,
     this._likeRemoteRepository,
     this._friendsRemoteRepository,
-    AuthRepository _authRepository,
+    AuthCase _authCase,
   ) : super(const FriendsState(friends: {})) {
-    _authChanges = _authRepository.currentAccountChanges().listen(
+    _authChanges = _authCase.currentAccountChanges().listen(
       _onAuthChanged,
       cancelOnError: false,
     );

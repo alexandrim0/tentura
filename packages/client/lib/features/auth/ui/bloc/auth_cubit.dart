@@ -8,7 +8,10 @@ import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
+import 'package:tentura/features/profile/data/repository/profile_repository.dart';
+
 import '../../domain/exception.dart';
+import '../../domain/use_case/account_case.dart';
 import '../../domain/use_case/auth_case.dart';
 import 'auth_state.dart';
 
@@ -24,8 +27,10 @@ class AuthCubit extends Cubit<AuthState> {
   static Future<AuthCubit> hydrated(
     Env env,
     AuthCase authCase,
+    AccountCase accountCase,
+    ProfileRepository profileRepository,
   ) async {
-    final accounts = await authCase.getAccountsAll();
+    final accounts = await accountCase.getAccountsAll();
     var state = AuthState(
       accounts: accounts..sort(_compareProfile),
       currentAccountId: await authCase.getCurrentAccountId(),
@@ -33,7 +38,9 @@ class AuthCubit extends Cubit<AuthState> {
     );
     if (state.isAuthenticated) {
       try {
-        await authCase.signIn(state.currentAccountId);
+        await authCase.signIn(
+          userId: state.currentAccountId,
+        );
       } catch (e) {
         state = state.copyWith(currentAccountId: '');
       }
@@ -41,6 +48,8 @@ class AuthCubit extends Cubit<AuthState> {
     return AuthCubit(
       env,
       authCase,
+      accountCase,
+      profileRepository,
       state,
     );
   }
@@ -48,28 +57,29 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit(
     this._env,
     this._authCase,
+    this._accountCase,
+    ProfileRepository profileRepository,
     AuthState state,
   ) : super(state) {
-    _authChanges.resume();
-    _profileChanges.resume();
+    _authChanges = _authCase.currentAccountChanges().listen(
+      _onAuthChanged,
+      cancelOnError: false,
+    );
+    _profileChanges = profileRepository.changes.listen(
+      _onProfileChanged,
+      cancelOnError: false,
+    );
   }
 
   final Env _env;
 
   final AuthCase _authCase;
 
-  late final StreamSubscription<String> _authChanges = _authCase
-      .currentAccountChanges()
-      .listen(
-        _onAuthChanged,
-        cancelOnError: false,
-      );
+  final AccountCase _accountCase;
 
-  late final StreamSubscription<RepositoryEvent<Profile>> _profileChanges =
-      _authCase.profileChanges.listen(
-        _onProfileChanged,
-        cancelOnError: false,
-      );
+  late final StreamSubscription<String> _authChanges;
+
+  late final StreamSubscription<RepositoryEvent<Profile>> _profileChanges;
 
   @disposeMethod
   Future<void> dispose() async {
@@ -88,8 +98,8 @@ class AuthCubit extends Cubit<AuthState> {
 
   //
   //
-  Future<String> getSeedByAccountId(String id) =>
-      _authCase.getSeedByAccountId(id);
+  Future<String> getSeedByAccountId(String accountId) =>
+      _accountCase.getSeedByAccountId(accountId);
 
   //
   //
@@ -99,8 +109,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final account = await _authCase.addAccount(seed);
-      await _authCase.updateAccount(account);
+      final account = await _accountCase.addAccount(seed);
+      await _accountCase.updateAccount(account);
       emit(
         AuthState(
           accounts: state.accounts
@@ -158,7 +168,7 @@ class AuthCubit extends Cubit<AuthState> {
     if (state.currentAccountId == id) return;
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      await _authCase.signIn(id);
+      await _authCase.signIn(userId: id);
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }
@@ -181,7 +191,8 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> removeAccount(String id) async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      await _authCase.removeAccount(id);
+      await _accountCase.removeAccount(id);
+      await _authCase.signOut();
       emit(
         AuthState(
           accounts: state.accounts..removeWhere((e) => e.id == id),
@@ -196,11 +207,11 @@ class AuthCubit extends Cubit<AuthState> {
   //
   //
   Future<void> getSeedFromClipboard() async =>
-      addAccount(await _authCase.getSeedFromClipboard());
+      addAccount(await _accountCase.getSeedFromClipboard());
 
   //
   //
-  Future<String> getCodeFromClipboard() => _authCase.getCodeFromClipboard();
+  Future<String> getCodeFromClipboard() => _accountCase.getCodeFromClipboard();
 
   //
   //
@@ -243,7 +254,7 @@ class AuthCubit extends Cubit<AuthState> {
               updatedAt: DateTime.timestamp(),
             ),
           );
-          await _authCase.updateAccount(profile);
+          await _accountCase.updateAccount(profile);
         } catch (e) {
           emit(state.copyWith(status: StateHasError(e)));
         }

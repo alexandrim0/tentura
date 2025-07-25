@@ -2,9 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import 'package:tentura/ui/l10n/l10n.dart';
-
 import 'package:tentura/ui/dialog/show_seed_dialog.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
 import '../bloc/settings_cubit.dart';
@@ -41,9 +40,9 @@ class SettingsScreen extends StatelessWidget implements AutoRouteWrapper {
               icon: const Icon(Icons.remove_red_eye_outlined),
               label: Text(l10n.showSeed),
               onPressed: () async {
-                final (:id, :seed) = await cubit.getAccountSeed();
+                final seed = await cubit.getCurrentAccountSeed();
                 if (context.mounted) {
-                  await ShowSeedDialog.show(context, seed: seed, accountId: id);
+                  await ShowSeedDialog.show(context, seed: seed);
                 }
               },
             ),

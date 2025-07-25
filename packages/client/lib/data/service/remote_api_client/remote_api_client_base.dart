@@ -24,13 +24,18 @@ abstract base class RemoteApiClientBase {
   });
 
   final String userAgent;
+
   final String apiEndpointUrl;
+
   final Duration requestTimeout;
+
   final Duration authJwtExpiresIn;
 
   bool _tokenLocked = false;
 
   AuthBox? _authBox;
+
+  bool get hasValidToken => _authBox?.hasValidToken ?? false;
 
   //
   //
