@@ -6,7 +6,7 @@ Authorization: Bearer {{$dotenv TENTURA_JWT}}
 Content-Type: application/json
 X-Request-Type: GraphQL
 
-mutation registerFcmToken(
+mutation FcmRegisterToken(
   $appId: String,
   $token: String,
   $platform: String

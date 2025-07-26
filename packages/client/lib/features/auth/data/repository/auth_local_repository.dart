@@ -96,46 +96,6 @@ class AuthLocalRepository {
       );
 
   ///
-  /// Returns id of actual account
-  ///
-  // Future<String> signUp({
-  //   required String title,
-  //   required String invitationCode,
-  // }) async {
-  // final seed = base64UrlEncode(
-  //   Uint8List.fromList(List<int>.generate(32, (_) => _random.nextInt(256))),
-  // );
-  // final authRequestToken = await _remoteApiService.setAuth(
-  //   seed: seed,
-  //   authTokenFetcher: authTokenFetcher,
-  //   returnAuthRequestToken: AuthRequestIntentSignUp(
-  //     invitationCode: invitationCode,
-  //   ),
-  // );
-  // final request = GSignUpReq((b) {
-  //   b.context = const Context().withEntry(const HttpAuthHeaders.noAuth());
-  //   b.vars
-  //     ..title = title
-  //     ..authRequestToken = authRequestToken;
-  // });
-  // final response = await _remoteApiService
-  //     .request(request)
-  //     .firstWhere((e) => e.dataSource == DataSource.Link)
-  //     .then((r) => r.dataOrThrow().signUp);
-  // await addAccount(response.subject, seed, title);
-
-  // await _remoteApiService.setAuth(
-  //   seed: seed,
-  //   authTokenFetcher: authTokenFetcher,
-  // );
-
-  //   final credentials = await _remoteApiService.getAuthToken();
-  //   await setCurrentAccountId(credentials.userId);
-
-  //   return credentials.userId;
-  // }
-
-  ///
   /// Remove account only from local storage
   ///
   Future<void> removeAccount(String id) async {

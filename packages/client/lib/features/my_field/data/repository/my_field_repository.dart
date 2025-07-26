@@ -9,8 +9,6 @@ import '../gql/_g/my_field_fetch.req.gql.dart';
 
 @lazySingleton
 class MyFieldRepository {
-  static const _label = 'MyField';
-
   MyFieldRepository(this._remoteApiService);
 
   final RemoteApiService _remoteApiService;
@@ -28,4 +26,6 @@ class MyFieldRepository {
       .firstWhere((e) => e.dataSource == DataSource.Link)
       .then((r) => r.dataOrThrow(label: _label).my_field.nonNulls)
       .then((v) => v.map((e) => (e.beacon! as BeaconModel).toEntity()));
+
+  static const _label = 'MyField';
 }

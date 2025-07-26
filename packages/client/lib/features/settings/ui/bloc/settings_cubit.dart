@@ -25,8 +25,9 @@ class SettingsCubit extends Cubit<SettingsState> {
     AccountCase accountCase,
     SettingsRepository settingsRepository,
   ) async {
-    final isIntroEnabled = await settingsRepository.getIsIntroEnabled();
-    final themeModeName = await settingsRepository.getThemeModeName();
+    final isIntroEnabled = await settingsRepository.getIsIntroEnabled() ?? true;
+    final themeModeName =
+        await settingsRepository.getThemeModeName() ?? 'system';
     return SettingsCubit(
       authCase: authCase,
       accountCase: accountCase,
