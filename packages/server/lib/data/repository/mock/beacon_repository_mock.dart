@@ -6,17 +6,16 @@ import 'package:tentura_server/domain/entity/image_entity.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
 import 'package:tentura_server/domain/exception.dart';
 
-import '../mapper/beacon_mapper.dart';
-import '../mapper/image_mapper.dart';
-import '../mapper/polling_mapper.dart';
-import '../mapper/user_mapper.dart';
-import 'beacon_repository.dart';
+import '../beacon_repository.dart';
+import 'data/beacons.dart';
 
-@Injectable(as: BeaconRepository, env: [Environment.test], order: 1)
-class BeaconRepositoryMock
-    with ImageMapper, UserMapper, PollingMapper, BeaconMapper
-    implements BeaconRepository {
-  static final storageById = <String, BeaconEntity>{};
+@Injectable(
+  as: BeaconRepository,
+  env: [Environment.test],
+  order: 1,
+)
+class BeaconRepositoryMock implements BeaconRepository {
+  static final storageById = <String, BeaconEntity>{...kBeaconById};
 
   const BeaconRepositoryMock();
 

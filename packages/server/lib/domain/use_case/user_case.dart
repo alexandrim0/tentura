@@ -14,7 +14,7 @@ class UserCase {
   static Future<UserCase> createInstance(
     ImageRepository imageRepository,
     UserRepository userRepository,
-    TasksRepository tasksRepository,
+    TaskRepository tasksRepository,
   ) async => UserCase(imageRepository, userRepository, tasksRepository);
 
   const UserCase(
@@ -27,7 +27,7 @@ class UserCase {
 
   final UserRepository _userRepository;
 
-  final TasksRepository _tasksRepository;
+  final TaskRepository _tasksRepository;
 
   //
   Future<UserEntity> updateProfile({

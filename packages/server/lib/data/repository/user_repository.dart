@@ -6,13 +6,18 @@ import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/env.dart';
 
 import '../database/tentura_db.dart';
-import '../mapper/image_mapper.dart';
 import '../mapper/user_mapper.dart';
 
 export 'package:tentura_server/domain/entity/user_entity.dart';
 
-@Injectable(env: [Environment.dev, Environment.prod], order: 1)
-class UserRepository with ImageMapper, UserMapper {
+@Injectable(
+  env: [
+    Environment.dev,
+    Environment.prod,
+  ],
+  order: 1,
+)
+class UserRepository {
   const UserRepository(this._database, this._settings);
 
   final TenturaDb _database;

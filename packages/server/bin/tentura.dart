@@ -8,7 +8,7 @@ import 'utils/convert_images.dart';
 Future<void> main(List<String> args) async {
   switch (args.firstOrNull) {
     case null:
-      await const App().run();
+      await App().run();
 
     case 'jwt':
       issueJwt(args);

@@ -6,15 +6,17 @@ import 'package:tentura_server/domain/entity/polling_entity.dart';
 
 import '../database/tentura_db.dart';
 import '../mapper/beacon_mapper.dart';
-import '../mapper/image_mapper.dart';
-import '../mapper/polling_mapper.dart';
-import '../mapper/user_mapper.dart';
 
 export 'package:tentura_server/domain/entity/beacon_entity.dart';
 
-@Injectable(env: [Environment.dev, Environment.prod], order: 1)
-class BeaconRepository
-    with ImageMapper, UserMapper, PollingMapper, BeaconMapper {
+@Injectable(
+  env: [
+    Environment.dev,
+    Environment.prod,
+  ],
+  order: 1,
+)
+class BeaconRepository {
   const BeaconRepository(this._database);
 
   final TenturaDb _database;

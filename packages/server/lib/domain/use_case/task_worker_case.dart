@@ -12,6 +12,19 @@ import '../entity/task_entity.dart';
 
 @LazySingleton()
 class TaskWorkerCase {
+  @FactoryMethod()
+  static Future<TaskWorkerCase> create(
+    Env env,
+    ImageRepository imageRepository,
+    TaskRepository tasksRepository,
+  ) => Future.value(
+    TaskWorkerCase(
+      env,
+      imageRepository,
+      tasksRepository,
+    ),
+  );
+
   TaskWorkerCase(
     this._env,
     this._imageRepository,
@@ -22,7 +35,7 @@ class TaskWorkerCase {
 
   final ImageRepository _imageRepository;
 
-  final TasksRepository _tasksRepository;
+  final TaskRepository _tasksRepository;
 
   final _runnerCompleter = Completer<void>();
 

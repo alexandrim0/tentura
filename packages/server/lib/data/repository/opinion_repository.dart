@@ -3,12 +3,16 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura_server/domain/entity/opinion_entity.dart';
 
 import '../database/tentura_db.dart';
-import '../mapper/image_mapper.dart';
 import '../mapper/opinion_mapper.dart';
-import '../mapper/user_mapper.dart';
 
-@Injectable(env: [Environment.dev, Environment.prod], order: 1)
-class OpinionRepository with ImageMapper, UserMapper, OpinionMapper {
+@Injectable(
+  env: [
+    Environment.dev,
+    Environment.prod,
+  ],
+  order: 1,
+)
+class OpinionRepository {
   OpinionRepository(this._database);
 
   final TenturaDb _database;

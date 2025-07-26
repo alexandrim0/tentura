@@ -5,13 +5,18 @@ import 'package:tentura_server/domain/entity/task_entity.dart';
 
 import '../service/task_worker.dart';
 
-@LazySingleton()
-class TasksRepository with TaskStatusMapper {
+@LazySingleton(
+  env: [
+    Environment.dev,
+    Environment.prod,
+  ],
+)
+class TaskRepository {
   @FactoryMethod()
-  static Future<TasksRepository> create(TaskWorker taskWorker) async =>
-      TasksRepository(taskWorker);
+  static Future<TaskRepository> create(TaskWorker taskWorker) async =>
+      TaskRepository(taskWorker);
 
-  const TasksRepository(this._taskWorker);
+  const TaskRepository(this._taskWorker);
 
   final TaskWorker _taskWorker;
 

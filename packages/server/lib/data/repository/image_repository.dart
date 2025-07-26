@@ -6,7 +6,13 @@ import 'package:tentura_server/env.dart';
 import '../database/tentura_db.dart';
 import '../storage/remote_storage.dart';
 
-@Injectable(env: [Environment.dev, Environment.prod], order: 1)
+@Injectable(
+  env: [
+    Environment.dev,
+    Environment.prod,
+  ],
+  order: 1,
+)
 class ImageRepository {
   const ImageRepository(
     this._database,

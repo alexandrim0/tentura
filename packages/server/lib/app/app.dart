@@ -1,15 +1,19 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:isolate';
 import 'package:postgres/postgres.dart';
 
 import 'package:tentura_server/env.dart';
 import 'package:tentura_server/data/database/migration/_migrations.dart';
 
 import 'worker.dart';
+import 'workers/web_worker.dart';
 
 class App {
-  const App();
-
+  ///
+  /// Run App with given environment
+  /// Default [Env.prod]
+  ///
   Future<void> run([Env? env]) async {
     env ??= Env.prod();
 
@@ -32,21 +36,30 @@ class App {
     await Future.wait(workers.map((e) => e.close()));
   }
 
-  Future<void> runTest([Env? env]) async {
-    env ??= Env.test();
-
-    final worker = await Worker.spawnWebWorker(env: env);
-
+  ///
+  /// Run App in Test environment with mocked repositories
+  ///
+  Future<void> runWithTestEnv() async {
+    final receivePort = ReceivePort();
+    unawaited(
+      serveWeb((
+        env: Env.test(),
+        sendPort: receivePort.sendPort,
+      )),
+    );
     await _stopSignal();
-
-    await worker.close();
+    receivePort.sendPort.send(null);
   }
 
+  //
+  //
   Future<void> _stopSignal() => Future.any([
     ProcessSignal.sigint.watch().first,
     ProcessSignal.sigterm.watch().first,
   ]);
 
+  //
+  //
   Future<void> _uploadGraph(Connection connection) async {
     final edgesResult = await connection.execute(
       'SELECT count(*) FROM mr_edgelist()',

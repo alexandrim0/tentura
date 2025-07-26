@@ -1,16 +1,17 @@
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura_server/data/mapper/user_mapper.dart';
 import 'package:tentura_server/domain/exception.dart';
 
-import '../mapper/image_mapper.dart';
-import 'user_repository.dart';
+import '../user_repository.dart';
+import 'data/users.dart';
 
-@Injectable(as: UserRepository, env: [Environment.test], order: 1)
-class UserRepositoryMock
-    with ImageMapper, UserMapper
-    implements UserRepository {
-  static final storageByPublicKey = <String, UserEntity>{};
+@Injectable(
+  as: UserRepository,
+  env: [Environment.test],
+  order: 1,
+)
+class UserRepositoryMock implements UserRepository {
+  static final storageByPublicKey = <String, UserEntity>{...kUserByPublicKey};
 
   const UserRepositoryMock();
 

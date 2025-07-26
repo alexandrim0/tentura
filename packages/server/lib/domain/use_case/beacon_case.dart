@@ -18,7 +18,7 @@ class BeaconCase {
   static Future<BeaconCase> createInstance(
     BeaconRepository beaconRepository,
     ImageRepository imageRepository,
-    TasksRepository tasksRepository,
+    TaskRepository tasksRepository,
     MeritrankRepository meritrankRepository,
   ) async => BeaconCase(
     beaconRepository,
@@ -40,7 +40,7 @@ class BeaconCase {
 
   final ImageRepository _imageRepository;
 
-  final TasksRepository _tasksRepository;
+  final TaskRepository _tasksRepository;
 
   //
   Future<BeaconEntity> create({
