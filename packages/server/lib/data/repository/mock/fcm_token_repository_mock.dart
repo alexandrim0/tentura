@@ -11,8 +11,7 @@ import '../fcm_token_repository.dart';
 )
 class FcmTokenRepositoryMock implements FcmTokenRepository {
   @override
-  Future<Iterable<FcmTokenEntity>> getTokensByUserId() async => [];
-
+  Future<Iterable<FcmTokenEntity>> getTokensByUserId(String userId) async => [];
   @override
   Future<void> putToken({
     required String userId,

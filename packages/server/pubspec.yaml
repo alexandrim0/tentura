@@ -2,7 +2,7 @@ name: tentura_server
 description: Tentura server API
 publish_to: none
 
-version: 0.5.4
+version: 0.5.5
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
@@ -11,6 +11,7 @@ dependencies:
   tentura_root:
     path: ../../
 
+  http: ^1.5.0-beta.2
   uuid: ^4.4.2
   meta: ^1.17.0
   faker: ^2.2.0

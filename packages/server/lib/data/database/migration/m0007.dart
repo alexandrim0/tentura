@@ -16,6 +16,7 @@ ALTER TABLE IF EXISTS public.user_vsids SET LOGGED;
 CREATE UNLOGGED TABLE IF NOT EXISTS public.user_presence (
   user_id text NOT NULL,
   last_seen_at timestamp with time zone DEFAULT now() NOT NULL,
+  last_notified_at timestamp with time zone DEFAULT now() NOT NULL,
   status smallint DEFAULT 0 NOT NULL,
   PRIMARY KEY (user_id),
   CONSTRAINT user_presence_user_id_fkey FOREIGN KEY (user_id)

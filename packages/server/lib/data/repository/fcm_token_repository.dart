@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'package:tentura_server/domain/entity/fcm_token_entity.dart';
 
 import '../database/tentura_db.dart';
+import '../mapper/fcm_token_mapper.dart';
 
 @Injectable(
   env: [
@@ -18,7 +19,14 @@ class FcmTokenRepository {
   final TenturaDb _database;
 
   ///
-  Future<Iterable<FcmTokenEntity>> getTokensByUserId() async => [];
+  ///
+  ///
+  Future<Iterable<FcmTokenEntity>> getTokensByUserId(String userId) async {
+    final tokens = await _database.managers.fcmTokens
+        .filter((f) => f.userId.id(userId))
+        .get(distinct: true);
+    return tokens.map(fcmTokenModelToEntity);
+  }
 
   ///
   /// Insert token into DB, ignore if exists

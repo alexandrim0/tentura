@@ -54,6 +54,7 @@ class Env {
     // Chat
     Duration? chatPollingInterval,
     int? chatDefaultBatchSize,
+    Duration? chatStatusOfflineAfterDelay,
 
     // Firebase
     String? fbAppId,
@@ -62,6 +63,9 @@ class Env {
     String? fbProjectId,
     String? fbAuthDomain,
     String? fbStorageBucket,
+    String? fbClientEmail,
+    String? fbPrivateKey,
+    Duration? fbAccessTokenExpiresIn,
   }) : // Common
        printEnv = printEnv ?? _env['PRINT_ENV'] == 'true',
        isDebugModeOn = isDebugModeOn ?? _env['DEBUG_MODE'] == 'true',
@@ -138,15 +142,32 @@ class Env {
            ),
        chatDefaultBatchSize =
            chatDefaultBatchSize ??
-           int.tryParse(_env['CHAT_DEFAULT_BATCH_SIZE'] ?? '') ??
+           int.tryParse(_env['CHAT_BATCH_SIZE'] ?? '') ??
            10,
+       chatStatusOfflineAfterDelay =
+           chatStatusOfflineAfterDelay ??
+           Duration(
+             seconds:
+                 int.tryParse(_env['CHAT_OFFLINE_DELAY'] ?? '') ??
+                 kUserOfflineAfterSeconds,
+           ),
+
        // Firebase
        fbAppId = fbAppId ?? _env['FB_APP_ID'] ?? '',
        fbApiKey = fbApiKey ?? _env['FB_API_KEY'] ?? '',
        fbSenderId = fbSenderId ?? _env['FB_SENDER_ID'] ?? '',
        fbProjectId = fbProjectId ?? _env['FB_PROJECT_ID'] ?? '',
        fbAuthDomain = fbAuthDomain ?? _env['FB_AUTH_DOMAIN'] ?? '',
-       fbStorageBucket = fbStorageBucket ?? _env['FB_STORAGE_BUCKET'] ?? ''
+       fbStorageBucket = fbStorageBucket ?? _env['FB_STORAGE_BUCKET'] ?? '',
+       fbClientEmail = fbClientEmail ?? _env['FB_CLIENT_EMAIL'] ?? '',
+       fbAccessTokenExpiresIn =
+           fbAccessTokenExpiresIn ?? const Duration(hours: 1),
+       fbPrivateKey = RSAPrivateKey(
+         (fbPrivateKey ?? _env['FB_PRIVATE_KEY'] ?? '').replaceAll(
+           r'\n',
+           '\n',
+         ),
+       )
   //
   {
     _printEnvInfo();
@@ -231,7 +252,9 @@ class Env {
 
   final int pgMaxConnectionCount;
 
-  final pgEndpointSettings = const ConnectionSettings(sslMode: SslMode.disable);
+  final pgEndpointSettings = const ConnectionSettings(
+    sslMode: SslMode.disable,
+  );
 
   late final pgPoolSettings = PoolSettings(
     maxConnectionAge: Duration(seconds: pgMaxConnectionAge),
@@ -255,6 +278,8 @@ class Env {
 
   final int chatDefaultBatchSize;
 
+  final Duration chatStatusOfflineAfterDelay;
+
   // Firebase
   final String fbAppId;
 
@@ -267,6 +292,12 @@ class Env {
   final String fbAuthDomain;
 
   final String fbStorageBucket;
+
+  final String fbClientEmail;
+
+  final RSAPrivateKey fbPrivateKey;
+
+  final Duration fbAccessTokenExpiresIn;
 
   //
   //
@@ -281,16 +312,23 @@ class Env {
   static final _env = Platform.environment;
 
   // JWT
-  // This keys needed for testing purposes only!
-  // You should not use this keys on public server!
-  // Be sure if you set your own secure keys!
-  //
+
+  ///
+  /// This key needed for testing purposes only!
+  /// You should not use this key on public server!
+  /// Be sure if you set your own public key!
+  ///
   static const kJwtPublicKey = '''
 -----BEGIN PUBLIC KEY-----
 MCowBQYDK2VwAyEA2CmIb3Ho2eb6m8WIog6KiyzCY05sbyX04PiGlH5baDw=
 -----END PUBLIC KEY-----
 ''';
 
+  ///
+  /// This key needed for testing purposes only!
+  /// You should not use this key on public server!
+  /// Be sure if you set your own private key!
+  ///
   static const kJwtPrivateKey = '''
 -----BEGIN PRIVATE KEY-----
 MC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF

@@ -20,7 +20,9 @@ base mixin WebsocketPathP2pChat on WebsocketSessionHandlerBase {
         'send_message' => p2pChatCase.create(
           senderId: jwt.sub,
           receiverId: message['receiver_id']! as String,
-          clientId: UuidValue.fromString(message['client_id']! as String),
+          clientMessageId: UuidValue.fromString(
+            message['client_id']! as String,
+          ),
           content: message['content']! as String,
         ),
         'mark_as_delivered' => p2pChatCase.markAsDelivered(

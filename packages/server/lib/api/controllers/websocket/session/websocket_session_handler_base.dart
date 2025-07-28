@@ -72,7 +72,7 @@ base class WebsocketSessionHandlerBase {
       if (env.isPongEnabled) {
         session.send('{"type":"pong"}');
       }
-      await userPresenceCase.update(userId: jwt.sub);
+      await userPresenceCase.touch(userId: jwt.sub);
     }
   }
 
@@ -91,7 +91,7 @@ base class WebsocketSessionHandlerBase {
         removeSession(session);
         _sessions[session] = WebsocketUserSession(jwt);
         session.send(_authLogInResponse);
-        await userPresenceCase.update(
+        await userPresenceCase.setStatus(
           userId: jwt.sub,
           status: UserPresenceStatus.online,
         );
@@ -100,7 +100,7 @@ base class WebsocketSessionHandlerBase {
         final jwt = removeSession(session);
         if (jwt != null) {
           session.send(_authLogOutResponse);
-          await userPresenceCase.update(
+          await userPresenceCase.setStatus(
             userId: jwt.sub,
             status: UserPresenceStatus.offline,
           );

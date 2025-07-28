@@ -18,6 +18,8 @@ class UserPresenceRepositoryMock implements UserPresenceRepository {
   @override
   Future<void> update(
     String userId, {
+    DateTime? lastSeenAt,
+    DateTime? lastNotifiedAt,
     UserPresenceStatus? status,
   }) {
     throw UnimplementedError();

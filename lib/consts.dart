@@ -27,6 +27,8 @@ const kAuthJwtExpiresIn = 30;
 
 const kRequestTimeout = 15;
 
+const kUserOfflineAfterSeconds = 3;
+
 /// In hours
 const int kInvitationDefaultTTL = 24 * 7;
 
@@ -49,6 +51,7 @@ const kContentTextPlain = 'text/plain';
 const kContentTypeJpeg = 'image/jpeg';
 const kContentApplicationJson = 'application/json';
 const kContentApplicationJavaScript = 'application/javascript';
+const kContentApplicationFormUrlencoded = 'application/x-www-form-urlencoded';
 
 const kHeaderEtag = 'Etag';
 const kHeaderAccept = 'Accept';

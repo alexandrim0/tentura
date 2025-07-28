@@ -9,15 +9,34 @@ export 'package:tentura_root/domain/enums.dart';
 
 @Injectable(order: 2)
 class UserPresenceCase {
-  UserPresenceCase(this._userPresenceRepository);
+  UserPresenceCase(
+    this._userPresenceRepository,
+  );
 
   final UserPresenceRepository _userPresenceRepository;
 
+  //
+  //
   Future<UserPresenceEntity> get(String userId) =>
       _userPresenceRepository.get(userId);
 
-  Future<void> update({
+  //
+  //
+  Future<void> touch({
     required String userId,
-    UserPresenceStatus? status,
-  }) => _userPresenceRepository.update(userId, status: status);
+  }) => _userPresenceRepository.update(
+    userId,
+    lastSeenAt: DateTime.timestamp(),
+  );
+
+  //
+  //
+  Future<void> setStatus({
+    required String userId,
+    required UserPresenceStatus status,
+  }) => _userPresenceRepository.update(
+    userId,
+    status: status,
+    lastSeenAt: DateTime.timestamp(),
+  );
 }

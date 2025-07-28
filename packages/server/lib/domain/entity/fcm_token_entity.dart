@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:uuid/uuid.dart';
 
 part 'fcm_token_entity.freezed.dart';
 
@@ -6,9 +7,9 @@ part 'fcm_token_entity.freezed.dart';
 abstract class FcmTokenEntity with _$FcmTokenEntity {
   const factory FcmTokenEntity({
     required String userId,
-    required String appId,
-    required String token,
+    required UuidValue appId,
     required String platform,
+    required String token,
     required DateTime createdAt,
   }) = _FcmTokenEntity;
 

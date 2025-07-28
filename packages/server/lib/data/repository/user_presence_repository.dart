@@ -33,16 +33,21 @@ class UserPresenceRepository {
   //
   Future<void> update(
     String userId, {
+    DateTime? lastSeenAt,
+    DateTime? lastNotifiedAt,
     UserPresenceStatus? status,
-  }) async {
-    await _database.managers.userPresence
-        .filter((t) => t.userId.id(userId))
-        .update(
-          (o) => o(
-            userId: Value(userId),
-            status: Value.absentIfNull(status),
-            lastSeenAt: Value(PgDateTime(DateTime.timestamp())),
+  }) => _database.managers.userPresence
+      .filter((t) => t.userId.id(userId))
+      .update(
+        (o) => o(
+          userId: Value(userId),
+          status: Value.absentIfNull(status),
+          lastSeenAt: Value.absentIfNull(
+            lastSeenAt == null ? null : PgDateTime(lastSeenAt),
           ),
-        );
-  }
+          lastNotifiedAt: Value.absentIfNull(
+            lastNotifiedAt == null ? null : PgDateTime(lastNotifiedAt),
+          ),
+        ),
+      );
 }

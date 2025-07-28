@@ -12,6 +12,10 @@ class UserPresence extends Table {
     PgTypes.timestampWithTimezone,
   ).clientDefault(() => PgDateTime(DateTime.timestamp()))();
 
+  late final lastNotifiedAt = customType(
+    PgTypes.timestampWithTimezone,
+  ).clientDefault(() => PgDateTime(DateTime.timestamp()))();
+
   late final status = intEnum<UserPresenceStatus>().clientDefault(() => 0)();
 
   @override

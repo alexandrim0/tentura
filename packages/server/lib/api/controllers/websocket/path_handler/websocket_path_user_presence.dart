@@ -11,7 +11,7 @@ base mixin WebsocketPathUserPresence on WebsocketSessionHandlerBase {
   ) async {
     final intent = payload['intent'];
     return switch (intent) {
-      'set_status' => userPresenceCase.update(
+      'set_status' => userPresenceCase.setStatus(
         userId: jwt.sub,
         status: UserPresenceStatus.values.firstWhere(
           (e) => e.name == payload['status'] as String?,
