@@ -14,7 +14,7 @@ abstract class UserPresenceEntity with _$UserPresenceEntity {
     required UserPresenceStatus status,
   }) = _UserPresenceEntity;
 
-  UserPresenceEntity._();
+  const UserPresenceEntity._();
 
   bool get hasNotified => lastNotifiedAt.isAfter(lastSeenAt);
 
