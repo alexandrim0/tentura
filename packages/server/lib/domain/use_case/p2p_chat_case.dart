@@ -7,9 +7,9 @@ import 'package:tentura_server/data/repository/fcm_remote_repository.dart';
 import 'package:tentura_server/data/repository/fcm_token_repository.dart';
 import 'package:tentura_server/data/repository/p2p_message_repository.dart';
 import 'package:tentura_server/data/repository/user_presence_repository.dart';
+import 'package:tentura_server/data/repository/user_repository.dart';
 
 import '../entity/p2p_message_entity.dart';
-import '../exception.dart';
 
 @Injectable(order: 2)
 class P2pChatCase {
@@ -19,6 +19,7 @@ class P2pChatCase {
     this._fcmRemoteRepository,
     this._p2pMessageRepository,
     this._userPresenceRepository,
+    this._userRepository,
   );
 
   // ignore: unused_field //
@@ -31,6 +32,8 @@ class P2pChatCase {
   final P2pMessageRepository _p2pMessageRepository;
 
   final UserPresenceRepository _userPresenceRepository;
+
+  final UserRepository _userRepository;
 
   //
   //
@@ -62,16 +65,11 @@ class P2pChatCase {
     required String clientId,
     required String serverId,
     required String receiverId,
-  }) async {
-    final rowsAffected = await _p2pMessageRepository.markAsDelivered(
-      receiverId: receiverId,
-      clientId: clientId,
-      serverId: serverId,
-    );
-    if (rowsAffected <= 0) {
-      throw const IdNotFoundException();
-    }
-  }
+  }) => _p2pMessageRepository.markAsDelivered(
+    receiverId: receiverId,
+    clientId: clientId,
+    serverId: serverId,
+  );
 
   //
   //
@@ -100,9 +98,10 @@ class P2pChatCase {
         receiverId,
       );
       if (fcmTokens.isNotEmpty) {
+        final senderProfile = await _userRepository.getById(senderId);
         await _fcmRemoteRepository.sendFcmMessages(
-          fcmTokens: fcmTokens.map((e) => e.token),
-          title: senderId,
+          fcmTokens: fcmTokens.map((e) => e.token).toSet(),
+          title: senderProfile.title,
           body: content,
         );
         await _userPresenceRepository.update(

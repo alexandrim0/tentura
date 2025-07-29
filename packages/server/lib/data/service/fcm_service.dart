@@ -15,6 +15,8 @@ class FcmService {
     'https://fcm.googleapis.com/v1/projects/${_env.fbProjectId}/messages:send',
   );
 
+  Future<String>? _accessTokenFuture;
+
   //
   //
   Future<void> sendFcmMessage({
@@ -53,27 +55,18 @@ class FcmService {
     }
   }
 
-  //
-  //
-  Future<void> sendFcmMessages({
-    required String accessToken,
-    required Iterable<String> fcmTokens,
-    required String title,
-    required String body,
-  }) => Future.wait<void>(
-    fcmTokens.map(
-      (fcmToken) => sendFcmMessage(
-        accessToken: accessToken,
-        fcmToken: fcmToken,
-        title: title,
-        body: body,
-      ),
-    ),
-  );
+  ///
+  /// Generates an OAuth2.0 access token for FCM.
+  ///
+  /// This method is concurrency-safe and ensures the token generation logic
+  /// runs only once. The returned [Future] is cached. If token generation
+  /// fails, the cache is cleared to allow for retries on subsequent calls.
+  Future<String> generateAccessToken() =>
+      _accessTokenFuture ??= _generateAndCacheAccessToken();
 
   //
   //
-  Future<String> generateAccessToken() async {
+  Future<String> _generateAndCacheAccessToken() async {
     try {
       final response = await post(
         _oAuthTokenEndpointUri,
@@ -106,9 +99,14 @@ class FcmService {
       }
 
       final tokenInfo = json.decode(response.body) as Map<String, dynamic>;
-      print(tokenInfo);
+      if (_env.isDebugModeOn) {
+        print(tokenInfo);
+      } else {
+        print('FCM access token generated');
+      }
       return tokenInfo['access_token']! as String;
     } catch (e) {
+      _accessTokenFuture = null;
       print(e);
       rethrow;
     }

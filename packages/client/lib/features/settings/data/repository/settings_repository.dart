@@ -8,23 +8,32 @@ class SettingsRepository {
 
   final Database _database;
 
-  // AppId
-  //
+  ///
+  /// Application Id for instance
+  ///
   Future<String?> getAppId() => _database.managers.settings
       .filter((f) => f.key.equals(_kAppIdKey))
       .getSingleOrNull()
       .then((v) => v?.valueText);
 
   //
-  Future<bool> setAppId(String value) => _database.managers.settings.replace(
-    SettingsCompanion(
-      key: const Value(_kAppIdKey),
+  //
+  Future<void> setAppId(String value) => _database.managers.settings.create(
+    (o) => o(
+      key: _kAppIdKey,
       valueText: Value(value),
+    ),
+    mode: InsertMode.insertOrReplace,
+    onConflict: DoUpdate(
+      (_) => SettingsCompanion(
+        valueText: Value(value),
+      ),
     ),
   );
 
-  // Last FCM registration
-  //
+  ///
+  /// Last FCM registration
+  ///
   Future<DateTime?> getLastFcmRegistrationAt() => _database.managers.settings
       .filter((f) => f.key.equals(_kLastFcmRegistrationAtKey))
       .getSingleOrNull()
@@ -33,41 +42,67 @@ class SettingsRepository {
       );
 
   //
+  //
   Future<void> setLastFcmRegistrationAt(DateTime value) =>
-      _database.managers.settings.replace(
-        SettingsCompanion(
-          key: const Value(_kLastFcmRegistrationAtKey),
+      _database.managers.settings.create(
+        (o) => o(
+          key: _kLastFcmRegistrationAtKey,
           valueText: Value(value.toIso8601String()),
+        ),
+        mode: InsertMode.insertOrReplace,
+        onConflict: DoUpdate(
+          (_) => SettingsCompanion(
+            valueText: Value(value.toIso8601String()),
+          ),
         ),
       );
 
-  // Intro
-  //
+  ///
+  /// Intro
+  ///
   Future<bool?> getIsIntroEnabled() => _database.managers.settings
       .filter((f) => f.key.equals(_kIsIntroEnabledKey))
       .getSingleOrNull()
       .then((v) => v?.valueBool);
 
   //
+  //
   Future<void> setIsIntroEnabled(bool value) =>
-      _database.managers.settings.replace(
-        SettingsCompanion(
-          key: const Value(_kIsIntroEnabledKey),
+      _database.managers.settings.create(
+        (o) => o(
+          key: _kIsIntroEnabledKey,
           valueBool: Value(value),
+        ),
+        mode: InsertMode.insertOrReplace,
+        onConflict: DoUpdate(
+          (_) => SettingsCompanion(
+            valueBool: Value(value),
+          ),
         ),
       );
 
-  // Theme
-  //
+  ///
+  /// Theme
+  ///
   Future<String?> getThemeModeName() => _database.managers.settings
       .filter((f) => f.key.equals(_kThemeModeKey))
       .getSingleOrNull()
       .then((v) => v?.valueText);
 
   //
-  Future<void> setThemeMode(String value) => _database.managers.settings
-      .filter((f) => f.key.equals(_kThemeModeKey))
-      .update((o) => o(valueText: Value(value)));
+  //
+  Future<void> setThemeMode(String value) => _database.managers.settings.create(
+    (o) => o(
+      key: _kThemeModeKey,
+      valueText: Value(value),
+    ),
+    mode: InsertMode.insertOrReplace,
+    onConflict: DoUpdate(
+      (_) => SettingsCompanion(
+        valueText: Value(value),
+      ),
+    ),
+  );
 
   // Keys
   static const _kAppIdKey = 'appId';

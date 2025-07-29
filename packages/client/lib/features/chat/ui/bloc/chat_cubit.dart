@@ -74,7 +74,7 @@ class ChatCubit extends Cubit<ChatState> {
   //
   Future<void> onMessageShown(ChatMessageEntity message) async {
     try {
-      await _chatCase.setMessageSeen(messageId: message.id);
+      await _chatCase.setMessageSeen(message: message);
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }

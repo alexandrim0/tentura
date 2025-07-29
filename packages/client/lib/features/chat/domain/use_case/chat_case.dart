@@ -45,9 +45,9 @@ class ChatCase {
 
   ///
   Future<void> setMessageSeen({
-    required String messageId,
+    required ChatMessageEntity message,
   }) => _chatRemoteRepository.setMessageSeen(
-    messageId: messageId,
+    message: message,
   );
 
   ///

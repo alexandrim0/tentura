@@ -80,7 +80,7 @@ class ChatRemoteRepository {
   //
   //
   Future<void> setMessageSeen({
-    required String messageId,
+    required ChatMessageEntity message,
   }) async => _remoteApiService.webSocketSend(
     // TBD: move to Model
     jsonEncode({
@@ -89,7 +89,8 @@ class ChatRemoteRepository {
       'payload': {
         'intent': 'mark_as_delivered',
         'message': {
-          'message_id': messageId,
+          'client_id': message.clientId,
+          'server_id': message.serverId,
         },
       },
     }),

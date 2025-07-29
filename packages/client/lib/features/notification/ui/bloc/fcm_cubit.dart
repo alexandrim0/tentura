@@ -8,6 +8,7 @@ import '../../data/repository/fcm_local_repository.dart';
 import '../../data/repository/fcm_remote_repository.dart';
 import 'fcm_state.dart';
 
+/// Global Cubit
 @singleton
 class FcmCubit extends Cubit<FcmState> {
   FcmCubit(
@@ -67,15 +68,6 @@ class FcmCubit extends Cubit<FcmState> {
   }
 
   //
-  Future<String> _getAppId() async {
-    var appId = await _settingsRepository.getAppId();
-    if (appId == null) {
-      appId = const Uuid().v4();
-      await _settingsRepository.setAppId(appId);
-    }
-    return appId;
-  }
-
   //
   Future<void> _registerFcmToken(String token) async {
     final appId = await _getAppId();
@@ -91,5 +83,16 @@ class FcmCubit extends Cubit<FcmState> {
       token: token,
       platform: kIsWeb ? 'web' : 'android',
     );
+  }
+
+  //
+  //
+  Future<String> _getAppId() async {
+    var appId = await _settingsRepository.getAppId();
+    if (appId == null) {
+      appId = const Uuid().v4();
+      await _settingsRepository.setAppId(appId);
+    }
+    return appId;
   }
 }

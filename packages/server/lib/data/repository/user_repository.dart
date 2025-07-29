@@ -10,7 +10,7 @@ import '../mapper/user_mapper.dart';
 
 export 'package:tentura_server/domain/entity/user_entity.dart';
 
-@Injectable(
+@Singleton(
   env: [
     Environment.dev,
     Environment.prod,
@@ -18,12 +18,16 @@ export 'package:tentura_server/domain/entity/user_entity.dart';
   order: 1,
 )
 class UserRepository {
-  const UserRepository(this._database, this._settings);
+  const UserRepository(
+    this._env,
+    this._database,
+  );
+
+  final Env _env;
 
   final TenturaDb _database;
 
-  final Env _settings;
-
+  //
   //
   Future<UserEntity> create({
     required String publicKey,
@@ -33,6 +37,7 @@ class UserRepository {
       .then(userModelToEntity);
 
   // TBD: move to SQL
+  //
   Future<UserEntity> createInvited({
     required String invitationId,
     required String publicKey,
@@ -47,7 +52,7 @@ class UserRepository {
       );
     }
     if (invitation.createdAt.dateTime
-        .add(_settings.invitationTTL)
+        .add(_env.invitationTTL)
         .isBefore(DateTime.timestamp())) {
       throw const InvitationWrongException(description: 'Invitation expired!');
     }
@@ -75,11 +80,13 @@ class UserRepository {
   });
 
   //
+  //
   Future<UserEntity> getById(String id) => _database.managers.users
       .filter((e) => e.id(id))
       .getSingle()
       .then(userModelToEntity);
 
+  //
   //
   Future<UserEntity> getByPublicKey(String publicKey) => _database
       .managers
@@ -88,6 +95,7 @@ class UserRepository {
       .getSingle()
       .then(userModelToEntity);
 
+  //
   //
   Future<void> update({
     required String id,
@@ -109,9 +117,12 @@ class UserRepository {
         ),
       );
 
+  //
+  //
   Future<void> deleteById({required String id}) =>
       _database.managers.users.filter((e) => e.id(id)).delete();
 
+  //
   // TBD: move to SQL
   Future<bool> bindMutual({
     required String invitationId,
@@ -125,7 +136,7 @@ class UserRepository {
         description: 'Invitation already used!',
       );
     } else if (invitation.createdAt.dateTime
-        .add(_settings.invitationTTL)
+        .add(_env.invitationTTL)
         .isBefore(DateTime.timestamp())) {
       throw const InvitationWrongException(description: 'Invitation expired!');
     }
