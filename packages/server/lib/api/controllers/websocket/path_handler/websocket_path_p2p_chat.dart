@@ -61,19 +61,26 @@ base mixin WebsocketPathP2pChat on WebsocketSessionHandlerBase {
               from: fromTimestamp,
               batchSize: batchSize,
             );
-            if (messages.isNotEmpty) {
-              fromTimestamp = messages.last.createdAt;
-              session.send(
-                jsonEncode({
-                  'type': 'subscription',
-                  'path': 'p2p_chat',
-                  'payload': {
-                    'intent': 'watch_updates',
-                    'messages': messages.map((e) => e.toJson()).toList(),
-                  },
-                }),
-              );
+            if (messages.isEmpty) {
+              return;
             }
+            fromTimestamp = messages.fold(
+              fromTimestamp,
+              (max, msg) {
+                final latest = msg.deliveredAt ?? msg.createdAt;
+                return max.isAfter(latest) ? max : latest;
+              },
+            );
+            session.send(
+              jsonEncode({
+                'type': 'subscription',
+                'path': 'p2p_chat',
+                'payload': {
+                  'intent': 'watch_updates',
+                  'messages': messages.map((e) => e.toJson()).toList(),
+                },
+              }),
+            );
           },
         ),
       ),

@@ -2,7 +2,7 @@ name: tentura_server
 description: Tentura server API
 publish_to: none
 
-version: 0.5.6
+version: 0.5.7
 
 environment:
   sdk: '>=3.8.1 <4.0.0'
@@ -17,14 +17,14 @@ dependencies:
   faker: ^2.2.0
   image: ^4.5.4
   minio: ^3.5.7
-  drift: ^2.28.0
+  drift: ^2.28.1
   jaspr: ^0.20.0
   crypto: ^3.0.6
   get_it: ^8.0.3
   migrant: ^0.3.0
   latlong2: ^0.9.1
   postgres: ^3.5.6
-  injectable: ^2.5.0
+  injectable: ^2.5.1
   collection: ^1.19.1
   shelf_plus: ^1.10.1
   pg_job_queue: ^0.0.2

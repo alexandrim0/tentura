@@ -3,7 +3,11 @@ import 'package:injectable/injectable.dart';
 import '../fcm_remote_repository.dart';
 
 @Singleton(
-  env: [Environment.test],
+  as: FcmRemoteRepository,
+  env: [
+    Environment.dev,
+    Environment.test,
+  ],
   order: 1,
 )
 class FcmRemoteRepositoryMock implements FcmRemoteRepository {

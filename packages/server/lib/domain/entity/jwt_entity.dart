@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tentura_server/consts.dart';
 
 import '../enum.dart';
+import '../exception.dart';
 
 part 'jwt_entity.freezed.dart';
 part 'jwt_entity.g.dart';
@@ -57,4 +59,10 @@ abstract class JwtEntity with _$JwtEntity {
   };
 
   String get asJson => jsonEncode(toJson());
+
+  void validate() {
+    if (sub.length != kIdLength || !RegExp(r'^U[0-9a-f]+$').hasMatch(sub)) {
+      throw IdWrongException(id: sub);
+    }
+  }
 }

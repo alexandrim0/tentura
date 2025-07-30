@@ -4,7 +4,6 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura_server/domain/entity/p2p_message_entity.dart';
 
 import '../database/tentura_db.dart';
-import '../mapper/p2p_message_mapper.dart';
 
 @Injectable(
   env: [
@@ -25,16 +24,14 @@ class P2pMessageRepository {
     required String senderId,
     required String receiverId,
     required UuidValue clientId,
-  }) async {
-    await _database.managers.p2pMessages.create(
-      (o) => o(
-        clientId: clientId,
-        senderId: senderId,
-        receiverId: receiverId,
-        content: content,
-      ),
-    );
-  }
+  }) => _database.managers.p2pMessages.create(
+    (o) => o(
+      clientId: clientId,
+      senderId: senderId,
+      receiverId: receiverId,
+      content: content,
+    ),
+  );
 
   ///
   /// Return number of affected rows
@@ -56,23 +53,46 @@ class P2pMessageRepository {
         ),
       );
 
-  //
-  //
+  ///
+  /// Fetches P2P messages for a specific user from a given point in time.
+  ///
   Future<Iterable<P2pMessageEntity>> fetchByUserId({
     required DateTime from,
     required String id,
     required int limit,
-  }) => _database.managers.p2pMessages
-      .filter(
-        (e) =>
-            (e.receiverId.id(id) &
-                e.createdAt.column.isBiggerThanValue(PgDateTime(from))) |
-            (e.senderId.id(id) &
-                e.createdAt.column.isBiggerThanValue(PgDateTime(from))) |
-            (e.senderId.id(id) &
-                e.deliveredAt.column.isBiggerThanValue(PgDateTime(from))),
-      )
-      .orderBy((o) => o.createdAt.asc())
-      .get(limit: limit)
-      .then((e) => e.map(p2pMessageModelToEntity));
+  }) async {
+    final fromString = from.toIso8601String();
+    final messages = await _database
+        .customSelect(
+          '''
+  (SELECT * FROM p2p_message
+    WHERE receiver_id = '$id' AND created_at > '$fromString')
+  UNION
+  (SELECT * FROM p2p_message
+    WHERE sender_id = '$id' AND created_at > '$fromString')
+  UNION
+  (SELECT * FROM p2p_message
+    WHERE receiver_id = '$id' AND delivered_at > '$fromString')
+  UNION
+  (SELECT * FROM p2p_message
+    WHERE sender_id = '$id' AND delivered_at > '$fromString')
+  ORDER BY created_at ASC
+  LIMIT $limit
+  ''',
+          readsFrom: {_database.p2pMessages},
+        )
+        .get();
+
+    return messages.map(
+      (row) => P2pMessageEntity(
+        clientId: row.data['client_id']! as String,
+        serverId: row.data['server_id']! as String,
+        content: row.data['content']! as String,
+        senderId: row.data['sender_id']! as String,
+        receiverId: row.data['receiver_id']! as String,
+        createdAt: row.data['created_at']! as DateTime,
+        deliveredAt: row.data['delivered_at'] as DateTime?,
+      ),
+    );
+  }
 }

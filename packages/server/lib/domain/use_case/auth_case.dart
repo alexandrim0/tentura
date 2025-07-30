@@ -42,7 +42,7 @@ class AuthCase {
     return JwtEntity(
       sub: jwt.subject!,
       roles: UserRoles.values.where((e) => roleList.contains(e.name)).toSet(),
-    );
+    )..validate();
   }
 
   //

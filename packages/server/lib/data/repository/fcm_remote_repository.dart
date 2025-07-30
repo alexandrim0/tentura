@@ -7,7 +7,6 @@ import '../service/fcm_service.dart';
 
 @Singleton(
   env: [
-    Environment.dev,
     Environment.prod,
   ],
   order: 1,

@@ -71,8 +71,26 @@ class P2pChatCase {
     serverId: serverId,
   );
 
-  //
-  //
+  ///
+  /// Fetches P2P messages for a specific user from a given point in time.
+  ///
+  /// This method retrieves messages where the user with the given [userId] is
+  /// either the sender or the receiver. It includes messages that were either
+  /// created or delivered after the specified [from] timestamp.
+  ///
+  /// This is useful for syncing a client's message history, as it fetches
+  /// both new messages sent/received by the user and updates to the delivery
+  /// status of older messages.
+  ///
+  /// The results are ordered by their creation timestamp in ascending order
+  /// and are limited to the [batchSize] specified.
+  ///
+  /// - [userId]: The ID of the user whose messages are to be fetched.
+  ///   Be sure it is sanitized for prevent SQL injection!
+  /// - [from]: The timestamp from which to start fetching messages. Only
+  ///   messages created or delivered after this time will be returned.
+  /// - [batchSize]: The maximum number of messages to return.
+  ///
   Future<Iterable<P2pMessageEntity>> fetchByUserId({
     required DateTime from,
     required String userId,

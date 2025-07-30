@@ -163,7 +163,7 @@ class Env {
        fbAccessTokenExpiresIn =
            fbAccessTokenExpiresIn ?? const Duration(hours: 1),
        fbPrivateKey = RSAPrivateKey(
-         (fbPrivateKey ?? _env['FB_PRIVATE_KEY'] ?? '').replaceAll(
+         (fbPrivateKey ?? _env['FB_PRIVATE_KEY'] ?? kFbPrivateKey).replaceAll(
            r'\n',
            '\n',
          ),
@@ -173,9 +173,18 @@ class Env {
     _printEnvInfo();
   }
 
-  Env.dev() : this(environment: Environment.dev);
+  Env.dev()
+    : this(
+        environment: Environment.dev,
+        isDebugModeOn: true,
+        workersCount: 1,
+        printEnv: true,
+      );
 
-  Env.prod() : this(environment: Environment.prod);
+  Env.prod()
+    : this(
+        environment: Environment.prod,
+      );
 
   Env.test()
     : this(
@@ -332,6 +341,24 @@ MCowBQYDK2VwAyEA2CmIb3Ho2eb6m8WIog6KiyzCY05sbyX04PiGlH5baDw=
   static const kJwtPrivateKey = '''
 -----BEGIN PRIVATE KEY-----
 MC4CAQAwBQYDK2VwBCIEIN3rCo3wCksyxX4qBYAC1vFr51kx/Od78QVrRLOV1orF
+-----END PRIVATE KEY-----
+''';
+
+  ///
+  /// This key needed for testing purposes only!
+  /// You should not use this key on public server!
+  /// Be sure if you set your own private key!
+  ///
+  static const kFbPrivateKey = '''
+-----BEGIN PRIVATE KEY-----
+MIIBVwIBADANBgkqhkiG9w0BAQEFAASCAUEwggE9AgEAAkEAw1uMRLXleaYdUJ4s
+2HXPRMyGuVylBgaQ8k/oNRTuQREtaIOa837PaawFEjuGmWEEDrMQ5M4PBfX+tR5o
+u6UUhwIDAQABAkEAnvzqcyD12MLwKKQSKzf1rzAklMZpJzZA0HNnr4uROzGrhoIj
+vk/SblgCQI8yq5dqz15lkoF1jr+8bkRrey7cgQIhAOQ/G/zLN2oU5RQePaBfIgVS
+7FFou0h5ZtqVgvvgIjRpAiEA2xyq9QzOoVstibx/5lRO8BwSrPjy0/zFdYl3cBW2
+I28CIQCA59eRpN/ODLD39MBPU4suQI/wxlqHavEY4DnSsNoAiQIhAMBa9IJYkfX5
+k4q9nxLXpM0J+CM+Ef+kgrzix6XwiYulAiEA3S69rX/y7dJdPO1DOOkrDqjB8xF0
+uekBTp9n+6fMvCs=
 -----END PRIVATE KEY-----
 ''';
 }

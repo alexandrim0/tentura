@@ -4,7 +4,7 @@
         {
             "console": "debugConsole",
             "name": "tentura-server",
-            "program":"bin/tentura.dart",
+            "program":"bin/tentura_dev.dart",
             "request": "launch",
             "type": "dart",
             "env": {
