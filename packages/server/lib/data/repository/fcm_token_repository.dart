@@ -45,4 +45,7 @@ class FcmTokenRepository {
     ),
     mode: InsertMode.insertOrIgnore,
   );
+
+  Future<void> deleteToken(String token) =>
+      _database.managers.fcmTokens.filter((f) => f.token(token)).delete();
 }

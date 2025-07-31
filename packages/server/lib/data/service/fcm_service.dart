@@ -4,6 +4,8 @@ import 'package:injectable/injectable.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
 import 'package:tentura_server/env.dart';
+import 'package:tentura_server/domain/exception.dart';
+import 'package:tentura_server/domain/entity/fcm_message_entity.dart';
 
 @singleton
 class FcmService {
@@ -15,16 +17,47 @@ class FcmService {
     'https://fcm.googleapis.com/v1/projects/${_env.fbProjectId}/messages:send',
   );
 
+  late final _publicKey = RSAPrivateKey(
+    _env.fbPrivateKey.replaceAll(r'\n', '\n'),
+  );
+
   Future<String>? _accessTokenFuture;
 
   //
   //
   Future<void> sendFcmMessage({
-    required String accessToken,
     required String fcmToken,
-    required String title,
-    required String body,
+    required String accessToken,
+    required FcmNotificationEntity message,
+    Map<String, Map<String, String>>? webConfig,
+    Map<String, Map<String, String>>? androidConfig,
+    String? analyticsLabel,
+    int ttlInSeconds = 0,
   }) async {
+    final messageBody = jsonEncode({
+      'message': {
+        'token': fcmToken,
+        'notification': {
+          'title': message.title,
+          'body': message.body,
+          if (message.imageUrl != null) 'image': message.imageUrl,
+        },
+        'android': {
+          'ttl': '${ttlInSeconds}s',
+          ...?androidConfig,
+        },
+        'webpush': {
+          'headers': {
+            'TTL': ttlInSeconds.toString(),
+          },
+          ...?webConfig,
+        },
+        if (analyticsLabel != null)
+          'fcm_options': {
+            'analytics_label': analyticsLabel,
+          },
+      },
+    });
     try {
       final response = await post(
         _fcmEndpointUri,
@@ -32,22 +65,25 @@ class FcmService {
           kHeaderContentType: kContentApplicationJson,
           kHeaderAuthorization: 'Bearer $accessToken',
         },
-        body: jsonEncode({
-          'message': {
-            'token': fcmToken,
-            'notification': {
-              'title': title,
-              'body': body,
-            },
-          },
-        }),
+        body: messageBody,
       );
-      if (response.statusCode != 200) {
-        print(
-          'Failed to send FCM message\n'
-          'Response code: [${response.statusCode}, ${response.reasonPhrase}]\n'
-          'Response body: ${response.body}',
-        );
+
+      switch (response.statusCode) {
+        case 200:
+          return;
+
+        case 404:
+          throw FcmTokenNotFoundException(
+            token: fcmToken,
+            description: response.body,
+          );
+
+        default:
+          throw Exception(
+            '[FcmService] Failed to send FCM message\n'
+            'Response code: [${response.statusCode}, ${response.reasonPhrase}]\n'
+            'Response body: ${response.body}',
+          );
       }
     } catch (e) {
       print(e);
@@ -74,16 +110,14 @@ class FcmService {
           kHeaderContentType: kContentApplicationFormUrlencoded,
         },
         body: {
-          'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+          'grant_type': _grantType,
           'assertion':
               JWT(
-                const {
-                  'scope': 'https://www.googleapis.com/auth/firebase.messaging',
-                },
-                audience: Audience(['https://oauth2.googleapis.com/token']),
+                _scopes,
+                audience: _audience,
                 issuer: _env.fbClientEmail,
               ).sign(
-                _env.fbPrivateKey,
+                _publicKey,
                 algorithm: JWTAlgorithm.RS256,
                 expiresIn: _env.fbAccessTokenExpiresIn,
               ),
@@ -92,18 +126,17 @@ class FcmService {
 
       if (response.statusCode != 200) {
         throw Exception(
-          'Failed to obtain FCM access token\n'
+          '[FcmService] Failed to obtain FCM access token\n'
           'Response code: [${response.statusCode}, ${response.reasonPhrase}]\n'
           'Response body: ${response.body}',
         );
       }
 
       final tokenInfo = json.decode(response.body) as Map<String, dynamic>;
-      if (_env.isDebugModeOn) {
-        print(tokenInfo);
-      } else {
-        print('FCM access token generated');
-      }
+      print(
+        '[FcmService] '
+        '${_env.isDebugModeOn ? tokenInfo : 'FCM access token generated'}',
+      );
       return tokenInfo['access_token']! as String;
     } catch (e) {
       _accessTokenFuture = null;
@@ -111,6 +144,16 @@ class FcmService {
       rethrow;
     }
   }
+
+  static const _grantType = 'urn:ietf:params:oauth:grant-type:jwt-bearer';
+
+  static const _scopes = {
+    'scope': 'https://www.googleapis.com/auth/firebase.messaging',
+  };
+
+  static final _audience = Audience([
+    'https://oauth2.googleapis.com/token',
+  ]);
 
   static final _oAuthTokenEndpointUri = Uri.parse(
     'https://oauth2.googleapis.com/token',

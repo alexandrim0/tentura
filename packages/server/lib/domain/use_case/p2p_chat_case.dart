@@ -3,11 +3,13 @@ import 'package:uuid/uuid_value.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/env.dart';
+import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/data/repository/fcm_remote_repository.dart';
 import 'package:tentura_server/data/repository/fcm_token_repository.dart';
 import 'package:tentura_server/data/repository/p2p_message_repository.dart';
 import 'package:tentura_server/data/repository/user_presence_repository.dart';
 import 'package:tentura_server/data/repository/user_repository.dart';
+import 'package:tentura_server/domain/entity/fcm_message_entity.dart';
 
 import '../entity/p2p_message_entity.dart';
 
@@ -102,6 +104,9 @@ class P2pChatCase {
   );
 
   //
+  // TBD:
+  //  make a dedicated Isolate for processing FCM jobs
+  //  or use existing TaskWorker?
   //
   Future<void> _notifyUser({
     required String receiverId,
@@ -110,23 +115,37 @@ class P2pChatCase {
     required UuidValue clientMessageId,
   }) async {
     final userStatus = await _userPresenceRepository.get(receiverId);
+    if (!userStatus.shouldNotify) {
+      return;
+    }
 
-    if (userStatus.shouldNotify) {
-      final fcmTokens = await _fcmTokenRepository.getTokensByUserId(
-        receiverId,
-      );
-      if (fcmTokens.isNotEmpty) {
-        final senderProfile = await _userRepository.getById(senderId);
-        await _fcmRemoteRepository.sendFcmMessages(
-          fcmTokens: fcmTokens.map((e) => e.token).toSet(),
-          title: senderProfile.title,
-          body: content,
-        );
-        await _userPresenceRepository.update(
-          receiverId,
-          lastNotifiedAt: DateTime.timestamp(),
-        );
-      }
+    final fcmTokens = await _fcmTokenRepository.getTokensByUserId(
+      receiverId,
+    );
+    if (fcmTokens.isEmpty) {
+      return;
+    }
+
+    final senderProfile = await _userRepository.getById(senderId);
+    final results = await _fcmRemoteRepository.sendChatNotification(
+      fcmTokens: fcmTokens.map((e) => e.token).toSet(),
+      message: FcmNotificationEntity(
+        imageUrl: senderProfile.imageUrl,
+        title: senderProfile.title,
+        body: content,
+        actionUrl:
+            '${_env.serverUri.origin}/#/profile/chat?'
+            'id=$senderId,receiver_id=$receiverId',
+      ),
+    );
+    await _userPresenceRepository.update(
+      receiverId,
+      lastNotifiedAt: DateTime.timestamp(),
+    );
+
+    for (final e in results.whereType<FcmTokenNotFoundException>()) {
+      await _fcmTokenRepository.deleteToken(e.token);
+      print('');
     }
   }
 }

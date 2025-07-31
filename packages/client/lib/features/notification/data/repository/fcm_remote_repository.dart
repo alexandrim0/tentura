@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/data/service/remote_api_service.dart';
+
 import 'package:tentura/features/notification/data/gql/_g/fcm_register_token.req.gql.dart';
 
 @singleton

@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura_server/env.dart';
-import 'dart:async';
+import 'package:tentura_server/domain/exception.dart';
+import 'package:tentura_server/domain/entity/fcm_message_entity.dart';
 
 import '../service/fcm_service.dart';
 
@@ -37,40 +39,59 @@ class FcmRemoteRepository {
   Completer<String>? _tokenCompleter;
 
   ///
-  /// Sends a push notification via FCM to a specific device.
+  /// Sends a chat push notification via FCM to a list of devices.
   ///
-  Future<void> sendFcmMessage({
-    required String fcmToken,
-    required String title,
-    required String body,
-  }) async => _fcmService.sendFcmMessage(
-    accessToken: await _getAccessToken(),
-    fcmToken: fcmToken,
-    title: title,
-    body: body,
+  Future<List<Exception>> sendChatNotification({
+    required Iterable<String> fcmTokens,
+    required FcmNotificationEntity message,
+  }) => _sendFcmMessage(
+    message: message,
+    ttlInSeconds: 60,
+    fcmTokens: fcmTokens,
+    analyticsLabel: 'p2p_chat',
+    webConfig: message.actionUrl == null
+        ? null
+        : {
+            'fcm_options': {
+              'link': message.actionUrl!,
+            },
+          },
   );
 
   ///
-  /// Sends a push notification via FCM to a list of devices.
+  /// Sends a general push notification via FCM to a list of devices.
+  /// Returns list of Exceptions if any
   ///
-  Future<void> sendFcmMessages({
+  Future<List<Exception>> _sendFcmMessage({
+    required FcmNotificationEntity message,
     required Iterable<String> fcmTokens,
-    required String title,
-    required String body,
+    Map<String, Map<String, String>>? webConfig,
+    Map<String, Map<String, String>>? androidConfig,
+    String? analyticsLabel,
+    int ttlInSeconds = 0,
   }) async {
-    if (fcmTokens.isNotEmpty) {
-      final accessToken = await _getAccessToken();
-      await Future.wait(
-        fcmTokens.map(
-          (fcmToken) => _fcmService.sendFcmMessage(
-            accessToken: accessToken,
-            fcmToken: fcmToken,
-            title: title,
-            body: body,
-          ),
-        ),
-      );
+    final accessToken = await _getAccessToken();
+    final results = <Exception>[];
+
+    for (final fcmToken in fcmTokens) {
+      try {
+        await _fcmService.sendFcmMessage(
+          ttlInSeconds: ttlInSeconds,
+          analyticsLabel: analyticsLabel,
+          androidConfig: androidConfig,
+          accessToken: accessToken,
+          webConfig: webConfig,
+          fcmToken: fcmToken,
+          message: message,
+        );
+      } on FcmTokenNotFoundException catch (e) {
+        results.add(e);
+      } catch (e) {
+        print(e);
+      }
     }
+
+    return results;
   }
 
   //

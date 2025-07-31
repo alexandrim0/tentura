@@ -19,4 +19,7 @@ class FcmTokenRepositoryMock implements FcmTokenRepository {
     required String token,
     required String platform,
   }) => Future.value();
+
+  @override
+  Future<void> deleteToken(String token) async {}
 }

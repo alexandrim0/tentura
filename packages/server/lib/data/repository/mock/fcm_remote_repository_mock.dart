@@ -1,5 +1,7 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura_server/domain/entity/fcm_message_entity.dart';
+
 import '../fcm_remote_repository.dart';
 
 @Singleton(
@@ -12,16 +14,8 @@ import '../fcm_remote_repository.dart';
 )
 class FcmRemoteRepositoryMock implements FcmRemoteRepository {
   @override
-  Future<void> sendFcmMessage({
-    required String fcmToken,
-    required String title,
-    required String body,
-  }) async {}
-
-  @override
-  Future<void> sendFcmMessages({
+  Future<List<Exception>> sendChatNotification({
     required Iterable<String> fcmTokens,
-    required String title,
-    required String body,
-  }) async {}
+    required FcmNotificationEntity message,
+  }) async => [];
 }

@@ -23,44 +23,52 @@ base class ExceptionBase implements Exception {
 }
 
 final class UnspecifiedException extends ExceptionBase {
-  const UnspecifiedException({String? description, String? path})
-    : super(
-        code: const GeneralExceptionCodes(
-          GeneralExceptionCode.unspecifiedException,
-        ),
-        description: description ?? 'Unspecified exception',
-        path: path ?? '',
-      );
+  const UnspecifiedException({
+    String? description,
+    String? path,
+  }) : super(
+         code: const GeneralExceptionCodes(
+           GeneralExceptionCode.unspecifiedException,
+         ),
+         description: description ?? 'Unspecified exception',
+         path: path ?? '',
+       );
 }
 
 final class IdNotFoundException extends ExceptionBase {
-  const IdNotFoundException({String id = '', String? description})
-    : super(
-        code: const GeneralExceptionCodes(
-          GeneralExceptionCode.idNotFoundException,
-        ),
-        description: description ?? 'Id not found: [$id]',
-      );
+  const IdNotFoundException({
+    String id = '',
+    String? description,
+  }) : super(
+         code: const GeneralExceptionCodes(
+           GeneralExceptionCode.idNotFoundException,
+         ),
+         description: description ?? 'Id not found: [$id]',
+       );
 }
 
 final class IdWrongException extends ExceptionBase {
-  const IdWrongException({String id = '', String? description})
-    : super(
-        code: const GeneralExceptionCodes(
-          GeneralExceptionCode.idNotFoundException,
-        ),
-        description: description ?? 'Wrong Id: [$id]',
-      );
+  const IdWrongException({
+    String id = '',
+    String? description,
+  }) : super(
+         code: const GeneralExceptionCodes(
+           GeneralExceptionCode.idNotFoundException,
+         ),
+         description: description ?? 'Wrong Id: [$id]',
+       );
 }
 
 final class PemKeyWrongException extends ExceptionBase {
-  const PemKeyWrongException({String key = '', String? description})
-    : super(
-        code: const GeneralExceptionCodes(
-          GeneralExceptionCode.idNotFoundException,
-        ),
-        description: description ?? 'Wrong PEM keys: [$key]',
-      );
+  const PemKeyWrongException({
+    String key = '',
+    String? description,
+  }) : super(
+         code: const GeneralExceptionCodes(
+           GeneralExceptionCode.idNotFoundException,
+         ),
+         description: description ?? 'Wrong PEM keys: [$key]',
+       );
 
   @override
   String toString() => 'Wrong PEM keys: [$description]';
@@ -104,4 +112,18 @@ final class BeaconCreateException extends ExceptionBase {
         ),
         description: description ?? 'Beacon create error',
       );
+}
+
+final class FcmTokenNotFoundException extends ExceptionBase {
+  const FcmTokenNotFoundException({
+    required this.token,
+    String? description,
+  }) : super(
+         code: const GeneralExceptionCodes(
+           GeneralExceptionCode.idNotFoundException,
+         ),
+         description: description ?? 'Token not found: [$token]',
+       );
+
+  final String token;
 }

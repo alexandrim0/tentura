@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:injectable/injectable.dart';
 
@@ -25,34 +24,23 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
-
-messaging.onBackgroundMessage((payload) => {
-  self.registration.showNotification(
-    payload.notification.title,
-    {
-      body: payload.notification.body,
-    },
-  );
-});
 ''';
 
-  late final _eTag = md5.convert(utf8.encode(_firebaseSwJs)).toString();
+  late final _headers = {
+    kHeaderContentType: kContentApplicationJavaScript,
+    kHeaderEtag: md5.convert(_firebaseSwJs.codeUnits).toString(),
+  };
 
   @override
   Future<Response> handler(Request request) async => env.fbApiKey.isEmpty
-      ? _emptyResponse
-      : Response.ok(
-          _firebaseSwJs,
+      ? Response.ok(
+          '',
           headers: {
             kHeaderContentType: kContentApplicationJavaScript,
-            kHeaderEtag: _eTag,
           },
+        )
+      : Response.ok(
+          _firebaseSwJs,
+          headers: _headers,
         );
-
-  static final _emptyResponse = Response.ok(
-    '',
-    headers: {
-      kHeaderContentType: kContentApplicationJavaScript,
-    },
-  );
 }
