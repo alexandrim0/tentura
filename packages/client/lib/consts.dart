@@ -1,3 +1,5 @@
+import 'package:tentura_root/consts.dart';
+
 export 'package:tentura_root/consts.dart';
 
 // Numbers
@@ -31,5 +33,20 @@ const kPathProfileView = '/profile/view';
 const kPathInvitations = '/invitations';
 
 const kAssetPackage = bool.fromEnvironment('IS_IMPORTED') ? 'tentura' : null;
+
+/// First part of FQDN: `https://app.server.name`
+const kServerName = String.fromEnvironment(
+  'SERVER_NAME',
+  defaultValue: 'http://localhost:2080',
+);
+
+/// First part of FQDN: `https://image.server.name`
+const kImageServer = String.fromEnvironment('IMAGE_SERVER');
+
+const kAvatarPlaceholderUrl =
+    '$kImageServer/$kImagesPath/placeholder/avatar.$kImageExt';
+
+const kBeaconPlaceholderUrl =
+    '$kImageServer/$kImagesPath/placeholder/beacon.$kImageExt';
 
 final zeroAge = DateTime.fromMillisecondsSinceEpoch(0);

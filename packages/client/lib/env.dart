@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura_root/consts.dart';
+import 'consts.dart';
 
 export 'consts.dart';
 
@@ -27,7 +27,12 @@ class Env {
     // Feature flags
     bool? needInviteCode,
   }) : // Common
-       serverUrlBase = serverUrlBase ?? kServerName,
+       serverUrlBase =
+           serverUrlBase ??
+           const String.fromEnvironment(
+             'SERVER_NAME',
+             defaultValue: 'http://localhost:2080',
+           ),
        pathAppLinkView = pathAppLinkView ?? kPathAppLinkView,
        complaintEmail =
            complaintEmail ?? const String.fromEnvironment('COMPLAINT_EMAIL'),

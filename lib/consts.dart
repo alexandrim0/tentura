@@ -62,19 +62,6 @@ const kHeaderQueryContext = 'X-Hasura-Query-Context';
 
 const kImageExt = 'jpg';
 const kImagesPath = 'images';
-const kAvatarPlaceholderUrl =
-    '$kImageServer/$kImagesPath/placeholder/avatar.$kImageExt';
-const kBeaconPlaceholderUrl =
-    '$kImageServer/$kImagesPath/placeholder/beacon.$kImageExt';
-
-/// First part of FQDN: `https://app.server.name`
-const kServerName = String.fromEnvironment(
-  'SERVER_NAME',
-  defaultValue: 'http://localhost:2080',
-);
-
-/// First part of FQDN: `https://image.server.name`
-const kImageServer = String.fromEnvironment('IMAGE_SERVER');
 
 const kAvatarPlaceholderBlurhash =
     ':QPjJjoL?bxu~qRjD%xuM{j[%MayIUj[t7j[~qa{xuWBD%of%MWBRjj[j[ayxuj[M{ay?bj[IT'
