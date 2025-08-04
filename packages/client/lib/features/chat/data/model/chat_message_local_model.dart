@@ -2,14 +2,14 @@ import 'package:tentura/data/database/database.dart';
 
 import '../../domain/entity/chat_message_entity.dart';
 
-extension type const ChatMessageLocalModel(Message i) implements Message {
+extension type const ChatMessageLocalModel(P2pMessage i) implements P2pMessage {
   ChatMessageEntity toEntity() => ChatMessageEntity(
-    clientId: i.id,
-    serverId: i.id,
-    senderId: i.subjectId,
-    receiverId: i.objectId,
+    clientId: i.clientId,
+    serverId: i.senderId,
+    senderId: i.senderId,
+    receiverId: i.receiverId,
     createdAt: i.createdAt,
-    deliveredAt: i.updatedAt,
+    deliveredAt: i.deliveredAt,
     content: i.content,
     status: i.status,
   );

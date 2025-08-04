@@ -4,6 +4,7 @@ import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
+import 'package:tentura/features/auth/domain/use_case/account_case.dart';
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 
@@ -24,7 +25,7 @@ class ProfileNavBarItem extends StatelessWidget {
               _AccountMenuItem(
                 key: ValueKey(account),
                 isMe: account.id == state.currentAccountId,
-                profile: account,
+                profile: AccountCase.fromAccountEntity(account),
                 onTap: () {
                   menuController.close();
                   authCubit.signIn(account.id);
@@ -76,7 +77,10 @@ class _AccountMenuItem extends StatelessWidget {
       children: [
         Padding(
           padding: kPaddingAllS,
-          child: AvatarRated.small(profile: profile, withRating: false),
+          child: AvatarRated.small(
+            profile: profile,
+            withRating: false,
+          ),
         ),
         Padding(
           padding: kPaddingAllS,
@@ -88,7 +92,10 @@ class _AccountMenuItem extends StatelessWidget {
           ),
         ),
         if (isMe)
-          const Padding(padding: kPaddingAllS, child: Icon(Icons.check)),
+          const Padding(
+            padding: kPaddingAllS,
+            child: Icon(Icons.check),
+          ),
       ],
     ),
   );

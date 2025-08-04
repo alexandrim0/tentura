@@ -232,8 +232,185 @@ class Shape3 extends i0.VersionedTable {
       columnsByName['has_avatar']! as i1.GeneratedColumn<bool>;
 }
 
+final class Schema3 extends i0.VersionedSchema {
+  Schema3({required super.database}) : super(version: 3);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    accounts,
+    friends,
+    p2pMessages,
+    settings,
+    p2pMessagesSender,
+    p2pMessagesReceiver,
+    p2pMessagesCreatedAt,
+    p2pMessagesUpdatedAt,
+  ];
+  late final Shape4 accounts = Shape4(
+      source: i0.VersionedTable(
+        entityName: 'accounts',
+        withoutRowId: true,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(id)',
+        ],
+        columns: [
+          _column_0,
+          _column_11,
+          _column_12,
+          _column_13,
+          _column_14,
+          _column_15,
+          _column_17,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape5 friends = Shape5(
+      source: i0.VersionedTable(
+        entityName: 'friends',
+        withoutRowId: true,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(subject_id, object_id)',
+        ],
+        columns: [
+          _column_1,
+          _column_2,
+          _column_11,
+          _column_12,
+          _column_13,
+          _column_14,
+          _column_15,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape6 p2pMessages = Shape6(
+      source: i0.VersionedTable(
+        entityName: 'p2p_messages',
+        withoutRowId: true,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY(client_id, server_id)',
+        ],
+        columns: [
+          _column_18,
+          _column_19,
+          _column_20,
+          _column_21,
+          _column_3,
+          _column_5,
+          _column_22,
+          _column_4,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape1 settings = Shape1(
+      source: i0.VersionedTable(
+        entityName: 'settings',
+        withoutRowId: true,
+        isStrict: false,
+        tableConstraints: [
+          'PRIMARY KEY("key")',
+        ],
+        columns: [
+          _column_7,
+          _column_8,
+          _column_9,
+          _column_10,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  final i1.Index p2pMessagesSender = i1.Index('p2p_messages_sender',
+      'CREATE INDEX p2p_messages_sender ON p2p_messages (sender_id)');
+  final i1.Index p2pMessagesReceiver = i1.Index('p2p_messages_receiver',
+      'CREATE INDEX p2p_messages_receiver ON p2p_messages (receiver_id)');
+  final i1.Index p2pMessagesCreatedAt = i1.Index('p2p_messages_created_at',
+      'CREATE INDEX p2p_messages_created_at ON p2p_messages (created_at)');
+  final i1.Index p2pMessagesUpdatedAt = i1.Index('p2p_messages_updated_at',
+      'CREATE INDEX p2p_messages_updated_at ON p2p_messages ()');
+}
+
+class Shape4 extends i0.VersionedTable {
+  Shape4({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get title =>
+      columnsByName['title']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get imageId =>
+      columnsByName['image_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get blurHash =>
+      columnsByName['blur_hash']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get height =>
+      columnsByName['height']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get width =>
+      columnsByName['width']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<DateTime> get fcmTokenUpdatedAt =>
+      columnsByName['fcm_token_updated_at']! as i1.GeneratedColumn<DateTime>;
+}
+
+i1.GeneratedColumn<DateTime> _column_17(String aliasedName) =>
+    i1.GeneratedColumn<DateTime>('fcm_token_updated_at', aliasedName, true,
+        type: i1.DriftSqlType.dateTime);
+
+class Shape5 extends i0.VersionedTable {
+  Shape5({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get subjectId =>
+      columnsByName['subject_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get objectId =>
+      columnsByName['object_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get title =>
+      columnsByName['title']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get imageId =>
+      columnsByName['image_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get blurHash =>
+      columnsByName['blur_hash']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get height =>
+      columnsByName['height']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get width =>
+      columnsByName['width']! as i1.GeneratedColumn<int>;
+}
+
+class Shape6 extends i0.VersionedTable {
+  Shape6({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<String> get clientId =>
+      columnsByName['client_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get serverId =>
+      columnsByName['server_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get senderId =>
+      columnsByName['sender_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get receiverId =>
+      columnsByName['receiver_id']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get content =>
+      columnsByName['content']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get createdAt =>
+      columnsByName['created_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get deliveredAt =>
+      columnsByName['delivered_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get status =>
+      columnsByName['status']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<String> _column_18(String aliasedName) =>
+    i1.GeneratedColumn<String>('client_id', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_19(String aliasedName) =>
+    i1.GeneratedColumn<String>('server_id', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_20(String aliasedName) =>
+    i1.GeneratedColumn<String>('sender_id', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_21(String aliasedName) =>
+    i1.GeneratedColumn<String>('receiver_id', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<DateTime> _column_22(String aliasedName) =>
+    i1.GeneratedColumn<DateTime>('delivered_at', aliasedName, true,
+        type: i1.DriftSqlType.dateTime);
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
+  required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -242,6 +419,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from1To2(migrator, schema);
         return 2;
+      case 2:
+        final schema = Schema3(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from2To3(migrator, schema);
+        return 3;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -250,8 +432,10 @@ i0.MigrationStepWithVersion migrationSteps({
 
 i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
+  required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
 }) =>
     i0.VersionedSchema.stepByStepHelper(
         step: migrationSteps(
       from1To2: from1To2,
+      from2To3: from2To3,
     ));

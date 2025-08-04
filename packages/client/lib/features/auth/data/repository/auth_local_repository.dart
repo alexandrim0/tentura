@@ -4,10 +4,10 @@ import 'package:injectable/injectable.dart';
 
 import 'package:tentura/data/database/database.dart';
 import 'package:tentura/data/service/local_secure_storage.dart';
-import 'package:tentura/domain/entity/image_entity.dart';
-import 'package:tentura/domain/entity/profile.dart';
 
+import '../../domain/entity/account_entity.dart';
 import '../../domain/exception.dart';
+import '../mapper/account_mapper.dart';
 
 @singleton
 class AuthLocalRepository {
@@ -57,42 +57,20 @@ class AuthLocalRepository {
 
   //
   //
-  Future<List<Profile>> getAccountsAll() async => [
+  Future<List<AccountEntity>> getAccountsAll() async => [
     for (final account in await _database.managers.accounts.get())
-      Profile(
-        id: account.id,
-        title: account.title,
-        image: account.hasAvatar
-            ? ImageEntity(
-                id: account.imageId,
-                blurHash: account.blurHash,
-                height: account.height,
-                width: account.width,
-              )
-            : null,
-      ),
+      accountModelToEntity(account),
   ];
 
   //
   //
-  Future<Profile?> getAccountById(String id) => _database.managers.accounts
+  Future<AccountEntity?> getAccountById(String id) => _database
+      .managers
+      .accounts
       .filter((f) => f.id.equals(id))
       .getSingleOrNull()
       .then(
-        (e) => e == null
-            ? null
-            : Profile(
-                id: e.id,
-                title: e.title,
-                image: e.hasAvatar
-                    ? ImageEntity(
-                        id: e.imageId,
-                        blurHash: e.blurHash,
-                        height: e.height,
-                        width: e.width,
-                      )
-                    : null,
-              ),
+        (e) => e == null ? null : accountModelToEntity(e),
       );
 
   ///
@@ -105,12 +83,18 @@ class AuthLocalRepository {
 
   //
   //
-  Future<void> updateAccount(Profile account) => _database.managers.accounts
+  Future<void> updateAccount(AccountEntity account) => _database
+      .managers
+      .accounts
       .filter((f) => f.id.equals(account.id))
       .update(
         (o) => o(
           title: Value(account.title),
-          hasAvatar: Value(account.hasAvatar),
+          fcmTokenUpdatedAt: Value(account.fcmTokenUpdatedAt),
+          imageId: Value(account.image?.id ?? ''),
+          blurHash: Value(account.image?.blurHash ?? ''),
+          height: Value(account.image?.height ?? 0),
+          width: Value(account.image?.width ?? 0),
         ),
       );
 

@@ -10,6 +10,7 @@ import 'package:tentura/features/profile/data/repository/profile_repository.dart
 
 import '../../data/repository/auth_remote_repository.dart';
 import '../../data/repository/auth_local_repository.dart';
+import '../entity/account_entity.dart';
 import '../exception.dart';
 
 @singleton
@@ -18,7 +19,7 @@ class AccountCase {
     this._authLocalRepository,
     this._authRemoteRepository,
     this._clipboardRepository,
-    this._profileRepository,
+    this._profileRemoteRepository,
   );
 
   final AuthLocalRepository _authLocalRepository;
@@ -27,10 +28,10 @@ class AccountCase {
 
   final ClipboardRepository _clipboardRepository;
 
-  final ProfileRepository _profileRepository;
+  final ProfileRepository _profileRemoteRepository;
 
   Stream<RepositoryEvent<Profile>> get profileChanges =>
-      _profileRepository.changes;
+      _profileRemoteRepository.changes;
 
   //
   //
@@ -63,20 +64,22 @@ class AccountCase {
   ///
   /// Returns a list of all locally stored user profiles.
   ///
-  Future<List<Profile>> getAccountsAll() =>
+  Future<List<AccountEntity>> getAccountsAll() =>
       _authLocalRepository.getAccountsAll();
 
   ///
   /// Retrieves a user profile by its [id].
   /// Returns `null` if no account with the given [id] is found.
   ///
-  Future<Profile?> getAccountById(String id) =>
+  Future<AccountEntity?> getAccountById(String id) =>
       _authLocalRepository.getAccountById(id);
 
   ///
   /// Add account to local storage and signs in
   ///
-  Future<Profile> addAccount(String seed) async {
+  // TBD: add gql node to get profile data by auth request JWT
+  //      to prevent signIn\signOut flow?
+  Future<AccountEntity> addAccount(String seed) async {
     if (seed.isEmpty) {
       throw const AuthSeedIsWrongException();
     }
@@ -89,7 +92,10 @@ class AccountCase {
       seedNormalized,
     );
 
-    return _profileRepository.fetchById(userId);
+    final profile = await _profileRemoteRepository.fetchById(userId);
+    await _authRemoteRepository.signOut();
+
+    return fromProfile(profile);
   }
 
   ///
@@ -101,8 +107,24 @@ class AccountCase {
   ///
   /// Updates the profile information for an existing [account].
   ///
-  Future<void> updateAccount(Profile account) =>
+  Future<void> updateAccount(AccountEntity account) =>
       _authLocalRepository.updateAccount(account);
+
+  //
+  //
+  static Profile fromAccountEntity(AccountEntity account) => Profile(
+    id: account.id,
+    title: account.title,
+    image: account.image,
+  );
+
+  //
+  //
+  static AccountEntity fromProfile(Profile profile) => AccountEntity(
+    id: profile.id,
+    title: profile.title,
+    image: profile.image,
+  );
 
   //
   //

@@ -4,21 +4,19 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura/domain/enum.dart';
 
 import 'database.steps.dart';
+import 'queries/_queries.dart';
 import 'tables/_tables.dart';
 
 export 'package:drift/drift.dart';
 
 part 'database.g.dart';
-part 'database.extensions.dart';
 
 @DriftDatabase(
-  include: {
-    'queries.drift',
-  },
+  queries: queries,
   tables: [
     Accounts,
     Friends,
-    Messages,
+    P2pMessages,
     Settings,
   ],
 )
@@ -27,7 +25,7 @@ final class Database extends _$Database {
   Database(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -48,6 +46,13 @@ final class Database extends _$Database {
         await m.addColumn(schema.friends, schema.friends.blurHash);
         await m.addColumn(schema.friends, schema.friends.height);
         await m.addColumn(schema.friends, schema.friends.width);
+      },
+      from2To3: (m, schema) async {
+        await customStatement('DROP TABLE messages');
+        await m.dropColumn(schema.accounts, 'has_avatar');
+        await m.dropColumn(schema.friends, 'has_avatar');
+
+        await m.addColumn(schema.accounts, schema.accounts.fcmTokenUpdatedAt);
       },
     ),
   );

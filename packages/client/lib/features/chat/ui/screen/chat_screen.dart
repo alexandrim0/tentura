@@ -8,6 +8,7 @@ import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
+import 'package:tentura/features/auth/domain/use_case/account_case.dart';
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 import 'package:tentura/features/friends/ui/bloc/friends_cubit.dart';
 
@@ -28,7 +29,9 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
     create: (_) => ChatCubit(
-      me: GetIt.I<AuthCubit>().state.currentAccount,
+      me: AccountCase.fromAccountEntity(
+        GetIt.I<AuthCubit>().state.currentAccount,
+      ),
       friend: GetIt.I<FriendsCubit>().state.friends[id]!,
       updatesStream: GetIt.I<ChatNewsCubit>().updates,
     ),

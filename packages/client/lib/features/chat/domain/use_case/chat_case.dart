@@ -57,8 +57,8 @@ class ChatCase {
     required String objectId,
     required String subjectId,
   }) => _chatLocalRepository.getChatMessagesFor(
-    objectId: objectId,
-    subjectId: subjectId,
+    senderId: objectId,
+    receiverId: subjectId,
   );
 
   ///
@@ -75,7 +75,7 @@ class ChatCase {
   ///
   Future<DateTime> getCursor({
     required String userId,
-  }) => _chatLocalRepository.getLastUpdatedMessageTimestamp(
+  }) => _chatLocalRepository.getMostRecentMessageTimestamp(
     userId: userId,
   );
 

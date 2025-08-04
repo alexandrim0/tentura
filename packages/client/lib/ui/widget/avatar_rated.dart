@@ -32,13 +32,19 @@ class AvatarRated extends StatelessWidget {
     super.key,
   });
 
-  AvatarRated.big({required this.profile, this.withRating = true, super.key})
-    : boxFit = BoxFit.cover,
-      size = sizeBig;
+  AvatarRated.big({
+    required this.profile,
+    this.withRating = true,
+    super.key,
+  }) : boxFit = BoxFit.cover,
+       size = sizeBig;
 
-  AvatarRated.small({required this.profile, this.withRating = true, super.key})
-    : boxFit = BoxFit.cover,
-      size = sizeSmall;
+  AvatarRated.small({
+    required this.profile,
+    this.withRating = true,
+    super.key,
+  }) : boxFit = BoxFit.cover,
+       size = sizeSmall;
 
   final double size;
 
@@ -59,7 +65,10 @@ class AvatarRated extends StatelessWidget {
           )
         : profile.image?.blurHash.isEmpty ?? true
         ? _imageNetwork
-        : BlurHash(profile.image!.blurHash, child: _imageNetwork),
+        : BlurHash(
+            profile.image!.blurHash,
+            child: _imageNetwork,
+          ),
   );
 
   @override

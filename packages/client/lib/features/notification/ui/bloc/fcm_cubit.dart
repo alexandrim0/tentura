@@ -46,14 +46,16 @@ class FcmCubit extends Cubit<FcmState> {
           .getLastFcmRegistrationAt();
 
       if (fcmLastRegistrationAt == null ||
-          fcmLastRegistrationAt.isAfter(
-            DateTime.timestamp().add(const Duration(days: 30)),
-          )) {
+          fcmLastRegistrationAt
+              .add(const Duration(days: 30))
+              .isBefore(DateTime.timestamp())) {
         final fcmToken = await _fcmLocalRepository.getToken();
 
         if (fcmToken != null) {
           await _registerFcmToken(fcmToken);
-          await _settingsRepository.setLastFcmRegistrationAt(DateTime.now());
+          await _settingsRepository.setLastFcmRegistrationAt(
+            DateTime.timestamp(),
+          );
           emit(
             state.copyWith(
               permissions: await _fcmLocalRepository.requestPermission(),

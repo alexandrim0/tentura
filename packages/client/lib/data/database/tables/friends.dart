@@ -15,9 +15,6 @@ class Friends extends Table {
 
   IntColumn get width => integer().withDefault(const Constant(0))(); // v2
 
-  // TBD: drop column in v3
-  BoolColumn get hasAvatar => boolean().withDefault(const Constant(false))();
-
   @override
   bool get withoutRowId => true;
 

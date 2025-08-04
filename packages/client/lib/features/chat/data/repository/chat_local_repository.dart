@@ -18,16 +18,17 @@ class ChatLocalRepository {
   //
   Future<void> saveMessages({
     required Iterable<ChatMessageEntity> messages,
-  }) => _database.managers.messages.bulkCreate(
-    (messageCompanion) => [
+  }) => _database.managers.p2pMessages.bulkCreate(
+    (p2pMessageCompanion) => [
       for (final message in messages)
-        messageCompanion(
-          id: message.id,
-          objectId: message.receiverId,
-          subjectId: message.senderId,
+        p2pMessageCompanion(
+          clientId: message.clientId,
+          serverId: message.serverId,
+          senderId: message.senderId,
+          receiverId: message.receiverId,
           content: message.content,
           createdAt: message.createdAt,
-          updatedAt: message.deliveredAt ?? message.createdAt,
+          deliveredAt: Value(message.deliveredAt),
           status: message.status,
         ),
     ],
@@ -38,13 +39,13 @@ class ChatLocalRepository {
   /// Get all messages for pair from local DB
   ///
   Future<Iterable<ChatMessageEntity>> getChatMessagesFor({
-    required String objectId,
-    required String subjectId,
-  }) => _database.managers.messages
+    required String senderId,
+    required String receiverId,
+  }) => _database.managers.p2pMessages
       .filter(
         (f) =>
-            (f.objectId(objectId) & f.subjectId(subjectId)) |
-            (f.objectId(subjectId) & f.subjectId(objectId)),
+            (f.senderId(senderId) & f.receiverId(receiverId)) |
+            (f.receiverId(receiverId) & f.senderId(senderId)),
       )
       .orderBy((o) => o.createdAt.asc())
       .get()
@@ -55,20 +56,36 @@ class ChatLocalRepository {
   ///
   Future<Iterable<ChatMessageEntity>> getAllNewMessagesFor({
     required String userId,
-  }) => _database.managers.messages
-      .filter((f) => f.objectId(userId) & f.status(ChatMessageStatus.sent))
+  }) => _database.managers.p2pMessages
+      .filter((f) => f.senderId(userId) & f.status(ChatMessageStatus.sent))
       .get()
       .then((v) => v.map((e) => (e as ChatMessageLocalModel).toEntity()));
 
   ///
-  /// Get last updated message timestamp
+  /// Get the most recent message timestamp for a user.
   ///
-  Future<DateTime> getLastUpdatedMessageTimestamp({
+  Future<DateTime> getMostRecentMessageTimestamp({
     required String userId,
-  }) => _database.managers.messages
-      .filter((f) => f.objectId(userId) | f.subjectId(userId))
-      .orderBy((o) => o.updatedAt.desc())
-      .limit(1)
+  }) => _database
+      .customSelect(
+        '''
+(SELECT coalesce(delivered_at, created_at) as ts FROM p2p_message
+  WHERE sender_id = ?1
+  ORDER BY created_at DESC, delivered_at DESC
+  LIMIT 1)
+UNION
+(SELECT coalesce(delivered_at, created_at) as ts FROM p2p_message
+  WHERE receiver_id = ?1
+  ORDER BY created_at DESC, delivered_at DESC
+  LIMIT 1)
+ORDER BY ts DESC
+LIMIT 1
+''',
+        readsFrom: {_database.p2pMessages},
+        variables: [
+          Variable.withString(userId),
+        ],
+      )
       .getSingleOrNull()
-      .then((e) => e?.updatedAt.toUtc() ?? zeroAge);
+      .then((r) => r == null ? zeroAge : r.read('ts'));
 }

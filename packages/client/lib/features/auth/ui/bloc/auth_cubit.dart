@@ -11,6 +11,7 @@ import 'package:tentura/ui/bloc/state_base.dart';
 import 'package:tentura/features/profile/data/repository/profile_repository.dart';
 
 import '../../domain/exception.dart';
+import '../../domain/entity/account_entity.dart';
 import '../../domain/use_case/account_case.dart';
 import '../../domain/use_case/auth_case.dart';
 import 'auth_state.dart';
@@ -32,7 +33,7 @@ class AuthCubit extends Cubit<AuthState> {
   ) async {
     final accounts = await accountCase.getAccountsAll();
     var state = AuthState(
-      accounts: accounts..sort(_compareProfile),
+      accounts: accounts..sort(_compareAccounts),
       currentAccountId: await authCase.getCurrentAccountId(),
       updatedAt: DateTime.timestamp(),
     );
@@ -115,7 +116,7 @@ class AuthCubit extends Cubit<AuthState> {
         AuthState(
           accounts: state.accounts
             ..add(account)
-            ..sort(_compareProfile),
+            ..sort(_compareAccounts),
           updatedAt: DateTime.timestamp(),
         ),
       );
@@ -141,7 +142,7 @@ class AuthCubit extends Cubit<AuthState> {
 
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final newProfile = Profile(
+      final newProfile = AccountEntity(
         id: await _authCase.signUp(
           invitationCode: invitationCode,
           title: title,
@@ -152,7 +153,7 @@ class AuthCubit extends Cubit<AuthState> {
         AuthState(
           accounts: state.accounts
             ..add(newProfile)
-            ..sort(_compareProfile),
+            ..sort(_compareAccounts),
           currentAccountId: newProfile.id,
           updatedAt: DateTime.timestamp(),
         ),
@@ -234,16 +235,21 @@ class AuthCubit extends Cubit<AuthState> {
       case RepositoryEventUpdate<Profile>():
         final index = state.accounts.indexWhere((e) => e.id == event.value.id);
 
-        if (index < 0) return;
-
-        final profile = state.accounts[index];
-
-        if (profile.title == event.value.title &&
-            profile.hasAvatar == event.value.hasAvatar) {
+        if (index < 0) {
           return;
         }
+
+        final account = state.accounts[index];
+
+        if (account.title == event.value.title &&
+            account.image == event.value.image) {
+          return;
+        }
+
         try {
-          state.accounts[index] = profile.copyWith(
+          await _accountCase.updateAccount(account);
+
+          state.accounts[index] = account.copyWith(
             title: event.value.title,
             image: event.value.image,
           );
@@ -254,7 +260,6 @@ class AuthCubit extends Cubit<AuthState> {
               updatedAt: DateTime.timestamp(),
             ),
           );
-          await _accountCase.updateAccount(profile);
         } catch (e) {
           emit(state.copyWith(status: StateHasError(e)));
         }
@@ -265,5 +270,6 @@ class AuthCubit extends Cubit<AuthState> {
 
   //
   //
-  static int _compareProfile(Profile p1, Profile p2) => p1.id.compareTo(p2.id);
+  static int _compareAccounts(AccountEntity left, AccountEntity right) =>
+      left.id.compareTo(right.id);
 }
