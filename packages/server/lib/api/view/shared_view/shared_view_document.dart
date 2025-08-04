@@ -3,6 +3,7 @@ import 'package:jaspr/server.dart';
 import 'package:tentura_server/consts.dart';
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
 import 'package:tentura_server/domain/entity/comment_entity.dart';
+import 'package:tentura_server/domain/entity/invitation_entity.dart';
 import 'package:tentura_server/domain/entity/opinion_entity.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
 
@@ -53,6 +54,21 @@ class SharedViewDocument extends StatelessComponent {
           title: comment.beacon.title,
           description: comment.content,
           imagePath: comment.beacon.imageUrl,
+        ),
+      ),
+
+      // Invitation
+      final InvitationEntity invitation => _buildDocument(
+        body: [
+          UserViewComponent(user: invitation.issuer),
+          // TBD: InvitationViewComponent(user: invitation.issuer),
+        ],
+        meta: _buildMeta(
+          id: invitation.id,
+          title: invitation.issuer.title,
+          // TBD: need real text with l10n
+          description: 'Invite you to join Tentura!',
+          imagePath: invitation.issuer.imageUrl,
         ),
       ),
 

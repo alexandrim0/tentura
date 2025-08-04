@@ -19,8 +19,7 @@ final class QueryInvitation extends GqlNodeBase {
     resolve: (_, args) => _invitationCase
         .fetchById(
           invitationId: InputFieldId.fromArgsNonNullable(args),
-          userId: getCredentials(args).sub,
         )
-        .then((e) => e?.asMap),
+        .then((e) => e.asMap),
   );
 }

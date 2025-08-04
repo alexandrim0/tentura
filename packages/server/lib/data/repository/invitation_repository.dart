@@ -19,7 +19,6 @@ class InvitationRepository {
 
   Future<InvitationEntity?> getById({
     required String invitationId,
-    required String userId,
   }) async {
     final result = await _database.managers.invitations
         .filter((f) => f.id(invitationId))
