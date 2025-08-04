@@ -19,5 +19,19 @@
                 "S3_BUCKET": "tentura",
             },
         },
+        {
+            "console": "debugConsole",
+            "name": "tentura-server-test",
+            "program":"bin/test.dart",
+            "request": "launch",
+            "type": "dart",
+            "env": {
+                "PRINT_ENV": "true",
+                "DEBUG_MODE": "true",
+                "NEED_INVITE": "false",
+                "SERVER_NAME": "http://localhost",
+                "IMAGE_SERVER": "https://static.tentura.io",
+            },
+        },
   ],
 }

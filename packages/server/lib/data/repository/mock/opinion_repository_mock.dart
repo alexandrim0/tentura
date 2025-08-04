@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura_server/domain/entity/opinion_entity.dart';
 
 import '../opinion_repository.dart';
+import 'data/opinions.dart';
 
 @Injectable(
   as: OpinionRepository,
@@ -10,8 +11,10 @@ import '../opinion_repository.dart';
   order: 1,
 )
 class OpinionRepositoryMock implements OpinionRepository {
+  final storageById = <String, OpinionEntity>{...kOpinionsById};
+
   @override
-  Future<OpinionEntity> getOpinionById(String id) {
-    throw UnimplementedError();
-  }
+  Future<OpinionEntity> getOpinionById(String id) => Future.value(
+    storageById[id],
+  );
 }
