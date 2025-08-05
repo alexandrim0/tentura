@@ -53,8 +53,8 @@ dependencies:
 
   # Logs & Stats
   logger: ^2.6.1
-  sentry_drift: ^9.5.0
-  sentry_flutter: ^9.5.0
+  sentry_drift: ^9.6.0
+  sentry_flutter: ^9.6.0
 
   # Remote API related
   ferry: ^0.16.0

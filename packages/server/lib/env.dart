@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:logging/logging.dart';
 import 'package:injectable/injectable.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:postgres/postgres.dart'
@@ -11,6 +12,7 @@ export 'consts.dart';
 class Env {
   Env({
     // Common
+    Level? logLevel,
     String? environment,
     bool? isDebugModeOn,
     int? workersCount,
@@ -166,16 +168,21 @@ class Env {
        fbPrivateKey = fbPrivateKey ?? _env['FB_PRIVATE_KEY'] ?? '',
        fbClientId = fbClientId ?? _env['FB_CLIENT_ID'] ?? ''
   //
-  //
-  //
   {
     _printEnvInfo();
+    Logger.root.level =
+        logLevel ??
+        Level.LEVELS.firstWhere(
+          (e) => e.name == _env['LOG_LEVEL']?.toUpperCase(),
+          orElse: () => Level.INFO,
+        );
   }
 
   Env.dev()
     : this(
         environment: Environment.dev,
         isDebugModeOn: true,
+        logLevel: Level.ALL,
         workersCount: 1,
         printEnv: true,
       );
@@ -190,6 +197,7 @@ class Env {
         environment: Environment.test,
         renderSharedPreview: true,
         isDebugModeOn: true,
+        logLevel: Level.ALL,
         workersCount: 1,
         printEnv: true,
       );
