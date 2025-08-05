@@ -69,17 +69,19 @@ class ChatLocalRepository {
   }) => _database
       .customSelect(
         '''
-(SELECT coalesce(delivered_at, created_at) as ts FROM p2p_message
-  WHERE sender_id = ?1
-  ORDER BY created_at DESC, delivered_at DESC
-  LIMIT 1)
+SELECT * FROM (
+  SELECT coalesce(delivered_at, created_at) as ts FROM p2p_messages
+    WHERE sender_id = ?1
+    ORDER BY ts DESC
+    LIMIT 1)
 UNION
-(SELECT coalesce(delivered_at, created_at) as ts FROM p2p_message
-  WHERE receiver_id = ?1
-  ORDER BY created_at DESC, delivered_at DESC
-  LIMIT 1)
+SELECT * FROM (
+  SELECT coalesce(delivered_at, created_at) as ts FROM p2p_messages
+    WHERE receiver_id = ?1
+    ORDER BY ts DESC
+    LIMIT 1)
 ORDER BY ts DESC
-LIMIT 1
+LIMIT 1;
 ''',
         readsFrom: {_database.p2pMessages},
         variables: [

@@ -70,6 +70,7 @@ class Env {
            const String.fromEnvironment('FB_SENDER_ID'),
 
        // Feature flags
+       clearDatabase = const bool.fromEnvironment('CLEAR_DATABASE'),
        needInviteCode =
            needInviteCode ??
            const bool.fromEnvironment(
@@ -98,5 +99,6 @@ class Env {
   final String firebaseMessagingSenderId;
 
   // Feature flags
+  final bool clearDatabase;
   final bool needInviteCode;
 }

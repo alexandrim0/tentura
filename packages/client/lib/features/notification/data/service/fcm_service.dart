@@ -8,21 +8,25 @@ import '../../domain/entity/notification_permissions.dart';
 
 @singleton
 class FcmService {
-  @FactoryMethod(preResolve: true)
-  static Future<FcmService> create({
+  const FcmService();
+
+  @factoryMethod
+  factory FcmService.create({
     required Env env,
     required Logger logger,
-  }) async {
+  }) {
     if (env.firebaseApiKey.isEmpty) {
       logger.i('Firebase Messaging configured with fake service');
-      return _FcmServiceFake();
+      return const _FcmServiceFake();
     }
-    return FcmService();
+    return const FcmService();
   }
 
   Stream<String> get onTokenRefresh =>
       FirebaseMessaging.instance.onTokenRefresh;
 
+  //
+  //
   Future<NotificationPermissions> requestPermission() async {
     final settings = await FirebaseMessaging.instance.requestPermission(
       provisional: true,
@@ -33,10 +37,14 @@ class FcmService {
     );
   }
 
+  //
+  //
   Future<String?> getToken() => FirebaseMessaging.instance.getToken();
 }
 
 class _FcmServiceFake implements FcmService {
+  const _FcmServiceFake();
+
   @override
   Stream<String> get onTokenRefresh => const Stream.empty();
 

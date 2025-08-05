@@ -401,10 +401,12 @@
       "type": "index",
       "data": {
         "on": 2,
-        "name": "p2p_messages_updated_at",
+        "name": "p2p_messages_delivered_at",
         "sql": null,
         "unique": false,
-        "columns": []
+        "columns": [
+          "delivered_at"
+        ]
       }
     }
   ]

@@ -5,7 +5,7 @@ import 'package:tentura/domain/enum.dart';
 @TableIndex(name: 'p2p_messages_sender', columns: {#senderId})
 @TableIndex(name: 'p2p_messages_receiver', columns: {#receiverId})
 @TableIndex(name: 'p2p_messages_created_at', columns: {#createdAt})
-@TableIndex(name: 'p2p_messages_updated_at', columns: {#updatedAt})
+@TableIndex(name: 'p2p_messages_delivered_at', columns: {#deliveredAt})
 class P2pMessages extends Table {
   TextColumn get clientId => text()();
 

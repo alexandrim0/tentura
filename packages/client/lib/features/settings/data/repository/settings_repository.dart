@@ -32,32 +32,6 @@ class SettingsRepository {
   );
 
   ///
-  /// Last FCM registration
-  ///
-  Future<DateTime?> getLastFcmRegistrationAt() => _database.managers.settings
-      .filter((f) => f.key.equals(_kLastFcmRegistrationAtKey))
-      .getSingleOrNull()
-      .then(
-        (v) => v?.valueText == null ? null : DateTime.tryParse(v!.valueText!),
-      );
-
-  //
-  //
-  Future<void> setLastFcmRegistrationAt(DateTime value) =>
-      _database.managers.settings.create(
-        (o) => o(
-          key: _kLastFcmRegistrationAtKey,
-          valueText: Value(value.toIso8601String()),
-        ),
-        mode: InsertMode.insertOrReplace,
-        onConflict: DoUpdate(
-          (_) => SettingsCompanion(
-            valueText: Value(value.toIso8601String()),
-          ),
-        ),
-      );
-
-  ///
   /// Intro
   ///
   Future<bool?> getIsIntroEnabled() => _database.managers.settings
@@ -108,5 +82,4 @@ class SettingsRepository {
   static const _kAppIdKey = 'appId';
   static const _kThemeModeKey = 'themeMode';
   static const _kIsIntroEnabledKey = 'isIntroEnabled';
-  static const _kLastFcmRegistrationAtKey = 'lastFcmRegistrationAt';
 }

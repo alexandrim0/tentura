@@ -1,68 +1,58 @@
 import 'dart:async';
-import 'package:uuid/uuid.dart';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura/features/settings/data/repository/settings_repository.dart';
-
-import '../../data/repository/fcm_local_repository.dart';
-import '../../data/repository/fcm_remote_repository.dart';
+import '../../domain/use_case/fcm_case.dart';
 import 'fcm_state.dart';
 
 /// Global Cubit
 @singleton
 class FcmCubit extends Cubit<FcmState> {
   FcmCubit(
-    this._fcmLocalRepository,
-    this._fcmRemoteRepository,
-    this._settingsRepository,
+    this._fcmCase,
   ) : super(const FcmState()) {
-    _tokenRefreshSubscription = _fcmLocalRepository.onTokenRefresh.listen(
+    _tokenRefreshSubscription = _fcmCase.onTokenRefresh.listen(
       _registerFcmToken,
       cancelOnError: false,
     );
-    init();
+    _currentAccountChangesSubscription = _fcmCase.currentAccountChanges.listen(
+      _onAccountChanges,
+      cancelOnError: false,
+    );
   }
 
-  final FcmLocalRepository _fcmLocalRepository;
-
-  final FcmRemoteRepository _fcmRemoteRepository;
-
-  final SettingsRepository _settingsRepository;
+  final FcmCase _fcmCase;
 
   late final StreamSubscription<String> _tokenRefreshSubscription;
+
+  late final StreamSubscription<String> _currentAccountChangesSubscription;
 
   //
   @override
   @disposeMethod
   Future<void> close() async {
+    await _currentAccountChangesSubscription.cancel();
     await _tokenRefreshSubscription.cancel();
     return super.close();
   }
 
-  Future<void> init() async {
+  //
+  //
+  Future<void> _onAccountChanges(String accountId) async {
+    if (accountId.isEmpty) {
+      return;
+    }
+
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final fcmLastRegistrationAt = await _settingsRepository
-          .getLastFcmRegistrationAt();
-
-      if (fcmLastRegistrationAt == null ||
-          fcmLastRegistrationAt
-              .add(const Duration(days: 30))
-              .isBefore(DateTime.timestamp())) {
-        final fcmToken = await _fcmLocalRepository.getToken();
-
-        if (fcmToken != null) {
-          await _registerFcmToken(fcmToken);
-          await _settingsRepository.setLastFcmRegistrationAt(
-            DateTime.timestamp(),
-          );
-          emit(
-            state.copyWith(
-              permissions: await _fcmLocalRepository.requestPermission(),
-              status: StateStatus.isSuccess,
-            ),
-          );
-        }
+      final permissions = await _fcmCase.requestPermission();
+      emit(
+        state.copyWith(
+          permissions: permissions,
+        ),
+      );
+      if (permissions.authorized &&
+          await _fcmCase.checkIfRegistrationNeeded()) {
+        await _registerFcmToken();
       }
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
@@ -71,8 +61,11 @@ class FcmCubit extends Cubit<FcmState> {
 
   //
   //
-  Future<void> _registerFcmToken(String token) async {
-    final appId = await _getAppId();
+  Future<void> _registerFcmToken([String? token]) async {
+    final appId = await _fcmCase.registerFcmToken(
+      token: token,
+      platform: kIsWeb ? 'web' : 'android',
+    );
     emit(
       state.copyWith(
         appId: appId,
@@ -80,21 +73,5 @@ class FcmCubit extends Cubit<FcmState> {
         status: StateStatus.isSuccess,
       ),
     );
-    await _fcmRemoteRepository.registerToken(
-      appId: appId,
-      token: token,
-      platform: kIsWeb ? 'web' : 'android',
-    );
-  }
-
-  //
-  //
-  Future<String> _getAppId() async {
-    var appId = await _settingsRepository.getAppId();
-    if (appId == null) {
-      appId = const Uuid().v4();
-      await _settingsRepository.setAppId(appId);
-    }
-    return appId;
   }
 }

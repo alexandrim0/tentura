@@ -1222,8 +1222,8 @@ class DatabaseAtV3 extends GeneratedDatabase {
       'CREATE INDEX p2p_messages_receiver ON p2p_messages (receiver_id)');
   late final Index p2pMessagesCreatedAt = Index('p2p_messages_created_at',
       'CREATE INDEX p2p_messages_created_at ON p2p_messages (created_at)');
-  late final Index p2pMessagesUpdatedAt = Index('p2p_messages_updated_at',
-      'CREATE INDEX p2p_messages_updated_at ON p2p_messages ()');
+  late final Index p2pMessagesDeliveredAt = Index('p2p_messages_delivered_at',
+      'CREATE INDEX p2p_messages_delivered_at ON p2p_messages (delivered_at)');
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1236,7 +1236,7 @@ class DatabaseAtV3 extends GeneratedDatabase {
         p2pMessagesSender,
         p2pMessagesReceiver,
         p2pMessagesCreatedAt,
-        p2pMessagesUpdatedAt
+        p2pMessagesDeliveredAt
       ];
   @override
   int get schemaVersion => 3;
