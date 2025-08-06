@@ -17,7 +17,7 @@ export 'package:get_it/get_it.dart';
 export 'chat_news_state.dart';
 
 /// Global Cubit
-@singleton
+@lazySingleton
 class ChatNewsCubit extends Cubit<ChatNewsState> {
   ChatNewsCubit(this._chatCase)
     : super(
@@ -27,7 +27,16 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
           lastUpdate: DateTime.timestamp(),
         ),
       ) {
-    _authChanges.resume();
+    _authChanges = _chatCase.authChanges.listen(
+      _onAuthChanges,
+      cancelOnError: false,
+      onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
+    );
+    _webSocketStateSubscription = _chatCase.webSocketState.listen(
+      _onWebSocketStateChanges,
+      cancelOnError: false,
+      onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
+    );
   }
 
   final ChatCase _chatCase;
@@ -35,12 +44,9 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
   final _messagesUpdatesController =
       StreamController<ChatMessageEntity>.broadcast();
 
-  late final StreamSubscription<String> _authChanges = _chatCase.authChanges
-      .listen(
-        _onAuthChanges,
-        cancelOnError: false,
-        onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
-      );
+  late final StreamSubscription<String> _authChanges;
+
+  late final StreamSubscription<WebSocketState> _webSocketStateSubscription;
 
   StreamSubscription<Iterable<ChatMessageEntity>>? _messagesUpdatesSubscription;
 
@@ -50,61 +56,61 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
   Future<void> close() async {
     await _authChanges.cancel();
     await _messagesUpdatesSubscription?.cancel();
+    await _webSocketStateSubscription.cancel();
     await _messagesUpdatesController.close();
     return super.close();
+  }
+
+  Future<void> _onWebSocketStateChanges(WebSocketState state) async {
+    switch (state) {
+      case WebSocketState.connected:
+        await _listenUpdates();
+
+      case WebSocketState.disconnected:
+        await _messagesUpdatesSubscription?.cancel();
+    }
   }
 
   //
   //
   Future<void> _onAuthChanges(String userId) async {
-    if (userId.isEmpty) {
-      // User logged out
-      emit(
-        ChatNewsState(
-          myId: '',
-          messages: {},
-          lastUpdate: DateTime.timestamp(),
-        ),
-      );
-      await _messagesUpdatesSubscription?.cancel();
-      _messagesUpdatesSubscription = null;
-    } else {
-      // User logged in
-      emit(
-        ChatNewsState(
-          myId: userId,
-          messages: {},
-          lastUpdate: DateTime.timestamp(),
-          status: StateStatus.isLoading,
-        ),
-      );
+    _chatCase.logger.d('[ChatNewsCubit] _onAuthChanges: $userId');
+    emit(
+      ChatNewsState(
+        myId: userId,
+        messages: {},
+        lastUpdate: DateTime.timestamp(),
+      ),
+    );
+
+    if (userId.isNotEmpty) {
+      emit(state.copyWith(status: StateStatus.isLoading));
       try {
         (await _chatCase.getUnseenMessagesFor(
           userId: userId,
         )).forEach(_updateStateWithMessage);
-
-        await _listenUpdates();
+        emit(state.copyWith(status: StateStatus.isSuccess));
       } catch (e) {
         emit(state.copyWith(status: StateHasError(e)));
       }
-      emit(state.copyWith(status: StateStatus.isSuccess));
     }
   }
 
   Future<void> _listenUpdates() async {
-    final cursor = await _chatCase.getCursor(
-      userId: state.myId,
+    await _messagesUpdatesSubscription?.cancel();
+
+    _messagesUpdatesSubscription = _chatCase.watchRemoteUpdates().listen(
+      _onMessagesUpdate,
+      cancelOnError: true,
+      onError: (Object e) {
+        emit(state.copyWith(status: StateHasError(e)));
+        _listenUpdates();
+      },
     );
-    _messagesUpdatesSubscription = _chatCase
-        .watchRemoteUpdates(fromMoment: cursor)
-        .listen(
-          _onMessagesUpdate,
-          cancelOnError: true,
-          onError: (Object e) {
-            emit(state.copyWith(status: StateHasError(e)));
-            _listenUpdates();
-          },
-        );
+
+    _chatCase.subscribeToUpdates(
+      fromMoment: await _chatCase.getCursor(userId: state.myId),
+    );
   }
 
   //

@@ -9,51 +9,55 @@ import '../model/chat_message_remote_model.dart';
 
 @singleton
 class ChatRemoteRepository {
-  ChatRemoteRepository(this._remoteApiService);
+  ChatRemoteRepository(
+    this._remoteApiService,
+  );
 
   final RemoteApiService _remoteApiService;
 
-  //
-  //
-  Stream<Iterable<ChatMessageEntity>> watchUpdates({
+  Stream<WebSocketState> get webSocketState => _remoteApiService.webSocketState;
+
+  void subscribeToUpdates({
     required DateTime fromMoment,
     required int batchSize,
-  }) {
-    _remoteApiService.webSocketSend(
-      // TBD: move to Model
-      jsonEncode({
-        'type': 'subscription',
-        'path': 'p2p_chat',
-        'payload': {
-          'intent': 'watch_updates',
-          'params': {
-            'batch_size': batchSize,
-            'from_timestamp': fromMoment.toIso8601String(),
-          },
+  }) => _remoteApiService.webSocketSend(
+    // TBD: move to Model
+    jsonEncode({
+      'type': 'subscription',
+      'path': 'p2p_chat',
+      'payload': {
+        'intent': 'watch_updates',
+        'params': {
+          'batch_size': batchSize,
+          'from_timestamp': fromMoment.toIso8601String(),
         },
-      }),
-    );
-    return _remoteApiService.webSocketMessages
-        .where(
-          (e) =>
-              e['type'] == 'subscription' &&
-              e['path'] == 'p2p_chat' &&
-              e['payload'] is Map<String, dynamic> &&
-              // ignore: avoid_dynamic_calls // temporary
-              e['payload']['intent'] == 'watch_updates' &&
-              // ignore: avoid_dynamic_calls // temporary
-              e['payload']['messages'] is List<dynamic>,
-        )
-        // ignore: avoid_dynamic_calls // temporary
-        .map((e) => e['payload']['messages'] as List<dynamic>)
-        .map(
-          (e) => e.map(
-            (m) => ChatMessageRemoteModel.fromJson(
-              m as Map<String, dynamic>,
-            ).asEntity,
-          ),
-        );
-  }
+      },
+    }),
+  );
+
+  //
+  //
+  Stream<Iterable<ChatMessageEntity>> watchUpdates() => _remoteApiService
+      .webSocketMessages
+      .where(
+        (e) =>
+            e['type'] == 'subscription' &&
+            e['path'] == 'p2p_chat' &&
+            e['payload'] is Map<String, dynamic> &&
+            // ignore: avoid_dynamic_calls // temporary
+            e['payload']['intent'] == 'watch_updates' &&
+            // ignore: avoid_dynamic_calls // temporary
+            e['payload']['messages'] is List<dynamic>,
+      )
+      // ignore: avoid_dynamic_calls // temporary
+      .map((e) => e['payload']['messages'] as List<dynamic>)
+      .map(
+        (e) => e.map(
+          (m) => ChatMessageRemoteModel.fromJson(
+            m as Map<String, dynamic>,
+          ).asEntity,
+        ),
+      );
 
   //
   //

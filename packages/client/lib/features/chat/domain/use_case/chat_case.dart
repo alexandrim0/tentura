@@ -2,37 +2,58 @@ import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura/features/auth/domain/use_case/auth_case.dart';
+import 'package:tentura/domain/use_case/use_case_base.dart';
+import 'package:tentura/data/service/remote_api_client/enum.dart';
+
+import 'package:tentura/features/auth/data/repository/auth_local_repository.dart';
 
 import '../../data/repository/chat_local_repository.dart';
 import '../../data/repository/chat_remote_repository.dart';
 import '../entity/chat_message_entity.dart';
 
-@singleton
-class ChatCase {
-  ChatCase(
-    this._authCase,
-    this._chatLocalRepository,
-    this._chatRemoteRepository,
-  );
+export 'package:tentura/data/service/remote_api_client/enum.dart';
 
-  final AuthCase _authCase;
+@singleton
+final class ChatCase extends UseCaseBase {
+  ChatCase(
+    this._authLocalRepository,
+    this._chatLocalRepository,
+    this._chatRemoteRepository, {
+    required super.env,
+    required super.logger,
+  });
+
+  final AuthLocalRepository _authLocalRepository;
 
   final ChatLocalRepository _chatLocalRepository;
 
   final ChatRemoteRepository _chatRemoteRepository;
 
-  Stream<String> get authChanges => _authCase.currentAccountChanges();
+  Stream<WebSocketState> get webSocketState =>
+      _chatRemoteRepository.webSocketState;
+
+  Stream<String> get authChanges =>
+      _authLocalRepository.currentAccountChanges();
 
   ///
-  Stream<Iterable<ChatMessageEntity>> watchRemoteUpdates({
+  ///
+  Stream<Iterable<ChatMessageEntity>> watchRemoteUpdates() =>
+      _chatRemoteRepository.watchUpdates();
+
+  ///
+  ///
+  void subscribeToUpdates({
     required DateTime fromMoment,
     int batchSize = 10,
-  }) => _chatRemoteRepository.watchUpdates(
-    fromMoment: fromMoment,
-    batchSize: batchSize,
-  );
+  }) {
+    logger.d('[ChatCase] Subscribe to updates.');
+    _chatRemoteRepository.subscribeToUpdates(
+      fromMoment: fromMoment,
+      batchSize: batchSize,
+    );
+  }
 
+  ///
   ///
   Future<void> sendMessage({
     required String receiverId,

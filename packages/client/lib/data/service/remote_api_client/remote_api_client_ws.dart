@@ -23,26 +23,15 @@ base mixin RemoteApiClientWs on RemoteApiClientBase {
 
   StreamSubscription<ConnectionState>? _stateSubscription;
 
-  bool _hasAuthenticated = false;
+  WebSocketState _webSocketState = WebSocketState.disconnected;
 
   // Getters
   String get wsEndpointUrl;
 
   Duration get wsPingInterval;
 
-  bool get isReady => _hasAuthenticated && _webSocket != null;
-
   Stream<Map<String, dynamic>> get webSocketMessages =>
       _messagesController.stream;
-
-  Stream<WebSocketState> get webSocketState => _stateController.stream;
-
-  Future<bool> get webSocketIsReady => webSocketState
-      .firstWhere((e) => e == WebSocketState.connected)
-      .then(
-        (_) => true,
-        onError: (_) => false,
-      );
 
   ///
   @override
@@ -91,9 +80,15 @@ base mixin RemoteApiClientWs on RemoteApiClientBase {
 
   ///
   ///
+  Stream<WebSocketState> get webSocketState async* {
+    yield _webSocketState;
+    yield* _stateController.stream;
+  }
+
+  ///
   ///
   void webSocketSend(dynamic message) {
-    if (_hasAuthenticated) {
+    if (_webSocketState == WebSocketState.connected) {
       _webSocket?.send(message);
     }
   }
@@ -101,7 +96,7 @@ base mixin RemoteApiClientWs on RemoteApiClientBase {
   //
   //
   Future<void> _dropAuth() async {
-    _hasAuthenticated = false;
+    _stateController.add(_webSocketState = WebSocketState.disconnected);
     _wsPingTimer?.cancel();
     _wsPingTimer = null;
     _webSocket?.send(
@@ -111,7 +106,6 @@ base mixin RemoteApiClientWs on RemoteApiClientBase {
     _messagesSubscription = null;
     await _stateSubscription?.cancel();
     _stateSubscription = null;
-    _stateController.add(WebSocketState.disconnected);
     _webSocket?.close();
     _webSocket = null;
   }
@@ -119,7 +113,7 @@ base mixin RemoteApiClientWs on RemoteApiClientBase {
   //
   //
   void _onTimer(_) {
-    if (isReady) {
+    if (_webSocketState == WebSocketState.connected) {
       _webSocket?.send('{"type":"ping"}');
     }
   }
@@ -130,8 +124,7 @@ base mixin RemoteApiClientWs on RemoteApiClientBase {
     if (state is Connected || state is Reconnected) {
       _webSocket?.send(await _buildAuthMessage());
     } else {
-      _hasAuthenticated = false;
-      _stateController.add(WebSocketState.disconnected);
+      _stateController.add(_webSocketState = WebSocketState.disconnected);
     }
   }
 
@@ -154,13 +147,15 @@ base mixin RemoteApiClientWs on RemoteApiClientBase {
             case AuthRequestIntent.cnameSignIn:
             case AuthRequestIntent.cnameSignUp:
               if (message['result'] == 'success') {
-                _hasAuthenticated = true;
-                _stateController.add(WebSocketState.connected);
+                _stateController.add(
+                  _webSocketState = WebSocketState.connected,
+                );
               }
 
             case AuthRequestIntent.cnameSignOut:
-              _hasAuthenticated = false;
-              _stateController.add(WebSocketState.disconnected);
+              _stateController.add(
+                _webSocketState = WebSocketState.disconnected,
+              );
 
             default:
           }
