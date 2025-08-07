@@ -8,6 +8,7 @@
             "request": "launch",
             "type": "dart",
             "env": {
+                "LOG_LEVEL": "all",
                 "PRINT_ENV": "true",
                 "DEBUG_MODE": "true",
                 "NEED_INVITE": "false",
@@ -26,6 +27,7 @@
             "request": "launch",
             "type": "dart",
             "env": {
+                "LOG_LEVEL": "all",
                 "PRINT_ENV": "true",
                 "DEBUG_MODE": "true",
                 "NEED_INVITE": "false",

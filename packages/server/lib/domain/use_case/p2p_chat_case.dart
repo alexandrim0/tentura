@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:uuid/uuid_value.dart';
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura_server/env.dart';
 import 'package:tentura_server/domain/exception.dart';
 import 'package:tentura_server/data/repository/fcm_remote_repository.dart';
 import 'package:tentura_server/data/repository/fcm_token_repository.dart';
@@ -12,20 +11,19 @@ import 'package:tentura_server/data/repository/user_repository.dart';
 import 'package:tentura_server/domain/entity/fcm_message_entity.dart';
 
 import '../entity/p2p_message_entity.dart';
+import '_use_case_base.dart';
 
 @Injectable(order: 2)
-class P2pChatCase {
+final class P2pChatCase extends UseCaseBase {
   P2pChatCase(
-    this._env,
     this._fcmTokenRepository,
     this._fcmRemoteRepository,
     this._p2pMessageRepository,
     this._userPresenceRepository,
-    this._userRepository,
-  );
-
-  // ignore: unused_field //
-  final Env _env;
+    this._userRepository, {
+    required super.env,
+    required super.logger,
+  });
 
   final FcmTokenRepository _fcmTokenRepository;
 
@@ -133,9 +131,10 @@ class P2pChatCase {
         imageUrl: senderProfile.imageUrl,
         title: senderProfile.title,
         body: content,
-        actionUrl:
-            '${_env.serverUri.origin}/#/profile/chat?'
-            'id=$senderId,receiver_id=$receiverId',
+        actionUrl: '/#/profile/chat?id=$senderId,receiver_id=$receiverId',
+        // actionUrl:
+        //     '${env.serverUri.origin}/#/profile/chat?'
+        //     'id=$senderId,receiver_id=$receiverId',
       ),
     );
     await _userPresenceRepository.update(
@@ -145,7 +144,7 @@ class P2pChatCase {
 
     for (final e in results.whereType<FcmTokenNotFoundException>()) {
       await _fcmTokenRepository.deleteToken(e.token);
-      print('');
+      logger.info('[P2pChatCase] Delete unregistered token: [${e.token}]');
     }
   }
 }
