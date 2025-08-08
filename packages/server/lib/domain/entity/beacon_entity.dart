@@ -37,7 +37,7 @@ abstract class BeaconEntity with _$BeaconEntity {
 
   String get imageUrl => hasImage
       ? '$kImageServer/$kImagesPath/${author.id}/${image!.id}.$kImageExt'
-      : kImageServer + kBeaconPlaceholderUrl;
+      : kBeaconPlaceholderUrl;
 
   Map<String, Object> get asJson => {'id': id};
 }

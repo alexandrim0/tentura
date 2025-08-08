@@ -29,7 +29,7 @@ abstract class UserEntity with _$UserEntity {
 
   String get imageUrl => hasImage
       ? '$kImageServer/$kImagesPath/$id/${image!.id}.$kImageExt'
-      : kImageServer + kAvatarPlaceholderUrl;
+      : kAvatarPlaceholderUrl;
 
   bool hasPrivilege(UserPrivileges value) =>
       privileges?.contains(value) ?? false;
