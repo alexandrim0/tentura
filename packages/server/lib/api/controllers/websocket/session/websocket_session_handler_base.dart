@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:logging/logging.dart';
 import 'package:shelf_plus/shelf_plus.dart';
 
 import 'package:tentura_root/domain/entity/auth_request_intent.dart';
@@ -16,11 +17,14 @@ export 'package:shelf_plus/shelf_plus.dart' show WebSocketSession;
 base class WebsocketSessionHandlerBase {
   WebsocketSessionHandlerBase(
     this.env,
+    this.logger,
     this.authCase,
     this.userPresenceCase,
   );
 
   final Env env;
+
+  final Logger logger;
 
   final AuthCase authCase;
 
@@ -95,6 +99,9 @@ base class WebsocketSessionHandlerBase {
           userId: jwt.sub,
           status: UserPresenceStatus.online,
         );
+        logger.info(
+          '[WebsocketSessionHandlerBase] Start session: [${jwt.sub}]',
+        );
 
       case AuthRequestIntent.cnameSignOut:
         final jwt = removeSession(session);
@@ -103,6 +110,9 @@ base class WebsocketSessionHandlerBase {
           await userPresenceCase.setStatus(
             userId: jwt.sub,
             status: UserPresenceStatus.offline,
+          );
+          logger.info(
+            '[WebsocketSessionHandlerBase] Stop session: [${jwt.sub}]',
           );
         }
 

@@ -17,6 +17,7 @@ base class WebsocketRouterBase extends WebsocketSessionHandlerBase
         WebsocketSubscriptionRouter {
   WebsocketRouterBase(
     super.env,
+    super.logger,
     super.authCase,
     super.userPresenceCase,
     this.p2pChatCase,

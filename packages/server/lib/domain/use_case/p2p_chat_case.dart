@@ -129,7 +129,7 @@ final class P2pChatCase extends UseCaseBase {
     final results = await _fcmRemoteRepository.sendChatNotification(
       fcmTokens: fcmTokens.map((e) => e.token).toSet(),
       message: FcmNotificationEntity(
-        actionUrl: '$kPathAppLinkChat/$senderId?receiver_id=$receiverId',
+        actionUrl: '/#$kPathAppLinkChat/$senderId?receiver_id=$receiverId',
         imageUrl: senderProfile.imageUrl,
         title: senderProfile.title,
         body: content,

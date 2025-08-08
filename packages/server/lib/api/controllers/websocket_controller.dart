@@ -7,6 +7,7 @@ import 'websocket/router/websocket_router_base.dart';
 final class WebSocketController extends WebsocketRouterBase {
   WebSocketController(
     super.env,
+    super.logger,
     super.authCase,
     super.userPresenceCase,
     super.p2pChatCase,
