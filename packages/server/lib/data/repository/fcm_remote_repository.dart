@@ -84,6 +84,9 @@ class FcmRemoteRepository {
           fcmToken: fcmToken,
           message: message,
         );
+      } on FcmUnauthorizedException catch (e) {
+        print(e);
+        rethrow;
       } on FcmTokenNotFoundException catch (e) {
         results.add(e);
       } catch (e) {

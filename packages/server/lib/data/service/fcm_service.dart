@@ -21,8 +21,6 @@ class FcmService {
     _env.fbPrivateKey.replaceAll(r'\n', '\n'),
   );
 
-  Future<String>? _accessTokenFuture;
-
   //
   //
   Future<void> sendFcmMessage({
@@ -72,6 +70,11 @@ class FcmService {
         case 200:
           return;
 
+        case 401:
+          throw FcmUnauthorizedException(
+            description: response.body,
+          );
+
         case 404:
           throw FcmTokenNotFoundException(
             token: fcmToken,
@@ -94,15 +97,7 @@ class FcmService {
   ///
   /// Generates an OAuth2.0 access token for FCM.
   ///
-  /// This method is concurrency-safe and ensures the token generation logic
-  /// runs only once. The returned [Future] is cached. If token generation
-  /// fails, the cache is cleared to allow for retries on subsequent calls.
-  Future<String> generateAccessToken() =>
-      _accessTokenFuture ??= _generateAndCacheAccessToken();
-
-  //
-  //
-  Future<String> _generateAndCacheAccessToken() async {
+  Future<String> generateAccessToken() async {
     try {
       final response = await post(
         _oAuthTokenEndpointUri,
@@ -139,7 +134,6 @@ class FcmService {
       );
       return tokenInfo['access_token']! as String;
     } catch (e) {
-      _accessTokenFuture = null;
       print(e);
       rethrow;
     }

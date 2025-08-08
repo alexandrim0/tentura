@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'exception_codes.dart';
 
+part 'exception/fcm_exceprions.dart';
+
 base class ExceptionBase implements Exception {
   const ExceptionBase({
     required this.code,
@@ -112,18 +114,4 @@ final class BeaconCreateException extends ExceptionBase {
         ),
         description: description ?? 'Beacon create error',
       );
-}
-
-final class FcmTokenNotFoundException extends ExceptionBase {
-  const FcmTokenNotFoundException({
-    required this.token,
-    String? description,
-  }) : super(
-         code: const GeneralExceptionCodes(
-           GeneralExceptionCode.idNotFoundException,
-         ),
-         description: description ?? 'Token not found: [$token]',
-       );
-
-  final String token;
 }
