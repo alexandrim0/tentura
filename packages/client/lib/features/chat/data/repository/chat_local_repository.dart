@@ -38,7 +38,7 @@ class ChatLocalRepository {
   ///
   /// Get all messages for pair from local DB
   ///
-  Future<Iterable<ChatMessageEntity>> getChatMessagesFor({
+  Future<Iterable<ChatMessageEntity>> getChatMessagesForPair({
     required String senderId,
     required String receiverId,
   }) => _database.managers.p2pMessages

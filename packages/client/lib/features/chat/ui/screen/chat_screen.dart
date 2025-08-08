@@ -8,33 +8,26 @@ import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import 'package:tentura/features/auth/domain/use_case/account_case.dart';
-import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
-import 'package:tentura/features/friends/ui/bloc/friends_cubit.dart';
-
 import '../bloc/chat_cubit.dart';
-import '../bloc/chat_news_cubit.dart';
 import '../dialog/on_chat_clear_dialog.dart';
 import '../widget/chat_list.dart';
 
 @RoutePage()
 class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
   const ChatScreen({
-    @queryParam this.id = '',
+    @pathParam this.id = '',
+    @QueryParam('receiver_id') this.receiverId = '',
     super.key,
   });
 
   final String id;
 
+  // TBD:
+  final String? receiverId;
+
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-    create: (_) => ChatCubit(
-      me: AccountCase.fromAccountEntity(
-        GetIt.I<AuthCubit>().state.currentAccount,
-      ),
-      friend: GetIt.I<FriendsCubit>().state.friends[id]!,
-      updatesStream: GetIt.I<ChatNewsCubit>().updates,
-    ),
+    create: (_) => ChatCubit(friendId: id),
     child: BlocListener<ChatCubit, ChatState>(
       listener: commonScreenBlocListener,
       child: this,

@@ -213,9 +213,8 @@ class RootRouter extends RootStackRouter {
     AutoRoute(
       keepHistory: false,
       maintainState: false,
-      fullscreenDialog: true,
       page: ChatRoute.page,
-      path: kPathProfileChat,
+      path: '$kPathChat/:id',
     ),
 
     // Complaint
@@ -228,7 +227,10 @@ class RootRouter extends RootStackRouter {
     ),
 
     // default
-    RedirectRoute(path: '*', redirectTo: kPathHome),
+    RedirectRoute(
+      path: '*',
+      redirectTo: kPathHome,
+    ),
   ];
 
   FutureOr<DeepLink> deepLinkBuilder(PlatformDeepLink deepLink) {

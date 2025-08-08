@@ -15,18 +15,13 @@ export 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
   ChatCubit({
-    required Profile me,
-    required Profile friend,
-    required Stream<ChatMessageEntity> updatesStream,
+    required String friendId,
     ChatCase? chatCase,
-  }) : _updatesStream = updatesStream,
-       _chatCase = chatCase ?? GetIt.I<ChatCase>(),
+  }) : _chatCase = chatCase ?? GetIt.I<ChatCase>(),
        super(
          ChatState(
-           me: me,
-           messages: [],
-           friend: friend,
            lastUpdate: zeroAge,
+           friend: Profile(id: friendId),
          ),
        ) {
     _fetch();
@@ -34,22 +29,7 @@ class ChatCubit extends Cubit<ChatState> {
 
   final ChatCase _chatCase;
 
-  final Stream<ChatMessageEntity> _updatesStream;
-
-  late final StreamSubscription<ChatMessageEntity> _updatesSubscription =
-      _updatesStream
-          .where(
-            (m) =>
-                (m.receiverId == state.friend.id &&
-                    m.senderId == state.me.id) ||
-                (m.receiverId == state.me.id && m.senderId == state.friend.id),
-          )
-          .listen(
-            _onMessage,
-            cancelOnError: false,
-            onError: (Object e) =>
-                emit(state.copyWith(status: StateHasError(e))),
-          );
+  late final StreamSubscription<ChatMessageEntity> _updatesSubscription;
 
   @override
   Future<void> close() async {
@@ -89,20 +69,45 @@ class ChatCubit extends Cubit<ChatState> {
   Future<void> _fetch() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      final result = await _chatCase.getChatMessagesFor(
-        subjectId: state.me.id,
-        objectId: state.friend.id,
+      final myId = await _chatCase.getCurrentAccountId();
+
+      unawaited(
+        _chatCase
+            .fetchProfileById(state.friend.id)
+            .then(
+              (profile) => emit(state.copyWith(friend: profile)),
+              onError: (Object e) =>
+                  emit(state.copyWith(status: StateHasError(e))),
+            ),
+      );
+      _updatesSubscription = _chatCase.updates
+          .expand((e) => e)
+          .where(
+            (m) =>
+                (m.receiverId == state.friend.id && m.senderId == myId) ||
+                (m.receiverId == myId && m.senderId == state.friend.id),
+          )
+          .listen(
+            _onMessage,
+            cancelOnError: false,
+            onError: (Object e) =>
+                emit(state.copyWith(status: StateHasError(e))),
+          );
+
+      final result = await _chatCase.getChatMessagesForPair(
+        receiverId: myId,
+        senderId: state.friend.id,
       );
       final messages = result.toList()
         ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
       emit(
-        state.copyWith(
+        ChatState(
           messages: messages,
-          status: StateStatus.isSuccess,
+          me: Profile(id: myId),
           lastUpdate: DateTime.timestamp(),
         ),
       );
-      _updatesSubscription.resume();
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }

@@ -8,10 +8,10 @@ part 'chat_state.freezed.dart';
 @Freezed(makeCollectionsUnmodifiable: false)
 abstract class ChatState extends StateBase with _$ChatState {
   const factory ChatState({
-    required Profile me,
-    required Profile friend,
     required DateTime lastUpdate,
-    required List<ChatMessageEntity> messages,
+    @Default(Profile()) Profile me,
+    @Default(Profile()) Profile friend,
+    @Default([]) List<ChatMessageEntity> messages,
     @Default(StateIsSuccess()) StateStatus status,
   }) = _ChatState;
 

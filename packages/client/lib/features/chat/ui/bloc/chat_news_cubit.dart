@@ -37,37 +37,38 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
       cancelOnError: false,
       onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
     );
+    _messagesUpdatesSubscription = _chatCase.updates.listen(
+      _onMessagesUpdate,
+      cancelOnError: false,
+      onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
+    );
   }
 
   final ChatCase _chatCase;
-
-  final _messagesUpdatesController =
-      StreamController<ChatMessageEntity>.broadcast();
 
   late final StreamSubscription<String> _authChanges;
 
   late final StreamSubscription<WebSocketState> _webSocketStateSubscription;
 
-  StreamSubscription<Iterable<ChatMessageEntity>>? _messagesUpdatesSubscription;
+  late final StreamSubscription<Iterable<ChatMessageEntity>>
+  _messagesUpdatesSubscription;
 
-  Stream<ChatMessageEntity> get updates => _messagesUpdatesController.stream;
-
+  //
   @override
   Future<void> close() async {
     await _authChanges.cancel();
-    await _messagesUpdatesSubscription?.cancel();
+    await _messagesUpdatesSubscription.cancel();
     await _webSocketStateSubscription.cancel();
-    await _messagesUpdatesController.close();
     return super.close();
   }
 
-  Future<void> _onWebSocketStateChanges(WebSocketState state) async {
-    switch (state) {
-      case WebSocketState.connected:
-        await _listenUpdates();
-
-      case WebSocketState.disconnected:
-        await _messagesUpdatesSubscription?.cancel();
+  //
+  //
+  Future<void> _onWebSocketStateChanges(WebSocketState wsState) async {
+    if (wsState == WebSocketState.connected) {
+      _chatCase.subscribeToUpdates(
+        fromMoment: await _chatCase.getCursor(userId: state.myId),
+      );
     }
   }
 
@@ -96,37 +97,16 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
     }
   }
 
-  Future<void> _listenUpdates() async {
-    await _messagesUpdatesSubscription?.cancel();
-
-    _messagesUpdatesSubscription = _chatCase.watchRemoteUpdates().listen(
-      _onMessagesUpdate,
-      cancelOnError: true,
-      onError: (Object e) {
-        emit(state.copyWith(status: StateHasError(e)));
-        _listenUpdates();
-      },
-    );
-
-    _chatCase.subscribeToUpdates(
-      fromMoment: await _chatCase.getCursor(userId: state.myId),
-    );
-  }
-
   //
   //
   Future<void> _onMessagesUpdate(Iterable<ChatMessageEntity> messages) async {
-    if (messages.isEmpty) {
-      return;
-    }
+    if (messages.isNotEmpty) {
+      messages.forEach(_updateStateWithMessage);
 
-    for (final message in messages) {
-      _messagesUpdatesController.add(message);
-      _updateStateWithMessage(message);
-    }
+      emit(state.copyWith(lastUpdate: DateTime.timestamp()));
 
-    emit(state.copyWith(lastUpdate: DateTime.timestamp()));
-    await _chatCase.saveMessages(messages: messages);
+      await _chatCase.saveMessages(messages: messages);
+    }
   }
 
   //

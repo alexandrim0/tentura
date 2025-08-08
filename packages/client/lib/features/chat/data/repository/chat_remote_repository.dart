@@ -15,6 +15,28 @@ class ChatRemoteRepository {
 
   final RemoteApiService _remoteApiService;
 
+  late final updates = _remoteApiService.webSocketMessages
+      .where(
+        (e) =>
+            e['type'] == 'subscription' &&
+            e['path'] == 'p2p_chat' &&
+            e['payload'] is Map<String, dynamic> &&
+            // ignore: avoid_dynamic_calls // temporary
+            e['payload']['intent'] == 'watch_updates' &&
+            // ignore: avoid_dynamic_calls // temporary
+            e['payload']['messages'] is List<dynamic>,
+      )
+      // ignore: avoid_dynamic_calls // temporary
+      .map((e) => e['payload']['messages'] as List<dynamic>)
+      .map(
+        (e) => e.map(
+          (m) => ChatMessageRemoteModel.fromJson(
+            m as Map<String, dynamic>,
+          ).asEntity,
+        ),
+      )
+      .asBroadcastStream();
+
   Stream<WebSocketState> get webSocketState => _remoteApiService.webSocketState;
 
   void subscribeToUpdates({
@@ -34,30 +56,6 @@ class ChatRemoteRepository {
       },
     }),
   );
-
-  //
-  //
-  Stream<Iterable<ChatMessageEntity>> watchUpdates() => _remoteApiService
-      .webSocketMessages
-      .where(
-        (e) =>
-            e['type'] == 'subscription' &&
-            e['path'] == 'p2p_chat' &&
-            e['payload'] is Map<String, dynamic> &&
-            // ignore: avoid_dynamic_calls // temporary
-            e['payload']['intent'] == 'watch_updates' &&
-            // ignore: avoid_dynamic_calls // temporary
-            e['payload']['messages'] is List<dynamic>,
-      )
-      // ignore: avoid_dynamic_calls // temporary
-      .map((e) => e['payload']['messages'] as List<dynamic>)
-      .map(
-        (e) => e.map(
-          (m) => ChatMessageRemoteModel.fromJson(
-            m as Map<String, dynamic>,
-          ).asEntity,
-        ),
-      );
 
   //
   //

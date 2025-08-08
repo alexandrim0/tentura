@@ -2,10 +2,12 @@ import 'dart:async';
 import 'package:uuid/uuid.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/use_case/use_case_base.dart';
 import 'package:tentura/data/service/remote_api_client/enum.dart';
 
 import 'package:tentura/features/auth/data/repository/auth_local_repository.dart';
+import 'package:tentura/features/profile/data/repository/profile_repository.dart';
 
 import '../../data/repository/chat_local_repository.dart';
 import '../../data/repository/chat_remote_repository.dart';
@@ -18,7 +20,8 @@ final class ChatCase extends UseCaseBase {
   ChatCase(
     this._authLocalRepository,
     this._chatLocalRepository,
-    this._chatRemoteRepository, {
+    this._chatRemoteRepository,
+    this._profileRepository, {
     required super.env,
     required super.logger,
   });
@@ -29,19 +32,31 @@ final class ChatCase extends UseCaseBase {
 
   final ChatRemoteRepository _chatRemoteRepository;
 
+  final ProfileRepository _profileRepository;
+
   Stream<WebSocketState> get webSocketState =>
       _chatRemoteRepository.webSocketState;
 
   Stream<String> get authChanges =>
       _authLocalRepository.currentAccountChanges();
 
-  ///
-  ///
-  Stream<Iterable<ChatMessageEntity>> watchRemoteUpdates() =>
-      _chatRemoteRepository.watchUpdates();
+  //
+  //
+  Stream<Iterable<ChatMessageEntity>> get updates =>
+      _chatRemoteRepository.updates;
 
-  ///
-  ///
+  //
+  //
+  Future<String> getCurrentAccountId() =>
+      _authLocalRepository.getCurrentAccountId();
+
+  //
+  //
+  Future<Profile> fetchProfileById(String id) =>
+      _profileRepository.fetchById(id);
+
+  //
+  //
   void subscribeToUpdates({
     required DateTime fromMoment,
     int batchSize = 10,
@@ -53,8 +68,8 @@ final class ChatCase extends UseCaseBase {
     );
   }
 
-  ///
-  ///
+  //
+  //
   Future<void> sendMessage({
     required String receiverId,
     required String content,
@@ -64,7 +79,8 @@ final class ChatCase extends UseCaseBase {
     content: content,
   );
 
-  ///
+  //
+  //
   Future<void> setMessageSeen({
     required ChatMessageEntity message,
   }) => _chatRemoteRepository.setMessageSeen(
@@ -74,12 +90,12 @@ final class ChatCase extends UseCaseBase {
   ///
   /// Get all messages for pair from local DB
   ///
-  Future<Iterable<ChatMessageEntity>> getChatMessagesFor({
-    required String objectId,
-    required String subjectId,
-  }) => _chatLocalRepository.getChatMessagesFor(
-    senderId: objectId,
-    receiverId: subjectId,
+  Future<Iterable<ChatMessageEntity>> getChatMessagesForPair({
+    required String senderId,
+    required String receiverId,
+  }) => _chatLocalRepository.getChatMessagesForPair(
+    senderId: senderId,
+    receiverId: receiverId,
   );
 
   ///
