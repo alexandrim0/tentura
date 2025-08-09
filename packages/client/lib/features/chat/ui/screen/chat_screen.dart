@@ -84,7 +84,7 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
         preferredSize: const Size.fromHeight(4),
         child: BlocSelector<ChatCubit, ChatState, bool>(
           selector: (state) => state.isLoading,
-          builder: (context, isLoading) =>
+          builder: (_, isLoading) =>
               isLoading ? const LinearPiActive() : const SizedBox(height: 4),
         ),
       ),
