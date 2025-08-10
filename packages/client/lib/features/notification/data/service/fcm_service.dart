@@ -8,7 +8,10 @@ import '../../domain/entity/notification_permissions.dart';
 
 @singleton
 class FcmService {
-  const FcmService();
+  const FcmService(
+    this._env,
+    this._logger,
+  );
 
   @factoryMethod
   factory FcmService.create({
@@ -19,8 +22,13 @@ class FcmService {
       logger.i('Firebase Messaging configured with fake service');
       return const _FcmServiceFake();
     }
-    return const FcmService();
+    return FcmService(env, logger);
   }
+
+  final Env _env;
+
+  // ignore: unused_field //
+  final Logger _logger;
 
   Stream<String> get onTokenRefresh =>
       FirebaseMessaging.instance.onTokenRefresh;
@@ -39,7 +47,8 @@ class FcmService {
 
   //
   //
-  Future<String?> getToken() => FirebaseMessaging.instance.getToken();
+  Future<String?> getToken() =>
+      FirebaseMessaging.instance.getToken(vapidKey: _env.firebaseVapidKey);
 }
 
 class _FcmServiceFake implements FcmService {
@@ -55,4 +64,12 @@ class _FcmServiceFake implements FcmService {
   Future<NotificationPermissions> requestPermission() => Future.value(
     const NotificationPermissions(),
   );
+
+  @override
+  // ignore: unused_element //
+  Env get _env => throw UnimplementedError();
+
+  @override
+  // ignore: unused_element //
+  Logger get _logger => throw UnimplementedError();
 }

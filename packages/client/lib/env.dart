@@ -18,6 +18,7 @@ class Env {
 
     // Firebase
     String? firebaseApiKey,
+    String? firebaseVapidKey,
     String? firebaseAuthDomain,
     String? firebaseProjectId,
     String? firebaseStorageBucket,
@@ -68,6 +69,8 @@ class Env {
        firebaseMessagingSenderId =
            firebaseMessagingSenderId ??
            const String.fromEnvironment('FB_SENDER_ID'),
+       firebaseVapidKey =
+           firebaseVapidKey ?? const String.fromEnvironment('FB_VAPID_KEY'),
 
        // Feature flags
        clearDatabase = const bool.fromEnvironment('CLEAR_DATABASE'),
@@ -93,6 +96,7 @@ class Env {
   // Firebase
   final String firebaseAppId;
   final String firebaseApiKey;
+  final String firebaseVapidKey;
   final String firebaseProjectId;
   final String firebaseAuthDomain;
   final String firebaseStorageBucket;
