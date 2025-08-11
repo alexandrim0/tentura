@@ -5,8 +5,10 @@
 // ignore: avoid_flutter_imports
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:tentura/features/auth/domain/use_case/account_case.dart';
 
+import 'package:tentura/env.dart';
+
+import 'package:tentura/features/auth/domain/use_case/account_case.dart';
 import 'package:tentura/features/auth/domain/use_case/auth_case.dart';
 
 import '../../data/repository/settings_repository.dart';
@@ -21,6 +23,7 @@ export 'settings_state.dart';
 class SettingsCubit extends Cubit<SettingsState> {
   @FactoryMethod(preResolve: true)
   static Future<SettingsCubit> hydrated(
+    Env env,
     AuthCase authCase,
     AccountCase accountCase,
     SettingsRepository settingsRepository,
@@ -34,6 +37,7 @@ class SettingsCubit extends Cubit<SettingsState> {
       settingsRepository: settingsRepository,
       state: SettingsState(
         introEnabled: isIntroEnabled,
+        visibleVersion: env.visibleVersion,
         themeMode: ThemeMode.values.firstWhere(
           (themeMode) => themeMode.name == themeModeName,
           orElse: () => ThemeMode.system,

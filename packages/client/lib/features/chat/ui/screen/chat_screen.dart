@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:tentura/app/router/root_router.dart';
+import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -37,7 +36,10 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
-      leading: const DeepBackButton(),
+      leading: BackButton(
+        onPressed: () async =>
+            AutoRouter.of(context).navigateNamed(kPathFriends),
+      ),
       title: BlocSelector<ChatCubit, ChatState, Profile>(
         selector: (state) => state.friend,
         builder: (_, profile) => Row(
