@@ -71,15 +71,6 @@ class ChatCubit extends Cubit<ChatState> {
     try {
       final myId = await _chatCase.getCurrentAccountId();
 
-      unawaited(
-        _chatCase
-            .fetchProfileById(state.friend.id)
-            .then(
-              (profile) => emit(state.copyWith(friend: profile)),
-              onError: (Object e) =>
-                  emit(state.copyWith(status: StateHasError(e))),
-            ),
-      );
       _updatesSubscription = _chatCase.updates
           .expand((e) => e)
           .where(
@@ -94,6 +85,8 @@ class ChatCubit extends Cubit<ChatState> {
                 emit(state.copyWith(status: StateHasError(e))),
           );
 
+      final friendProfile = await _chatCase.fetchProfileById(state.friend.id);
+
       final result = await _chatCase.getChatMessagesForPair(
         receiverId: myId,
         senderId: state.friend.id,
@@ -105,6 +98,7 @@ class ChatCubit extends Cubit<ChatState> {
         ChatState(
           messages: messages,
           me: Profile(id: myId),
+          friend: friendProfile,
           lastUpdate: DateTime.timestamp(),
         ),
       );
@@ -116,7 +110,9 @@ class ChatCubit extends Cubit<ChatState> {
   //
   //
   void _onMessage(ChatMessageEntity message) {
-    final index = state.messages.indexWhere((e) => e.id == message.id);
+    final index = state.messages.indexWhere(
+      (e) => e.serverId == message.serverId,
+    );
     if (index < 0) {
       state.messages.insert(0, message);
     } else {

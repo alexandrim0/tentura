@@ -25,8 +25,21 @@ class SettingsScreen extends StatelessWidget implements AutoRouteWrapper {
   Widget build(BuildContext context) {
     final cubit = GetIt.I<SettingsCubit>();
     final l10n = L10n.of(context)!;
+    final visibleVersion = cubit.state.visibleVersion;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.labelSettings)),
+      appBar: AppBar(
+        title: Text(l10n.labelSettings),
+        actions: visibleVersion != null && visibleVersion.isNotEmpty
+            ? [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    right: kSpacingMedium,
+                  ),
+                  child: Text(visibleVersion),
+                ),
+              ]
+            : null,
+      ),
       body: Padding(
         padding: kPaddingAll,
         child: Column(

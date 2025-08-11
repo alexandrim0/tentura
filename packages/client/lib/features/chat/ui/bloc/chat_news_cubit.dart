@@ -1,6 +1,3 @@
-// TBD: move not void public methods into state
-// ignore_for_file: prefer_void_public_cubit_methods
-
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
@@ -115,13 +112,15 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
     switch (message.status) {
       case ChatMessageStatus.seen:
         state.messages[message.senderId]?.removeWhere(
-          (e) => e.id == message.id,
+          (e) => e.serverId == message.serverId,
         );
 
       case ChatMessageStatus.sent:
         if (state.messages.containsKey(message.senderId)) {
           final messagesOfSender = state.messages[message.senderId]!;
-          final index = messagesOfSender.indexWhere((e) => e.id == message.id);
+          final index = messagesOfSender.indexWhere(
+            (e) => e.serverId == message.serverId,
+          );
           index < 0
               ? messagesOfSender.add(message)
               : messagesOfSender[index] = message;
