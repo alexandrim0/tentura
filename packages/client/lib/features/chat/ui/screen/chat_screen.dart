@@ -21,7 +21,6 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
 
   final String id;
 
-  // TBD:
   final String? receiverId;
 
   @override

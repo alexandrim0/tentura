@@ -24,7 +24,10 @@ class ChatCubit extends Cubit<ChatState> {
            friend: Profile(id: friendId),
          ),
        ) {
-    _fetch();
+    _init().then(
+      _fetchAll,
+      onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
+    );
   }
 
   final ChatCase _chatCase;
@@ -66,7 +69,7 @@ class ChatCubit extends Cubit<ChatState> {
 
   //
   //
-  Future<void> _fetch() async {
+  Future<String> _init() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final myId = await _chatCase.getCurrentAccountId();
@@ -85,20 +88,40 @@ class ChatCubit extends Cubit<ChatState> {
                 emit(state.copyWith(status: StateHasError(e))),
           );
 
-      final friendProfile = await _chatCase.fetchProfileById(state.friend.id);
+      emit(
+        ChatState(
+          me: Profile(id: myId),
+          friend: await _chatCase.fetchProfileById(state.friend.id),
+          lastUpdate: DateTime.timestamp(),
+        ),
+      );
+      return myId;
+    } catch (e) {
+      emit(state.copyWith(status: StateHasError(e)));
+    }
+    return state.me.id;
+  }
 
+  //
+  //
+  Future<void> _fetchAll(String myId) async {
+    emit(state.copyWith(status: StateStatus.isLoading));
+    try {
       final result = await _chatCase.getChatMessagesForPair(
         receiverId: myId,
         senderId: state.friend.id,
       );
-      final messages = result.toList()
-        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-
       emit(
-        ChatState(
-          messages: messages,
-          me: Profile(id: myId),
-          friend: friendProfile,
+        state.copyWith(
+          messages:
+              state.messages.isEmpty
+                    ? result.toList()
+                    : [
+                        ...result,
+                        ...state.messages,
+                      ]
+                ..sort(_sortByDate),
+          status: StateStatus.isSuccess,
           lastUpdate: DateTime.timestamp(),
         ),
       );
@@ -125,4 +148,9 @@ class ChatCubit extends Cubit<ChatState> {
       ),
     );
   }
+
+  //
+  //
+  int _sortByDate(ChatMessageEntity a, ChatMessageEntity b) =>
+      b.createdAt.compareTo(a.createdAt);
 }

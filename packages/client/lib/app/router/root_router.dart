@@ -17,7 +17,11 @@ export 'root_router.gr.dart';
 @singleton
 @AutoRouterConfig()
 class RootRouter extends RootStackRouter {
-  RootRouter(this._logger, this._authCubit, this._settingsCubit);
+  RootRouter(
+    this._logger,
+    this._authCubit,
+    this._settingsCubit,
+  );
 
   late final reevaluateListenable = _ReevaluateFromStreams([
     _settingsCubit.stream.map((e) => e.introEnabled),
@@ -215,6 +219,26 @@ class RootRouter extends RootStackRouter {
       maintainState: false,
       page: ChatRoute.page,
       path: '$kPathChat/:id',
+      guards: [
+        AutoRouteGuard.redirect(
+          (_) => _authCubit.state.isNotAuthenticated
+              ? const AuthLoginRoute()
+              : null,
+        ),
+        AutoRouteGuard.redirect(
+          (resolver) {
+            final receiverId = resolver.route.queryParams.getString(
+              'receiver_id',
+              '',
+            );
+            if (receiverId.isNotEmpty &&
+                _authCubit.state.currentAccountId != receiverId) {
+              _authCubit.signOut();
+            }
+            return null;
+          },
+        ),
+      ],
     ),
 
     // Complaint
