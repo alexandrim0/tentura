@@ -17,7 +17,7 @@ class UserPresenceCase {
 
   //
   //
-  Future<UserPresenceEntity> get(String userId) =>
+  Future<UserPresenceEntity?> get(String userId) =>
       _userPresenceRepository.get(userId);
 
   //

@@ -22,12 +22,12 @@ class UserPresenceRepository {
 
   //
   //
-  Future<UserPresenceEntity> get(String userId) => _database
+  Future<UserPresenceEntity?> get(String userId) => _database
       .managers
       .userPresence
       .filter((t) => t.userId.id(userId))
-      .getSingle()
-      .then(userPresenceModelToEntity);
+      .getSingleOrNull()
+      .then((e) => e == null ? null : userPresenceModelToEntity(e));
 
   //
   //
