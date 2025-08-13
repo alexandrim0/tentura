@@ -24,6 +24,11 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
+
+messaging.onBackgroundMessage((message) => {
+  console.log("onBackgroundMessage", message);
+  navigator.setAppBadge();
+});
 ''';
 
   late final _headers = {
