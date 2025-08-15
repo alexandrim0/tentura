@@ -55,7 +55,9 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
 }) {
   final theme = Theme.of(context);
   ScaffoldMessenger.of(context).clearSnackBars();
-  if (isError) _logger.d(text);
+  if (isError) {
+    _logger.d(text);
+  }
   return ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       behavior: isFloating ? SnackBarBehavior.floating : null,
@@ -80,24 +82,31 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
 }
 
 // ignore: strict_top_level_inference //
-Widget separatorBuilder(_, _) =>
-    const Divider(endIndent: kSpacingMedium, indent: kSpacingMedium);
+Widget separatorBuilder(_, _) => const Divider(
+  endIndent: kSpacingMedium,
+  indent: kSpacingMedium,
+);
 
-void commonScreenBlocListener(BuildContext context, StateBase state) =>
-    switch (state.status) {
-      final StateIsNavigating s =>
-        s.path == kPathBack
-            ? context.back()
-            : context.router.pushNamed(
-                s.path,
-                includePrefixMatches: true,
-                onFailure: GetIt.I<Logger>().e,
-              ),
-      final StateIsMessaging s => showSnackBar(context, text: s.message),
-      final StateHasError s => showSnackBar(
-        context,
-        isError: true,
-        text: s.error.toString(),
-      ),
-      _ => null,
-    };
+void commonScreenBlocListener(
+  BuildContext context,
+  StateBase state,
+) => switch (state.status) {
+  final StateIsNavigating s =>
+    s.path == kPathBack
+        ? context.back()
+        : context.router.pushPath(
+            s.path,
+            includePrefixMatches: true,
+            onFailure: GetIt.I<Logger>().e,
+          ),
+  final StateIsMessaging s => showSnackBar(
+    context,
+    text: s.message,
+  ),
+  final StateHasError s => showSnackBar(
+    context,
+    isError: true,
+    text: s.error.toString(),
+  ),
+  _ => null,
+};

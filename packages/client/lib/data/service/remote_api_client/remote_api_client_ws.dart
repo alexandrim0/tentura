@@ -41,7 +41,7 @@ base mixin RemoteApiClientWs on RemoteApiClientBase {
     required AuthTokenFetcher authTokenFetcher,
     AuthRequestIntent? returnAuthRequestToken,
   }) async {
-    _webSocket ??= WebSocket(Uri.parse(wsEndpointUrl));
+    _webSocket ??= WebSocket(Uri.parse(wsEndpointUrl).replace(scheme: 'wss'));
     _wsPingTimer ??= Timer.periodic(
       wsPingInterval,
       _onTimer,

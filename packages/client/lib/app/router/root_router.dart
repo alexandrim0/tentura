@@ -149,7 +149,7 @@ class RootRouter extends RootStackRouter {
       path: '$kPathProfileView/:id',
       guards: [
         AutoRouteGuard.redirect(
-          (r) => _authCubit.checkIfIsMe(r.route.pathParams.getString('id'))
+          (r) => _authCubit.checkIfIsMe(r.route.params.getString('id'))
               ? const ProfileRoute()
               : null,
         ),
