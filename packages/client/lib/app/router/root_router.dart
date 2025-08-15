@@ -268,8 +268,8 @@ class RootRouter extends RootStackRouter {
             path: switch (uri.queryParameters['id']) {
               final String id when id.startsWith('B') => kPathBeaconView,
               final String id when id.startsWith('C') => kPathBeaconView,
-              final String id when id.startsWith('U') => kPathProfileView,
-              final String id when id.startsWith('O') => kPathProfileView,
+              final String id when id.startsWith('O') || id.startsWith('U') =>
+                '$kPathProfileView/$id',
               final String id when id.startsWith('I') =>
                 _authCubit.state.isAuthenticated
                     ? kPathConnect
