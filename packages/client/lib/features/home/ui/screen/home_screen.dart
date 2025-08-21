@@ -81,6 +81,7 @@ class HomeScreen extends StatelessWidget implements AutoRouteWrapper {
     return AutoTabsScaffold(
       bottomNavigationBuilder: (_, tabsRouter) => NavigationBar(
         onDestinationSelected: tabsRouter.setActiveIndex,
+        indicatorColor: Theme.of(context).colorScheme.primaryFixed,
         selectedIndex: tabsRouter.activeIndex,
         destinations: [
           NavigationDestination(

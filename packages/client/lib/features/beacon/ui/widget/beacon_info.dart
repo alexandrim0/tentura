@@ -101,6 +101,7 @@ class BeaconInfo extends StatelessWidget {
                     ? ShowMoreText(
                       beacon.description,
                       style: ShowMoreText.buildTextStyle(context),
+                      colorClickableText: Theme.of(context).colorScheme.primary,
                     )
                     : Text(
                       beacon.description,
@@ -133,8 +134,6 @@ class BeaconInfo extends StatelessWidget {
                           center: beacon.coordinates,
                         ),
                   ),
-
-                const Spacer(),
 
                 // Beacon Topic
                 if (beacon.context.isNotEmpty)
