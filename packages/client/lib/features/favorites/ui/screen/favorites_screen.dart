@@ -36,6 +36,7 @@ class FavoritesScreen extends StatelessWidget {
                           child: Text(
                             l10n.labelNothingHere,
                             style: Theme.of(context).textTheme.displaySmall,
+                            textAlign: TextAlign.center,
                           ),
                         )
                         // Beacons list

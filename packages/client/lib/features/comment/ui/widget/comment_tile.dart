@@ -62,6 +62,7 @@ class CommentTile extends StatelessWidget {
                       child: ShowMoreText(
                         comment.content,
                         style: ShowMoreText.buildTextStyle(context),
+                        colorClickableText: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ],

@@ -60,6 +60,7 @@ class OpinionTile extends StatelessWidget {
                     child: ShowMoreText(
                       opinion.content,
                       style: ShowMoreText.buildTextStyle(context),
+                      colorClickableText: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ],
