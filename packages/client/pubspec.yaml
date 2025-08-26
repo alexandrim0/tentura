@@ -6,7 +6,7 @@ version: 1.2.19
 
 environment:
   sdk: '>=3.9.0 <4.0.0'
-  flutter: ^3.35.1
+  flutter: ^3.35.2
 
 dependencies:
   flutter:
@@ -21,7 +21,7 @@ dependencies:
   get_it: ^8.2.0
   latlong2: ^0.9.1
   injectable: ^2.5.1
-  auto_route: ^10.1.0+1
+  auto_route: ^10.1.2
   collection: ^1.19.1
   built_value: ^8.9.5
   http_parser: ^4.1.2
@@ -38,10 +38,10 @@ dependencies:
   drift: ^2.28.1
   mailto: ^2.0.0
   geocoding: ^4.0.0
-  drift_dev: ^2.28.0
+  drift_dev: ^2.28.1
   geolocator: ^14.0.2
   share_plus: ^11.1.0
-  image_picker: ^1.1.2
+  image_picker: ^1.2.0
   url_launcher: ^6.3.2
   drift_flutter: ^0.2.5
   firebase_core: ^4.0.0
@@ -57,7 +57,7 @@ dependencies:
   sentry_flutter: ^9.6.0
 
   # Remote API related
-  ferry: ^0.16.1+2
+  ferry: ^0.16.1
   gql_exec: ^1.0.0
   gql_http_link: ^1.1.0
   gql_error_link: ^1.0.0
@@ -86,15 +86,15 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   lints: ^6.0.0
-  freezed: ^3.1.0
-  build_runner: ^2.5.4
+  freezed: ^3.2.0
+  build_runner: ^2.7.0
   flutter_lints: ^6.0.0
-  ferry_generator: ^0.14.0-dev.0
-  json_serializable: ^6.9.5
+  ferry_generator: ^0.14.0-dev.1
+  json_serializable: ^6.10.0
   sentry_dart_plugin: ^3.0.0
   very_good_analysis: ^9.0.0
-  auto_route_generator: ^10.1.0
-  injectable_generator: ^2.7.0
+  auto_route_generator: ^10.2.4
+  injectable_generator: ^2.8.1
   flutter_launcher_icons: ^0.14.4
 
 flutter:
