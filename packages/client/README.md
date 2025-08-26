@@ -4,7 +4,7 @@ Social network based on MeritRank
 
 ## How to build
 
-Tentura uses GraphQL codegen. So, before building the project as usual set .env, run the codegenerator:
+Tentura uses codegen. So, before building the project as usual set .env, run the codegenerator:
 
 ```bash
 flutter gen-l10n
