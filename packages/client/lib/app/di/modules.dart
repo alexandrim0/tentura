@@ -8,7 +8,12 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 @module
 abstract class RegisterModule {
   @singleton
-  Logger get logger => Logger();
+  Logger get logger => Logger(
+    level: Level.values.firstWhere(
+      (e) => e.name == _logLevel,
+      orElse: () => Level.warning,
+    ),
+  );
 
   @singleton
   SentryNavigatorObserver get sentryNavigatorObserver =>
@@ -25,4 +30,6 @@ abstract class RegisterModule {
   ).interceptWith(SentryQueryInterceptor(databaseName: _mainDbName));
 
   static const _mainDbName = 'main_db';
+
+  static const _logLevel = String.fromEnvironment('LOG_LEVEL');
 }

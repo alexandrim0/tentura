@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use //
-
 import 'package:jaspr/server.dart';
 
 import 'package:tentura_server/domain/entity/user_entity.dart';
@@ -14,12 +12,12 @@ class AvatarComponent extends StatelessComponent {
     img(
       src: user.imageUrl,
       classes: 'card-avatar__image',
-      styles: const Styles.box(width: Unit.pixels(80), height: Unit.pixels(80)),
+      styles: const Styles(width: Unit.pixels(80), height: Unit.pixels(80)),
     ),
     p(
       [text(user.title)],
       classes: 'card-avatar__text',
-      styles: const Styles.text(
+      styles: const Styles(
         fontSize: Unit.pixels(20),
         fontWeight: FontWeight.w600,
       ),

@@ -4,7 +4,13 @@ import 'package:injectable/injectable.dart';
 
 import '../database/tentura_db.dart';
 
-@Injectable(env: [Environment.dev, Environment.prod], order: 1)
+@Injectable(
+  env: [
+    Environment.dev,
+    Environment.prod,
+  ],
+  order: 1,
+)
 class MeritrankRepository {
   const MeritrankRepository(this._database);
 

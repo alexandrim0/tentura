@@ -12,8 +12,7 @@ class ScreenCubit extends Cubit<ScreenState> {
 
   void back() => emit(state.navigateBack());
 
-  void showChatWith(String id) =>
-      emit(state.navigateTo('$kPathProfileChat?id=$id'));
+  void showChatWith(String id) => emit(state.navigateTo('$kPathChat/$id'));
 
   void showGraph(String focus) =>
       emit(state.navigateTo('$kPathGraph?focus=$focus'));

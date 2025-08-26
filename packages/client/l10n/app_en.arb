@@ -204,6 +204,43 @@
   "@showOnMap": {
     "context": "BeaconInfo"
   },
+
+  "createNewBeacon": "Create new Beacon",
+  "@createNewBeacon": {
+    "context": "BeaconCreateScreen"
+  },
+  "setDisplayPeriod": "Set period",
+  "@setDisplayPeriod": {
+    "context": "BeaconCreateScreen"
+  },
+  "beaconTitleRequired": "Beacon Title (required)",
+  "@beaconTitleRequired": {
+    "context": "BeaconCreateScreen"
+  },
+  "buttonPublish": "Publish",
+  "@buttonPublish": {
+    "context": "BeaconCreateScreen"
+  },
+  "addLocation": "Add Location",
+  "@addLocation": {
+    "context": "BeaconCreateScreen"
+  },
+  "attachImage": "Attach Image",
+  "@attachImage": {
+    "context": "BeaconCreateScreen"
+  },
+  "beaconInfo": "Info",
+  "@beaconInfo": {
+    "context": "BeaconCreateScreen"
+  },
+  "beaconImage": "Image",
+  "@beaconImage": {
+    "context": "BeaconCreateScreen"
+  },
+  "createBeaconErrorTooShortQuestion": "Too short question",
+  "@createBeaconErrorTooShortQuestion": {
+    "context": "BeaconCreateScreen"
+  },
   "confirmBeaconPublishing": "Are you sure you want to publish this beacon?",
   "@confirmBeaconPublishing": {
     "context": "BeaconPublishDialog"
@@ -211,30 +248,6 @@
   "confirmBeaconPublishingHint": "Once the beacon is published, it will not be possible to make changes. Are you sure you want to publish this beacon?",
   "@confirmBeaconPublishingHint": {
     "context": "BeaconPublishDialog"
-  },
-  "createNewBeacon": "Create new Beacon",
-  "@createNewBeacon": {
-    "context": "BeaconCreateScreen"
-  },
-  "setDisplayPeriod": "Set display period",
-  "@setDisplayPeriod": {
-    "context": "DateRangeInput"
-  },
-  "beaconTitleRequired": "Beacon Title (required)",
-  "@beaconTitleRequired": {
-    "context": "TitleInput"
-  },
-  "buttonPublish": "Publish",
-  "@buttonPublish": {
-    "context": "PublishButton"
-  },
-  "addLocation": "Add Location",
-  "@addLocation": {
-    "context": "LocationInput"
-  },
-  "attachImage": "Attach Image",
-  "@attachImage": {
-    "context": "LocationInput"
   },
 
   

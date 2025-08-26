@@ -3,18 +3,19 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import 'package:tentura/ui/l10n/l10n.dart';
-
 import 'package:tentura/ui/bloc/screen_cubit.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
 
 import '../../domain/enum.dart';
 import '../bloc/complaint_cubit.dart';
 
 @RoutePage()
 class ComplaintScreen extends StatefulWidget implements AutoRouteWrapper {
-  const ComplaintScreen({@queryParam this.id = '', super.key});
+  const ComplaintScreen({
+    @queryParam this.id = '',
+    super.key,
+  });
 
   final String id;
 
@@ -48,11 +49,13 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
 
   late final _cubit = context.read<ComplaintCubit>();
 
+  late final _colorScheme = Theme.of(context).colorScheme;
+
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       title: Text(_l10n.submitComplaint),
-      leading: const DeepBackButton(),
+      leading: const AutoLeadingButton(),
     ),
     body: Form(
       key: _formKey,
@@ -62,27 +65,25 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
           // Type
           BlocSelector<ComplaintCubit, ComplaintState, ComplaintType>(
             selector: (state) => state.type,
-            builder: (context, type) {
-              return DropdownButtonFormField<ComplaintType>(
-                value: type,
-                items: [
-                  DropdownMenuItem(
-                    value: ComplaintType.violatesCsaePolicy,
-                    child: Text(_l10n.violatesCSAE),
-                  ),
-                  DropdownMenuItem(
-                    value: ComplaintType.violatesPlatformRules,
-                    child: Text(_l10n.violatesPlatformRules),
-                  ),
-                ],
-                onChanged: _cubit.setType,
-                decoration: InputDecoration(
-                  labelText: _l10n.labelComplaintType,
-                  border: const OutlineInputBorder(),
+            builder: (_, type) => DropdownButtonFormField<ComplaintType>(
+              initialValue: type,
+              items: [
+                DropdownMenuItem(
+                  value: ComplaintType.violatesCsaePolicy,
+                  child: Text(_l10n.violatesCSAE),
                 ),
-                dropdownColor: Theme.of(context).colorScheme.secondaryContainer,
-              );
-            },
+                DropdownMenuItem(
+                  value: ComplaintType.violatesPlatformRules,
+                  child: Text(_l10n.violatesPlatformRules),
+                ),
+              ],
+              onChanged: _cubit.setType,
+              decoration: InputDecoration(
+                labelText: _l10n.labelComplaintType,
+                border: const OutlineInputBorder(),
+              ),
+              dropdownColor: _colorScheme.secondaryContainer,
+            ),
           ),
 
           // Details

@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use //
-
 import 'package:jaspr/server.dart';
 
 import 'package:tentura_server/domain/entity/user_entity.dart';
@@ -19,7 +17,7 @@ class UserViewComponent extends StatelessComponent {
       if (user.description.isNotEmpty)
         p(
           [text(user.description)],
-          styles: const Styles.box(margin: EdgeInsets.only(top: kEdgeInsetsMS)),
+          styles: const Styles(margin: Spacing.only(top: kEdgeInsetsMS)),
         ),
     ], classes: 'card-container'),
   ];

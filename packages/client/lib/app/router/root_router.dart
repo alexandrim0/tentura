@@ -17,7 +17,11 @@ export 'root_router.gr.dart';
 @singleton
 @AutoRouterConfig()
 class RootRouter extends RootStackRouter {
-  RootRouter(this._logger, this._authCubit, this._settingsCubit);
+  RootRouter(
+    this._logger,
+    this._authCubit,
+    this._settingsCubit,
+  );
 
   late final reevaluateListenable = _ReevaluateFromStreams([
     _settingsCubit.stream.map((e) => e.introEnabled),
@@ -145,7 +149,7 @@ class RootRouter extends RootStackRouter {
       path: '$kPathProfileView/:id',
       guards: [
         AutoRouteGuard.redirect(
-          (r) => _authCubit.checkIfIsMe(r.route.pathParams.getString('id'))
+          (r) => _authCubit.checkIfIsMe(r.route.params.getString('id'))
               ? const ProfileRoute()
               : null,
         ),
@@ -213,9 +217,28 @@ class RootRouter extends RootStackRouter {
     AutoRoute(
       keepHistory: false,
       maintainState: false,
-      fullscreenDialog: true,
       page: ChatRoute.page,
-      path: kPathProfileChat,
+      path: '$kPathChat/:id',
+      guards: [
+        AutoRouteGuard.redirect(
+          (_) => _authCubit.state.isNotAuthenticated
+              ? const AuthLoginRoute()
+              : null,
+        ),
+        AutoRouteGuard.redirect(
+          (resolver) {
+            final receiverId = resolver.route.queryParams.getString(
+              'receiver_id',
+              '',
+            );
+            if (receiverId.isNotEmpty &&
+                _authCubit.state.currentAccountId != receiverId) {
+              _authCubit.signOut();
+            }
+            return null;
+          },
+        ),
+      ],
     ),
 
     // Complaint
@@ -228,7 +251,10 @@ class RootRouter extends RootStackRouter {
     ),
 
     // default
-    RedirectRoute(path: '*', redirectTo: kPathHome),
+    RedirectRoute(
+      path: '*',
+      redirectTo: kPathHome,
+    ),
   ];
 
   FutureOr<DeepLink> deepLinkBuilder(PlatformDeepLink deepLink) {
@@ -242,8 +268,8 @@ class RootRouter extends RootStackRouter {
             path: switch (uri.queryParameters['id']) {
               final String id when id.startsWith('B') => kPathBeaconView,
               final String id when id.startsWith('C') => kPathBeaconView,
-              final String id when id.startsWith('U') => kPathProfileView,
-              final String id when id.startsWith('O') => kPathProfileView,
+              final String id when id.startsWith('O') || id.startsWith('U') =>
+                '$kPathProfileView/$id',
               final String id when id.startsWith('I') =>
                 _authCubit.state.isAuthenticated
                     ? kPathConnect

@@ -3,8 +3,9 @@ include:
 
 analyzer:
   exclude:
-    - "temp/*.dart"
-    - "packages/"
+    - "lib/api/grpc/**"
+    - "packages/**"
+    - "temp/**"
 
 linter:
   rules:

@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 
 import 'package:tentura/domain/entity/repository_event.dart';
 
-import 'package:tentura/features/auth/data/repository/auth_repository.dart';
+import 'package:tentura/features/auth/domain/use_case/auth_case.dart';
 import 'package:tentura/features/context/data/repository/context_repository.dart';
 
 import '../../domain/exception.dart';
@@ -21,9 +21,9 @@ export 'context_state.dart';
 class ContextCubit extends Cubit<ContextState> {
   ContextCubit({
     bool fromCache = true,
-    AuthRepository? authRepository,
+    AuthCase? authCase,
     ContextRepository? contextRepository,
-  }) : _authRepository = authRepository ?? GetIt.I<AuthRepository>(),
+  }) : _authCase = authCase ?? GetIt.I<AuthCase>(),
        _contextRepository = contextRepository ?? GetIt.I<ContextRepository>(),
        super(const ContextState()) {
     _contextChanges.resume();
@@ -31,23 +31,28 @@ class ContextCubit extends Cubit<ContextState> {
   }
 
   @factoryMethod
-  ContextCubit.global(this._authRepository, this._contextRepository)
-    : super(const ContextState()) {
+  ContextCubit.global(
+    this._authCase,
+    this._contextRepository,
+  ) : super(const ContextState()) {
     _authChanges.resume();
     _contextChanges.resume();
   }
 
-  final AuthRepository _authRepository;
+  final AuthCase _authCase;
 
   final ContextRepository _contextRepository;
 
-  late final _authChanges = _authRepository.currentAccountChanges().listen((
-    id,
-  ) async {
-    if (id.isNotEmpty) await fetch(fromCache: false);
-  }, cancelOnError: false);
+  late final StreamSubscription<String> _authChanges = _authCase
+      .currentAccountChanges()
+      .listen((
+        id,
+      ) async {
+        if (id.isNotEmpty) await fetch(fromCache: false);
+      }, cancelOnError: false);
 
-  late final _contextChanges = _contextRepository.changes.listen(
+  late final StreamSubscription<RepositoryEvent<ContextEntity>>
+  _contextChanges = _contextRepository.changes.listen(
     (event) => switch (event) {
       final RepositoryEventCreate<ContextEntity> entity => emit(
         ContextState(
@@ -65,12 +70,11 @@ class ContextCubit extends Cubit<ContextState> {
       RepositoryEventFetch<ContextEntity>() => null,
     },
     cancelOnError: false,
-    onError:
-        (Object? e) => emit(
-          state.copyWith(
-            status: StateHasError(e ?? const ContextUnknownException()),
-          ),
-        ),
+    onError: (Object? e) => emit(
+      state.copyWith(
+        status: StateHasError(e ?? const ContextUnknownException()),
+      ),
+    ),
   );
 
   @disposeMethod
@@ -90,10 +94,8 @@ class ContextCubit extends Cubit<ContextState> {
     }
   }
 
-  String select(String contextName) {
-    emit(ContextState(contexts: state.contexts, selected: contextName));
-    return contextName;
-  }
+  void select(String contextName) =>
+      emit(ContextState(contexts: state.contexts, selected: contextName));
 
   Future<void> add(String? contextName) async {
     if (contextName == null) {
@@ -117,7 +119,7 @@ class ContextCubit extends Cubit<ContextState> {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       await _contextRepository.delete(
-        userId: await _authRepository.getCurrentAccountId(),
+        userId: await _authCase.getCurrentAccountId(),
         contextName: contextName,
       );
       if (contextName == state.selected) {
