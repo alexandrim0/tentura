@@ -21,7 +21,6 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
 
   final String id;
 
-  // TBD:
   final String? receiverId;
 
   @override
@@ -38,7 +37,7 @@ class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
     appBar: AppBar(
       leading: BackButton(
         onPressed: () async =>
-            AutoRouter.of(context).navigateNamed(kPathFriends),
+            AutoRouter.of(context).navigatePath(kPathFriends),
       ),
       title: BlocSelector<ChatCubit, ChatState, Profile>(
         selector: (state) => state.friend,

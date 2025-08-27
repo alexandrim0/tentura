@@ -114,7 +114,7 @@ final class P2pChatCase extends UseCaseBase {
     required UuidValue clientMessageId,
   }) async {
     final userStatus = await _userPresenceRepository.get(receiverId);
-    if (!userStatus.shouldNotify) {
+    if (userStatus == null || !userStatus.shouldNotify) {
       return;
     }
 

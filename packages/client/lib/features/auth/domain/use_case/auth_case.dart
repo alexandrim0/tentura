@@ -4,16 +4,20 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/domain/use_case/use_case_base.dart';
+
 import '../../data/repository/auth_remote_repository.dart';
 import '../../data/repository/auth_local_repository.dart';
 import '../exception.dart';
 
 @singleton
-class AuthCase {
+final class AuthCase extends UseCaseBase {
   AuthCase(
     this._authLocalRepository,
-    this._authRemoteRepository,
-  );
+    this._authRemoteRepository, {
+    required super.env,
+    required super.logger,
+  });
 
   final AuthLocalRepository _authLocalRepository;
 

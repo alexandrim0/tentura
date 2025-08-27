@@ -8,6 +8,7 @@ analyzer:
   exclude:
     - "**/*.gql.dart"
     - "**/*.gql.g.dart"
+    - "**/*.freezed.dart"
     - "test/drift/**.dart"
 
 linter:

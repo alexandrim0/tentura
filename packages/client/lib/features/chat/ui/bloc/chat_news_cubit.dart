@@ -14,7 +14,7 @@ export 'package:get_it/get_it.dart';
 export 'chat_news_state.dart';
 
 /// Global Cubit
-@lazySingleton
+@singleton
 class ChatNewsCubit extends Cubit<ChatNewsState> {
   ChatNewsCubit(this._chatCase)
     : super(
@@ -52,6 +52,7 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
 
   //
   @override
+  @disposeMethod
   Future<void> close() async {
     await _authChanges.cancel();
     await _messagesUpdatesSubscription.cancel();

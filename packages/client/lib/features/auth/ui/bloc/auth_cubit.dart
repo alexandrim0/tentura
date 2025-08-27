@@ -166,7 +166,9 @@ class AuthCubit extends Cubit<AuthState> {
   //
   //
   Future<void> signIn(String id) async {
-    if (state.currentAccountId == id) return;
+    if (state.currentAccountId == id) {
+      return;
+    }
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       await _authCase.signIn(userId: id);
@@ -184,6 +186,7 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }
+    _authCase.logger.d('Sign out');
   }
 
   ///

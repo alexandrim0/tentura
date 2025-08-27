@@ -19,15 +19,14 @@ export 'context_state.dart';
 /// Global Cubit
 @lazySingleton
 class ContextCubit extends Cubit<ContextState> {
-  ContextCubit({
-    bool fromCache = true,
+  ContextCubit([
     AuthCase? authCase,
     ContextRepository? contextRepository,
-  }) : _authCase = authCase ?? GetIt.I<AuthCase>(),
+  ]) : _authCase = authCase ?? GetIt.I<AuthCase>(),
        _contextRepository = contextRepository ?? GetIt.I<ContextRepository>(),
        super(const ContextState()) {
     _contextChanges.resume();
-    fetch(fromCache: fromCache);
+    fetch();
   }
 
   @factoryMethod

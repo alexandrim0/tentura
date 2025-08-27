@@ -87,10 +87,9 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                 Padding(
                   padding: kPaddingAll,
                   child: OutlinedButton(
-                    onPressed:
-                        () async => authCubit.addAccount(
-                          await QRScanDialog.show(context),
-                        ),
+                    onPressed: () async => authCubit.addAccount(
+                      await QRScanDialog.show(context),
+                    ),
                     child: Text(l10n.recoverFromQR),
                   ),
                 ),
@@ -113,7 +112,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                       const EdgeInsets.only(bottom: 60 - kSpacingMedium),
                   child: FilledButton(
                     onPressed: () async {
-                      await context.navigateNamedTo(kPathSignUp);
+                      await context.navigateToPath(kPathSignUp);
                       // TBD: use ScreenCubit
                       // context.read<ScreenCubit>().showProfileCreator();
                     },

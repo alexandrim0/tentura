@@ -57,5 +57,18 @@ CREATE TABLE IF NOT EXISTS public.fcm_token (
 INSERT INTO public.user_presence (user_id)
   SELECT id FROM public."user" ON CONFLICT (user_id) DO NOTHING;
 ''',
+    // Function
+    r'''
+CREATE OR REPLACE FUNCTION public.on_user_created()
+  RETURNS trigger
+  LANGUAGE plpgsql
+  AS $$
+BEGIN
+  INSERT INTO user_vsids VALUES (NEW.id, DEFAULT, DEFAULT);
+  INSERT INTO user_presence (user_id) VALUES (NEW.id);
+  RETURN NEW;
+END;
+$$;
+''',
   ],
 );
