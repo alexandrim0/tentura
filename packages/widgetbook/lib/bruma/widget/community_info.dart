@@ -5,17 +5,23 @@ class CommunityInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
-          const Icon(Icons.group_outlined, size: 16),
-          const SizedBox(width: 4),
+          const Padding(
+            padding: EdgeInsets.only(right: 4),
+            child: Icon(
+              Icons.group_outlined,
+              size: 16,
+            ),
+          ),
           Text(
             'Коммьюнити название большое',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: theme.colorScheme.primary,
+            ),
           ),
         ],
       ),
