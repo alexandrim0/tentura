@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
 import 'package:tentura/features/opinion/ui/widget/opinion_tile.dart';
-import 'package:tentura/features/profile_view/ui/bloc/profile_view_state.dart';
+import 'package:tentura/features/profile_view/ui/bloc/profile_view_cubit.dart';
 
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -12,32 +13,24 @@ import 'package:tentura/ui/widget/share_code_icon_button.dart';
 import 'package:tentura/ui/widget/show_more_text.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
 
-import 'package:tentura_widgetbook/astra/widget/theme_astra.dart';
 import 'package:tentura_widgetbook/bloc/_data.dart';
 import 'package:tentura_widgetbook/bloc/profile_view_cubit.dart';
 
-import 'package:widgetbook_annotation/widgetbook_annotation.dart';
+import '../widget/theme_astra.dart';
 
 @UseCase(
   name: 'View Profile',
   type: ProfileViewScreen,
-  path: '[astra]/screen/profile.View',
+  path: '[astra]/screen',
 )
 Widget defaultProfileMyUseCase(BuildContext context) =>
-    const ProfileViewScreenWrapper();
-
-class ProfileViewScreenWrapper extends StatelessWidget {
-  const ProfileViewScreenWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context) => BlocProvider(
-    create: (_) => ProfileViewCubit(),
-    child: const BlocListener<ProfileViewCubit, ProfileViewState>(
-      listener: commonScreenBlocListener,
-      child: ProfileViewScreen(),
-    ),
-  );
-}
+    BlocProvider<ProfileViewCubit>(
+      create: (_) => ProfileViewCubitMock(),
+      child: const BlocListener<ProfileViewCubit, ProfileViewState>(
+        listener: commonScreenBlocListener,
+        child: ProfileViewScreen(),
+      ),
+    );
 
 class ProfileViewScreen extends StatelessWidget {
   const ProfileViewScreen({super.key});
@@ -51,17 +44,19 @@ class ProfileViewScreen extends StatelessWidget {
     return BlocBuilder<ProfileViewCubit, ProfileViewState>(
       bloc: profileViewCubit,
       buildWhen: (_, c) => c.isSuccess,
-      builder: (context, state) {
+      builder: (_, state) {
         final profile = state.profile;
         return ThemeAstra(
           child: Scaffold(
-            bottomSheet: const BottomTextInput(hintText: 'Write an opinion'),
+            bottomSheet: const BottomTextInput(
+              hintText: 'Write an opinion',
+            ),
             body: CustomScrollView(
               slivers: [
                 // Header
                 SliverAppBar(
-                  floating: true,
                   snap: true,
+                  floating: true,
                   title: ProfileAppBarTitle(profile: profile),
                   actions: [
                     // Share
@@ -81,7 +76,9 @@ class ProfileViewScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         // Avatar
-                        Center(child: AvatarRated.big(profile: profile)),
+                        Center(
+                          child: AvatarRated.big(profile: profile),
+                        ),
 
                         // Description
                         Padding(
@@ -92,43 +89,46 @@ class ProfileViewScreen extends StatelessWidget {
                           ),
                         ),
 
-                        const Padding(padding: kPaddingT),
-
-                        ElevatedButton.icon(
-                          onPressed: () => screenCubit.showGraph(profile.id),
-                          icon: const Icon(TenturaIcons.graph),
-                          label: const Text('Show Connections'),
+                        // Show Graph Button
+                        Padding(
+                          padding: kPaddingT,
+                          child: ElevatedButton.icon(
+                            onPressed: () => screenCubit.showGraph(profile.id),
+                            icon: const Icon(TenturaIcons.graph),
+                            label: const Text('Show Connections'),
+                          ),
                         ),
-                        const Padding(padding: kPaddingSmallT),
 
                         // Show Beacons
-                        ElevatedButton.icon(
-                          onPressed: () => screenCubit.showBeacons(profile.id),
-                          icon: const Icon(Icons.open_in_full),
-                          label: const Text('Show Beacons'),
+                        Padding(
+                          padding: kPaddingSmallT,
+                          child: ElevatedButton.icon(
+                            onPressed: () =>
+                                screenCubit.showBeacons(profile.id),
+                            icon: const Icon(Icons.open_in_full),
+                            label: const Text('Show Beacons'),
+                          ),
                         ),
 
-                        const Padding(padding: kPaddingSmallT),
-
-                        FilledButton.icon(
-                          onPressed:
-                              () =>
-                                  profile.isFriend
-                                      ? profileViewCubit.removeFriend()
-                                      : profileViewCubit.addFriend(),
-                          icon: const Icon(Icons.people),
-                          label:
-                              profile.isFriend
-                                  ? const Text('Add to My Field')
-                                  : const Text('Remove From My Field'),
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                        // Add\Remove Friend
+                        Padding(
+                          padding: kPaddingSmallT,
+                          child: FilledButton.icon(
+                            onPressed: () => profile.isFriend
+                                ? profileViewCubit.removeFriend()
+                                : profileViewCubit.addFriend(),
+                            icon: const Icon(Icons.people),
+                            label: profile.isFriend
+                                ? const Text('Add to My Field')
+                                : const Text('Remove From My Field'),
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              backgroundColor: profile.isFriend
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.error,
                             ),
-                            backgroundColor:
-                                profile.isFriend
-                                    ? theme.colorScheme.primary
-                                    : theme.colorScheme.error,
                           ),
                         ),
 
