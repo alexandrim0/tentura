@@ -1,22 +1,17 @@
-import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
-import 'package:tentura/features/profile_view/ui/bloc/profile_view_state.dart';
+import 'package:tentura/features/profile_view/ui/bloc/profile_view_cubit.dart';
 
 import '_data.dart';
 
-class ProfileViewCubit extends Cubit<ProfileViewState> {
-  ProfileViewCubit() : super(const ProfileViewState(profile: profileAlice));
+class ProfileViewCubitMock extends Cubit<ProfileViewState>
+    implements ProfileViewCubit {
+  ProfileViewCubitMock() : super(const ProfileViewState(profile: profileAlice));
 
+  @override
+  Future<void> fetch() async {}
+
+  @override
   Future<void> addFriend() async {}
 
-  Future<void> fetchBeacons() async {}
-
-  Future<void> fetchMore() async {}
-
-  Future<void> fetchProfile([int limit = 3]) async {}
-
+  @override
   Future<void> removeFriend() async {}
-
-  Future<void> showGraph(String focus) async {}
-
-  Future<void> showBeacons(String id) async {}
 }

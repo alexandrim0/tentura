@@ -1,23 +1,42 @@
 import 'package:tentura/domain/entity/beacon.dart';
+import 'package:tentura/domain/entity/image_entity.dart';
 import 'package:tentura/domain/entity/opinion.dart';
 import 'package:tentura/domain/entity/profile.dart';
 
+const idAlice = 'U0be96c3b9883';
+
 const profileAlice = Profile(
-  id: 'U0be96c3b9883',
+  id: idAlice,
   title: 'Alice has 25 symbols here',
   description:
       'Friend of Bob. Alice is a passionate explorer of ideas, technology, '
       'and creativity. With a curious mind and a love for innovation, she '
       'thrives on solving complex problems and turning concepts into reality.',
-  hasAvatar: true,
+  image: ImageEntity(
+    id: '161f7ecf-ad75-4d8e-bb5d-842dc5794567',
+    authorId: idAlice,
+    height: 560,
+    width: 528,
+    blurHash:
+        r'-{M7y1ay*0of-ofk%La}WBj@Rkay%2j@$yazM|fQbcj[Rkayj[jtxua|RjfQNGj@ofayRjj[t6j[t8fRRkfPoJfQWBjtaxa|t7az',
+  ),
   score: 100,
 );
 
+const idBob = 'U5d33a9be1633';
+
 const profileBob = Profile(
-  id: 'U5d33a9be1633',
+  id: idBob,
   title: 'Bob',
   description: 'Friend of Alice',
-  hasAvatar: true,
+  image: ImageEntity(
+    id: '196d6a86-9f83-4933-a0e3-ed486ce2d869',
+    authorId: idBob,
+    height: 563,
+    width: 527,
+    blurHash:
+        '-UN^PXt8_Nt8bcog_Nxuoft7MxayMxxu9FofR*Rj?bs;D%ayxuWBD%aykCWB%MayNGWBs:WBt7WBsWWBkCWBkCRjIUWBxuWBt7WB',
+  ),
   score: 100,
 );
 

@@ -49,7 +49,7 @@ class SettingsScreen extends StatelessWidget implements AutoRouteWrapper {
             const ThemeSwitchButton(),
 
             // Seed
-            ElevatedButton.icon(
+            OutlinedButton.icon(
               icon: const Icon(Icons.remove_red_eye_outlined),
               label: Text(l10n.showSeed),
               onPressed: () async {
@@ -61,7 +61,7 @@ class SettingsScreen extends StatelessWidget implements AutoRouteWrapper {
             ),
 
             // Intro
-            ElevatedButton.icon(
+            OutlinedButton.icon(
               icon: const Icon(Icons.reset_tv),
               label: Text(l10n.showIntroAgain),
               onPressed: () => cubit.setIntroEnabled(true),
@@ -74,6 +74,7 @@ class SettingsScreen extends StatelessWidget implements AutoRouteWrapper {
               label: Text(l10n.logout),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.error,
+                foregroundColor:  Theme.of(context).colorScheme.onError,
               ),
             ),
           ],

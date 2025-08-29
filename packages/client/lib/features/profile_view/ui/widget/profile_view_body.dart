@@ -34,12 +34,13 @@ class ProfileViewBody extends StatelessWidget {
                 child: ShowMoreText(
                   profile.description,
                   style: textTheme.bodyMedium,
+                  colorClickableText: Theme.of(context).colorScheme.primary,
                 ),
               ),
 
               Padding(
                 padding: kPaddingSmallT,
-                child: ElevatedButton.icon(
+                child: OutlinedButton.icon(
                   onPressed:
                       () => context.read<ScreenCubit>().showGraph(profile.id),
                   icon: const Icon(TenturaIcons.graph),
@@ -50,7 +51,7 @@ class ProfileViewBody extends StatelessWidget {
               // Show Beacons
               Padding(
                 padding: kPaddingSmallT,
-                child: ElevatedButton.icon(
+                child: OutlinedButton.icon(
                   onPressed:
                       () => context.read<ScreenCubit>().showBeacons(profile.id),
                   icon: const Icon(Icons.open_in_full),
