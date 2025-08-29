@@ -11,15 +11,14 @@ import 'package:tentura/ui/widget/share_code_icon_button.dart';
 import 'package:tentura/ui/widget/show_more_text.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
 
-import 'package:tentura_widgetbook/astra/widget/theme_astra.dart';
-
 import 'package:tentura_widgetbook/bloc/_data.dart';
-import 'package:tentura_widgetbook/utils/navigation_bar.dart';
+import 'package:tentura_widgetbook/widget/navigation_bar.dart';
+import 'package:tentura_widgetbook/astra/widget/theme_astra.dart';
 
 @UseCase(
   name: 'My Profile',
   type: ProfileScreen,
-  path: '[astra]/screen/profile.My',
+  path: '[astra]/screen',
 )
 Widget defaultProfileUseCase(BuildContext context) => const ProfileScreen();
 
@@ -34,7 +33,6 @@ class ProfileScreen extends StatelessWidget {
     final screenCubit = context.read<ScreenCubit>();
     return ThemeAstra(
       child: Scaffold(
-        // remove bottomNavigationBar in real app
         bottomNavigationBar: buildNavigationBar(index: 4),
         body: BlocBuilder<ProfileCubit, ProfileState>(
           bloc: profileCubit,
@@ -124,8 +122,8 @@ class ProfileScreen extends StatelessWidget {
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton.icon(
-                                    onPressed:
-                                        () => screenCubit.showGraph(profile.id),
+                                    onPressed: () =>
+                                        screenCubit.showGraph(profile.id),
                                     icon: const Icon(TenturaIcons.graph),
                                     label: const Text('Show Connections'),
                                   ),
@@ -137,9 +135,8 @@ class ProfileScreen extends StatelessWidget {
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton.icon(
-                                    onPressed:
-                                        () =>
-                                            screenCubit.showBeacons(profile.id),
+                                    onPressed: () =>
+                                        screenCubit.showBeacons(profile.id),
                                     icon: const Icon(Icons.open_in_full),
                                     label: const Text('Show Beacons'),
                                   ),

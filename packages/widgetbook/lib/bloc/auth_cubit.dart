@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/features/auth/domain/entity/account_entity.dart';
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 
 import '_data.dart';
@@ -9,7 +10,13 @@ class AuthCubitMock extends Cubit<AuthState> implements AuthCubit {
   AuthCubitMock()
     : super(
         AuthState(
-          accounts: [profileAlice],
+          accounts: [
+            AccountEntity(
+              id: profileAlice.id,
+              title: profileAlice.title,
+              image: profileAlice.image,
+            ),
+          ],
           currentAccountId: profileAlice.id,
           updatedAt: DateTime.timestamp(),
         ),

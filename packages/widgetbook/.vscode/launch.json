@@ -11,7 +11,10 @@
             "toolArgs": [
                 "--dart-define",
                 "IS_IMPORTED=true",
-				"--dart-define-from-file=.env",
+                "--dart-define",
+                "SERVER_NAME=https://dev.tentura.io",
+                "--dart-define",
+                "IMAGE_SERVER=https://static.tentura.io",
             ],
             "args": [
                 "-d", "chrome",
@@ -19,5 +22,5 @@
                 "--web-browser-flag=--disable-web-security",
             ]
         },
-  ],
+    ],
 }
