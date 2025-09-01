@@ -27,6 +27,12 @@ const kPaddingLargeV = EdgeInsets.symmetric(vertical: kSpacingLarge);
 const kPaddingSmallT = EdgeInsets.only(top: kSpacingSmall);
 const kPaddingSmallV = EdgeInsets.symmetric(vertical: kSpacingSmall);
 
+const kPaddingBottomTextInput = EdgeInsets.only(
+  bottom: 80,
+  left: kSpacingMedium,
+  right: kSpacingMedium,
+);
+
 /// 600px in MD guideline means large screen for vertical orientation
 const kWebConstraints = BoxConstraints(minWidth: 600);
 const kWebAspectRatio = 9 / 16;

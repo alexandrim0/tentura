@@ -31,11 +31,10 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
     providers: [
       BlocProvider.value(value: GetIt.I<ScreenCubit>()),
       BlocProvider(
-        create:
-            (_) => BeaconViewCubit(
-              myProfile: GetIt.I<ProfileCubit>().state.profile,
-              id: id,
-            ),
+        create: (_) => BeaconViewCubit(
+          myProfile: GetIt.I<ProfileCubit>().state.profile,
+          id: id,
+        ),
       ),
       BlocProvider(create: (_) => CommentCubit()),
     ],
@@ -68,20 +67,17 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
           // More
           BlocSelector<BeaconViewCubit, BeaconViewState, bool>(
             selector: (state) => state.isBeaconMine,
-            builder:
-                (context, isBeaconMine) =>
-                    isBeaconMine
-                        ? nil
-                        : PopupMenuButton(
-                          itemBuilder:
-                              (_) => <PopupMenuEntry<void>>[
-                                // Complaint
-                                PopupMenuItem(
-                                  onTap: () => screenCubit.showComplaint(id),
-                                  child: Text(l10n.buttonComplaint),
-                                ),
-                              ],
-                        ),
+            builder: (context, isBeaconMine) => isBeaconMine
+                ? nil
+                : PopupMenuButton(
+                    itemBuilder: (_) => <PopupMenuEntry<void>>[
+                      // Complaint
+                      PopupMenuItem(
+                        onTap: () => screenCubit.showComplaint(id),
+                        child: Text(l10n.buttonComplaint),
+                      ),
+                    ],
+                  ),
           ),
         ],
         bottom: PreferredSize(
@@ -99,7 +95,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
         builder: (_, state) {
           final beacon = state.beacon;
           return ListView(
-            padding: kPaddingH + const EdgeInsets.only(bottom: 80),
+            padding: kPaddingBottomTextInput,
             children: [
               // User row (Avatar and Name)
               if (state.isBeaconNotMine)
@@ -117,13 +113,12 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
               // Beacon Control
               Padding(
                 padding: kPaddingSmallV,
-                child:
-                    state.isBeaconMine
-                        ? BeaconMineControl(key: ValueKey(beacon.id))
-                        : BeaconTileControl(
-                          beacon: beacon,
-                          key: ValueKey(beacon.id),
-                        ),
+                child: state.isBeaconMine
+                    ? BeaconMineControl(key: ValueKey(beacon.id))
+                    : BeaconTileControl(
+                        beacon: beacon,
+                        key: ValueKey(beacon.id),
+                      ),
               ),
 
               // Comments Section
