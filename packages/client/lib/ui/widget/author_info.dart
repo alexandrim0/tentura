@@ -25,13 +25,17 @@ class AuthorInfo extends StatelessWidget {
         ),
 
         // User displayName
-        Text(author.title, style: Theme.of(context).textTheme.headlineMedium),
+        Text(
+          author.title,
+          style: Theme.of(context).textTheme.headlineMedium,
+          ),
 
         // An Eye
         Padding(
           padding: kPaddingH,
           child: Icon(
             author.isSeeingMe ? TenturaIcons.eyeOpen : TenturaIcons.eyeClosed,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],

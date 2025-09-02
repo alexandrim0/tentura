@@ -44,16 +44,17 @@ class ChatPeerListTile extends StatelessWidget {
       trailing: BlocSelector<ChatNewsCubit, ChatNewsState, int>(
         bloc: GetIt.I<ChatNewsCubit>(),
         selector: (state) => state.messages[profile.id]?.length ?? 0,
-        builder:
-            (_, newMessagesCount) => Badge.count(
-              count: newMessagesCount,
-              isLabelVisible: newMessagesCount > 0,
-              backgroundColor: colorScheme.primaryContainer,
-              textColor: colorScheme.onPrimaryContainer,
-            ),
+        builder: (_, newMessagesCount) => Badge.count(
+          count: newMessagesCount,
+          isLabelVisible: newMessagesCount > 0,
+          backgroundColor: colorScheme.primaryContainer,
+          textColor: colorScheme.onPrimaryContainer,
+        ),
       ),
 
-      onTap: () => context.read<ScreenCubit>().showChatWith(profile.id),
+      onTap: profile.isSeeingMe
+          ? () => context.read<ScreenCubit>().showChatWith(profile.id)
+          : null,
     );
   }
 }

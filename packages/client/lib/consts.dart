@@ -1,27 +1,14 @@
+import 'package:tentura_root/consts.dart';
+
 export 'package:tentura_root/consts.dart';
 
+// Numbers
 const kMaxLines = 3;
-
 const kCommentsShown = 3;
-
-const kSnackBarDuration = 5;
-
 const kFetchWindowSize = 5;
-
+const kSnackBarDuration = 5;
 const kFetchListOffset = 0.9;
-
-// Images
-const kImageQuality = 95;
 const kImageMaxDimension = 600;
-
-// Assets
-const kAssetAvatarPlaceholder = 'images/placeholder/avatar.jpg';
-const kAssetBeaconPlaceholder = 'images/placeholder/beacon.jpg';
-
-// Settings storage keys
-// TBD: replace with enum
-const kSettingsThemeMode = 'themeMode';
-const kSettingsIsIntroEnabledKey = 'isIntroEnabled';
 
 // Routes
 const kPathBack = '/back';
@@ -31,6 +18,7 @@ const kPathConnect = '/home/connect';
 const kPathFriends = '/home/friends';
 const kPathProfile = '/home/profile';
 const kPathFavorites = '/home/favorites';
+const kPathChat = kPathAppLinkChat;
 const kPathGraph = '/graph';
 const kPathRating = '/rating';
 const kPathSignIn = '/sign/in';
@@ -40,21 +28,25 @@ const kPathComplaint = '/complaint';
 const kPathBeaconNew = '/beacon/new';
 const kPathBeaconView = '/beacon/view';
 const kPathBeaconViewAll = '/beacon/all';
-const kPathProfileChat = '/profile/chat';
 const kPathProfileEdit = '/profile/edit';
 const kPathProfileView = '/profile/view';
 const kPathInvitations = '/invitations';
 
-const kComplaintEmail = String.fromEnvironment(
-  'COMPLAINT_EMAIL',
-  defaultValue: 'complaint@intersubjective.space',
-);
-
-const kOsmUrlTemplate = String.fromEnvironment(
-  'OSM_LINK_BASE',
-  defaultValue: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-);
-
-const kNeedInviteCode = bool.fromEnvironment('NEED_INVITE_CODE');
-
 const kAssetPackage = bool.fromEnvironment('IS_IMPORTED') ? 'tentura' : null;
+
+/// First part of FQDN: `https://app.server.name`
+const kServerName = String.fromEnvironment(
+  'SERVER_NAME',
+  defaultValue: 'http://localhost:2080',
+);
+
+/// First part of FQDN: `https://image.server.name`
+const kImageServer = String.fromEnvironment('IMAGE_SERVER');
+
+const kAvatarPlaceholderUrl =
+    '$kImageServer/$kImagesPath/placeholder/avatar.$kImageExt';
+
+const kBeaconPlaceholderUrl =
+    '$kImageServer/$kImagesPath/placeholder/beacon.$kImageExt';
+
+final zeroAge = DateTime.fromMillisecondsSinceEpoch(0);

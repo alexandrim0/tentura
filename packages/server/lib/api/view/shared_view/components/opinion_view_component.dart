@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use //
-
 import 'package:jaspr/server.dart';
 
 import 'package:tentura_server/domain/entity/opinion_entity.dart';
@@ -18,11 +16,11 @@ class OpinionViewComponent extends StatelessComponent {
       div([AvatarComponent(user: opinion.author)], classes: 'card-avatar'),
       p([
         text(opinion.content),
-      ], styles: const Styles.box(margin: EdgeInsets.only(top: kEdgeInsetsS))),
+      ], styles: const Styles(margin: Spacing.only(top: kEdgeInsetsS))),
       p(
         [text(_formatDate(opinion.createdAt))],
         classes: 'secondary-text',
-        styles: const Styles.box(margin: EdgeInsets.only(top: kEdgeInsetsXS)),
+        styles: const Styles(margin: Spacing.only(top: kEdgeInsetsXS)),
       ),
     ], classes: 'card-container'),
   ];

@@ -1,13 +1,13 @@
 name: tentura_root
 publish_to: none
 
-version: 0.0.0
+version: 0.0.1
 
 environment:
-  sdk: '>=3.8.1 <4.0.0'
+  sdk: '>=3.9.0 <4.0.0'
 
 dependencies:
   latlong2: ^0.9.1
 
 dev_dependencies:
-  very_good_analysis: ^8.0.0
+  very_good_analysis: ^9.0.0

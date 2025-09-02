@@ -6,7 +6,7 @@ import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
-import 'package:tentura/features/auth/data/repository/auth_repository.dart';
+import 'package:tentura/features/auth/domain/use_case/auth_case.dart';
 
 import '../../data/repository/profile_repository.dart';
 import 'profile_state.dart';
@@ -20,11 +20,11 @@ export 'profile_state.dart';
 @lazySingleton
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit({
-    required AuthRepository authRepository,
+    required AuthCase authCase,
     required ProfileRepository profileRepository,
   }) : _profileRepository = profileRepository,
        super(const ProfileState()) {
-    _authChanges = authRepository.currentAccountChanges().listen(
+    _authChanges = authCase.currentAccountChanges().listen(
       _onAuthChanges,
       cancelOnError: false,
     );
@@ -40,6 +40,8 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   late final StreamSubscription<RepositoryEvent<Profile>> _profileChanges;
 
+  //
+  //
   @disposeMethod
   Future<void> dispose() async {
     await _authChanges.cancel();
@@ -47,6 +49,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     return super.close();
   }
 
+  //
+  //
   Future<void> fetch() async {
     if (state.profile.id.isEmpty) return;
     emit(state.copyWith(status: StateStatus.isLoading));
@@ -58,6 +62,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  //
+  //
   Future<void> delete() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
@@ -68,11 +74,15 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  //
+  //
   Future<void> _onAuthChanges(String id) async {
     emit(ProfileState(profile: Profile(id: id)));
     if (id.isNotEmpty) await fetch();
   }
 
+  //
+  //
   void _onProfileChanges(RepositoryEvent<Profile> event) => switch (event) {
     RepositoryEventFetch<Profile>(value: final profile)
         when profile.id == state.profile.id =>

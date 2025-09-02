@@ -18,7 +18,7 @@ class BeaconCase {
   static Future<BeaconCase> createInstance(
     BeaconRepository beaconRepository,
     ImageRepository imageRepository,
-    TasksRepository tasksRepository,
+    TaskRepository tasksRepository,
     MeritrankRepository meritrankRepository,
   ) async => BeaconCase(
     beaconRepository,
@@ -40,8 +40,9 @@ class BeaconCase {
 
   final ImageRepository _imageRepository;
 
-  final TasksRepository _tasksRepository;
+  final TaskRepository _tasksRepository;
 
+  //
   Future<BeaconEntity> create({
     required String userId,
     required String title,
@@ -65,12 +66,26 @@ class BeaconCase {
       }
     }
 
+    String? imageId;
+
+    if (imageBytes != null) {
+      imageId = await _imageRepository.put(
+        authorId: userId,
+        bytes: imageBytes,
+      );
+      await _tasksRepository.schedule(
+        TaskEntity(
+          details: TaskCalculateImageHashDetails(imageId: imageId),
+        ),
+      );
+    }
+
     final beacon = await _beaconRepository.createBeacon(
       authorId: userId,
       title: title,
+      imageId: imageId,
       context: (context?.isEmpty ?? true) ? null : context,
       description: description ?? '',
-      hasPicture: imageBytes != null,
       latitude: coordinates?.lat,
       longitude: coordinates?.long,
       polling: polling == null
@@ -89,26 +104,10 @@ class BeaconCase {
         );
       }
     }
-
-    if (imageBytes != null) {
-      await _imageRepository.putBeaconImage(
-        authorId: userId,
-        beaconId: beacon.id,
-        bytes: imageBytes,
-      );
-      await _tasksRepository.schedule(
-        TaskBeaconImageHash(
-          details: TaskBeaconImageHashDetails(
-            userId: userId,
-            beaconId: beacon.id,
-          ),
-        ),
-      );
-    }
-
     return beacon;
   }
 
+  //
   Future<bool> deleteById({
     required String beaconId,
     required String userId,
@@ -118,10 +117,13 @@ class BeaconCase {
       filterByUserId: userId,
     );
 
-    await _imageRepository.deleteBeaconImage(
-      authorId: beacon.author.id,
-      beaconId: beacon.id,
-    );
+    if (beacon.image != null) {
+      await _imageRepository.delete(
+        authorId: beacon.author.id,
+        imageId: beacon.image!.id,
+      );
+    }
+
     await _beaconRepository.deleteBeaconById(beacon.id);
 
     return true;

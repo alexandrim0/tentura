@@ -30,6 +30,13 @@ class AuthIdIsWrongException extends AuthException {
   String toString() => 'Account ID is wrong!';
 }
 
+class AuthIdNotFoundException extends AuthException {
+  const AuthIdNotFoundException();
+
+  @override
+  String toString() => 'Account ID is wrong!';
+}
+
 class InvitationCodeIsWrongException extends AuthException {
   const InvitationCodeIsWrongException();
 

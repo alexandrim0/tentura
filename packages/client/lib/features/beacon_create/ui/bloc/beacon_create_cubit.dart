@@ -21,7 +21,8 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
     BeaconRepository? beaconRepository,
   }) : _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
        _imageRepository = imageRepository ?? GetIt.I<ImageRepository>(),
-       super(const BeaconCreateState());
+       // ignore: prefer_const_constructors // need non const list
+       super(BeaconCreateState(variants: ['']));
 
   final BeaconRepository _beaconRepository;
 
@@ -86,7 +87,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
     try {
       final now = DateTime.timestamp();
       await _beaconRepository.create(
-        beacon: Beacon(
+        Beacon(
           createdAt: now,
           updatedAt: now,
           context: context,
@@ -95,7 +96,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
           description: state.description,
           startAt: state.startAt,
           endAt: state.endAt,
-          hasPicture: state.image != null,
+          image: state.image,
           polling: state.hasPolling
               ? Polling(
                   createdAt: now,
@@ -108,7 +109,6 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
                 )
               : null,
         ),
-        image: state.image,
       );
       emit(state.copyWith(status: StateIsNavigating.back()));
     } catch (e) {

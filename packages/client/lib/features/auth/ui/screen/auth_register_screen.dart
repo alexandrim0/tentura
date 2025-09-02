@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:tentura/consts.dart';
+import 'package:tentura/env.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/string_input_validator.dart';
@@ -40,6 +40,8 @@ class AuthRegisterScreen extends StatefulWidget implements AutoRouteWrapper {
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen>
     with StringInputValidator {
+  final _env = GetIt.I<Env>();
+
   final _authCubit = GetIt.I<AuthCubit>();
 
   final _codeController = TextEditingController();
@@ -91,7 +93,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
         child: Column(
           children: [
             // Invite Code
-            if (kNeedInviteCode)
+            if (_env.needInviteCode)
               Padding(
                 padding: kPaddingAll,
                 child: TextFormField(

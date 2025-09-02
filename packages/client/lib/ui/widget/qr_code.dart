@@ -7,7 +7,7 @@ import '../utils/screen_size.dart';
 class QrCode extends StatelessWidget {
   const QrCode({
     required this.data,
-    this.backgroundColor = Colors.transparent,
+    this.backgroundColor = Colors.white10,
     super.key,
   });
 

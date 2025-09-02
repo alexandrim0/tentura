@@ -6,8 +6,6 @@ import 'package:tentura/features/dev/ui/widget/colors_drawer.dart';
 @UseCase(
   name: 'Default',
   type: ColorsDrawer,
-  path: '[widget]/colors_drawer',
+  path: '[widget]',
 )
-Widget colorsDrawerUseCase(BuildContext context) {
-  return const ColorsDrawer();
-}
+Widget colorsDrawerUseCase(BuildContext context) => const ColorsDrawer();

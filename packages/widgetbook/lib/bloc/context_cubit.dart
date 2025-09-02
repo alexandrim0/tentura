@@ -7,7 +7,11 @@ class ContextCubitMock extends Cubit<ContextState> implements ContextCubit {
   ContextCubitMock()
     : super(
         const ContextState(
-          contexts: {'InContext', 'OutContext', 'NoneContext'},
+          contexts: {
+            'InContext',
+            'OutContext',
+            'NoneContext',
+          },
         ),
       );
 
@@ -42,7 +46,12 @@ class ContextCubitMock extends Cubit<ContextState> implements ContextCubit {
 
   @override
   String select(String contextName) {
-    emit(ContextState(contexts: state.contexts, selected: contextName));
+    emit(
+      ContextState(
+        contexts: state.contexts,
+        selected: contextName,
+      ),
+    );
     return contextName;
   }
 }

@@ -204,6 +204,43 @@
   "@showOnMap": {
     "context": "BeaconInfo"
   },
+
+  "createNewBeacon": "Создать маяк",
+  "@createNewBeacon": {
+    "context": "BeaconCreateScreen"
+  },
+  "setDisplayPeriod": "Укажите период",
+  "@setDisplayPeriod": {
+    "context": "BeaconCreateScreen"
+  },
+  "beaconTitleRequired": "Название маяка (обязательно)",
+  "@beaconTitleRequired": {
+    "context": "BeaconCreateScreen"
+  },
+  "buttonPublish": "Опубликовать",
+  "@buttonPublish": {
+    "context": "BeaconCreateScreen"
+  },
+  "addLocation": "Добавить место",
+  "@addLocation": {
+    "context": "BeaconCreateScreen"
+  },
+  "attachImage": "Прикрепить изображение",
+  "@attachImage": {
+    "context": "BeaconCreateScreen"
+  },
+  "beaconInfo": "Инфо",
+  "@beaconInfo": {
+    "context": "BeaconCreateScreen"
+  },
+  "beaconImage": "Изображение",
+  "@beaconImage": {
+    "context": "BeaconCreateScreen"
+  },
+  "createBeaconErrorTooShortQuestion": "слишком короткий вопрос",
+  "@createBeaconErrorTooShortQuestion": {
+    "context": "BeaconCreateScreen"
+  },
   "confirmBeaconPublishing": "Вы уверены, что хотите опубликовать этот маяк?",
   "@confirmBeaconPublishing": {
     "context": "BeaconPublishDialog"
@@ -211,30 +248,6 @@
   "confirmBeaconPublishingHint": "После публикации маяка изменения будут невозможны. Вы уверены, что хотите опубликовать этот маяк?",
   "@confirmBeaconPublishingHint": {
     "context": "BeaconPublishDialog"
-  },
-  "createNewBeacon": "Создать маяк",
-  "@createNewBeacon": {
-    "context": "BeaconCreateScreen"
-  },
-  "setDisplayPeriod": "Выберите период отображения",
-  "@setDisplayPeriod": {
-    "context": "DateRangeInput"
-  },
-  "beaconTitleRequired": "Название маяка (обязательно)",
-  "@beaconTitleRequired": {
-    "context": "TitleInput"
-  },
-  "buttonPublish": "Опубликовать",
-  "@buttonPublish": {
-    "context": "PublishButton"
-  },
-  "addLocation": "Добавить место",
-  "@addLocation": {
-    "context": "LocationInput"
-  },
-  "attachImage": "Прикрепить изображение",
-  "@attachImage": {
-    "context": "LocationInput"
   },
 
   

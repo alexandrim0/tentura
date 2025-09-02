@@ -23,7 +23,7 @@ class DeepBackButton extends StatelessWidget {
       if (kIsWeb || router.canNavigateBack) {
         router.back();
       } else {
-        await router.navigateNamed(path);
+        await router.navigatePath(path);
       }
     },
   );
