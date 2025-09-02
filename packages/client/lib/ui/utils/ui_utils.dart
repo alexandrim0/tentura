@@ -12,9 +12,8 @@ const kSpacingSmall = 8.0;
 const kSpacingMedium = 16.0;
 const kSpacingLarge = 24.0;
 
-const kPaddingAllS = EdgeInsets.all(kSpacingSmall);
-
 const kPaddingAll = EdgeInsets.all(kSpacingMedium);
+const kPaddingAllS = EdgeInsets.all(kSpacingSmall);
 const kPaddingAllL = EdgeInsets.all(kSpacingLarge);
 
 const kPaddingH = EdgeInsets.symmetric(horizontal: kSpacingMedium);

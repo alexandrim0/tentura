@@ -30,7 +30,7 @@ class BeaconTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
-        padding: kPaddingAll,
+        padding: kPaddingAllS,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -44,18 +44,15 @@ class BeaconTile extends StatelessWidget {
 
                   // More
                   PopupMenuButton(
-                    itemBuilder: (context) {
-                      return <PopupMenuEntry<void>>[
-                        // Complaint
-                        PopupMenuItem(
-                          onTap: () =>
-                              context.read<ScreenCubit>().showComplaint(
-                                beacon.id,
-                              ),
-                          child: Text(l10n.buttonComplaint),
+                    itemBuilder: (context) => <PopupMenuEntry<void>>[
+                      // Complaint
+                      PopupMenuItem(
+                        onTap: () => context.read<ScreenCubit>().showComplaint(
+                          beacon.id,
                         ),
-                      ];
-                    },
+                        child: Text(l10n.buttonComplaint),
+                      ),
+                    ],
                   ),
                 ],
               ),
