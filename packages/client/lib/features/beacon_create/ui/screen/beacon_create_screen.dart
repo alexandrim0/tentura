@@ -3,7 +3,6 @@ import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 
 import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
@@ -59,7 +58,7 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen>
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       centerTitle: true,
-      leading: const DeepBackButton(),
+      leading: const AutoLeadingButton(),
       title: Text(_l10n.createNewBeacon),
       actions: [
         // Publish Button

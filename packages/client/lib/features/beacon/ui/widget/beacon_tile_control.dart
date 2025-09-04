@@ -27,7 +27,7 @@ class BeaconTileControl extends StatelessWidget {
         icon: const Icon(TenturaIcons.graph),
         onPressed: beacon.myVote < 0
             ? null
-            : () => context.read<ScreenCubit>().showGraph(beacon.id),
+            : () => context.read<ScreenCubit>().showGraphFor(beacon.id),
       ),
 
       // Share

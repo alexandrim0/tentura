@@ -2,7 +2,13 @@ import 'package:nil/nil.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
+import 'package:tentura/ui/utils/ui_utils.dart';
+import 'package:tentura/ui/widget/bottom_text_input.dart';
+import 'package:tentura/ui/widget/deep_back_button.dart';
+import 'package:tentura/ui/widget/linear_pi_active.dart';
+import 'package:tentura/ui/widget/author_info.dart';
 
 import 'package:tentura/features/beacon/ui/widget/beacon_info.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_tile_control.dart';
@@ -10,19 +16,15 @@ import 'package:tentura/features/comment/ui/bloc/comment_cubit.dart';
 import 'package:tentura/features/comment/ui/widget/comment_tile.dart';
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 
-import 'package:tentura/ui/bloc/screen_cubit.dart';
-import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/bottom_text_input.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
-import 'package:tentura/ui/widget/linear_pi_active.dart';
-import 'package:tentura/ui/widget/author_info.dart';
-
 import '../bloc/beacon_view_cubit.dart';
 import '../widget/beacon_mine_control.dart';
 
 @RoutePage()
 class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
-  const BeaconViewScreen({@queryParam this.id = '', super.key});
+  const BeaconViewScreen({
+    @PathParam('id') this.id = '',
+    super.key,
+  });
 
   final String id;
 
@@ -67,7 +69,7 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
           // More
           BlocSelector<BeaconViewCubit, BeaconViewState, bool>(
             selector: (state) => state.isBeaconMine,
-            builder: (context, isBeaconMine) => isBeaconMine
+            builder: (_, isBeaconMine) => isBeaconMine
                 ? nil
                 : PopupMenuButton(
                     itemBuilder: (_) => <PopupMenuEntry<void>>[
@@ -99,7 +101,10 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
             children: [
               // User row (Avatar and Name)
               if (state.isBeaconNotMine)
-                AuthorInfo(author: beacon.author, key: ValueKey(beacon.author)),
+                AuthorInfo(
+                  author: beacon.author,
+                  key: ValueKey(beacon.author),
+                ),
 
               // Beacon Info
               BeaconInfo(
