@@ -41,8 +41,8 @@ class ProfileViewBody extends StatelessWidget {
               Padding(
                 padding: kPaddingSmallT,
                 child: OutlinedButton.icon(
-                  onPressed:
-                      () => context.read<ScreenCubit>().showGraph(profile.id),
+                  onPressed: () =>
+                      context.read<ScreenCubit>().showGraphFor(profile.id),
                   icon: const Icon(TenturaIcons.graph),
                   label: Text(l10n.showConnections),
                 ),
@@ -52,8 +52,8 @@ class ProfileViewBody extends StatelessWidget {
               Padding(
                 padding: kPaddingSmallT,
                 child: OutlinedButton.icon(
-                  onPressed:
-                      () => context.read<ScreenCubit>().showBeacons(profile.id),
+                  onPressed: () =>
+                      context.read<ScreenCubit>().showBeaconsOf(profile.id),
                   icon: const Icon(Icons.open_in_full),
                   label: Text(l10n.showBeacons),
                 ),

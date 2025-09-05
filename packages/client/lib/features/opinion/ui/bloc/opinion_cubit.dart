@@ -11,8 +11,6 @@ export 'package:flutter_bloc/flutter_bloc.dart';
 
 export 'opinion_state.dart';
 
-typedef Ids = ({String profileId, Opinion? opinion});
-
 class OpinionCubit extends Cubit<OpinionState> {
   OpinionCubit({
     required String userId,
@@ -27,7 +25,9 @@ class OpinionCubit extends Cubit<OpinionState> {
            opinions: opinions ?? [],
          ),
        ) {
-    if (opinions?.isEmpty ?? true) fetch();
+    if (opinions?.isEmpty ?? true) {
+      fetch();
+    }
   }
 
   final OpinionRepository _opinionRepository;
@@ -91,17 +91,6 @@ class OpinionCubit extends Cubit<OpinionState> {
       emit(state.copyWith(status: StateStatus.isSuccess));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
-    }
-  }
-
-  static Future<Ids> checkIfIdIsOpinion(String id) async {
-    if (id.startsWith('U')) {
-      return (profileId: id, opinion: null);
-    } else if (id.startsWith('O')) {
-      final result = await GetIt.I<OpinionRepository>().fetchById(id);
-      return (profileId: result.objectId, opinion: result);
-    } else {
-      throw Exception('Wrong id prefix [$id]');
     }
   }
 }

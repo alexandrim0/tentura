@@ -14,7 +14,7 @@ import '../widget/chat_list.dart';
 @RoutePage()
 class ChatScreen extends StatelessWidget implements AutoRouteWrapper {
   const ChatScreen({
-    @pathParam this.id = '',
+    @PathParam('id') this.id = '',
     @QueryParam('receiver_id') this.receiverId = '',
     super.key,
   });

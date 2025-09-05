@@ -15,25 +15,32 @@ import '../dialog/opinion_publish_dialog.dart';
 import '../widget/profile_view_app_bar.dart';
 import '../widget/profile_view_body.dart';
 
+// TBD: refactor, remove FutureBuilder<Ids>, move all state to Cubit
 @RoutePage()
 class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
-  const ProfileViewScreen({@PathParam('id') this.id = '', super.key});
+  const ProfileViewScreen({
+    @PathParam('id') this.id = '',
+    super.key,
+  });
 
   final String id;
 
   @override
   Widget wrappedRoute(BuildContext context) => FutureBuilder<Ids>(
-    future: OpinionCubit.checkIfIdIsOpinion(id),
+    future: ProfileViewCubit.checkIfIdIsOpinion(id),
     builder: (_, state) {
       if (!state.hasData) {
-        return const Center(child: CircularProgressIndicator.adaptive());
+        return const Center(
+          child: CircularProgressIndicator.adaptive(),
+        );
       } else if (state.hasError) {
-        Center(child: Text(state.error.toString()));
+        Center(
+          child: Text(state.error.toString()),
+        );
       }
       return MultiBlocProvider(
         providers: [
           BlocProvider.value(value: GetIt.I<ScreenCubit>()),
-          // BlocProvider(create: (_) => GetIt.I<ScreenCubit>()),
           BlocProvider(
             create: (_) => ProfileViewCubit(id: state.data!.profileId),
           ),
@@ -89,7 +96,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
 
             // Opinions
             SliverPadding(
-              padding: kPaddingH,
+              padding: kPaddingBottomTextInput,
               sliver: OpinionList(key: ValueKey(id)),
             ),
           ],
@@ -100,15 +107,23 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
       bottomSheet: BlocSelector<OpinionCubit, OpinionState, bool>(
         selector: (state) => state.hasMyOpinion,
         bloc: opinionCubit,
-        builder: (_, hasMyOpinion) => hasMyOpinion
-            ? BottomTextInput(hintText: l10n.onlyOneOpinion)
-            : BottomTextInput(
-                hintText: l10n.writeOpinion,
-                onSend: (text) async => opinionCubit.addOpinion(
-                  amount: await OpinionPublishDialog.show(context),
-                  text: text,
-                ),
-              ),
+        builder: (_, hasMyOpinion) {
+          final keyBottomTextInput = Key(
+            'ProfileViewScreen:BottomTextInput:$hasMyOpinion',
+          );
+          return hasMyOpinion
+              ? BottomTextInput(
+                  hintText: l10n.onlyOneOpinion,
+                )
+              : BottomTextInput(
+                  key: keyBottomTextInput,
+                  hintText: l10n.writeOpinion,
+                  onSend: (text) async => opinionCubit.addOpinion(
+                    amount: await OpinionPublishDialog.show(context),
+                    text: text,
+                  ),
+                );
+        },
       ),
     );
   }

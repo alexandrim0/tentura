@@ -31,6 +31,7 @@ class BeaconRepositoryMock implements BeaconRepository {
     DateTime? startAt,
     DateTime? endAt,
     ({String question, List<String> variants})? polling,
+    Set<String>? tags,
     int ticker = 0,
   }) async {
     final now = DateTime.timestamp();
@@ -49,7 +50,11 @@ class BeaconRepositoryMock implements BeaconRepository {
           : null,
       image: imageId == null
           ? null
-          : ImageEntity(id: imageId, authorId: authorId),
+          : ImageEntity(
+              id: imageId,
+              authorId: authorId,
+            ),
+      tags: tags,
     );
     return storageById[beacon.id] = beacon;
   }

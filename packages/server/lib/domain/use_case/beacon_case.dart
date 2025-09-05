@@ -48,6 +48,7 @@ class BeaconCase {
     required String title,
     String? description,
     String? context,
+    String? tags,
     DateTime? endAt,
     DateTime? startAt,
     Coordinates? coordinates,
@@ -91,6 +92,7 @@ class BeaconCase {
       polling: polling == null
           ? null
           : (question: polling.question!, variants: polling.variants!),
+      tags: (tags?.isEmpty ?? true) ? null : tags?.split(',').toSet(),
       startAt: startAt,
       endAt: endAt,
     );

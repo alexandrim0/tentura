@@ -1140,7 +1140,7 @@ enum invitation_update_column {
 
 """mutation root"""
 type mutation_root {
-  beaconCreate(context: String, coordinates: Coordinates = {}, description: String, endAt: String, image: Upload = {}, polling: PollingInput, startAt: String, title: String!): Beacon!
+  beaconCreate(context: String, coordinates: Coordinates = {}, description: String, endAt: String, image: Upload = {}, polling: PollingInput, startAt: String, tags: String, title: String!): Beacon!
   beaconDeleteById(id: String!): Boolean!
 
   """

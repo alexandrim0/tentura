@@ -32,6 +32,7 @@ class BeaconRepository {
     DateTime? startAt,
     DateTime? endAt,
     ({String question, List<String> variants})? polling,
+    Set<String>? tags,
     int ticker = 0,
   }) async {
     final pollingModel = polling == null
@@ -66,6 +67,7 @@ class BeaconRepository {
         startAt: Value(startAt == null ? null : PgDateTime(startAt)),
         endAt: Value(endAt == null ? null : PgDateTime(endAt)),
         pollingId: Value(pollingModel?.id),
+        tags: Value.absentIfNull(tags?.join(',')),
       ),
     );
 
@@ -104,7 +106,10 @@ class BeaconRepository {
         .withReferences((p) => p(userId: true))
         .getSingle();
 
-    return beaconModelToEntity(beacon, author: await author.userId.getSingle());
+    return beaconModelToEntity(
+      beacon,
+      author: await author.userId.getSingle(),
+    );
   }
 
   Future<void> deleteBeaconById(String id) =>

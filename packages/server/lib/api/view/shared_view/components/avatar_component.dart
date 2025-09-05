@@ -3,16 +3,21 @@ import 'package:jaspr/server.dart';
 import 'package:tentura_server/domain/entity/user_entity.dart';
 
 class AvatarComponent extends StatelessComponent {
-  const AvatarComponent({required this.user});
+  const AvatarComponent({
+    required this.user,
+  });
 
   final UserEntity user;
 
   @override
-  Iterable<Component> build(BuildContext context) => [
+  Component build(BuildContext context) => Component.fragment([
     img(
       src: user.imageUrl,
       classes: 'card-avatar__image',
-      styles: const Styles(width: Unit.pixels(80), height: Unit.pixels(80)),
+      styles: const Styles(
+        width: Unit.pixels(80),
+        height: Unit.pixels(80),
+      ),
     ),
     p(
       [text(user.title)],
@@ -22,5 +27,5 @@ class AvatarComponent extends StatelessComponent {
         fontWeight: FontWeight.w600,
       ),
     ),
-  ];
+  ]);
 }

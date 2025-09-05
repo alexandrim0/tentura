@@ -13,7 +13,10 @@ import '../bloc/auth_cubit.dart';
 
 @RoutePage()
 class AuthRegisterScreen extends StatefulWidget implements AutoRouteWrapper {
-  const AuthRegisterScreen({@queryParam this.id, super.key});
+  const AuthRegisterScreen({
+    @queryParam this.id,
+    super.key,
+  });
 
   final String? id;
 
@@ -56,7 +59,9 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
   void initState() {
     super.initState();
     if (widget.id != null && widget.id!.isNotEmpty) {
-      if (kDebugMode) print('Query param Id: ${widget.id}');
+      if (kDebugMode) {
+        print('Query param Id: ${widget.id}');
+      }
       _codeController.text = widget.id!;
     } else {
       _authCubit.getCodeFromClipboard().then((code) {

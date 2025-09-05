@@ -43,8 +43,8 @@ const profileBob = Profile(
 final beaconA = Beacon(
   createdAt: _now,
   updatedAt: _now,
-  id: 'A',
-  title: 'Beacon A',
+  id: 'B0be96c3b9883',
+  title: 'Beacon without description',
   author: profileAlice,
   myVote: 2,
   score: 50,
@@ -53,8 +53,11 @@ final beaconA = Beacon(
 final beaconB = Beacon(
   createdAt: _now,
   updatedAt: _now,
-  id: 'B',
-  title: 'Beacon B',
+  id: 'B5d33a9be1633',
+  title: 'Beacon with description',
+  description:
+      'There should be some text here.\n'
+      'And there one more string here.',
   author: profileAlice,
 );
 

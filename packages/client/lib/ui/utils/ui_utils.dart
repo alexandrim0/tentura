@@ -12,9 +12,8 @@ const kSpacingSmall = 8.0;
 const kSpacingMedium = 16.0;
 const kSpacingLarge = 24.0;
 
-const kPaddingAllS = EdgeInsets.all(kSpacingSmall);
-
 const kPaddingAll = EdgeInsets.all(kSpacingMedium);
+const kPaddingAllS = EdgeInsets.all(kSpacingSmall);
 const kPaddingAllL = EdgeInsets.all(kSpacingLarge);
 
 const kPaddingH = EdgeInsets.symmetric(horizontal: kSpacingMedium);
@@ -26,6 +25,12 @@ const kPaddingLargeV = EdgeInsets.symmetric(vertical: kSpacingLarge);
 
 const kPaddingSmallT = EdgeInsets.only(top: kSpacingSmall);
 const kPaddingSmallV = EdgeInsets.symmetric(vertical: kSpacingSmall);
+
+const kPaddingBottomTextInput = EdgeInsets.only(
+  bottom: 80,
+  left: kSpacingMedium,
+  right: kSpacingMedium,
+);
 
 /// 600px in MD guideline means large screen for vertical orientation
 const kWebConstraints = BoxConstraints(minWidth: 600);
