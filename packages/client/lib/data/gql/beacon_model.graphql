@@ -16,6 +16,7 @@ fragment BeaconModel on beacon {
   end_at
   long
   lat
+  tags
   image {
     ...ImageModel
   }

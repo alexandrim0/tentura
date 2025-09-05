@@ -28,16 +28,26 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
 
   final ImageRepository _imageRepository;
 
+  ///
+  ///
   void setTitle(String value) => emit(state.copyWith(title: value));
 
+  ///
+  ///
   void setDescription(String value) => emit(state.copyWith(description: value));
 
+  ///
+  ///
   void setDateRange({DateTime? startAt, DateTime? endAt}) =>
       emit(state.copyWith(startAt: startAt, endAt: endAt));
 
+  ///
+  ///
   void setLocation(Coordinates? value) =>
       emit(state.copyWith(coordinates: value));
 
+  ///
+  ///
   Future<void> pickImage() async {
     try {
       final image = await _imageRepository.pickImage();
@@ -49,17 +59,39 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
     }
   }
 
+  ///
+  ///
   void clearImage() => emit(state.copyWith(image: null));
 
+  ///
+  ///
   void setQuestion(String value) => emit(state.copyWith(question: value));
 
+  ///
+  ///
   void addVariant() => emit(state.copyWith(variants: [...state.variants, '']));
 
+  ///
+  ///
   void removeVariant(int index) =>
       emit(state.copyWith(variants: [...state.variants]..removeAt(index)));
 
+  ///
+  ///
   void setVariant(int index, String value) => state.variants[index] = value;
 
+  ///
+  ///
+  void addTag(String value) =>
+      emit(state.copyWith(tags: {...state.tags, value}));
+
+  ///
+  ///
+  void removeTag(String value) =>
+      emit(state.copyWith(tags: {...state.tags}..remove(value)));
+
+  ///
+  ///
   Future<void> publish({required String context}) async {
     state.variants.removeWhere((e) => e.isEmpty);
     if (state.hasPolling) {
@@ -91,6 +123,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
           createdAt: now,
           updatedAt: now,
           context: context,
+          tags: state.tags,
           title: state.title,
           coordinates: state.coordinates,
           description: state.description,
@@ -110,7 +143,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
               : null,
         ),
       );
-      emit(state.copyWith(status: StateIsNavigating.back()));
+      emit(state.copyWith(status: StateIsNavigating.back));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }

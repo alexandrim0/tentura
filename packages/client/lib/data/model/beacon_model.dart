@@ -30,6 +30,7 @@ extension type const BeaconModel(GBeaconModel i) implements GBeaconModel {
       score: double.tryParse(i.scores?.first.dst_score?.value ?? '') ?? 0,
       polling: (i.polling as PollingModel?)?.toEntity(author: author),
       image: (i.image as ImageModel?)?.asEntity ?? image?.asEntity,
+      tags: i.tags.split(',').toSet(),
       startAt: i.start_at,
       endAt: i.end_at,
     );
