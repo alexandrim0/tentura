@@ -6,12 +6,14 @@ import '../styles/shared_view_styles.dart';
 import 'avatar_component.dart';
 
 class BeaconViewComponent extends StatelessComponent {
-  const BeaconViewComponent({required this.beacon});
+  const BeaconViewComponent({
+    required this.beacon,
+  });
 
   final BeaconEntity beacon;
 
   @override
-  Iterable<Component> build(BuildContext context) => [
+  Component build(BuildContext context) => Component.fragment([
     img(
       src: beacon.imageUrl,
       styles: const Styles(width: Unit.percent(100)),
@@ -24,13 +26,18 @@ class BeaconViewComponent extends StatelessComponent {
           margin: Spacing.only(top: Unit.pixels(-68)),
         ),
       ),
-      h1([
-        text(beacon.title),
-      ], styles: const Styles(margin: Spacing.only(top: kEdgeInsetsMS))),
+      h1(
+        [text(beacon.title)],
+        styles: const Styles(
+          margin: Spacing.only(top: kEdgeInsetsMS),
+        ),
+      ),
       if (beacon.description.isNotEmpty)
         p(
           [text(beacon.description)],
-          styles: const Styles(margin: Spacing.only(top: kEdgeInsetsMS)),
+          styles: const Styles(
+            margin: Spacing.only(top: kEdgeInsetsMS),
+          ),
         ),
       if (beacon.coordinates != null)
         p(
@@ -56,5 +63,5 @@ class BeaconViewComponent extends StatelessComponent {
           ),
         ),
     ], classes: 'card-container'),
-  ];
+  ]);
 }

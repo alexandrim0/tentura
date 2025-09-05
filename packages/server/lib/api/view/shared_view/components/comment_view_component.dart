@@ -5,12 +5,14 @@ import 'package:tentura_server/domain/entity/comment_entity.dart';
 import '../styles/shared_view_styles.dart';
 
 class CommentViewComponent extends StatelessComponent {
-  const CommentViewComponent({required this.comment});
+  const CommentViewComponent({
+    required this.comment,
+  });
 
   final CommentEntity comment;
 
   @override
-  Iterable<Component> build(BuildContext context) => [
+  Component build(BuildContext context) => Component.fragment([
     hr(
       styles: const Styles(
         border: Border.only(
@@ -66,5 +68,5 @@ class CommentViewComponent extends StatelessComponent {
         color: Color.variable('--comment-bg'),
       ),
     ),
-  ];
+  ]);
 }

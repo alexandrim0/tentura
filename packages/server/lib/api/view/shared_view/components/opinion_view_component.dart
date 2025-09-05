@@ -6,14 +6,19 @@ import '../styles/shared_view_styles.dart';
 import 'avatar_component.dart';
 
 class OpinionViewComponent extends StatelessComponent {
-  const OpinionViewComponent({required this.opinion});
+  const OpinionViewComponent({
+    required this.opinion,
+  });
 
   final OpinionEntity opinion;
 
   @override
-  Iterable<Component> build(BuildContext context) => [
+  Component build(BuildContext context) => Component.fragment([
     div([
-      div([AvatarComponent(user: opinion.author)], classes: 'card-avatar'),
+      div(
+        [AvatarComponent(user: opinion.author)],
+        classes: 'card-avatar',
+      ),
       p([
         text(opinion.content),
       ], styles: const Styles(margin: Spacing.only(top: kEdgeInsetsS))),
@@ -23,11 +28,10 @@ class OpinionViewComponent extends StatelessComponent {
         styles: const Styles(margin: Spacing.only(top: kEdgeInsetsXS)),
       ),
     ], classes: 'card-container'),
-  ];
+  ]);
 
-  static String _formatDate(DateTime dateTime) {
-    return '${dateTime.year}-${_pad(dateTime.month)}-${_pad(dateTime.day)}';
-  }
+  static String _formatDate(DateTime dateTime) =>
+      '${dateTime.year}-${_pad(dateTime.month)}-${_pad(dateTime.day)}';
 
   static String _pad(int number) => number.toString().padLeft(2, '0');
 }

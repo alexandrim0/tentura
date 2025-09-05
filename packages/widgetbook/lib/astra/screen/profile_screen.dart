@@ -123,7 +123,7 @@ class ProfileScreen extends StatelessWidget {
                                   width: double.infinity,
                                   child: ElevatedButton.icon(
                                     onPressed: () =>
-                                        screenCubit.showGraph(profile.id),
+                                        screenCubit.showGraphFor(profile.id),
                                     icon: const Icon(TenturaIcons.graph),
                                     label: const Text('Show Connections'),
                                   ),
@@ -136,7 +136,7 @@ class ProfileScreen extends StatelessWidget {
                                   width: double.infinity,
                                   child: ElevatedButton.icon(
                                     onPressed: () =>
-                                        screenCubit.showBeacons(profile.id),
+                                        screenCubit.showBeaconsOf(profile.id),
                                     icon: const Icon(Icons.open_in_full),
                                     label: const Text('Show Beacons'),
                                   ),
