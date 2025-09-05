@@ -29,6 +29,7 @@ abstract class BeaconEntity with _$BeaconEntity {
     DateTime? startAt,
     DateTime? endAt,
     String? context,
+    Set<String>? tags,
   }) = _BeaconEntity;
 
   const BeaconEntity._();

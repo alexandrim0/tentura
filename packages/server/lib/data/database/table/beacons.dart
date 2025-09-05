@@ -39,6 +39,8 @@ class Beacons extends Table
 
   late final pollingId = text().nullable().references(Pollings, #id)();
 
+  late final tags = text().withDefault(const Constant(''))();
+
   @override
   Set<Column<Object>> get primaryKey => {id};
 

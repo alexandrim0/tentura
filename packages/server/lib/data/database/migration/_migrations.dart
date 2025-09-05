@@ -22,6 +22,6 @@ Future<void> migrateDbSchema(Connection connection) =>
         m0005,
         m0006,
         m0007,
-        // m0008,
+        m0008,
       ]),
     );

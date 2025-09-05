@@ -56,9 +56,10 @@ class TenturaDb extends _$TenturaDb {
   TenturaDb(Env env)
     : super(
         PgDatabase.opened(
-          Pool<dynamic>.withEndpoints([
-            env.pgEndpoint,
-          ], settings: env.pgPoolSettings),
+          Pool<dynamic>.withEndpoints(
+            [env.pgEndpoint],
+            settings: env.pgPoolSettings,
+          ),
           enableMigrations: false,
           logStatements: env.isDebugModeOn,
         ),
