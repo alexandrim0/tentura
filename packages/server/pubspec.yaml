@@ -44,10 +44,10 @@ dependencies:
 dev_dependencies:
   test: ^1.26.3
   freezed: ^3.1.0
-  drift_dev: ^2.28.0
+  drift_dev: ^2.28.2
   build_runner: ^2.5.4
   jaspr_builder: ^0.21.0-dev.1
-  json_serializable: ^6.9.5
+  json_serializable: ^6.11.1
   very_good_analysis: ^9.0.0
   injectable_generator: ^2.7.0
 

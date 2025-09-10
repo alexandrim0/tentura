@@ -124,7 +124,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
               ),
             )
           : Padding(
-              padding: kPaddingH,
+              padding: kPaddingSmallH,
               child: ListView.builder(
                 key: ValueKey(state.beacons),
                 controller: _scrollController,

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/ui/l10n/l10n.dart';
-
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
+import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/avatar_rated.dart';
 import 'package:tentura/ui/widget/show_more_text.dart';
@@ -17,7 +16,7 @@ class ProfileViewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
     return BlocSelector<ProfileViewCubit, ProfileViewState, Profile>(
       selector: (state) => state.profile,
       builder: (context, profile) {
@@ -26,15 +25,17 @@ class ProfileViewBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Avatar
-              Center(child: AvatarRated.big(profile: profile)),
+              Center(
+                child: AvatarRated.big(profile: profile),
+              ),
 
               // Description
               Padding(
                 padding: kPaddingT,
                 child: ShowMoreText(
                   profile.description,
-                  style: textTheme.bodyMedium,
-                  colorClickableText: Theme.of(context).colorScheme.primary,
+                  style: theme.textTheme.bodyMedium,
+                  colorClickableText: theme.colorScheme.primary,
                 ),
               ),
 
@@ -74,7 +75,7 @@ class ProfileViewBody extends StatelessWidget {
                 padding: kPaddingV,
                 child: Text(
                   l10n.communityFeedback,
-                  style: textTheme.headlineMedium,
+                  style: theme.textTheme.headlineMedium,
                 ),
               ),
             ],

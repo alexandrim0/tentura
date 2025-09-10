@@ -26,10 +26,9 @@ class MyFieldScreen extends StatelessWidget implements AutoRouteWrapper {
             providers: [
               BlocProvider.value(value: contextCubit),
               BlocProvider(
-                create:
-                    (_) => MyFieldCubit(
-                      initialContext: contextCubit.state.selected,
-                    ),
+                create: (_) => MyFieldCubit(
+                  initialContext: contextCubit.state.selected,
+                ),
               ),
             ],
             child: MultiBlocListener(
@@ -37,9 +36,8 @@ class MyFieldScreen extends StatelessWidget implements AutoRouteWrapper {
                 BlocListener<ContextCubit, ContextState>(
                   bloc: contextCubit,
                   listenWhen: (p, c) => p.selected != c.selected,
-                  listener:
-                      (context, state) =>
-                          context.read<MyFieldCubit>().fetch(state.selected),
+                  listener: (context, state) =>
+                      context.read<MyFieldCubit>().fetch(state.selected),
                 ),
                 const BlocListener<MyFieldCubit, MyFieldState>(
                   listener: commonScreenBlocListener,
@@ -55,29 +53,31 @@ class MyFieldScreen extends StatelessWidget implements AutoRouteWrapper {
   Widget build(BuildContext context) {
     final myFieldCubit = context.read<MyFieldCubit>();
     return SafeArea(
-      minimum: kPaddingAll,
+      minimum: kPaddingSmallH,
       child: Column(
         children: [
           // Context selector
-          const ContextDropDown(key: Key('MyFieldContextSelector')),
+          const ContextDropDown(
+            key: Key('MyFieldContextSelector'),
+          ),
 
           // Beacons list
           Expanded(
             child: BlocBuilder<MyFieldCubit, MyFieldState>(
               bloc: myFieldCubit,
               buildWhen: (_, c) => c.isSuccess || c.isLoading,
-              builder: (_, state) {
-                return state.isLoading
-                    ? const Center(child: CircularProgressIndicator.adaptive())
-                    : RefreshIndicator.adaptive(
+              builder: (_, state) => state.isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    )
+                  : RefreshIndicator.adaptive(
                       onRefresh: myFieldCubit.fetch,
-                      child: ListView.separated(
+                      child: ListView.builder(
                         itemCount: state.beacons.length,
-                        separatorBuilder: separatorBuilder,
                         itemBuilder: (_, i) {
                           final beacon = state.beacons[i];
                           return Padding(
-                            padding: kPaddingV,
+                            padding: kPaddingSmallV,
                             child: BeaconTile(
                               key: ValueKey(beacon),
                               beacon: beacon,
@@ -86,8 +86,7 @@ class MyFieldScreen extends StatelessWidget implements AutoRouteWrapper {
                           );
                         },
                       ),
-                    );
-              },
+                    ),
             ),
           ),
         ],

@@ -185,11 +185,14 @@ class ProfileScreen extends StatelessWidget {
 
                   // Comments List
                   SliverList.list(
-                    children: [
-                      OpinionTile(opinion: commentsOnAlice[0]),
-                      OpinionTile(opinion: commentsOnAlice[1]),
-                      OpinionTile(opinion: commentsOnAlice[2]),
-                    ],
+                    children: commentsOnAlice
+                        .map(
+                          (e) => OpinionTile(
+                            key: ValueKey(e),
+                            opinion: e,
+                          ),
+                        )
+                        .toList(growable: false),
                   ),
                 ],
               ),

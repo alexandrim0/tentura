@@ -44,6 +44,7 @@ class _BeaconAddTagDialogState extends State<BeaconAddTagDialog> {
       actions: [
         // Yes
         TextButton(
+          // TBD: validate and normalize tag
           onPressed: () => Navigator.of(context).pop(_tagController.text),
           child: Text(l10n.buttonYes),
         ),
