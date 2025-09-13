@@ -7,8 +7,6 @@ import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 
-import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
-
 import '../../domain/enum.dart';
 import '../bloc/beacon_cubit.dart';
 import '../widget/beacon_tile.dart';
@@ -16,21 +14,21 @@ import '../widget/beacon_tile.dart';
 @RoutePage()
 class BeaconScreen extends StatefulWidget implements AutoRouteWrapper {
   const BeaconScreen({
-    @queryParam this.id = '',
+    @PathParam('id') this.id = '',
     super.key,
   });
 
+  /// Profile Id of user which beacons to show
   final String id;
 
   @override
   Widget wrappedRoute(_) => MultiBlocProvider(
     providers: [
-      BlocProvider(create: (_) => ScreenCubit()),
       BlocProvider(
-        create: (_) => BeaconCubit(
-          profileId: id,
-          isMine: GetIt.I<AuthCubit>().checkIfIsMe(id),
-        ),
+        create: (_) => ScreenCubit(),
+      ),
+      BlocProvider(
+        create: (_) => BeaconCubit(profileId: id),
       ),
     ],
     child: MultiBlocListener(
@@ -53,7 +51,7 @@ class BeaconScreen extends StatefulWidget implements AutoRouteWrapper {
 class _BeaconScreenState extends State<BeaconScreen> {
   final _scrollController = ScrollController();
 
-  late final _cubit = context.read<BeaconCubit>();
+  late final _beaconCubit = context.read<BeaconCubit>();
 
   late final _l10n = L10n.of(context)!;
 
@@ -64,10 +62,10 @@ class _BeaconScreenState extends State<BeaconScreen> {
       if (_scrollController.hasClients &&
           _scrollController.offset >
               _scrollController.position.maxScrollExtent * kFetchListOffset) {
-        _cubit.fetch();
+        _beaconCubit.fetch();
       }
     });
-    _cubit.fetch();
+    _beaconCubit.fetch();
   }
 
   @override
@@ -97,7 +95,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
                   child: Text(_l10n.beaconsFilterDisabled),
                 ),
               ],
-              onChanged: _cubit.toggleFilter,
+              onChanged: _beaconCubit.setFilter,
               value: filter,
               dropdownColor: Theme.of(context).colorScheme.surfaceContainer,
             ),
@@ -109,12 +107,12 @@ class _BeaconScreenState extends State<BeaconScreen> {
         child: BlocSelector<BeaconCubit, BeaconState, bool>(
           selector: (state) => state.isLoading,
           builder: LinearPiActive.builder,
-          bloc: _cubit,
+          bloc: _beaconCubit,
         ),
       ),
     ),
     body: BlocBuilder<BeaconCubit, BeaconState>(
-      bloc: _cubit,
+      bloc: _beaconCubit,
       buildWhen: (_, c) => c.isSuccess,
       builder: (context, state) => state.beacons.isEmpty
           ? Center(

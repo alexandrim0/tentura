@@ -61,20 +61,35 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
 
   ///
   ///
-  void clearImage() => emit(state.copyWith(image: null));
+  void clearImage() => emit(
+    state.copyWith(
+      image: null,
+    ),
+  );
 
   ///
   ///
-  void setQuestion(String value) => emit(state.copyWith(question: value));
+  void setQuestion(String value) => emit(
+    state.copyWith(
+      question: value,
+    ),
+  );
 
   ///
   ///
-  void addVariant() => emit(state.copyWith(variants: [...state.variants, '']));
+  void addVariant() => emit(
+    state.copyWith(
+      variants: [...state.variants, ''],
+    ),
+  );
 
   ///
   ///
-  void removeVariant(int index) =>
-      emit(state.copyWith(variants: [...state.variants]..removeAt(index)));
+  void removeVariant(int index) => emit(
+    state.copyWith(
+      variants: [...state.variants]..removeAt(index),
+    ),
+  );
 
   ///
   ///
@@ -96,8 +111,9 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
   ///
   ///
   Future<void> publish({required String context}) async {
-    state.variants.removeWhere((e) => e.isEmpty);
-    if (state.hasPolling) {
+    final variants = state.variants.where((e) => e.isNotEmpty).toList();
+    final hasPolling = state.question.isNotEmpty && variants.isNotEmpty;
+    if (hasPolling) {
       if (state.question.length < kQuestionMinLength) {
         emit(
           state.copyWith(
@@ -107,7 +123,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
         );
         return;
       }
-      if (state.variants.length < 2) {
+      if (variants.length < 2) {
         emit(
           state.copyWith(
             // TBD: l10n
@@ -133,14 +149,14 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
           startAt: state.startAt,
           endAt: state.endAt,
           image: state.image,
-          polling: state.hasPolling
+          polling: hasPolling
               ? Polling(
                   createdAt: now,
                   updatedAt: now,
                   question: state.question,
                   variants: {
-                    for (var i = 0; i < state.variants.length; i++)
-                      i.toString(): state.variants[i],
+                    for (var i = 0; i < variants.length; i++)
+                      i.toString(): variants[i],
                   },
                 )
               : null,

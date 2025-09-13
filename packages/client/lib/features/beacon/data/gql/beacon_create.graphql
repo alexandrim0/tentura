@@ -3,7 +3,7 @@ mutation BeaconCreate(
   $context: String = "",
   $description: String = "",
   $coordinates: Coordinates = {},
-  $polling: PollingInput = {},
+  $polling: PollingInput,
   $startAt: String = "",
   $endAt: String = "",
   $image: Upload = {},
