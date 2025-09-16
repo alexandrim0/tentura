@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 
 class InvitationRemoveDialog extends StatelessWidget {
-  static Future<bool?> show(BuildContext context) => showDialog(
+  static Future<bool?> show(BuildContext context) => showAdaptiveDialog(
     context: context,
     builder: (_) => const InvitationRemoveDialog(),
   );

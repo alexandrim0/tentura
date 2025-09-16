@@ -27,6 +27,7 @@ abstract class Beacon with _$Beacon implements Likable, Scorable {
     @Default(0) double score,
     @Default(0) int myVote,
     @Default(Profile()) Profile author,
+    @Default({}) Set<String> tags,
     Coordinates? coordinates,
     ImageEntity? image,
     Polling? polling,

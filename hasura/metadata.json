@@ -1,5 +1,5 @@
 {
-  "resource_version": 15,
+  "resource_version": 40,
   "metadata": {
     "version": 3,
     "sources": [
@@ -120,6 +120,7 @@
                     "long",
                     "polling_id",
                     "start_at",
+                    "tags",
                     "title",
                     "updated_at",
                     "user_id"

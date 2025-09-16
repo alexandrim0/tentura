@@ -9,7 +9,7 @@ class ShowSeedDialog extends StatelessWidget {
   static Future<void> show(
     BuildContext context, {
     required String seed,
-  }) => showDialog(
+  }) => showAdaptiveDialog(
     context: context,
     builder: (_) => ShowSeedDialog(seed: seed),
   );

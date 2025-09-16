@@ -6,6 +6,8 @@ import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/author_info.dart';
 
+import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
+
 import 'beacon_info.dart';
 import 'beacon_mine_control.dart';
 import 'beacon_tile_control.dart';
@@ -14,6 +16,7 @@ class BeaconTile extends StatelessWidget {
   const BeaconTile({
     required this.beacon,
     required this.isMine,
+    this.onClickTag,
     super.key,
   });
 
@@ -21,12 +24,15 @@ class BeaconTile extends StatelessWidget {
 
   final Beacon beacon;
 
+  final TagClickCallback? onClickTag;
+
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context)!;
+    final theme = Theme.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
+        color: theme.colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
@@ -34,6 +40,32 @@ class BeaconTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Context
+            if (beacon.context.isNotEmpty)
+              Padding(
+                padding: kPaddingAllS,
+                child: Row(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(right: 4),
+                      child: Icon(
+                        Icons.group_outlined,
+                        size: 16,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => GetIt.I<ContextCubit>().add(beacon.context),
+                      child: Text(
+                        beacon.context,
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
             // User row (Avatar and Name)
             if (!isMine)
               Row(
@@ -60,18 +92,17 @@ class BeaconTile extends StatelessWidget {
             // Beacon Info
             BeaconInfo(
               beacon: beacon,
-              isShowBeaconEnabled: true,
               isTitleLarge: true,
+              isShowBeaconEnabled: true,
+              onClickTag: onClickTag,
             ),
 
             // Beacon Control
             Padding(
+              key: ValueKey(beacon.id),
               padding: kPaddingSmallV,
               child: isMine
-                  ? BeaconMineControl(
-                      key: ValueKey(beacon.id),
-                      beacon: beacon,
-                    )
+                  ? BeaconMineControl(beacon: beacon)
                   : BeaconTileControl(beacon: beacon),
             ),
           ],

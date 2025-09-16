@@ -3,10 +3,11 @@ mutation BeaconCreate(
   $context: String = "",
   $description: String = "",
   $coordinates: Coordinates = {},
-  $polling: PollingInput = {},
+  $polling: PollingInput,
   $startAt: String = "",
   $endAt: String = "",
-  $image: Upload = {}
+  $image: Upload = {},
+  $tags: String
 ) {
   beaconCreate(
     title: $title,
@@ -16,7 +17,8 @@ mutation BeaconCreate(
     polling: $polling,
     startAt: $startAt,
     endAt: $endAt,
-    image: $image
+    image: $image,
+    tags: $tags
   ) {
     id
   }

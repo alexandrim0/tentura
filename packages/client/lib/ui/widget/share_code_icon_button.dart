@@ -11,14 +11,20 @@ class ShareCodeIconButton extends StatelessWidget {
     super.key,
   });
 
-  ShareCodeIconButton.id(String id, {Key? key})
-    : this(
-        key: key,
-        header: id,
-        link: Uri.parse(
-          kServerName,
-        ).replace(queryParameters: {'id': id}, path: kPathAppLinkView),
-      );
+  ShareCodeIconButton.id(
+    String id, {
+    Key? key,
+  }) : this(
+         key: key,
+         header: id,
+         link:
+             Uri.parse(
+               kServerName,
+             ).replace(
+               queryParameters: {'id': id},
+               path: kPathAppLinkView,
+             ),
+       );
 
   final String header;
   final Uri link;
@@ -26,6 +32,10 @@ class ShareCodeIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => IconButton(
     icon: const Icon(Icons.qr_code),
-    onPressed: () => ShareCodeDialog.show(context, link: link, header: header),
+    onPressed: () => ShareCodeDialog.show(
+      context,
+      link: link,
+      header: header,
+    ),
   );
 }

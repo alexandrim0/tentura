@@ -19,13 +19,15 @@ class FavoritesScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final l10n = L10n.of(context)!;
     return SafeArea(
-      minimum: kPaddingH,
+      minimum: kPaddingSmallH,
       child: BlocBuilder<FavoritesCubit, FavoritesState>(
         bloc: favoritesCubit,
         buildWhen: (_, c) => c.isSuccess,
         builder: (_, state) => state.isLoading
             // Loading state
-            ? const Center(child: CircularProgressIndicator.adaptive())
+            ? const Center(
+                child: CircularProgressIndicator.adaptive(),
+              )
             : RefreshIndicator.adaptive(
                 onRefresh: favoritesCubit.fetch,
                 child: state.beacons.isEmpty
@@ -38,14 +40,13 @@ class FavoritesScreen extends StatelessWidget {
                         ),
                       )
                     // Beacons list
-                    : ListView.separated(
+                    : ListView.builder(
                         key: const PageStorageKey('FavoritesListView'),
                         itemCount: state.beacons.length,
-                        separatorBuilder: separatorBuilder,
                         itemBuilder: (_, i) {
                           final beacon = state.beacons[i];
                           return Padding(
-                            padding: kPaddingV,
+                            padding: kPaddingSmallV,
                             child: BeaconTile(
                               key: ValueKey(beacon),
                               beacon: beacon,

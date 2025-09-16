@@ -24,6 +24,7 @@ const kPaddingLargeT = EdgeInsets.only(top: kSpacingLarge);
 const kPaddingLargeV = EdgeInsets.symmetric(vertical: kSpacingLarge);
 
 const kPaddingSmallT = EdgeInsets.only(top: kSpacingSmall);
+const kPaddingSmallH = EdgeInsets.symmetric(horizontal: kSpacingSmall);
 const kPaddingSmallV = EdgeInsets.symmetric(vertical: kSpacingSmall);
 
 const kPaddingBottomTextInput = EdgeInsets.only(

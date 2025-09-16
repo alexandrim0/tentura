@@ -47,5 +47,5 @@ class ScreenState extends StateBase {
       ScreenState(status: StateIsNavigating(path));
 
   ScreenState navigateBack() =>
-      ScreenState(status: StateIsNavigating(kPathBack));
+      const ScreenState(status: StateIsNavigating.back);
 }
