@@ -78,7 +78,7 @@ class ProfileEditCubit extends Cubit<ProfileEditState> {
         dropImage: state.willDropImage,
         image: state.image,
       );
-      emit(state.copyWith(status: StateIsNavigating.back()));
+      emit(state.copyWith(status: StateIsNavigating.back));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }

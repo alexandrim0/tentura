@@ -13,12 +13,19 @@ class ShareCodeDialog extends StatelessWidget {
     required String header,
     // TBD: get id only, build link here
     required Uri link,
-  }) => showDialog(
+  }) => showAdaptiveDialog(
     context: context,
-    builder: (_) => ShareCodeDialog(header: header, link: link.toString()),
+    builder: (_) => ShareCodeDialog(
+      header: header,
+      link: link.toString(),
+    ),
   );
 
-  const ShareCodeDialog({required this.header, required this.link, super.key});
+  const ShareCodeDialog({
+    required this.header,
+    required this.link,
+    super.key,
+  });
 
   final String header;
   final String link;
@@ -44,7 +51,7 @@ class ShareCodeDialog extends StatelessWidget {
       ),
 
       // QRCode
-      content: QrCode(data:link),
+      content: QrCode(data: link),
 
       // Buttons
       actions: [
@@ -53,25 +60,28 @@ class ShareCodeDialog extends StatelessWidget {
           onPressed: () async {
             await Clipboard.setData(ClipboardData(text: link));
             if (context.mounted) {
-              showSnackBar(context, text: l10n.seedCopied);
+              showSnackBar(
+                context,
+                // TBD: l10n
+                text: 'Link copied into clipboard.',
+              );
             }
           },
         ),
         Builder(
-          builder:
-              (context) => TextButton(
-                child: Text(l10n.shareLink),
-                onPressed: () {
-                  final box = context.findRenderObject()! as RenderBox;
-                  SharePlus.instance.share(
-                    ShareParams(
-                      uri: Uri.parse(link),
-                      sharePositionOrigin:
-                          box.localToGlobal(Offset.zero) & box.size,
-                    ),
-                  );
-                },
-              ),
+          builder: (context) => TextButton(
+            child: Text(l10n.shareLink),
+            onPressed: () {
+              final box = context.findRenderObject()! as RenderBox;
+              SharePlus.instance.share(
+                ShareParams(
+                  uri: Uri.parse(link),
+                  sharePositionOrigin:
+                      box.localToGlobal(Offset.zero) & box.size,
+                ),
+              );
+            },
+          ),
         ),
         TextButton(
           onPressed: Navigator.of(context).pop,

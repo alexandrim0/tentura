@@ -187,14 +187,14 @@ class RootRouter extends RootStackRouter {
     AutoRoute(
       maintainState: false,
       page: BeaconViewRoute.page,
-      path: kPathBeaconView,
+      path: '$kPathBeaconView/:id',
     ),
 
     // Beacon View All
     AutoRoute(
       maintainState: false,
       page: BeaconRoute.page,
-      path: kPathBeaconViewAll,
+      path: '$kPathBeaconViewAll/:id',
     ),
 
     // Rating
@@ -209,7 +209,7 @@ class RootRouter extends RootStackRouter {
     AutoRoute(
       maintainState: false,
       page: GraphRoute.page,
-      path: kPathGraph,
+      path: '$kPathGraph/:id',
       //
     ),
 
@@ -247,7 +247,7 @@ class RootRouter extends RootStackRouter {
       maintainState: false,
       fullscreenDialog: true,
       page: ComplaintRoute.page,
-      path: kPathComplaint,
+      path: '$kPathComplaint/:id',
     ),
 
     // default
@@ -266,8 +266,8 @@ class RootRouter extends RootStackRouter {
     uri.path == kPathAppLinkView
         ? uri.replace(
             path: switch (uri.queryParameters['id']) {
-              final String id when id.startsWith('B') => kPathBeaconView,
-              final String id when id.startsWith('C') => kPathBeaconView,
+              final String id when id.startsWith('B') || id.startsWith('C') =>
+                '$kPathBeaconView/$id',
               final String id when id.startsWith('O') || id.startsWith('U') =>
                 '$kPathProfileView/$id',
               final String id when id.startsWith('I') =>

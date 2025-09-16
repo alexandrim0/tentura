@@ -1,9 +1,11 @@
 import 'package:get_it/get_it.dart';
 
+import 'package:tentura/domain/entity/opinion.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import 'package:tentura/features/like/data/repository/like_remote_repository.dart';
+import 'package:tentura/features/opinion/data/repository/opinion_repository.dart';
 import 'package:tentura/features/profile/data/repository/profile_repository.dart';
 
 import 'profile_view_state.dart';
@@ -12,7 +14,20 @@ export 'package:flutter_bloc/flutter_bloc.dart';
 
 export 'profile_view_state.dart';
 
+typedef Ids = ({String profileId, Opinion? opinion});
+
 class ProfileViewCubit extends Cubit<ProfileViewState> {
+  static Future<Ids> checkIfIdIsOpinion(String id) async {
+    if (id.startsWith('U')) {
+      return (profileId: id, opinion: null);
+    } else if (id.startsWith('O')) {
+      final result = await GetIt.I<OpinionRepository>().fetchById(id);
+      return (profileId: result.objectId, opinion: result);
+    } else {
+      throw Exception('Wrong id prefix [$id]');
+    }
+  }
+
   ProfileViewCubit({
     required String id,
     ProfileRepository? profileRepository,

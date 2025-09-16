@@ -11,7 +11,7 @@ class PollDialog extends StatefulWidget {
   static Future<void> show(
     BuildContext context, {
     required Polling polling,
-  }) => showDialog<void>(
+  }) => showAdaptiveDialog<void>(
     context: context,
     builder: (_) => PollDialog(
       polling: polling,
@@ -47,8 +47,8 @@ class PollDialogState extends State<PollDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog.adaptive(
+    contentPadding: kPaddingAll,
     insetPadding: kPaddingAll,
-    contentPadding: kPaddingV + kPaddingH,
     scrollable: true,
 
     // Title

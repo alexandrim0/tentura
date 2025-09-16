@@ -110,6 +110,7 @@ type beacon {
     where: mutual_score_bool_exp
   ): [mutual_score!]
   start_at: timestamptz
+  tags: String!
   title: String!
   updated_at: timestamptz!
   user_id: String!
@@ -188,6 +189,7 @@ input beacon_bool_exp {
   polling_id: String_comparison_exp
   scores: mutual_score_bool_exp
   start_at: timestamptz_comparison_exp
+  tags: String_comparison_exp
   title: String_comparison_exp
   updated_at: timestamptz_comparison_exp
   user_id: String_comparison_exp
@@ -208,6 +210,7 @@ input beacon_max_order_by {
   long: order_by
   polling_id: order_by
   start_at: order_by
+  tags: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -227,6 +230,7 @@ input beacon_min_order_by {
   long: order_by
   polling_id: order_by
   start_at: order_by
+  tags: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -264,6 +268,7 @@ input beacon_order_by {
   polling_id: order_by
   scores_aggregate: mutual_score_aggregate_order_by
   start_at: order_by
+  tags: order_by
   title: order_by
   updated_at: order_by
   user_id: order_by
@@ -445,6 +450,9 @@ enum beacon_select_column {
   start_at
 
   """column name"""
+  tags
+
+  """column name"""
   title
 
   """column name"""
@@ -509,6 +517,7 @@ input beacon_stream_cursor_value_input {
   long: float8
   polling_id: String
   start_at: timestamptz
+  tags: String
   title: String
   updated_at: timestamptz
   user_id: String
@@ -1140,7 +1149,7 @@ enum invitation_update_column {
 
 """mutation root"""
 type mutation_root {
-  beaconCreate(context: String, coordinates: Coordinates = {}, description: String, endAt: String, image: Upload = {}, polling: PollingInput, startAt: String, title: String!): Beacon!
+  beaconCreate(context: String, coordinates: Coordinates = {}, description: String, endAt: String, image: Upload = {}, polling: PollingInput, startAt: String, tags: String, title: String!): Beacon!
   beaconDeleteById(id: String!): Boolean!
 
   """

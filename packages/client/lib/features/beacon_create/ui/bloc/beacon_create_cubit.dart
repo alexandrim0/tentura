@@ -28,16 +28,26 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
 
   final ImageRepository _imageRepository;
 
+  ///
+  ///
   void setTitle(String value) => emit(state.copyWith(title: value));
 
+  ///
+  ///
   void setDescription(String value) => emit(state.copyWith(description: value));
 
+  ///
+  ///
   void setDateRange({DateTime? startAt, DateTime? endAt}) =>
       emit(state.copyWith(startAt: startAt, endAt: endAt));
 
+  ///
+  ///
   void setLocation(Coordinates? value) =>
       emit(state.copyWith(coordinates: value));
 
+  ///
+  ///
   Future<void> pickImage() async {
     try {
       final image = await _imageRepository.pickImage();
@@ -49,20 +59,61 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
     }
   }
 
-  void clearImage() => emit(state.copyWith(image: null));
+  ///
+  ///
+  void clearImage() => emit(
+    state.copyWith(
+      image: null,
+    ),
+  );
 
-  void setQuestion(String value) => emit(state.copyWith(question: value));
+  ///
+  ///
+  void setQuestion(String value) => emit(
+    state.copyWith(
+      question: value,
+    ),
+  );
 
-  void addVariant() => emit(state.copyWith(variants: [...state.variants, '']));
+  ///
+  ///
+  void addVariant() => emit(
+    state.copyWith(
+      variants: [...state.variants, ''],
+    ),
+  );
 
-  void removeVariant(int index) =>
-      emit(state.copyWith(variants: [...state.variants]..removeAt(index)));
+  ///
+  ///
+  void removeVariant(int index) => emit(
+    state.copyWith(
+      variants: [...state.variants]..removeAt(index),
+    ),
+  );
 
+  ///
+  ///
   void setVariant(int index, String value) => state.variants[index] = value;
 
+  ///
+  ///
+  void addTag(String value) => emit(
+    state.copyWith(
+      tags: {...state.tags, value},
+    ),
+  );
+
+  ///
+  ///
+  void removeTag(String value) =>
+      emit(state.copyWith(tags: {...state.tags}..remove(value)));
+
+  ///
+  ///
   Future<void> publish({required String context}) async {
-    state.variants.removeWhere((e) => e.isEmpty);
-    if (state.hasPolling) {
+    final variants = state.variants.where((e) => e.isNotEmpty).toList();
+    final hasPolling = state.question.isNotEmpty && variants.isNotEmpty;
+    if (hasPolling) {
       if (state.question.length < kQuestionMinLength) {
         emit(
           state.copyWith(
@@ -72,7 +123,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
         );
         return;
       }
-      if (state.variants.length < 2) {
+      if (variants.length < 2) {
         emit(
           state.copyWith(
             // TBD: l10n
@@ -91,26 +142,27 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
           createdAt: now,
           updatedAt: now,
           context: context,
+          tags: state.tags,
           title: state.title,
           coordinates: state.coordinates,
           description: state.description,
           startAt: state.startAt,
           endAt: state.endAt,
           image: state.image,
-          polling: state.hasPolling
+          polling: hasPolling
               ? Polling(
                   createdAt: now,
                   updatedAt: now,
                   question: state.question,
                   variants: {
-                    for (var i = 0; i < state.variants.length; i++)
-                      i.toString(): state.variants[i],
+                    for (var i = 0; i < variants.length; i++)
+                      i.toString(): variants[i],
                   },
                 )
               : null,
         ),
       );
-      emit(state.copyWith(status: StateIsNavigating.back()));
+      emit(state.copyWith(status: StateIsNavigating.back));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }

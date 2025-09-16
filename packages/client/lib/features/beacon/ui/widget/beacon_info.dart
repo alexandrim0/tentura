@@ -8,9 +8,10 @@ import 'package:tentura/ui/widget/beacon_image.dart';
 import 'package:tentura/ui/widget/tentura_icons.dart';
 import 'package:tentura/ui/widget/show_more_text.dart';
 
-import 'package:tentura/features/context/ui/bloc/context_cubit.dart';
 import 'package:tentura/features/geo/ui/widget/place_name_text.dart';
 import 'package:tentura/features/geo/ui/dialog/choose_location_dialog.dart';
+
+typedef TagClickCallback = void Function(String);
 
 class BeaconInfo extends StatelessWidget {
   const BeaconInfo({
@@ -18,6 +19,7 @@ class BeaconInfo extends StatelessWidget {
     required this.isShowBeaconEnabled,
     this.isShowMoreEnabled = true,
     this.isTitleLarge = false,
+    this.onClickTag,
     super.key,
   });
 
@@ -25,6 +27,7 @@ class BeaconInfo extends StatelessWidget {
   final bool isTitleLarge;
   final bool isShowMoreEnabled;
   final bool isShowBeaconEnabled;
+  final TagClickCallback? onClickTag;
 
   @override
   Widget build(BuildContext context) {
@@ -109,50 +112,34 @@ class BeaconInfo extends StatelessWidget {
           ),
 
         // Beacon Geolocation
-        if (beacon.context.isNotEmpty || beacon.coordinates != null)
-          Padding(
-            padding: kPaddingSmallT,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Beacon Geolocation
-                if (beacon.coordinates?.isNotEmpty ?? false)
-                  TextButton.icon(
-                    icon: const Icon(
-                      TenturaIcons.location,
-                      size: 18,
+        if (beacon.coordinates?.isNotEmpty ?? false)
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              icon: const Icon(TenturaIcons.location),
+              label: kIsWeb
+                  ? Text(l10n.showOnMap)
+                  : PlaceNameText(
+                      coords: beacon.coordinates!,
+                      style: theme.textTheme.bodySmall,
                     ),
-                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                    label: kIsWeb
-                        ? Text(l10n.showOnMap)
-                        : PlaceNameText(
-                            coords: beacon.coordinates!,
-                            style: theme.textTheme.bodySmall,
-                          ),
-                    onPressed: () => ChooseLocationDialog.show(
-                      context,
-                      center: beacon.coordinates,
-                    ),
-                  ),
-
-                // Beacon Topic
-                if (beacon.context.isNotEmpty)
-                  TextButton(
-                    style: const ButtonStyle(
-                      padding: WidgetStatePropertyAll(EdgeInsets.zero),
-                      visualDensity: VisualDensity.compact,
-                    ),
-                    child: Text(
-                      '#${beacon.context} ',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.primary,
-                      ),
-                    ),
-                    onPressed: () =>
-                        GetIt.I<ContextCubit>().add(beacon.context),
-                  ),
-              ],
+              onPressed: () => ChooseLocationDialog.show(
+                context,
+                center: beacon.coordinates,
+              ),
             ),
+          ),
+
+        // Tags
+        if (beacon.tags.isNotEmpty)
+          Wrap(
+            children: [
+              for (final tag in beacon.tags)
+                TextButton(
+                  onPressed: () => onClickTag?.call(tag),
+                  child: Text('#$tag'),
+                ),
+            ],
           ),
       ],
     );

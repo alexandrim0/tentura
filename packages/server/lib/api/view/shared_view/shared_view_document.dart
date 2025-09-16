@@ -14,82 +14,86 @@ import 'components/user_view_component.dart';
 import 'styles/shared_view_styles.dart';
 
 class SharedViewDocument extends StatelessComponent {
-  const SharedViewDocument({required this.entity});
+  const SharedViewDocument({
+    required this.entity,
+  });
 
   final Object entity;
 
   @override
-  Iterable<Component> build(BuildContext context) sync* {
-    yield switch (entity) {
-      // User
-      final UserEntity user => _buildDocument(
-        body: [UserViewComponent(user: user)],
-        meta: _buildMeta(
-          id: user.id,
-          title: user.title,
-          description: user.description,
-          imagePath: user.imageUrl,
-        ),
+  Component build(BuildContext context) => switch (entity) {
+    // User
+    final UserEntity user => _buildDocument(
+      body: [
+        UserViewComponent(user: user),
+      ],
+      meta: _buildMeta(
+        id: user.id,
+        title: user.title,
+        description: user.description,
+        imagePath: user.imageUrl,
       ),
+    ),
 
-      // Beacon
-      final BeaconEntity beacon => _buildDocument(
-        body: [BeaconViewComponent(beacon: beacon)],
-        meta: _buildMeta(
-          id: beacon.id,
-          title: beacon.title,
-          description: beacon.description,
-          imagePath: beacon.imageUrl,
-        ),
+    // Beacon
+    final BeaconEntity beacon => _buildDocument(
+      body: [
+        BeaconViewComponent(beacon: beacon),
+      ],
+      meta: _buildMeta(
+        id: beacon.id,
+        title: beacon.title,
+        description: beacon.description,
+        imagePath: beacon.imageUrl,
       ),
+    ),
 
-      // Comment
-      final CommentEntity comment => _buildDocument(
-        body: [
-          BeaconViewComponent(beacon: comment.beacon),
-          CommentViewComponent(comment: comment),
-        ],
-        meta: _buildMeta(
-          id: comment.id,
-          title: comment.beacon.title,
-          description: comment.content,
-          imagePath: comment.beacon.imageUrl,
-        ),
+    // Comment
+    final CommentEntity comment => _buildDocument(
+      body: [
+        BeaconViewComponent(beacon: comment.beacon),
+        CommentViewComponent(comment: comment),
+      ],
+      meta: _buildMeta(
+        id: comment.id,
+        title: comment.beacon.title,
+        description: comment.content,
+        imagePath: comment.beacon.imageUrl,
       ),
+    ),
 
-      // Invitation
-      final InvitationEntity invitation => _buildDocument(
-        body: [
-          UserViewComponent(user: invitation.issuer),
-          // TBD: InvitationViewComponent(user: invitation.issuer),
-        ],
-        meta: _buildMeta(
-          id: invitation.id,
-          title: invitation.issuer.title,
-          // TBD: need real text with l10n
-          description: 'Invite you to join Tentura!',
-          imagePath: invitation.issuer.imageUrl,
-        ),
+    // Invitation
+    final InvitationEntity invitation => _buildDocument(
+      body: [
+        UserViewComponent(user: invitation.issuer),
+        // TBD: InvitationViewComponent(user: invitation.issuer),
+      ],
+      meta: _buildMeta(
+        id: invitation.id,
+        title: invitation.issuer.title,
+        // TBD: need real text with l10n
+        description: 'Invite you to join Tentura!',
+        imagePath: invitation.issuer.imageUrl,
       ),
+    ),
 
-      // Opinion
-      final OpinionEntity opinion => _buildDocument(
-        body: [
-          UserViewComponent(user: opinion.user),
-          OpinionViewComponent(opinion: opinion),
-        ],
-        meta: _buildMeta(
-          id: opinion.id,
-          title: opinion.user.title,
-          description: opinion.content,
-          imagePath: opinion.user.imageUrl,
-        ),
+    // Opinion
+    final OpinionEntity opinion => _buildDocument(
+      body: [
+        UserViewComponent(user: opinion.user),
+        OpinionViewComponent(opinion: opinion),
+      ],
+      meta: _buildMeta(
+        id: opinion.id,
+        title: opinion.user.title,
+        description: opinion.content,
+        imagePath: opinion.user.imageUrl,
       ),
+    ),
 
-      // Unsupported
-      _ => throw Exception('Unsupported'),
-    };
-  }
+    // Unsupported
+    _ => throw Exception('Unsupported'),
+  };
 
   Document _buildDocument({
     required List<Component> body,
@@ -129,12 +133,33 @@ class SharedViewDocument extends StatelessComponent {
   };
 
   static final _headerLogo = [
-    link(href: '$kServerName$kPathIcons/web_24dp.png', rel: 'shortcut icon'),
-    link(href: '$kServerName$kPathIcons/web_32dp.png', rel: 'shortcut icon'),
-    link(href: '$kServerName$kPathIcons/web_36dp.png', rel: 'shortcut icon'),
-    link(href: '$kServerName$kPathIcons/web_48dp.png', rel: 'shortcut icon'),
-    link(href: '$kServerName$kPathIcons/web_64dp.png', rel: 'shortcut icon'),
-    link(href: '$kServerName$kPathIcons/web_96dp.png', rel: 'shortcut icon'),
-    link(href: '$kServerName$kPathIcons/web_512dp.png', rel: 'shortcut icon'),
+    link(
+      href: '$kServerName$kPathIcons/web_24dp.png',
+      rel: 'shortcut icon',
+    ),
+    link(
+      href: '$kServerName$kPathIcons/web_32dp.png',
+      rel: 'shortcut icon',
+    ),
+    link(
+      href: '$kServerName$kPathIcons/web_36dp.png',
+      rel: 'shortcut icon',
+    ),
+    link(
+      href: '$kServerName$kPathIcons/web_48dp.png',
+      rel: 'shortcut icon',
+    ),
+    link(
+      href: '$kServerName$kPathIcons/web_64dp.png',
+      rel: 'shortcut icon',
+    ),
+    link(
+      href: '$kServerName$kPathIcons/web_96dp.png',
+      rel: 'shortcut icon',
+    ),
+    link(
+      href: '$kServerName$kPathIcons/web_512dp.png',
+      rel: 'shortcut icon',
+    ),
   ];
 }

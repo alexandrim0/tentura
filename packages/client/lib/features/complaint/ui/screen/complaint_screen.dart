@@ -13,7 +13,7 @@ import '../bloc/complaint_cubit.dart';
 @RoutePage()
 class ComplaintScreen extends StatefulWidget implements AutoRouteWrapper {
   const ComplaintScreen({
-    @queryParam this.id = '',
+    @PathParam('id') this.id = '',
     super.key,
   });
 

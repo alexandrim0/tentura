@@ -11,6 +11,7 @@ import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
 import 'package:tentura/features/geo/ui/dialog/choose_location_dialog.dart';
 
 import '../bloc/beacon_create_cubit.dart';
+import '../dialog/add_tag_dialog.dart';
 
 class InfoTab extends StatefulWidget {
   const InfoTab({super.key});
@@ -24,6 +25,8 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
   final _locationController = TextEditingController();
 
   late final _l10n = L10n.of(context)!;
+
+  late final _theme = Theme.of(context);
 
   late final _cubit = context.read<BeaconCreateCubit>();
 
@@ -138,6 +141,45 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
               );
             }
           },
+        ),
+      ),
+
+      // Tags
+      const Padding(
+        padding: kPaddingSmallV,
+        // TBD: l10n
+        child: Text('Tags'),
+      ),
+      BlocSelector<BeaconCreateCubit, BeaconCreateState, Set<String>>(
+        selector: (state) => state.tags,
+        builder: (_, tags) => Wrap(
+          spacing: kSpacingSmall,
+          children: [
+            // Add Tag
+            ActionChip(
+              avatar: Icon(
+                Icons.add,
+                color: _theme.colorScheme.onSecondary,
+              ),
+              // TBD: l10n
+              label: const Text('tag'),
+              onPressed: tags.length < 5
+                  ? () async {
+                      final tag = await BeaconAddTagDialog.show(context);
+                      if (tag != null) {
+                        _cubit.addTag(tag);
+                      }
+                    }
+                  : null,
+            ),
+
+            // Added Tags
+            for (final tag in tags)
+              Chip(
+                label: Text(tag),
+                onDeleted: () => _cubit.removeTag(tag),
+              ),
+          ],
         ),
       ),
     ],

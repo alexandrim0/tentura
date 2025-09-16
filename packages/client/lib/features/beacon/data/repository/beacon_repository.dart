@@ -69,6 +69,7 @@ class BeaconRepository {
         ..title = beacon.title
         ..description = beacon.description
         ..context = beacon.context.isEmpty ? null : beacon.context
+        ..tags = beacon.tags.isEmpty ? null : beacon.tags.join(',')
         ..startAt = beacon.startAt?.toIso8601String()
         ..endAt = beacon.endAt?.toIso8601String()
         ..coordinates = beacon.coordinates == null

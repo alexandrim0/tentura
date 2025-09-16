@@ -304,6 +304,11 @@
     "context": "ComplaintScreen"
   },
 
+  "filterByTag": "Фильтр по тегу",
+  "@filterByTag": {
+    "context": "MyFieldScreen"
+  },
+
   "writeCodeHere": "Если у вас есть код, введите его здесь:",
   "@writeCodeHere": {
     "context": "ConnectScreen"

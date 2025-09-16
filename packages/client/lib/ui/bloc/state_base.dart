@@ -41,9 +41,9 @@ class StateIsMessaging extends StateStatus {
 }
 
 class StateIsNavigating extends StateStatus {
-  StateIsNavigating(this.path);
+  static const back = StateIsNavigating(kPathBack);
 
-  StateIsNavigating.back() : path = kPathBack;
+  const StateIsNavigating(this.path);
 
   final String path;
 }

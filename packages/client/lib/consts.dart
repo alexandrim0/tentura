@@ -2,6 +2,9 @@ import 'package:tentura_root/consts.dart';
 
 export 'package:tentura_root/consts.dart';
 
+// Bools
+const kAssetPackage = bool.fromEnvironment('IS_IMPORTED') ? 'tentura' : null;
+
 // Numbers
 const kMaxLines = 3;
 const kCommentsShown = 3;
@@ -10,7 +13,8 @@ const kSnackBarDuration = 5;
 const kFetchListOffset = 0.9;
 const kImageMaxDimension = 600;
 
-// Routes
+// Strings
+//   Routes
 const kPathBack = '/back';
 const kPathHome = '/home';
 const kPathMyField = '/home/field';
@@ -32,8 +36,6 @@ const kPathProfileEdit = '/profile/edit';
 const kPathProfileView = '/profile/view';
 const kPathInvitations = '/invitations';
 
-const kAssetPackage = bool.fromEnvironment('IS_IMPORTED') ? 'tentura' : null;
-
 /// First part of FQDN: `https://app.server.name`
 const kServerName = String.fromEnvironment(
   'SERVER_NAME',
@@ -49,4 +51,8 @@ const kAvatarPlaceholderUrl =
 const kBeaconPlaceholderUrl =
     '$kImageServer/$kImagesPath/placeholder/beacon.$kImageExt';
 
-final zeroAge = DateTime.fromMillisecondsSinceEpoch(0);
+// Others
+
+const kFastAnimationDuration = Duration(milliseconds: 250);
+
+final kZeroAge = DateTime.fromMillisecondsSinceEpoch(0);

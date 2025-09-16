@@ -89,5 +89,5 @@ LIMIT 1;
         ],
       )
       .getSingleOrNull()
-      .then((r) => r == null ? zeroAge : r.read('ts'));
+      .then((r) => r == null ? kZeroAge : r.read('ts'));
 }

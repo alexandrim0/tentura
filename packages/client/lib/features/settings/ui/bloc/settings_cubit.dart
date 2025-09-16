@@ -100,7 +100,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       await _authCase.signOut();
-      emit(state.copyWith(status: StateIsNavigating.back()));
+      emit(state.copyWith(status: StateIsNavigating.back));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }
