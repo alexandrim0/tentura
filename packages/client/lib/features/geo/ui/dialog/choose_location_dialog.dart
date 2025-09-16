@@ -11,7 +11,7 @@ import '../../domain/entity/location.dart';
 
 class ChooseLocationDialog extends StatefulWidget {
   static Future<Location?> show(BuildContext context, {Coordinates? center}) =>
-      showDialog<Location>(
+      showAdaptiveDialog<Location>(
         context: context,
         useSafeArea: false,
         builder: (_) => ChooseLocationDialog(

@@ -24,5 +24,5 @@ class BeaconCubitMock extends Cubit<BeaconState> implements BeaconCubit {
   Future<void> toggleEnabled(String beaconId) async {}
 
   @override
-  void toggleFilter(BeaconFilter? filter) {}
+  void setFilter(BeaconFilter? filter) {}
 }

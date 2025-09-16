@@ -16,12 +16,15 @@ class BeaconTile extends StatelessWidget {
   const BeaconTile({
     required this.beacon,
     required this.isMine,
+    this.onClickTag,
     super.key,
   });
 
   final bool isMine;
 
   final Beacon beacon;
+
+  final TagClickCallback? onClickTag;
 
   @override
   Widget build(BuildContext context) {
@@ -89,8 +92,9 @@ class BeaconTile extends StatelessWidget {
             // Beacon Info
             BeaconInfo(
               beacon: beacon,
-              isShowBeaconEnabled: true,
               isTitleLarge: true,
+              isShowBeaconEnabled: true,
+              onClickTag: onClickTag,
             ),
 
             // Beacon Control

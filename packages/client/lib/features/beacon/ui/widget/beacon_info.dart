@@ -11,12 +11,15 @@ import 'package:tentura/ui/widget/show_more_text.dart';
 import 'package:tentura/features/geo/ui/widget/place_name_text.dart';
 import 'package:tentura/features/geo/ui/dialog/choose_location_dialog.dart';
 
+typedef TagClickCallback = void Function(String);
+
 class BeaconInfo extends StatelessWidget {
   const BeaconInfo({
     required this.beacon,
     required this.isShowBeaconEnabled,
     this.isShowMoreEnabled = true,
     this.isTitleLarge = false,
+    this.onClickTag,
     super.key,
   });
 
@@ -24,6 +27,7 @@ class BeaconInfo extends StatelessWidget {
   final bool isTitleLarge;
   final bool isShowMoreEnabled;
   final bool isShowBeaconEnabled;
+  final TagClickCallback? onClickTag;
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +136,7 @@ class BeaconInfo extends StatelessWidget {
             children: [
               for (final tag in beacon.tags)
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () => onClickTag?.call(tag),
                   child: Text('#$tag'),
                 ),
             ],

@@ -13,7 +13,7 @@ class ShareCodeDialog extends StatelessWidget {
     required String header,
     // TBD: get id only, build link here
     required Uri link,
-  }) => showDialog(
+  }) => showAdaptiveDialog(
     context: context,
     builder: (_) => ShareCodeDialog(
       header: header,

@@ -20,7 +20,7 @@ class ChatCubit extends Cubit<ChatState> {
   }) : _chatCase = chatCase ?? GetIt.I<ChatCase>(),
        super(
          ChatState(
-           lastUpdate: zeroAge,
+           lastUpdate: kZeroAge,
            friend: Profile(id: friendId),
          ),
        ) {

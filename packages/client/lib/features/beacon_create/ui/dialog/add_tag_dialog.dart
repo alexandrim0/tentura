@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 
 class BeaconAddTagDialog extends StatefulWidget {
-  static Future<String?> show(BuildContext context) => showDialog<String>(
-    context: context,
-    builder: (_) => const BeaconAddTagDialog(),
-  );
+  static Future<String?> show(BuildContext context) =>
+      showAdaptiveDialog<String>(
+        context: context,
+        builder: (_) => const BeaconAddTagDialog(),
+      );
 
   const BeaconAddTagDialog({super.key});
 
