@@ -72,25 +72,26 @@ class MyFieldScreen extends StatelessWidget implements AutoRouteWrapper {
             selector: (state) => state.selectedTags,
             builder: (_, selectedTags) => Wrap(
               spacing: kSpacingSmall,
-              runSpacing: kSpacingSmall,
               children: [
                 ActionChip(
                   backgroundColor: theme.colorScheme.surfaceContainer,
                   avatar: const Icon(Icons.local_offer_outlined),
                   label: AnimatedSwitcher(
                     duration: kFastAnimationDuration,
-                    transitionBuilder: (child, animation) => FadeTransition(
-                      opacity: animation,
-                      child: SizeTransition(
-                        sizeFactor: animation,
-                        axis: Axis.horizontal,
-                        child: child,
-                      ),
+                    transitionBuilder: (child, animation) => SizeTransition(
+                      sizeFactor: animation,
+                      axis: Axis.horizontal,
+                      child: child,
                     ),
-                    child: Text(
-                      selectedTags.isEmpty ? l10n.filterByTag : '',
-                      key: ValueKey(selectedTags.isEmpty),
-                    ),
+                    child: selectedTags.isEmpty
+                        ? Text(
+                            l10n.filterByTag,
+                            key: ValueKey(selectedTags),
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: theme.colorScheme.onSurface,
+                            ),
+                          )
+                        : const SizedBox(),
                   ),
                   onPressed: () async {
                     final selected = await MyFieldChooseTagsDialog.show(
