@@ -82,6 +82,8 @@ final class UserNode extends NodeDetails {
   @override
   double get rScore => user.rScore;
 
+  bool get canSeeMe => user.isSeeingMe;
+
   @override
   UserNode copyWithPinned(bool isPinned) => UserNode(
     size: size,
