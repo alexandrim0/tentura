@@ -16,7 +16,7 @@ class MyFieldCubit extends Cubit<MyFieldState> {
     MyFieldRepository? repository,
   }) : _repository = repository ?? GetIt.I<MyFieldRepository>(),
        super(const MyFieldState()) {
-    fetch(initialContext);
+    unawaited(fetch(initialContext));
   }
 
   final MyFieldRepository _repository;

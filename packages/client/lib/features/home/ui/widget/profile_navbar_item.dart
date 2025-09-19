@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/profile.dart';
@@ -28,7 +29,7 @@ class ProfileNavBarItem extends StatelessWidget {
                 profile: AccountCase.fromAccountEntity(account),
                 onTap: () {
                   menuController.close();
-                  authCubit.signIn(account.id);
+                  unawaited(authCubit.signIn(account.id));
                 },
               ),
           ],

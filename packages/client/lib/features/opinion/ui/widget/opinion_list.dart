@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:tentura/ui/l10n/l10n.dart';
@@ -28,7 +29,7 @@ class OpinionList extends StatelessWidget {
             itemBuilder: (_, i) {
               final opinion = state.opinions[i];
               if (i == state.opinions.length - 1 && !state.hasReachedMax) {
-                context.read<OpinionCubit>().fetch();
+                unawaited(context.read<OpinionCubit>().fetch());
               }
               return OpinionTile(
                 key: ValueKey(opinion),

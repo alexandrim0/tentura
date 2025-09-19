@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:nil/nil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -54,7 +55,7 @@ class GraphBodyState extends State<GraphBody>
   void initState() {
     super.initState();
     if (_cubit.state.isAnimated) {
-      _animationController.repeat();
+      unawaited(_animationController.repeat());
     }
   }
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:get_it/get_it.dart';
 
 import 'package:tentura/domain/entity/opinion.dart';
@@ -36,7 +37,7 @@ class ProfileViewCubit extends Cubit<ProfileViewState> {
        _likeRemoteRepository =
            likeRemoteRepository ?? GetIt.I<LikeRemoteRepository>(),
        super(_idToState(id)) {
-    fetch();
+    unawaited(fetch());
   }
 
   final ProfileRepository _profileRepository;

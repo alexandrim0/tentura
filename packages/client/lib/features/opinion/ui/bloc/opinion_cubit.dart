@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:get_it/get_it.dart';
 
 import 'package:tentura/consts.dart';
@@ -26,7 +27,7 @@ class OpinionCubit extends Cubit<OpinionState> {
          ),
        ) {
     if (opinions?.isEmpty ?? true) {
-      fetch();
+      unawaited(fetch());
     }
   }
 

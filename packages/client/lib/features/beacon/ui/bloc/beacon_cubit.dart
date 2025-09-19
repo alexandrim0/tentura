@@ -69,7 +69,7 @@ class BeaconCubit extends Cubit<BeaconState> {
           beacons: [],
         ),
       );
-      fetch();
+      unawaited(fetch());
     }
   }
 

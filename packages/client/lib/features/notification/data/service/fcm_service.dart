@@ -66,7 +66,6 @@ class _FcmServiceFake implements FcmService {
   );
 
   @override
-  // ignore: unused_element //
   Env get _env => throw UnimplementedError();
 
   @override

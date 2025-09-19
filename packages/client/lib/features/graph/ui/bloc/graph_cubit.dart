@@ -41,7 +41,7 @@ class GraphCubit extends Cubit<GraphState> {
        _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
        _profileRepository = profileRepository ?? GetIt.I<ProfileRepository>(),
        super(GraphState(focus: focus ?? '')) {
-    _fetch();
+    unawaited(_fetch());
   }
 
   final GraphRepository _graphRepository;
@@ -87,9 +87,10 @@ class GraphCubit extends Cubit<GraphState> {
       emit(state.copyWith(focus: node.id));
       graphController
         ..setPinned(node, true)
+        // ignore: discarded_futures //
         ..jumpToNode(node);
     }
-    _fetch();
+    unawaited(_fetch());
   }
 
   Future<void> setContext(String? context) {
@@ -103,7 +104,7 @@ class GraphCubit extends Cubit<GraphState> {
     emit(state.copyWith(positiveOnly: !state.positiveOnly, focus: ''));
     graphController.clear();
     _fetchLimits.clear();
-    _fetch();
+    unawaited(_fetch());
   }
 
   Future<void> _fetch() async {

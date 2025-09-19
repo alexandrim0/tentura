@@ -32,7 +32,7 @@ class ContextCubit extends Cubit<ContextState> {
       cancelOnError: false,
       onError: _onContextChangesError,
     );
-    fetch(fromCache: fetchFromCache);
+    unawaited(fetch(fromCache: fetchFromCache));
   }
 
   final AuthCase _authCase;
