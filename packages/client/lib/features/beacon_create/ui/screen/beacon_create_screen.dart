@@ -23,8 +23,12 @@ class BeaconCreateScreen extends StatefulWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
     providers: [
-      BlocProvider(create: (_) => ContextCubit()),
-      BlocProvider(create: (_) => BeaconCreateCubit()),
+      BlocProvider(
+        create: (_) => ContextCubit(),
+      ),
+      BlocProvider(
+        create: (_) => BeaconCreateCubit(),
+      ),
     ],
     child: MultiBlocListener(
       listeners: const [

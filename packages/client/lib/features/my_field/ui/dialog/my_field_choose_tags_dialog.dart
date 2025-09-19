@@ -50,7 +50,6 @@ class _MyFieldChooseTagsDialogState extends State<MyFieldChooseTagsDialog> {
     ),
 
     content: Wrap(
-      runSpacing: kSpacingMedium,
       spacing: kSpacingMedium,
       children: [
         for (final tag in widget.allTags)

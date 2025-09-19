@@ -131,6 +131,7 @@ base mixin RemoteApiClientWs on RemoteApiClientBase {
   //
   //
   void _onMessage(dynamic messageRaw) {
+    // ignore: switch_on_type //
     final message = switch (messageRaw) {
       final String m => jsonDecode(m),
       // final Uint8List m => messageRaw,

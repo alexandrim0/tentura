@@ -18,16 +18,19 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
     providers: [
-      BlocProvider(create: (_) => RatingCubit()),
-      BlocProvider(create: (_) => ContextCubit()),
+      BlocProvider(
+        create: (_) => RatingCubit(),
+      ),
+      BlocProvider(
+        create: (_) => ContextCubit(),
+      ),
     ],
     child: MultiBlocListener(
       listeners: [
         BlocListener<ContextCubit, ContextState>(
           listenWhen: (p, c) => p.selected != c.selected,
-          listener:
-              (context, state) =>
-                  context.read<RatingCubit>().fetch(state.selected),
+          listener: (context, state) =>
+              context.read<RatingCubit>().fetch(state.selected),
         ),
         const BlocListener<RatingCubit, RatingState>(
           listener: commonScreenBlocListener,
@@ -49,15 +52,13 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
           return const Center(child: CircularProgressIndicator.adaptive());
         }
         final filter = state.searchFilter;
-        final items =
-            filter.isEmpty
-                ? state.items
-                : state.items
-                    .where(
-                      (e) =>
-                          e.title.toLowerCase().contains(filter.toLowerCase()),
-                    )
-                    .toList();
+        final items = filter.isEmpty
+            ? state.items
+            : state.items
+                  .where(
+                    (e) => e.title.toLowerCase().contains(filter.toLowerCase()),
+                  )
+                  .toList();
 
         return Scaffold(
           appBar: AppBar(
@@ -73,19 +74,17 @@ class RatingScreen extends StatelessWidget implements AutoRouteWrapper {
               // Toggle sorting by value
               IconButton(
                 onPressed: cubit.toggleSortingByAsc,
-                icon:
-                    state.isSortedByAsc
-                        ? const Icon(Icons.keyboard_arrow_up_rounded)
-                        : const Icon(Icons.keyboard_arrow_down_rounded),
+                icon: state.isSortedByAsc
+                    ? const Icon(Icons.keyboard_arrow_up_rounded)
+                    : const Icon(Icons.keyboard_arrow_down_rounded),
               ),
 
               // Toggle sorting by ego
               IconButton(
                 onPressed: cubit.toggleSortingByEgo,
-                icon:
-                    state.isSortedByEgo
-                        ? const Icon(Icons.keyboard_arrow_right_rounded)
-                        : const Icon(Icons.keyboard_arrow_left_rounded),
+                icon: state.isSortedByEgo
+                    ? const Icon(Icons.keyboard_arrow_right_rounded)
+                    : const Icon(Icons.keyboard_arrow_left_rounded),
               ),
             ],
 

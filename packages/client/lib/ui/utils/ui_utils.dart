@@ -87,7 +87,6 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
   );
 }
 
-// ignore: strict_top_level_inference //
 Widget separatorBuilder(_, _) => const Divider(
   endIndent: kSpacingMedium,
   indent: kSpacingMedium,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:nil/nil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -54,7 +55,7 @@ class GraphBodyState extends State<GraphBody>
   void initState() {
     super.initState();
     if (_cubit.state.isAnimated) {
-      _animationController.repeat();
+      unawaited(_animationController.repeat());
     }
   }
 
@@ -97,6 +98,7 @@ class GraphBodyState extends State<GraphBody>
     nodeBuilder: (_, node) => GraphNodeWidget(
       key: ValueKey(node),
       nodeDetails: node,
+      withEye: node.id != _cubit.state.me.id,
       onTap: () => _cubit.setFocus(node),
       onDoubleTap: () => _cubit.showNodeDetails(node),
     ),

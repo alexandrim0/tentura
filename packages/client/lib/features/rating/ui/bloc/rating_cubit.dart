@@ -16,7 +16,7 @@ class RatingCubit extends Cubit<RatingState> {
     RatingRepository? repository,
   }) : _repository = repository ?? GetIt.I<RatingRepository>(),
        super(const RatingState()) {
-    fetch(initialContext);
+    unawaited(fetch(initialContext));
   }
 
   final RatingRepository _repository;

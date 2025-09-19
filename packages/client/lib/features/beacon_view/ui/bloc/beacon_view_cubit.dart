@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:get_it/get_it.dart';
 
 import 'package:tentura/domain/entity/beacon.dart';
@@ -26,11 +27,13 @@ class BeaconViewCubit extends Cubit<BeaconViewState> {
        _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
        _commentRepository = commentRepository ?? GetIt.I<CommentRepository>(),
        super(_idToState(id, myProfile)) {
-    state.hasFocusedComment
-        // Show Beacon with one Comment
-        ? _fetchBeaconByCommentId()
-        // show Beacon with all Comments
-        : _fetchBeaconByIdWithComments();
+    unawaited(
+      state.hasFocusedComment
+          // Show Beacon with one Comment
+          ? _fetchBeaconByCommentId()
+          // show Beacon with all Comments
+          : _fetchBeaconByIdWithComments(),
+    );
   }
 
   final BeaconRepository _beaconRepository;
