@@ -93,7 +93,7 @@ class InvitationRepository {
         .request(GInvitationDeleteByIdReq((b) => b.vars.id = id))
         .firstWhere((e) => e.dataSource == DataSource.Link)
         .then((r) => r.dataOrThrow(label: _label).invitationDelete);
-    if (result == false) {
+    if (!result) {
       throw InvitationDeleteException(id);
     }
   }
@@ -103,7 +103,7 @@ class InvitationRepository {
         .request(GInvitationAcceptReq((b) => b.vars.id = id))
         .firstWhere((e) => e.dataSource == DataSource.Link)
         .then((r) => r.dataOrThrow(label: _label).invitationAccept);
-    if (result == false) {
+    if (!result) {
       throw InvitationAcceptException(id);
     }
   }

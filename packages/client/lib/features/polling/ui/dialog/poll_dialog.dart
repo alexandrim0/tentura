@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:tentura/domain/entity/polling.dart';
@@ -36,12 +37,12 @@ class PollDialogState extends State<PollDialog> {
   @override
   void initState() {
     super.initState();
-    _pollingCubit.fetch();
+    unawaited(_pollingCubit.fetch());
   }
 
   @override
   void dispose() {
-    _pollingCubit.close();
+    unawaited(_pollingCubit.close());
     super.dispose();
   }
 

@@ -36,8 +36,7 @@ class HomeScreen extends StatelessWidget implements AutoRouteWrapper {
           listener: commonScreenBlocListener,
         ),
         // Context
-        BlocListener<ContextCubit, ContextState>(
-          bloc: GetIt.I<ContextCubit>(),
+        const BlocListener<ContextCubit, ContextState>(
           listener: commonScreenBlocListener,
         ),
         // ChatNews

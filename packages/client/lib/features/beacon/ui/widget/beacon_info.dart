@@ -137,6 +137,10 @@ class BeaconInfo extends StatelessWidget {
               for (final tag in beacon.tags)
                 TextButton(
                   onPressed: () => onClickTag?.call(tag),
+                  style: TextButton.styleFrom(
+                    padding: kPaddingSmallH,
+                    visualDensity: VisualDensity.compact,
+                  ),
                   child: Text('#$tag'),
                 ),
             ],

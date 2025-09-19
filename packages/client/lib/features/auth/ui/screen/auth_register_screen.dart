@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -64,9 +65,13 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
       }
       _codeController.text = widget.id!;
     } else {
-      _authCubit.getCodeFromClipboard().then((code) {
-        if (code.isNotEmpty) _codeController.text = code;
-      });
+      unawaited(
+        _authCubit.getCodeFromClipboard().then((code) {
+          if (code.isNotEmpty) {
+            _codeController.text = code;
+          }
+        }),
+      );
     }
   }
 

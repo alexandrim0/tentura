@@ -54,7 +54,8 @@ class BeaconTile extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => GetIt.I<ContextCubit>().add(beacon.context),
+                      onTap: () =>
+                          context.read<ContextCubit>().add(beacon.context),
                       child: Text(
                         beacon.context,
                         style: theme.textTheme.labelMedium?.copyWith(

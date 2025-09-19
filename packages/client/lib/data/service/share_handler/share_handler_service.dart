@@ -10,7 +10,7 @@ class ShareHandlerService {
   ShareHandlerService(this._logger) {
     if (!kIsWeb) {
       _subscription = ShareHandler.instance.sharedMediaStream.listen(_handler);
-      ShareHandler.instance.getInitialSharedMedia().then(_handler);
+      unawaited(ShareHandler.instance.getInitialSharedMedia().then(_handler));
     }
   }
 

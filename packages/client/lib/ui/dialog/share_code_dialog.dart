@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
@@ -73,11 +75,13 @@ class ShareCodeDialog extends StatelessWidget {
             child: Text(l10n.shareLink),
             onPressed: () {
               final box = context.findRenderObject()! as RenderBox;
-              SharePlus.instance.share(
-                ShareParams(
-                  uri: Uri.parse(link),
-                  sharePositionOrigin:
-                      box.localToGlobal(Offset.zero) & box.size,
+              unawaited(
+                SharePlus.instance.share(
+                  ShareParams(
+                    uri: Uri.parse(link),
+                    sharePositionOrigin:
+                        box.localToGlobal(Offset.zero) & box.size,
+                  ),
                 ),
               );
             },

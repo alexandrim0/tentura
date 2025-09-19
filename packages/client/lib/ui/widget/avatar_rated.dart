@@ -80,7 +80,10 @@ class AvatarRated extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
               score: profile.score,
             ),
-            child: Padding(padding: EdgeInsets.all(size / 8), child: _avatar),
+            child: Padding(
+              padding: EdgeInsets.all(size / 8),
+              child: _avatar,
+            ),
           )
         : _avatar,
   );
@@ -99,7 +102,10 @@ class AvatarRated extends StatelessWidget {
 }
 
 class _RatingPainter extends CustomPainter {
-  _RatingPainter({required this.score, required this.color});
+  _RatingPainter({
+    required this.score,
+    required this.color,
+  });
 
   final Color color;
   final double score;

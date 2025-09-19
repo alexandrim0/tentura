@@ -53,7 +53,11 @@ class FriendsCubit extends Cubit<FriendsState> {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final friends = await _friendsRemoteRepository.fetch();
-      emit(FriendsState(friends: {for (final e in friends) e.id: e}));
+      emit(
+        FriendsState(
+          friends: {for (final e in friends) e.id: e},
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }
@@ -70,7 +74,9 @@ class FriendsCubit extends Cubit<FriendsState> {
   void _onAuthChanged(String userId) {
     // ignore: prefer_const_constructors //
     emit(FriendsState(friends: {}));
-    if (userId.isNotEmpty) fetch();
+    if (userId.isNotEmpty) {
+      unawaited(fetch());
+    }
   }
 
   void _onFriendsChanged(Profile profile) {

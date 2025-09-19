@@ -1,5 +1,6 @@
-import 'package:auto_route/auto_route.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
@@ -62,10 +63,10 @@ class _BeaconScreenState extends State<BeaconScreen> {
       if (_scrollController.hasClients &&
           _scrollController.offset >
               _scrollController.position.maxScrollExtent * kFetchListOffset) {
-        _beaconCubit.fetch();
+        unawaited(_beaconCubit.fetch());
       }
     });
-    _beaconCubit.fetch();
+    unawaited(_beaconCubit.fetch());
   }
 
   @override

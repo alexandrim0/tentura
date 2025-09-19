@@ -233,7 +233,7 @@ class RootRouter extends RootStackRouter {
             );
             if (receiverId.isNotEmpty &&
                 _authCubit.state.currentAccountId != receiverId) {
-              _authCubit.signOut();
+              unawaited(_authCubit.signOut());
             }
             return null;
           },
@@ -295,7 +295,7 @@ class _ReevaluateFromStreams extends ChangeNotifier {
   @override
   void dispose() {
     for (final subscription in _subscriptions) {
-      subscription.cancel();
+      unawaited(subscription.cancel());
     }
     super.dispose();
   }

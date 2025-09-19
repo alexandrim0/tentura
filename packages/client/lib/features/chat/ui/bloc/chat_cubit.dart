@@ -24,9 +24,11 @@ class ChatCubit extends Cubit<ChatState> {
            friend: Profile(id: friendId),
          ),
        ) {
-    _init().then(
-      _fetchAll,
-      onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
+    unawaited(
+      _init().then(
+        _fetchAll,
+        onError: (Object e) => emit(state.copyWith(status: StateHasError(e))),
+      ),
     );
   }
 

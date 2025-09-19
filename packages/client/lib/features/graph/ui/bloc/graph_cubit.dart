@@ -40,8 +40,13 @@ class GraphCubit extends Cubit<GraphState> {
        _graphRepository = graphRepository ?? GetIt.I<GraphRepository>(),
        _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
        _profileRepository = profileRepository ?? GetIt.I<ProfileRepository>(),
-       super(GraphState(focus: focus ?? '')) {
-    _fetch();
+       super(
+         GraphState(
+           focus: focus ?? '',
+           me: me,
+         ),
+       ) {
+    unawaited(_fetch());
   }
 
   final GraphRepository _graphRepository;
@@ -67,6 +72,8 @@ class GraphCubit extends Cubit<GraphState> {
     return super.close();
   }
 
+  ///
+  ///
   void showNodeDetails(NodeDetails node) => switch (node) {
     final UserNode node => emit(
       state.copyWith(
@@ -80,18 +87,25 @@ class GraphCubit extends Cubit<GraphState> {
     ),
   };
 
+  ///
+  ///
   void jumpToEgo() => graphController.jumpToNode(_egoNode);
 
+  ///
+  ///
   void setFocus(NodeDetails node) {
     if (state.focus != node.id) {
       emit(state.copyWith(focus: node.id));
       graphController
         ..setPinned(node, true)
+        // ignore: discarded_futures //
         ..jumpToNode(node);
     }
-    _fetch();
+    unawaited(_fetch());
   }
 
+  ///
+  ///
   Future<void> setContext(String? context) {
     emit(state.copyWith(context: context ?? '', focus: ''));
     graphController.clear();
@@ -99,13 +113,17 @@ class GraphCubit extends Cubit<GraphState> {
     return _fetch();
   }
 
+  ///
+  ///
   void togglePositiveOnly() {
     emit(state.copyWith(positiveOnly: !state.positiveOnly, focus: ''));
     graphController.clear();
     _fetchLimits.clear();
-    _fetch();
+    unawaited(_fetch());
   }
 
+  ///
+  ///
   Future<void> _fetch() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
@@ -152,6 +170,8 @@ class GraphCubit extends Cubit<GraphState> {
     }
   }
 
+  ///
+  ///
   void _updateGraph(Set<EdgeDirected> edges) => graphController.mutate((
     mutator,
   ) {

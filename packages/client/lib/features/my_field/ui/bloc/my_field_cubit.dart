@@ -16,7 +16,7 @@ class MyFieldCubit extends Cubit<MyFieldState> {
     MyFieldRepository? repository,
   }) : _repository = repository ?? GetIt.I<MyFieldRepository>(),
        super(const MyFieldState()) {
-    fetch(initialContext);
+    unawaited(fetch(initialContext));
   }
 
   final MyFieldRepository _repository;
@@ -34,14 +34,11 @@ class MyFieldCubit extends Cubit<MyFieldState> {
       final selectedTags = state.selectedTags.where(tags.contains).toList();
       emit(
         MyFieldState(
-          context: contextName ?? state.context,
-          selectedTags: selectedTags,
-          visibleBeacons: _filterBeacons(
-            state.beacons,
-            selectedTags,
-          ),
-          beacons: beacons,
           tags: tags,
+          beacons: beacons,
+          selectedTags: selectedTags,
+          context: contextName ?? state.context,
+          visibleBeacons: _filterBeacons(beacons, selectedTags),
         ),
       );
     } catch (e) {
