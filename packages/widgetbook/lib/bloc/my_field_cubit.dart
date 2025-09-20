@@ -6,8 +6,22 @@ import 'package:tentura_widgetbook/bloc/_data.dart';
 
 @Singleton(as: MyFieldCubit)
 class MyFieldCubitMock extends Cubit<MyFieldState> implements MyFieldCubit {
-  MyFieldCubitMock() : super(MyFieldState(beacons: [beaconA, beaconB]));
+  MyFieldCubitMock()
+    : super(
+        MyFieldState(
+          beacons: [beaconA, beaconB],
+        ),
+      );
 
   @override
   Future<void> fetch([String? contextName]) async {}
+
+  @override
+  void addTag(String tag) {}
+
+  @override
+  void removeTag(String tag) {}
+
+  @override
+  void setSelectedTags(Set<String> tags) {}
 }
