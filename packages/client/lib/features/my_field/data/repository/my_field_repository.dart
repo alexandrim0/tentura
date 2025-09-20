@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura/consts.dart';
+// import 'package:tentura/consts.dart';
 import 'package:tentura/data/model/beacon_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 import 'package:tentura/domain/entity/beacon.dart';
@@ -17,9 +17,9 @@ class MyFieldRepository {
       .request(
         GMyFieldFetchReq(
           (r) => r
-            ..context = const Context().withEntry(
-              HttpLinkHeaders(headers: {kHeaderQueryContext: context}),
-            )
+            // ..context = const Context().withEntry(
+            //   HttpLinkHeaders(headers: {kHeaderQueryContext: context}),
+            // )
             ..vars.context = context,
         ),
       )
