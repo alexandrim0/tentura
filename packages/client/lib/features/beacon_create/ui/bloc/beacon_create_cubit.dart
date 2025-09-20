@@ -99,7 +99,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
   ///
   void addTag(String value) => emit(
     state.copyWith(
-      tags: {...state.tags, value},
+      tags: {...state.tags, value.toLowerCase()},
     ),
   );
 

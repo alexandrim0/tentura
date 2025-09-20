@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
+import 'package:tentura/ui/utils/string_input_validator.dart';
 
 class BeaconAddTagDialog extends StatefulWidget {
   static Future<String?> show(BuildContext context) =>
@@ -15,8 +18,11 @@ class BeaconAddTagDialog extends StatefulWidget {
   State<BeaconAddTagDialog> createState() => _BeaconAddTagDialogState();
 }
 
-class _BeaconAddTagDialogState extends State<BeaconAddTagDialog> {
+class _BeaconAddTagDialogState extends State<BeaconAddTagDialog>
+    with StringInputValidator {
   final _tagController = TextEditingController();
+
+  late final _l10n = L10n.of(context)!;
 
   @override
   void dispose() {
@@ -32,7 +38,7 @@ class _BeaconAddTagDialogState extends State<BeaconAddTagDialog> {
       // TBD: l10n
       title: const Text('Add tag'),
       titleTextStyle: textTheme.headlineLarge,
-      content: TextField(
+      content: TextFormField(
         autofocus: true,
         controller: _tagController,
         decoration: const InputDecoration(
@@ -40,12 +46,17 @@ class _BeaconAddTagDialogState extends State<BeaconAddTagDialog> {
           hintText: 'Enter tag name',
           prefixIcon: Icon(Icons.tag),
         ),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9_]')),
+        ],
+        maxLength: kTitleMaxLength,
+        validator: (value) => titleValidator(_l10n, value),
+        onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
       ),
       contentTextStyle: textTheme.bodyMedium,
       actions: [
         // Yes
         TextButton(
-          // TBD: validate and normalize tag
           onPressed: () => Navigator.of(context).pop(_tagController.text),
           child: Text(l10n.buttonYes),
         ),
