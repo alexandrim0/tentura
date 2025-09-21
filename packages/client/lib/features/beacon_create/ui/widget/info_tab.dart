@@ -21,14 +21,19 @@ class InfoTab extends StatefulWidget {
 }
 
 class _InfoTabState extends State<InfoTab> with StringInputValidator {
-  final _dateRangeController = TextEditingController();
-  final _locationController = TextEditingController();
-
   late final _l10n = L10n.of(context)!;
 
   late final _theme = Theme.of(context);
 
   late final _cubit = context.read<BeaconCreateCubit>();
+
+  late final _dateRangeController = TextEditingController(
+    text: _formatDateRange(_cubit.state.startAt, _cubit.state.endAt),
+  );
+
+  late final _locationController = TextEditingController(
+    text: _cubit.state.location,
+  );
 
   @override
   void dispose() {
@@ -43,9 +48,12 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
       // Title
       TextFormField(
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(hintText: _l10n.beaconTitleRequired),
+        decoration: InputDecoration(
+          hintText: _l10n.beaconTitleRequired,
+        ),
         keyboardType: TextInputType.text,
         maxLength: kTitleMaxLength,
+        initialValue: _cubit.state.title,
         onTapOutside: (_) => FocusScope.of(context).unfocus(),
         onChanged: _cubit.setTitle,
         validator: (text) => titleValidator(_l10n, text),
@@ -54,10 +62,13 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
       // Description
       TextFormField(
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(hintText: _l10n.labelDescription),
+        decoration: InputDecoration(
+          hintText: _l10n.labelDescription,
+        ),
         keyboardType: TextInputType.multiline,
         maxLength: kDescriptionMaxLength,
         maxLines: null,
+        initialValue: _cubit.state.description,
         onChanged: _cubit.setDescription,
         onTapOutside: (_) => FocusScope.of(context).unfocus(),
         validator: (text) => descriptionValidator(_l10n, text),
@@ -66,9 +77,7 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
       // Context
       const Padding(
         padding: kPaddingSmallV,
-        child: ContextDropDown(
-          key: Key('BeaconCreate.ContextDropDown'),
-        ),
+        child: ContextDropDown(),
       ),
 
       // Location
@@ -87,26 +96,30 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
                 >(
                   bloc: _cubit,
                   selector: (state) => state.coordinates,
-                  builder: (context, coordinates) => coordinates == null
+                  builder: (_, coordinates) => coordinates == null
                       ? const Icon(TenturaIcons.location)
                       : IconButton(
                           icon: const Icon(Icons.cancel_rounded),
                           onPressed: () {
                             _locationController.clear();
-                            _cubit.setLocation(null);
+                            _cubit.setLocation(null, '');
                           },
                         ),
                 ),
           ),
+          onTapOutside: (_) => FocusScope.of(context).unfocus(),
           onTap: () async {
             final location = await ChooseLocationDialog.show(
               context,
               center: _cubit.state.coordinates,
             );
-            if (location == null) return;
-            _locationController.text =
-                location.place?.toString() ?? location.coords.toString();
-            _cubit.setLocation(location.coords);
+            if (location != null) {
+              final locationName =
+                  location.place?.toString() ?? location.coords.toString();
+
+              _locationController.text = locationName;
+              _cubit.setLocation(location.coords, locationName);
+            }
           },
         ),
       ),
@@ -121,6 +134,7 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
             hintText: _l10n.setDisplayPeriod,
             suffixIcon: const Icon(TenturaIcons.calendar),
           ),
+          onTapOutside: (_) => FocusScope.of(context).unfocus(),
           onTap: () async {
             final now = DateTime.timestamp();
             final dateRange = await showDateRangePicker(
@@ -132,9 +146,10 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
               saveText: _l10n.buttonOk,
             );
             if (dateRange != null) {
-              _dateRangeController.text =
-                  '${dateFormatYMD(dateRange.start)} '
-                  '- ${dateFormatYMD(dateRange.end)}';
+              _dateRangeController.text = _formatDateRange(
+                dateRange.start,
+                dateRange.end,
+              );
               _cubit.setDateRange(
                 startAt: dateRange.start,
                 endAt: dateRange.end,
@@ -184,4 +199,9 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
       ),
     ],
   );
+
+  String _formatDateRange(DateTime? start, DateTime? end) =>
+      start == null || end == null
+      ? ''
+      : '${dateFormatYMD(start)} - ${dateFormatYMD(end)}';
 }

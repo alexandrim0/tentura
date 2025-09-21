@@ -109,7 +109,6 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen>
             ),
             TabBar(
               controller: _tabController,
-              // TBD: l10n
               tabs: [
                 Tab(text: _l10n.beaconInfo),
                 Tab(text: _l10n.beaconImage),
@@ -128,9 +127,9 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen>
         child: TabBarView(
           controller: _tabController,
           children: const [
-            InfoTab(key: Key('BeaconCreate.InfoTab')),
-            ImageTab(key: Key('BeaconCreate.ImageTab')),
-            PollingTab(key: Key('BeaconCreate.PollingTab')),
+            InfoTab(),
+            ImageTab(),
+            PollingTab(),
           ],
         ),
       ),

@@ -17,9 +17,10 @@ class ContextDropDown extends StatelessWidget {
     final l10n = L10n.of(context)!;
     return BlocBuilder<ContextCubit, ContextState>(
       bloc: contextCubit,
-      buildWhen: (p, c) => p.selected != c.selected,
       builder: (context, state) => DefaultTextStyle.merge(
-        style: TextStyle(color: colorScheme.onSurface),
+        style: TextStyle(
+          color: colorScheme.onSurface,
+        ),
         child: DropdownButton<ContextSelection>(
           dropdownColor: colorScheme.surface,
           isExpanded: true,
