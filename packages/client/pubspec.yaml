@@ -59,9 +59,9 @@ dependencies:
   # Remote API related
   ferry: ^0.16.1
   gql_exec: ^1.0.0
-  gql_http_link: ^1.1.0
-  gql_error_link: ^1.0.0
-  gql_dedupe_link: ^2.0.3
+  gql_http_link: ^1.2.0
+  gql_error_link: ^1.0.1
+  gql_dedupe_link: ^4.0.0
   ed25519_edwards: ^0.3.1
   dart_jsonwebtoken: ^3.2.0
   web_socket_client: ^0.2.1
@@ -91,7 +91,7 @@ dev_dependencies:
   freezed: ^3.2.3
   build_runner: ^2.7.1
   flutter_lints: ^6.0.0
-  ferry_generator: ^0.14.0-dev.1
+  ferry_generator: ^0.14.0-dev.2
   json_serializable: ^6.11.1
   sentry_dart_plugin: ^3.0.0
   very_good_analysis: ^10.0.0

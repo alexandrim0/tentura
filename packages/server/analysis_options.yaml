@@ -4,6 +4,7 @@ include:
 analyzer:
   errors:
     specify_nonobvious_property_types: ignore
+    switch_on_type: ignore
   exclude:
     - "**/*.g.dart"
     - "**/*.gr.dart"
