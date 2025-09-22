@@ -40,7 +40,7 @@ class BeaconTileControl extends StatelessWidget {
       ),
 
       // Poll button
-      PollButton(polling: beacon.polling),
+      if (beacon.hasPolling) PollButton(polling: beacon.polling),
 
       const Spacer(),
 

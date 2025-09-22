@@ -43,6 +43,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
+            automaticallyImplyLeading: false,
             title: Text(l10n.chooseAccount),
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(4),

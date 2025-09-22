@@ -74,21 +74,6 @@ class GraphCubit extends Cubit<GraphState> {
 
   ///
   ///
-  void showNodeDetails(NodeDetails node) => switch (node) {
-    final UserNode node => emit(
-      state.copyWith(
-        status: StateIsNavigating('$kPathProfileView/${node.id}'),
-      ),
-    ),
-    final BeaconNode node => emit(
-      state.copyWith(
-        status: StateIsNavigating('$kPathBeaconView?id=${node.id}'),
-      ),
-    ),
-  };
-
-  ///
-  ///
   void jumpToEgo() => graphController.jumpToNode(_egoNode);
 
   ///

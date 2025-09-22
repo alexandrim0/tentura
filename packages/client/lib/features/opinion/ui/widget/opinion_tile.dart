@@ -12,7 +12,11 @@ import '../bloc/opinion_cubit.dart';
 import '../dialog/opinion_delete_dialog.dart';
 
 class OpinionTile extends StatelessWidget {
-  const OpinionTile({required this.opinion, this.isMine = false, super.key});
+  const OpinionTile({
+    required this.opinion,
+    this.isMine = false,
+    super.key,
+  });
 
   final Opinion opinion;
   final bool isMine;
