@@ -56,7 +56,7 @@ class PollingTab extends StatelessWidget {
                   decoration: InputDecoration(
                     labelText: l10n.optionLabel(i + 1),
                     suffix: IconButton(
-                      color: Colors.red,
+                      color: theme.colorScheme.error,
                       icon: const Icon(Icons.remove_circle_outline),
                       onPressed: () => cubit.removeVariant(i),
                     ),

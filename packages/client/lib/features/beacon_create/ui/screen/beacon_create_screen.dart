@@ -68,31 +68,33 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen>
         // Publish Button
         Padding(
           padding: kPaddingH,
-          child: BlocSelector<BeaconCreateCubit, BeaconCreateState, bool>(
-            key: const Key('BeaconCreate.PublishButton'),
-            bloc: _beaconCreateCubit,
-            selector: (state) => state.isSuccess,
-            builder: (context, isActive) => TextButton(
-              onPressed: isActive
-                  ? () async {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        final contextName = context
-                            .read<ContextCubit>()
-                            .state
-                            .selected;
-                        if (await BeaconPublishDialog.show(context) ?? false) {
-                          if (context.mounted) {
-                            await context.read<BeaconCreateCubit>().publish(
-                              context: contextName,
-                            );
+          child:
+              BlocSelector<BeaconCreateCubit, BeaconCreateState, StateStatus>(
+                key: const Key('BeaconCreate.PublishButton'),
+                bloc: _beaconCreateCubit,
+                selector: (state) => state.status,
+                builder: (context, status) => TextButton(
+                  onPressed: status == StateStatus.isSuccess
+                      ? () async {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            final contextName = context
+                                .read<ContextCubit>()
+                                .state
+                                .selected;
+                            if (await BeaconPublishDialog.show(context) ??
+                                false) {
+                              if (context.mounted) {
+                                await _beaconCreateCubit.publish(
+                                  context: contextName,
+                                );
+                              }
+                            }
                           }
                         }
-                      }
-                    }
-                  : null,
-              child: Text(_l10n.buttonPublish),
-            ),
-          ),
+                      : null,
+                  child: Text(_l10n.buttonPublish),
+                ),
+              ),
         ),
       ],
       bottom: PreferredSize(
