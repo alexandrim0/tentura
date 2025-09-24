@@ -36,6 +36,7 @@ class GraphCubit extends Cubit<GraphState> {
          user: me.copyWith(title: 'Me', score: 2),
          pinned: true,
          size: 80,
+         positionHint: 0,
        ),
        _graphRepository = graphRepository ?? GetIt.I<GraphRepository>(),
        _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
@@ -130,7 +131,7 @@ class GraphCubit extends Cubit<GraphState> {
         });
       }
 
-      // Fetch FocusNode
+      // Add FocusNode in case there were no edges containing it
       if (state.focus.isNotEmpty && !_nodes.containsKey(state.focus)) {
         _nodes[state.focus] = switch (state.focus[0]) {
           'U' => UserNode(
