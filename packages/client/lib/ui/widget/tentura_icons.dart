@@ -14,7 +14,7 @@ class TenturaIcons {
     fontPackage: kAssetPackage,
   );
   static const affiliation = IconData(
-    0xe901,
+    0xe917,
     fontFamily: _fontFamily,
     fontPackage: kAssetPackage,
   );
