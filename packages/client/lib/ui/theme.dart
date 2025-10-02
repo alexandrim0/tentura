@@ -144,5 +144,11 @@ ThemeData _createAppTheme(ColorScheme colorScheme) {
           bodyColor: colorScheme.onSurface,
           displayColor: colorScheme.onSurface,
         ),
+
+    //
+    chipTheme: ChipThemeData(
+      labelStyle: TextStyle(color: colorScheme.onPrimary),
+      backgroundColor: colorScheme.primary,
+    ),
   );
 }
