@@ -52,9 +52,9 @@ dependencies:
   flutter_secure_storage: ^10.0.0-beta.4
 
   # Logs & Stats
-  logger: ^2.6.1
-  sentry_drift: ^9.6.0
-  sentry_flutter: ^9.6.0
+  logger: ^2.6.2
+  sentry_drift: ^9.7.0
+  sentry_flutter: ^9.7.0
 
   # Remote API related
   ferry: ^0.16.1

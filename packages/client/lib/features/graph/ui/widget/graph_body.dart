@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:force_directed_graphview/force_directed_graphview.dart';
 
 import 'package:tentura/ui/bloc/screen_cubit.dart';
+import 'package:tentura/ui/theme.dart';
 
 import '../../domain/entity/edge_details.dart';
 import '../../domain/entity/node_details.dart';
@@ -52,8 +53,6 @@ class GraphBodyState extends State<GraphBody>
 
   late final _screenCubit = context.read<ScreenCubit>();
 
-  late final _highlightColor = Theme.of(context).colorScheme.surface;
-
   @override
   void initState() {
     super.initState();
@@ -81,7 +80,7 @@ class GraphBodyState extends State<GraphBody>
         curve: const EaseInOutReynolds(),
       ),
       highlightRadius: 0.15,
-      highlightColor: _highlightColor,
+      highlightColor: cBgDark,
       isAnimated: _graphCubit.state.isAnimated,
     ),
     labelBuilder: widget.isLabeled
