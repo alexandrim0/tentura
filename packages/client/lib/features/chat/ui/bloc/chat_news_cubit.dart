@@ -110,6 +110,10 @@ class ChatNewsCubit extends Cubit<ChatNewsState> {
   //
   //
   void _updateStateWithMessage(ChatMessageEntity message) {
+    if (message.senderId == state.myId) {
+      return;
+    }
+
     switch (message.status) {
       case ChatMessageStatus.seen:
         state.messages[message.senderId]?.removeWhere(

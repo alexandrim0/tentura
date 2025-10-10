@@ -4,13 +4,15 @@ import 'package:tentura/ui/bloc/state_base.dart';
 
 part 'beacon_create_state.freezed.dart';
 
-@freezed
+@Freezed(makeCollectionsUnmodifiable: false)
 abstract class BeaconCreateState extends StateBase with _$BeaconCreateState {
   const factory BeaconCreateState({
     @Default('') String title,
     @Default('') String description,
+    @Default('') String location,
     @Default('') String question,
     @Default([]) List<String> variants,
+    @Default([]) List<Key> variantsKeys,
     @Default({}) Set<String> tags,
     Coordinates? coordinates,
     DateTime? startAt,

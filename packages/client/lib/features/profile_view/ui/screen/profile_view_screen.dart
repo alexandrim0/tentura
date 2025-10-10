@@ -81,7 +81,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
       body: RefreshIndicator.adaptive(
         onRefresh: () async => Future.wait([
           context.read<ProfileViewCubit>().fetch(),
-          opinionCubit.fetch(),
+          opinionCubit.fetch(preserve: false),
         ]),
         child: CustomScrollView(
           slivers: [

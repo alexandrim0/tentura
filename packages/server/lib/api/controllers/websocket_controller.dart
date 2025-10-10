@@ -17,10 +17,10 @@ final class WebSocketController extends WebsocketRouterBase {
     onClose: (session) {
       removeSession(session);
     },
-    onError: (session, error) {
+    onError: (session, error) async {
       final err = 'Error occurred [$error]';
       print(err);
-      session.sender.close(1000, err);
+      await session.sender.close(1000, err);
     },
     onMessage: (session, data) => switch (data) {
       final String message => onTextMessage(session, message),

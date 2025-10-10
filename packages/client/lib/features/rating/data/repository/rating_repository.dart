@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura/consts.dart';
+// import 'package:tentura/consts.dart';
 import 'package:tentura/data/model/user_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
 import 'package:tentura/domain/entity/profile.dart';
@@ -20,9 +20,9 @@ class RatingRepository {
           .request(
             GRatingFetchReq(
               (r) => r
-                ..context = const Context().withEntry(
-                  HttpLinkHeaders(headers: {kHeaderQueryContext: context}),
-                )
+                // ..context = const Context().withEntry(
+                //   HttpLinkHeaders(headers: {kHeaderQueryContext: context}),
+                // )
                 ..vars.context = context,
             ),
           )

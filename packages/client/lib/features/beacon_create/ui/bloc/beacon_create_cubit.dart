@@ -21,8 +21,12 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
     BeaconRepository? beaconRepository,
   }) : _beaconRepository = beaconRepository ?? GetIt.I<BeaconRepository>(),
        _imageRepository = imageRepository ?? GetIt.I<ImageRepository>(),
-       // ignore: prefer_const_constructors // need non const list
-       super(BeaconCreateState(variants: ['']));
+       super(
+         BeaconCreateState(
+           variants: [''],
+           variantsKeys: [UniqueKey()],
+         ),
+       );
 
   final BeaconRepository _beaconRepository;
 
@@ -38,13 +42,21 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
 
   ///
   ///
-  void setDateRange({DateTime? startAt, DateTime? endAt}) =>
-      emit(state.copyWith(startAt: startAt, endAt: endAt));
+  void setDateRange({DateTime? startAt, DateTime? endAt}) => emit(
+    state.copyWith(
+      startAt: startAt,
+      endAt: endAt,
+    ),
+  );
 
   ///
   ///
-  void setLocation(Coordinates? value) =>
-      emit(state.copyWith(coordinates: value));
+  void setLocation(Coordinates? value, String locationName) => emit(
+    state.copyWith(
+      coordinates: value,
+      location: locationName,
+    ),
+  );
 
   ///
   ///
@@ -80,6 +92,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
   void addVariant() => emit(
     state.copyWith(
       variants: [...state.variants, ''],
+      variantsKeys: [...state.variantsKeys, UniqueKey()],
     ),
   );
 
@@ -88,6 +101,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
   void removeVariant(int index) => emit(
     state.copyWith(
       variants: [...state.variants]..removeAt(index),
+      variantsKeys: [...state.variantsKeys]..removeAt(index),
     ),
   );
 
@@ -99,14 +113,17 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
   ///
   void addTag(String value) => emit(
     state.copyWith(
-      tags: {...state.tags, value},
+      tags: {...state.tags, value.toLowerCase()},
     ),
   );
 
   ///
   ///
-  void removeTag(String value) =>
-      emit(state.copyWith(tags: {...state.tags}..remove(value)));
+  void removeTag(String value) => emit(
+    state.copyWith(
+      tags: {...state.tags}..remove(value),
+    ),
+  );
 
   ///
   ///
@@ -118,7 +135,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
         emit(
           state.copyWith(
             // TBD: l10n
-            status: StateHasError('Too shohort question.'),
+            status: StateHasError('Too short question.'),
           ),
         );
         return;

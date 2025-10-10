@@ -6,6 +6,7 @@ import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/widget/share_code_icon_button.dart';
 
 import 'package:tentura/features/beacon/ui/dialog/beacon_delete_dialog.dart';
+import 'package:tentura/ui/widget/tentura_icons.dart';
 
 import '../bloc/beacon_view_cubit.dart';
 
@@ -22,7 +23,7 @@ class BeaconMineControl extends StatelessWidget {
       children: [
         // Graph View
         IconButton(
-          icon: const Icon(Icons.hub_outlined),
+          icon: const Icon(TenturaIcons.graph),
           onPressed: beacon.myVote < 0
               ? null
               : () => context.read<ScreenCubit>().showGraphFor(beacon.id),

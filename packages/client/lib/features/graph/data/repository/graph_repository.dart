@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import 'package:tentura/consts.dart';
+// import 'package:tentura/consts.dart';
 import 'package:tentura/data/model/beacon_model.dart';
 import 'package:tentura/data/model/user_model.dart';
 import 'package:tentura/data/service/remote_api_service.dart';
@@ -26,9 +26,9 @@ class GraphRepository {
       .request(
         GGraphFetchReq(
           (b) => b
-            ..context = const Context().withEntry(
-              HttpLinkHeaders(headers: {kHeaderQueryContext: context}),
-            )
+            // ..context = const Context().withEntry(
+            //   HttpLinkHeaders(headers: {kHeaderQueryContext: context}),
+            // )
             ..vars.focus = focus
             ..vars.limit = limit
             ..vars.offset = offset

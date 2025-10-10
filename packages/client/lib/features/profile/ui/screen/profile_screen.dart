@@ -20,39 +20,42 @@ class ProfileScreen extends StatelessWidget {
       BlocSelector<ProfileCubit, ProfileState, Profile>(
         bloc: GetIt.I<ProfileCubit>(),
         selector: (state) => state.profile,
-        builder: (context, profile) => RefreshIndicator.adaptive(
-          onRefresh: () => Future.wait([
-            GetIt.I<ProfileCubit>().fetch(),
-          ]),
-          child: CustomScrollView(
-            slivers: [
-              // Header
-              ProfileAppBar(
-                key: Key('ProfileAppBar:${profile.hashCode}'),
-                profile: profile,
-              ),
-
-              // Profile
-              SliverPadding(
-                padding: kPaddingAll,
-                sliver: ProfileBody(
-                  key: Key('ProfileBody:${profile.hashCode}'),
-                  profile: profile,
-                ),
-              ),
-
-              // Opinions List
-              SliverPadding(
-                padding: kPaddingH,
-                sliver: BlocProvider(
-                  create: (_) => OpinionCubit(
-                    myProfile: profile,
-                    userId: profile.id,
+        builder: (_, profile) => BlocProvider(
+          create: (_) => OpinionCubit(
+            myProfile: profile,
+            userId: profile.id,
+          ),
+          child: Builder(
+            builder: (context) => RefreshIndicator.adaptive(
+              onRefresh: () => Future.wait([
+                GetIt.I<ProfileCubit>().fetch(),
+                context.read<OpinionCubit>().fetch(preserve: false),
+              ]),
+              child: CustomScrollView(
+                slivers: [
+                  // Header
+                  ProfileAppBar(
+                    key: Key('ProfileAppBar:${profile.hashCode}'),
+                    profile: profile,
                   ),
-                  child: const OpinionList(),
-                ),
+
+                  // Profile
+                  SliverPadding(
+                    padding: kPaddingAll,
+                    sliver: ProfileBody(
+                      key: Key('ProfileBody:${profile.hashCode}'),
+                      profile: profile,
+                    ),
+                  ),
+
+                  // Opinions List
+                  const SliverPadding(
+                    padding: kPaddingH,
+                    sliver: OpinionList(),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       );

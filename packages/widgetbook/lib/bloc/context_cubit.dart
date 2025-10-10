@@ -39,9 +39,6 @@ class ContextCubitMock extends Cubit<ContextState> implements ContextCubit {
   }
 
   @override
-  Future<void> dispose() async {}
-
-  @override
   Future<void> fetch({bool fromCache = true}) async {}
 
   @override

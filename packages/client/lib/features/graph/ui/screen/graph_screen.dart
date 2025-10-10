@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
@@ -20,13 +21,27 @@ class GraphScreen extends StatelessWidget implements AutoRouteWrapper {
   final String focus;
 
   @override
-  Widget wrappedRoute(BuildContext context) => BlocProvider(
-    create: (_) => GraphCubit(
-      me: GetIt.I<ProfileCubit>().state.profile,
-      focus: focus,
-    ),
-    child: BlocListener<GraphCubit, GraphState>(
-      listener: commonScreenBlocListener,
+  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (_) => ScreenCubit(),
+      ),
+      BlocProvider(
+        create: (_) => GraphCubit(
+          me: GetIt.I<ProfileCubit>().state.profile,
+          focus: focus,
+        ),
+      ),
+    ],
+    child: MultiBlocListener(
+      listeners: const [
+        BlocListener<GraphCubit, GraphState>(
+          listener: commonScreenBlocListener,
+        ),
+        BlocListener<ScreenCubit, ScreenState>(
+          listener: commonScreenBlocListener,
+        ),
+      ],
       child: this,
     ),
   );
