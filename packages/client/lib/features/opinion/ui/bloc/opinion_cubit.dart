@@ -33,10 +33,18 @@ class OpinionCubit extends Cubit<OpinionState> {
 
   final OpinionRepository _opinionRepository;
 
-  Future<void> fetch({bool clear = false}) async {
-    if (state.isLoading || state.hasReachedMax) return;
+  Future<void> fetch({bool preserve = true}) async {
+    if (state.isLoading) {
+      return;
+    }
 
-    if (clear) {
+    if (state.hasReachedMax && preserve) {
+      return;
+    }
+
+    if (preserve) {
+      emit(state.copyWith(status: StateStatus.isLoading));
+    } else {
       emit(
         state.copyWith(
           opinions: [],
@@ -44,8 +52,6 @@ class OpinionCubit extends Cubit<OpinionState> {
           hasReachedMax: false,
         ),
       );
-    } else {
-      emit(state.copyWith(status: StateStatus.isLoading));
     }
 
     try {
