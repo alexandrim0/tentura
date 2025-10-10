@@ -3,15 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'utils/ui_utils.dart';
 
-// const primaryColor = Color(0xFF3A1E5C);
-
-// final themeLight = _createAppTheme(
-//   ColorScheme.fromSeed(seedColor: primaryColor),
-// );
-// final themeDark = _createAppTheme(
-//   ColorScheme.fromSeed(brightness: Brightness.dark, seedColor: primaryColor),
-// );
-
 // core palette
 
 const _cPrimary = Color(0xFF014F86);
@@ -20,7 +11,7 @@ const _cPrimaryDark = Color(0xFF6CBCE3);
 // const _cSuccess = Color(0xFF00A676);
 const _cError = Color(0xFFD14343);
 const _cBgLight = Color(0xFFF4F4F4);
-const _cBgDark = Color(0xFF0A1826);
+const cBgDark = Color(0xFF0A1826);
 const _cSecondaryTextLight = Color(0xFF4B5563);
 const _cSecondaryTextDark = Color(0xFFE5E7EB);
 const _cSurfaceContainerLight = Color(0xFFFFFFFF);
@@ -53,12 +44,12 @@ const lightScheme = ColorScheme(
 const darkScheme = ColorScheme(
   brightness: Brightness.dark,
   primary: _cPrimaryDark,
-  onPrimary: _cBgDark,
+  onPrimary: cBgDark,
   secondary: _cPrimaryDark,
   onSecondary: _cOnSurfaceDark,
   error: _cError,
   onError: Colors.white,
-  surface: _cBgDark,
+  surface: cBgDark,
   surfaceContainer: _cSurfaceContainerDark,
   onSurface: _cOnSurfaceDark,
   onSurfaceVariant: _cSecondaryTextDark,
@@ -144,5 +135,11 @@ ThemeData _createAppTheme(ColorScheme colorScheme) {
           bodyColor: colorScheme.onSurface,
           displayColor: colorScheme.onSurface,
         ),
+
+    //
+    chipTheme: ChipThemeData(
+      labelStyle: TextStyle(color: colorScheme.onPrimary),
+      backgroundColor: colorScheme.primary,
+    ),
   );
 }

@@ -174,10 +174,13 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
             ActionChip(
               avatar: Icon(
                 Icons.add,
-                color: _theme.colorScheme.onSecondary,
+                color: _theme.colorScheme.onPrimary,
               ),
               // TBD: l10n
-              label: const Text('tag'),
+              label: Text(
+                'tag',
+                style: _theme.chipTheme.labelStyle,
+              ),
               onPressed: tags.length < 5
                   ? () async {
                       final tag = await BeaconAddTagDialog.show(context);
