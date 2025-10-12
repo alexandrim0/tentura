@@ -36,7 +36,7 @@ dependencies:
   graphql_server2: ^6.4.0
   json_annotation: ^4.9.0
   shelf_multipart: ^2.0.1
-  dart_jsonwebtoken: ^3.2.0
+  dart_jsonwebtoken: ^3.3.0
   freezed_annotation: ^3.1.0
   shelf_cors_headers: ^0.1.5
   migrant_db_postgresql: ^0.3.0
