@@ -6,7 +6,7 @@ version: 0.0.7
 
 environment:
   sdk: '>=3.9.2 <4.0.0'
-  flutter: ^3.35.5
+  flutter: ^3.35.6
 
 dependencies:
   flutter:
@@ -17,7 +17,7 @@ dependencies:
     path: ../client
 
   get_it: ^8.2.0
-  logger: ^2.6.1
+  logger: ^2.6.2
   injectable: ^2.5.1
   widgetbook: ^3.17.1
   google_fonts: ^6.3.1
