@@ -142,7 +142,6 @@ class RootRouter extends RootStackRouter {
 
     // Profile View
     AutoRoute(
-      fullMatch: true,
       usesPathAsKey: true,
       maintainState: false,
       page: ProfileViewRoute.page,
@@ -185,6 +184,7 @@ class RootRouter extends RootStackRouter {
 
     // Beacon View
     AutoRoute(
+      usesPathAsKey: true,
       maintainState: false,
       page: BeaconViewRoute.page,
       path: '$kPathBeaconView/:id',
@@ -192,6 +192,7 @@ class RootRouter extends RootStackRouter {
 
     // Beacon View All
     AutoRoute(
+      usesPathAsKey: true,
       maintainState: false,
       page: BeaconRoute.page,
       path: '$kPathBeaconViewAll/:id',
@@ -199,6 +200,7 @@ class RootRouter extends RootStackRouter {
 
     // Rating
     AutoRoute(
+      usesPathAsKey: true,
       maintainState: false,
       page: RatingRoute.page,
       path: kPathRating,
@@ -207,6 +209,7 @@ class RootRouter extends RootStackRouter {
 
     // Graph
     AutoRoute(
+      usesPathAsKey: true,
       maintainState: false,
       page: GraphRoute.page,
       path: '$kPathGraph/:id',
@@ -216,6 +219,7 @@ class RootRouter extends RootStackRouter {
     // Chat
     AutoRoute(
       keepHistory: false,
+      usesPathAsKey: true,
       maintainState: false,
       page: ChatRoute.page,
       path: '$kPathChat/:id',
@@ -244,6 +248,7 @@ class RootRouter extends RootStackRouter {
     // Complaint
     AutoRoute(
       keepHistory: false,
+      usesPathAsKey: true,
       maintainState: false,
       fullscreenDialog: true,
       page: ComplaintRoute.page,
