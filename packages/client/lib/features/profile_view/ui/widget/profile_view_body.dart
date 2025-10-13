@@ -24,9 +24,29 @@ class ProfileViewBody extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Avatar
+              // Avatar and eye
               Center(
-                child: AvatarRated.big(profile: profile),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    AvatarRated.big(profile: profile),
+                    Positioned(
+                      top: 0,
+                      right: 4,
+                      child: SizedBox(
+                        width: 36,
+                        height: 36,
+                        child: Icon(
+                          profile.isSeeingMe
+                              ? TenturaIcons.eyeOpen
+                              : TenturaIcons.eyeClosed,
+                          color: theme.colorScheme.onSurface,
+                          size: 42,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
               // Description
