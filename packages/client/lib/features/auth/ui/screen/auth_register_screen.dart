@@ -7,7 +7,6 @@ import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/string_input_validator.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 
 import '../bloc/auth_cubit.dart';
@@ -83,114 +82,114 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(_l10n.createNewAccount),
-        leading: const DeepBackButton(),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4),
-          child: BlocSelector<AuthCubit, AuthState, bool>(
-            key: Key('Loader:${_authCubit.hashCode}'),
-            selector: (state) => state.isLoading,
-            builder: LinearPiActive.builder,
-            bloc: _authCubit,
-          ),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      centerTitle: true,
+      title: Text(_l10n.createNewAccount),
+      leading: const AutoLeadingButton(),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(4),
+        child: BlocSelector<AuthCubit, AuthState, bool>(
+          key: Key('Loader:${_authCubit.hashCode}'),
+          selector: (state) => state.isLoading,
+          builder: LinearPiActive.builder,
+          bloc: _authCubit,
         ),
       ),
-      body: Form(
-        child: Column(
-          children: [
-            // Invite Code
-            if (_env.needInviteCode)
-              Padding(
-                padding: kPaddingAll,
-                child: TextFormField(
-                  autovalidateMode: AutovalidateMode.onUnfocus,
-                  controller: _codeController,
-                  contextMenuBuilder: (_, state) =>
-                      AdaptiveTextSelectionToolbar.buttonItems(
-                        anchors: state.contextMenuAnchors,
-                        buttonItems: [
-                          ContextMenuButtonItem(
-                            type: ContextMenuButtonType.paste,
-                            onPressed: _getCodeFromClipboard,
-                          ),
-                        ],
-                      ),
-
-                  decoration: InputDecoration(
-                    hintText: _l10n.pleaseEnterCode,
-                    labelText: _l10n.labelInvitationCode,
-                    suffix: IconButton(
-                      onPressed: _getCodeFromClipboard,
-                      icon: const Icon(Icons.paste_rounded),
-                    ),
-                  ),
-                  maxLength: kIdLength,
-                  style: _textTheme.headlineLarge,
-                  validator: (text) => invitationCodeValidator(_l10n, text),
-                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                ),
-              ),
-
-            // Username
+    ),
+    body: Form(
+      child: Column(
+        children: [
+          // Invite Code
+          if (_env.needInviteCode)
             Padding(
               padding: kPaddingAll,
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUnfocus,
-                controller: _titleController,
+                controller: _codeController,
+                contextMenuBuilder: (_, state) =>
+                    AdaptiveTextSelectionToolbar.buttonItems(
+                      anchors: state.contextMenuAnchors,
+                      buttonItems: [
+                        ContextMenuButtonItem(
+                          type: ContextMenuButtonType.paste,
+                          onPressed: _getCodeFromClipboard,
+                        ),
+                      ],
+                    ),
+
                 decoration: InputDecoration(
-                  hintText: _l10n.pleaseFillTitle,
-                  labelText: _l10n.labelTitle,
+                  hintText: _l10n.pleaseEnterCode,
+                  labelText: _l10n.labelInvitationCode,
+                  suffix: IconButton(
+                    onPressed: _getCodeFromClipboard,
+                    icon: const Icon(Icons.paste_rounded),
+                  ),
                 ),
-                maxLength: kTitleMaxLength,
+                maxLength: kIdLength,
                 style: _textTheme.headlineLarge,
-                validator: (text) => titleValidator(_l10n, text),
+                validator: (text) => invitationCodeValidator(_l10n, text),
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),
               ),
             ),
 
-            const Spacer(),
-
-            // Create new account
-            Padding(
-              padding:
-                  kPaddingAll +
-                  const EdgeInsets.only(bottom: 60 - kSpacingMedium),
-              child: Row(
-                children: [
-                  // Register
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: () async {
-                        await GetIt.I<AuthCubit>().signUp(
-                          invitationCode: _codeController.text,
-                          title: _titleController.text,
-                        );
-                      },
-                      child: Text(_l10n.buttonCreate),
-                    ),
-                  ),
-
-                  const Padding(padding: EdgeInsets.only(left: kSpacingMedium)),
-
-                  // Cancel
-                  Expanded(
-                    child: FilledButton.tonal(
-                      onPressed: context.read<ScreenCubit>().back,
-                      child: Text(_l10n.buttonCancel),
-                    ),
-                  ),
-                ],
+          // Username
+          Padding(
+            padding: kPaddingAll,
+            child: TextFormField(
+              autovalidateMode: AutovalidateMode.onUnfocus,
+              controller: _titleController,
+              decoration: InputDecoration(
+                hintText: _l10n.pleaseFillTitle,
+                labelText: _l10n.labelTitle,
               ),
+              maxLength: kTitleMaxLength,
+              style: _textTheme.headlineLarge,
+              validator: (text) => titleValidator(_l10n, text),
+              onTapOutside: (_) => FocusScope.of(context).unfocus(),
             ),
-          ],
-        ),
+          ),
+
+          const Spacer(),
+
+          // Create new account
+          Padding(
+            padding:
+                kPaddingAll +
+                const EdgeInsets.only(bottom: 60 - kSpacingMedium),
+            child: Row(
+              children: [
+                // Register
+                Expanded(
+                  child: FilledButton(
+                    onPressed: () async {
+                      await GetIt.I<AuthCubit>().signUp(
+                        invitationCode: _codeController.text,
+                        title: _titleController.text,
+                      );
+                    },
+                    child: Text(_l10n.buttonCreate),
+                  ),
+                ),
+
+                const Padding(
+                  padding: EdgeInsets.only(left: kSpacingMedium),
+                ),
+
+                // Cancel
+                Expanded(
+                  child: FilledButton.tonal(
+                    onPressed: context.read<ScreenCubit>().back,
+                    child: Text(_l10n.buttonCancel),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 
   Future<void> _getCodeFromClipboard() async {
     final code = await _authCubit.getCodeFromClipboard();

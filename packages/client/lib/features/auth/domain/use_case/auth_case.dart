@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/domain/use_case/use_case_base.dart';
 
 import '../../data/repository/auth_remote_repository.dart';
@@ -45,7 +46,13 @@ final class AuthCase extends UseCaseBase {
     required String invitationCode,
   }) async {
     final seed = base64UrlEncode(
-      Uint8List.fromList(List<int>.generate(32, (_) => _random.nextInt(256))),
+      Uint8List.fromList(
+        List<int>.generate(
+          kSeedLength,
+          (_) => _random.nextInt(256),
+          growable: false,
+        ),
+      ),
     );
     final userId = await _authRemoteRepository.signUp(
       seed: seed,

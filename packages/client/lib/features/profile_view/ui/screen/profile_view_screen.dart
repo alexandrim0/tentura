@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
@@ -20,10 +21,13 @@ import '../widget/profile_view_body.dart';
 class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
   const ProfileViewScreen({
     @PathParam('id') this.id = '',
+    @QueryParam(kQueryIsDeepLink) this.isDeepLink,
     super.key,
   });
 
   final String id;
+
+  final String? isDeepLink;
 
   @override
   Widget wrappedRoute(BuildContext context) => FutureBuilder<Ids>(
@@ -34,7 +38,7 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
           child: CircularProgressIndicator.adaptive(),
         );
       } else if (state.hasError) {
-        Center(
+        return Center(
           child: Text(state.error.toString()),
         );
       }
@@ -86,7 +90,9 @@ class ProfileViewScreen extends StatelessWidget implements AutoRouteWrapper {
         child: CustomScrollView(
           slivers: [
             // Header
-            const ProfileViewAppBar(),
+            ProfileViewAppBar(
+              isFromDeepLink: isDeepLink == 'true',
+            ),
 
             // Body
             const SliverPadding(

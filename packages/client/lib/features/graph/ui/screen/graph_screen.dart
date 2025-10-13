@@ -4,7 +4,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
 
 import 'package:tentura/features/profile/ui/bloc/profile_cubit.dart';
 // import 'package:tentura/features/context/ui/widget/context_drop_down.dart';
@@ -53,7 +52,7 @@ class GraphScreen extends StatelessWidget implements AutoRouteWrapper {
     final cubit = context.read<GraphCubit>();
     return Scaffold(
       appBar: AppBar(
-        leading: const DeepBackButton(),
+        leading: const AutoLeadingButton(),
 
         // Title
         title: Text(l10n.graphView),

@@ -283,6 +283,9 @@ class RootRouter extends RootStackRouter {
                     : kPathSignIn,
               _ => kPathConnect,
             },
+            queryParameters: {
+              kQueryIsDeepLink: 'true',
+            },
           )
         : uri,
   );
