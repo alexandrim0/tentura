@@ -45,6 +45,7 @@ dev_dependencies:
   test: ^1.26.3
   freezed: ^3.2.3
   drift_dev: ^2.28.3
+  jaspr_lints: ^0.5.1
   build_runner: ^2.9.0
   jaspr_builder: ^0.21.3
   json_serializable: ^6.11.1

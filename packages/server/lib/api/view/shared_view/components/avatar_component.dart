@@ -10,7 +10,7 @@ class AvatarComponent extends StatelessComponent {
   final UserEntity user;
 
   @override
-  Component build(BuildContext context) => Component.fragment([
+  Component build(BuildContext context) => fragment([
     img(
       src: user.imageUrl,
       classes: 'card-avatar__image',
@@ -20,12 +20,14 @@ class AvatarComponent extends StatelessComponent {
       ),
     ),
     p(
-      [text(user.title)],
       classes: 'card-avatar__text',
       styles: const Styles(
         fontSize: Unit.pixels(20),
         fontWeight: FontWeight.w600,
       ),
+      [
+        text(user.title),
+      ],
     ),
   ]);
 }

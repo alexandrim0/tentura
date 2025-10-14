@@ -13,21 +13,35 @@ class OpinionViewComponent extends StatelessComponent {
   final OpinionEntity opinion;
 
   @override
-  Component build(BuildContext context) => Component.fragment([
-    div([
-      div(
-        [AvatarComponent(user: opinion.author)],
-        classes: 'card-avatar',
-      ),
-      p([
-        text(opinion.content),
-      ], styles: const Styles(margin: Spacing.only(top: kEdgeInsetsS))),
-      p(
-        [text(_formatDate(opinion.createdAt))],
-        classes: 'secondary-text',
-        styles: const Styles(margin: Spacing.only(top: kEdgeInsetsXS)),
-      ),
-    ], classes: 'card-container'),
+  Component build(BuildContext context) => fragment([
+    div(
+      classes: 'card-container',
+      [
+        div(
+          classes: 'card-avatar',
+          [
+            AvatarComponent(user: opinion.author),
+          ],
+        ),
+        p(
+          styles: const Styles(
+            margin: Spacing.only(top: kEdgeInsetsS),
+          ),
+          [
+            text(opinion.content),
+          ],
+        ),
+        p(
+          classes: 'secondary-text',
+          styles: const Styles(
+            margin: Spacing.only(top: kEdgeInsetsXS),
+          ),
+          [
+            text(_formatDate(opinion.createdAt)),
+          ],
+        ),
+      ],
+    ),
   ]);
 
   static String _formatDate(DateTime dateTime) =>

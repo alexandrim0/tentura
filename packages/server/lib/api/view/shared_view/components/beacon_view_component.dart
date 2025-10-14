@@ -13,55 +13,72 @@ class BeaconViewComponent extends StatelessComponent {
   final BeaconEntity beacon;
 
   @override
-  Component build(BuildContext context) => Component.fragment([
+  Component build(BuildContext context) => fragment([
     img(
       src: beacon.imageUrl,
       styles: const Styles(width: Unit.percent(100)),
     ),
-    div([
-      div(
-        [AvatarComponent(user: beacon.author)],
-        classes: 'card-avatar',
-        styles: const Styles(
-          margin: Spacing.only(top: Unit.pixels(-68)),
+    div(
+      classes: 'card-container',
+      [
+        div(
+          classes: 'card-avatar',
+          styles: const Styles(
+            margin: Spacing.only(top: Unit.pixels(-68)),
+          ),
+          [
+            AvatarComponent(user: beacon.author),
+          ],
         ),
-      ),
-      h1(
-        [text(beacon.title)],
-        styles: const Styles(
-          margin: Spacing.only(top: kEdgeInsetsMS),
-        ),
-      ),
-      if (beacon.description.isNotEmpty)
-        p(
-          [text(beacon.description)],
+
+        h1(
           styles: const Styles(
             margin: Spacing.only(top: kEdgeInsetsMS),
           ),
+          [
+            text(beacon.title),
+          ],
         ),
-      if (beacon.coordinates != null)
-        p(
-          [text(beacon.coordinates.toString())],
-          classes: 'secondary-text',
-          styles: Styles(
-            margin: Spacing.only(
-              top: kEdgeInsetsSXS,
-              bottom: beacon.startAt != null && beacon.endAt != null
-                  ? kEdgeInsetsS
-                  : Unit.zero,
+
+        if (beacon.description.isNotEmpty)
+          p(
+            styles: const Styles(
+              margin: Spacing.only(top: kEdgeInsetsMS),
             ),
+            [
+              text(beacon.description),
+            ],
           ),
-        ),
-      if (beacon.startAt != null || beacon.endAt != null)
-        p(
-          [text('${beacon.startAt} - ${beacon.endAt}')],
-          classes: 'secondary-text',
-          styles: Styles(
-            margin: Spacing.only(
-              top: beacon.coordinates != null ? Unit.zero : kEdgeInsetsSXS,
+
+        if (beacon.coordinates != null)
+          p(
+            classes: 'secondary-text',
+            styles: Styles(
+              margin: Spacing.only(
+                top: kEdgeInsetsSXS,
+                bottom: beacon.startAt != null && beacon.endAt != null
+                    ? kEdgeInsetsS
+                    : Unit.zero,
+              ),
             ),
+            [
+              text(beacon.coordinates.toString()),
+            ],
           ),
-        ),
-    ], classes: 'card-container'),
+
+        if (beacon.startAt != null || beacon.endAt != null)
+          p(
+            classes: 'secondary-text',
+            styles: Styles(
+              margin: Spacing.only(
+                top: beacon.coordinates != null ? Unit.zero : kEdgeInsetsSXS,
+              ),
+            ),
+            [
+              text('${beacon.startAt} - ${beacon.endAt}'),
+            ],
+          ),
+      ],
+    ),
   ]);
 }

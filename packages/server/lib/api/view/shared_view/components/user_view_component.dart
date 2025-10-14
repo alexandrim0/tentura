@@ -13,20 +13,26 @@ class UserViewComponent extends StatelessComponent {
   final UserEntity user;
 
   @override
-  Component build(BuildContext context) => Component.fragment([
+  Component build(BuildContext context) => fragment([
     div(
+      classes: 'card-container',
       [
         div(
-          [AvatarComponent(user: user)],
           classes: 'card-avatar',
+          [
+            AvatarComponent(user: user),
+          ],
         ),
         if (user.description.isNotEmpty)
           p(
-            [text(user.description)],
-            styles: const Styles(margin: Spacing.only(top: kEdgeInsetsMS)),
+            styles: const Styles(
+              margin: Spacing.only(top: kEdgeInsetsMS),
+            ),
+            [
+              text(user.description),
+            ],
           ),
       ],
-      classes: 'card-container',
     ),
   ]);
 }

@@ -45,10 +45,10 @@ final defaultStyles = [
   css('html, body').styles(
     width: 100.percent,
     minHeight: 100.vh,
-    margin: Spacing.zero,
     padding: Spacing.zero,
-    fontFamily: FontFamilies.sansSerif,
+    margin: Spacing.zero,
     color: const Color.variable('--font-main'),
+    fontFamily: FontFamilies.sansSerif,
   ),
 
   css('p').styles(margin: Spacing.unset),
@@ -60,16 +60,16 @@ final defaultStyles = [
   ),
 
   css('.secondary-text').styles(
-    fontSize: 12.px,
     color: const Color('#78839C'),
+    fontSize: 12.px,
   ),
 
   css('.card', [
     css('&').styles(
       display: Display.flex,
-      flex: const Flex(grow: 1),
-      flexDirection: FlexDirection.column,
       minHeight: const Unit.vh(100),
+      flexDirection: FlexDirection.column,
+      flex: const Flex(grow: 1),
       backgroundColor: const Color.variable('--card-bg'),
     ),
     css('&-container').styles(
@@ -86,11 +86,11 @@ final defaultStyles = [
     css('&__image')
         .styles(
           margin: const Spacing.only(left: Unit.pixels(-2)),
-          radius: const BorderRadius.circular(Unit.percent(50)),
           border: const Border(
             color: Color.variable('--card-bg'),
             width: Unit.pixels(4),
           ),
+          radius: const BorderRadius.circular(Unit.percent(50)),
         )
         .styles(raw: {'object-fit': 'cover'}),
     css('&__text').styles(
@@ -102,8 +102,8 @@ final defaultStyles = [
   css.media(MediaQuery.screen(minWidth: 480.px), [
     css('body').styles(
       display: Display.flex,
-      alignItems: AlignItems.center,
       justifyContent: JustifyContent.center,
+      alignItems: AlignItems.center,
       backgroundColor: const Color.variable('--background-color-purple'),
     ),
 

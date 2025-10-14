@@ -11,6 +11,8 @@ analyzer:
     - "**/*.schema.dart"
     - "**/*.freezed.dart"
     - "lib/jaspr_options.dart"
+  plugins:
+    - custom_lint
 
 linter:
   rules:
@@ -23,3 +25,10 @@ linter:
     always_use_package_imports: false
     lines_longer_than_80_chars: false
     avoid_catches_without_on_clauses: false
+
+custom_lint:
+  rules:
+    styles_ordering: true
+    prefer_html_methods: true
+    prefer_styles_getter: true
+    sort_children_properties_last: true

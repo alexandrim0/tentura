@@ -12,17 +12,29 @@ class CommentViewComponent extends StatelessComponent {
   final CommentEntity comment;
 
   @override
-  Component build(BuildContext context) => Component.fragment([
+  Component build(BuildContext context) => fragment([
     hr(
       styles: const Styles(
+        margin: Spacing.zero,
         border: Border.only(
           bottom: BorderSide.none(),
           top: BorderSide.solid(color: Color('#78839C')),
         ),
-        margin: Spacing.zero,
       ),
     ),
     div(
+      styles: const Styles(
+        display: Display.flex,
+        padding: Spacing.only(
+          left: kEdgeInsetsM,
+          right: kEdgeInsetsM,
+          bottom: kEdgeInsetsMS,
+          top: kEdgeInsetsSXS,
+        ),
+        flexDirection: FlexDirection.row,
+        flex: Flex(grow: 1),
+        color: Color.variable('--comment-bg'),
+      ),
       [
         img(
           src: comment.author.imageUrl,
@@ -34,39 +46,31 @@ class CommentViewComponent extends StatelessComponent {
           ),
         ),
         div(
-          [
-            p(
-              [text(comment.author.title)],
-              classes: 'card-avatar__text',
-              styles: const Styles(
-                fontWeight: FontWeight.bolder,
-                margin: Spacing.only(bottom: kEdgeInsetsSXS),
-              ),
-            ),
-            p([
-              text(comment.content),
-            ]),
-          ],
           styles: const Styles(
             margin: Spacing.only(
               left: kEdgeInsetsM,
               top: kEdgeInsetsXS,
             ),
           ),
+          [
+            p(
+              classes: 'card-avatar__text',
+              styles: const Styles(
+                margin: Spacing.only(bottom: kEdgeInsetsSXS),
+                fontWeight: FontWeight.bolder,
+              ),
+              [
+                text(comment.author.title),
+              ],
+            ),
+            p(
+              [
+                text(comment.content),
+              ],
+            ),
+          ],
         ),
       ],
-      styles: const Styles(
-        display: Display.flex,
-        flex: Flex(grow: 1),
-        flexDirection: FlexDirection.row,
-        padding: Spacing.only(
-          left: kEdgeInsetsM,
-          right: kEdgeInsetsM,
-          bottom: kEdgeInsetsMS,
-          top: kEdgeInsetsSXS,
-        ),
-        color: Color.variable('--comment-bg'),
-      ),
     ),
   ]);
 }
