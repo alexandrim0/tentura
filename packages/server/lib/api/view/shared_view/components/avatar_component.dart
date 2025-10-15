@@ -2,29 +2,44 @@ import 'package:jaspr/server.dart';
 
 import 'package:tentura_server/domain/entity/user_entity.dart';
 
+import '../shared_view_styles.dart';
+
 class AvatarComponent extends StatelessComponent {
   const AvatarComponent({
     required this.user,
+    this.size = 80,
   });
 
   final UserEntity user;
 
+  final int size;
+
   @override
   Component build(BuildContext context) => fragment([
+    // Avatar
     img(
       src: user.imageUrl,
-      classes: 'card-avatar__image',
+      alt: 'avatar',
+      height: size,
+      width: size,
       styles: const Styles(
-        width: Unit.pixels(80),
-        height: Unit.pixels(80),
+        radius: BorderRadius.circular(Unit.percent(50)),
+        shadow: BoxShadow(
+          offsetX: Unit.zero,
+          offsetY: Unit.zero,
+          blur: kEdgeInsetsM,
+          spread: kEdgeInsetsS,
+          color: Color.variable(kShadowColorVarName),
+        ),
+
+        raw: {
+          'object-fit': 'cover',
+        },
       ),
     ),
-    p(
-      classes: 'card-avatar__text',
-      styles: const Styles(
-        fontSize: Unit.pixels(20),
-        fontWeight: FontWeight.w600,
-      ),
+
+    // Title
+    h3(
       [
         text(user.title),
       ],

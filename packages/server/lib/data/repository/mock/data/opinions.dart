@@ -5,7 +5,7 @@ import 'users.dart';
 final kOpinionOfThorinForDain = OpinionEntity(
   id: 'O286f94380611',
   author: kUserThorin,
-  content: '',
+  content: 'My old friend!',
   createdAt: DateTime.now(),
   user: kUserDain,
   score: 1,

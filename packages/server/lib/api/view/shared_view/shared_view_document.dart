@@ -9,9 +9,10 @@ import 'package:tentura_server/domain/entity/user_entity.dart';
 
 import 'components/beacon_view_component.dart';
 import 'components/comment_view_component.dart';
+import 'components/invitation_view_component.dart';
 import 'components/opinion_view_component.dart';
 import 'components/user_view_component.dart';
-import 'styles/shared_view_styles.dart';
+import 'shared_view_styles.dart';
 
 class SharedViewDocument extends StatelessComponent {
   const SharedViewDocument({
@@ -52,6 +53,7 @@ class SharedViewDocument extends StatelessComponent {
     final CommentEntity comment => _buildDocument(
       body: [
         BeaconViewComponent(beacon: comment.beacon),
+        _hr,
         CommentViewComponent(comment: comment),
       ],
       meta: _buildMeta(
@@ -62,25 +64,11 @@ class SharedViewDocument extends StatelessComponent {
       ),
     ),
 
-    // Invitation
-    final InvitationEntity invitation => _buildDocument(
-      body: [
-        UserViewComponent(user: invitation.issuer),
-        // TBD: InvitationViewComponent(user: invitation.issuer),
-      ],
-      meta: _buildMeta(
-        id: invitation.id,
-        title: invitation.issuer.title,
-        // TBD: need real text with l10n
-        description: 'Invite you to join Tentura!',
-        imagePath: invitation.issuer.imageUrl,
-      ),
-    ),
-
     // Opinion
     final OpinionEntity opinion => _buildDocument(
       body: [
         UserViewComponent(user: opinion.user),
+        _hr,
         OpinionViewComponent(opinion: opinion),
       ],
       meta: _buildMeta(
@@ -88,6 +76,20 @@ class SharedViewDocument extends StatelessComponent {
         title: opinion.user.title,
         description: opinion.content,
         imagePath: opinion.user.imageUrl,
+      ),
+    ),
+
+    // Invitation
+    final InvitationEntity invitation => _buildDocument(
+      body: [
+        InvitationViewComponent(user: invitation.issuer),
+      ],
+      meta: _buildMeta(
+        id: invitation.id,
+        title: invitation.issuer.title,
+        // TBD: need real text with l10n
+        description: 'Invite you to join Tentura!',
+        imagePath: invitation.issuer.imageUrl,
       ),
     ),
 
@@ -99,18 +101,14 @@ class SharedViewDocument extends StatelessComponent {
     required List<Component> body,
     required Map<String, String> meta,
   }) => Document(
-    title: kAppTitle,
-    head: _headerLogo,
+    head: _head,
     meta: meta,
-    body: div(
-      body,
-      classes: 'card',
-      styles: const Styles(
-        width: Unit.percent(100),
-        overflow: Overflow.hidden,
-      ),
-    ),
+    title: kAppTitle,
     styles: defaultStyles,
+    viewport:
+        'width=device-width, initial-scale=1, '
+        'minimum-scale=1, maximum-scale=1 user-scalable=no',
+    body: article(body),
   );
 
   static Map<String, String> _buildMeta({
@@ -119,9 +117,6 @@ class SharedViewDocument extends StatelessComponent {
     required String description,
     required String imagePath,
   }) => {
-    'viewport':
-        'width=device-width, initial-scale=1, '
-        'minimum-scale=1, maximum-scale=1 user-scalable=no',
     'referrer': 'origin-when-cross-origin',
     'robots': 'noindex',
     'og:type': 'website',
@@ -132,7 +127,13 @@ class SharedViewDocument extends StatelessComponent {
     'og:image': imagePath,
   };
 
-  static final _headerLogo = [
+  static final _hr = hr(
+    styles: const Styles(
+      margin: Spacing.symmetric(horizontal: kEdgeInsetsS),
+    ),
+  );
+
+  static final _head = [
     link(
       href: '$kServerName$kPathIcons/web_24dp.png',
       rel: 'shortcut icon',

@@ -1,8 +1,9 @@
 import 'package:jaspr/server.dart';
 
 import 'package:tentura_server/domain/entity/opinion_entity.dart';
+import 'package:tentura_server/utils/format_date.dart';
 
-import '../styles/shared_view_styles.dart';
+import '../shared_view_styles.dart';
 import 'avatar_component.dart';
 
 class OpinionViewComponent extends StatelessComponent {
@@ -13,39 +14,27 @@ class OpinionViewComponent extends StatelessComponent {
   final OpinionEntity opinion;
 
   @override
-  Component build(BuildContext context) => fragment([
-    div(
-      classes: 'card-container',
-      [
-        div(
-          classes: 'card-avatar',
-          [
-            AvatarComponent(user: opinion.author),
-          ],
-        ),
-        p(
-          styles: const Styles(
-            margin: Spacing.only(top: kEdgeInsetsS),
-          ),
-          [
-            text(opinion.content),
-          ],
-        ),
-        p(
-          classes: 'secondary-text',
-          styles: const Styles(
-            margin: Spacing.only(top: kEdgeInsetsXS),
-          ),
-          [
-            text(_formatDate(opinion.createdAt)),
-          ],
-        ),
-      ],
-    ),
-  ]);
+  Component build(BuildContext context) => section(
+    [
+      // Avatar
+      AvatarComponent(user: opinion.author),
 
-  static String _formatDate(DateTime dateTime) =>
-      '${dateTime.year}-${_pad(dateTime.month)}-${_pad(dateTime.day)}';
+      // Opinion text
+      p(
+        styles: const Styles(
+          margin: Spacing.only(bottom: kEdgeInsetsS),
+        ),
+        [
+          text(opinion.content),
+        ],
+      ),
 
-  static String _pad(int number) => number.toString().padLeft(2, '0');
+      // Date
+      small(
+        [
+          text(formatDate(opinion.createdAt)),
+        ],
+      ),
+    ],
+  );
 }
