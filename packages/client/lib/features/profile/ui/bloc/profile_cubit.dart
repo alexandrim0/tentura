@@ -17,7 +17,7 @@ export 'package:get_it/get_it.dart';
 export 'profile_state.dart';
 
 /// Global Cubit
-@lazySingleton
+@singleton
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit({
     required AuthCase authCase,
@@ -52,7 +52,9 @@ class ProfileCubit extends Cubit<ProfileState> {
   //
   //
   Future<void> fetch() async {
-    if (state.profile.id.isEmpty) return;
+    if (state.profile.id.isEmpty) {
+      return;
+    }
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
       final profile = await _profileRepository.fetchById(state.profile.id);
@@ -78,7 +80,9 @@ class ProfileCubit extends Cubit<ProfileState> {
   //
   Future<void> _onAuthChanges(String id) async {
     emit(ProfileState(profile: Profile(id: id)));
-    if (id.isNotEmpty) await fetch();
+    if (id.isNotEmpty) {
+      await fetch();
+    }
   }
 
   //
