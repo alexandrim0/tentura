@@ -67,13 +67,13 @@ class BeaconTile extends StatelessWidget {
                 ),
               ),
 
-            // User row (Avatar and Name)
+            // User row
             if (!isMine)
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: AuthorInfo(author: beacon.author),
-                  ),
+                  // Avatar and Title
+                  AuthorInfo(author: beacon.author),
 
                   // More
                   PopupMenuButton(
