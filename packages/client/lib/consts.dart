@@ -36,6 +36,8 @@ const kPathProfileEdit = '/profile/edit';
 const kPathProfileView = '/profile/view';
 const kPathInvitations = '/invitations';
 
+const kQueryIsDeepLink = 'is_deep_link';
+
 /// First part of FQDN: `https://app.server.name`
 const kServerName = String.fromEnvironment(
   'SERVER_NAME',

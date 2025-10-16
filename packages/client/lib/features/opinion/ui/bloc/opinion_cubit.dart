@@ -38,6 +38,17 @@ class OpinionCubit extends Cubit<OpinionState> {
       return;
     }
 
+    if (state.myProfile.id.isEmpty) {
+      emit(
+        state.copyWith(
+          opinions: [],
+          hasReachedMax: false,
+          status: StateStatus.isSuccess,
+        ),
+      );
+      return;
+    }
+
     if (state.hasReachedMax && preserve) {
       return;
     }
@@ -48,8 +59,8 @@ class OpinionCubit extends Cubit<OpinionState> {
       emit(
         state.copyWith(
           opinions: [],
-          status: StateStatus.isLoading,
           hasReachedMax: false,
+          status: StateStatus.isLoading,
         ),
       );
     }
@@ -73,7 +84,10 @@ class OpinionCubit extends Cubit<OpinionState> {
     }
   }
 
-  Future<void> addOpinion({required String text, required int? amount}) async {
+  Future<void> addOpinion({
+    required String text,
+    required int? amount,
+  }) async {
     if (amount == null) return;
 
     emit(state.copyWith(status: StateStatus.isLoading));

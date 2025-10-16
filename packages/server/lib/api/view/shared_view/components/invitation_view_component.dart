@@ -4,8 +4,8 @@ import 'package:tentura_server/domain/entity/user_entity.dart';
 
 import 'avatar_component.dart';
 
-class UserViewComponent extends StatelessComponent {
-  const UserViewComponent({
+class InvitationViewComponent extends StatelessComponent {
+  const InvitationViewComponent({
     required this.user,
   });
 
@@ -19,7 +19,7 @@ class UserViewComponent extends StatelessComponent {
       if (user.description.isNotEmpty)
         p(
           [
-            text(user.description),
+            text('Invite you to join Tentura!'),
           ],
         ),
     ],
