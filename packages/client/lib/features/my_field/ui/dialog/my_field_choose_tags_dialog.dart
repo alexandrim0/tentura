@@ -50,12 +50,16 @@ class _MyFieldChooseTagsDialogState extends State<MyFieldChooseTagsDialog> {
     ),
 
     content: Wrap(
-      spacing: kSpacingMedium,
+      spacing: kSpacingSmall,
+      runSpacing: kSpacingSmall,
       children: [
         for (final tag in widget.allTags)
           ChoiceChip(
-            backgroundColor: _theme.colorScheme.surfaceContainer,
-            label: Text(tag),
+            backgroundColor: _theme.colorScheme.primary,
+            label: Text(
+              tag,
+              style: _theme.chipTheme.labelStyle,
+            ),
             selected: _selectedTags.contains(tag),
             onSelected: (isSelected) => setState(
               () => isSelected
