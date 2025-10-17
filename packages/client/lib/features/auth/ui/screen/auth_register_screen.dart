@@ -14,11 +14,14 @@ import '../bloc/auth_cubit.dart';
 @RoutePage()
 class AuthRegisterScreen extends StatefulWidget implements AutoRouteWrapper {
   const AuthRegisterScreen({
-    @queryParam this.id,
+    @PathParam('id') this.id = '',
+    @QueryParam(kQueryIsDeepLink) this.isDeepLink,
     super.key,
   });
 
-  final String? id;
+  final String id;
+
+  final String? isDeepLink;
 
   @override
   State<AuthRegisterScreen> createState() => _AuthRegisterScreenState();
@@ -58,16 +61,16 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
   @override
   void initState() {
     super.initState();
-    if (widget.id != null && widget.id!.isNotEmpty) {
-      if (kDebugMode) {
-        print('Query param Id: ${widget.id}');
-      }
-      _codeController.text = widget.id!;
+    final invitationId = widget.id.trim();
+    if (invitationId.isNotEmpty) {
+      _codeController.text = invitationId;
     } else {
       unawaited(
         _authCubit.getCodeFromClipboard().then((code) {
           if (code.isNotEmpty) {
-            _codeController.text = code;
+            setState(() {
+              _codeController.text = code;
+            });
           }
         }),
       );
@@ -99,6 +102,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
     ),
     body: Form(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Invite Code
           if (_env.needInviteCode)
@@ -150,40 +154,15 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
             ),
           ),
 
-          const Spacer(),
-
-          // Create new account
+          // Register
           Padding(
-            padding:
-                kPaddingAll +
-                const EdgeInsets.only(bottom: 60 - kSpacingMedium),
-            child: Row(
-              children: [
-                // Register
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () async {
-                      await GetIt.I<AuthCubit>().signUp(
-                        invitationCode: _codeController.text,
-                        title: _titleController.text,
-                      );
-                    },
-                    child: Text(_l10n.buttonCreate),
-                  ),
-                ),
-
-                const Padding(
-                  padding: EdgeInsets.only(left: kSpacingMedium),
-                ),
-
-                // Cancel
-                Expanded(
-                  child: FilledButton.tonal(
-                    onPressed: context.read<ScreenCubit>().back,
-                    child: Text(_l10n.buttonCancel),
-                  ),
-                ),
-              ],
+            padding: kPaddingAll,
+            child: FilledButton(
+              onPressed: () => GetIt.I<AuthCubit>().signUp(
+                invitationCode: _codeController.text,
+                title: _titleController.text,
+              ),
+              child: Text(_l10n.buttonCreate),
             ),
           ),
         ],
