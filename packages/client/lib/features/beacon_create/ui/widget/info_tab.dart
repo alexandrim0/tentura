@@ -170,7 +170,6 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
         builder: (_, tags) => Wrap(
           runSpacing: kSpacingSmall,
           spacing: kSpacingSmall,
-          runSpacing: kSpacingSmall,
           children: [
             // Add Tag
             ActionChip(
