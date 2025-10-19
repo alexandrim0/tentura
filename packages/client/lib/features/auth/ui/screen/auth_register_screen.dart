@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/services.dart';
 
 import 'package:tentura/env.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
@@ -49,6 +50,8 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
   final _env = GetIt.I<Env>();
 
   final _authCubit = GetIt.I<AuthCubit>();
+
+  final _formKey = GlobalKey<FormState>();
 
   final _codeController = TextEditingController();
 
@@ -101,6 +104,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
       ),
     ),
     body: Form(
+      key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -109,7 +113,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
             Padding(
               padding: kPaddingAll,
               child: TextFormField(
-                autovalidateMode: AutovalidateMode.onUnfocus,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: _codeController,
                 contextMenuBuilder: (_, state) =>
                     AdaptiveTextSelectionToolbar.buttonItems(
@@ -130,10 +134,23 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
                     icon: const Icon(Icons.paste_rounded),
                   ),
                 ),
+                maxLengthEnforcement: MaxLengthEnforcement.none,
                 maxLength: kIdLength,
+                keyboardType: TextInputType.text,
                 style: _textTheme.headlineLarge,
                 validator: (text) => invitationCodeValidator(_l10n, text),
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                onChanged: (value) {
+                  if (value.length > kIdLength) {
+                    final uri = Uri.tryParse(value);
+                    if (uri != null && uri.hasQuery) {
+                      final id = uri.queryParameters['id'];
+                      if (id != null) {
+                        _codeController.text = id;
+                      }
+                    }
+                  }
+                },
               ),
             ),
 
@@ -141,7 +158,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
           Padding(
             padding: kPaddingAll,
             child: TextFormField(
-              autovalidateMode: AutovalidateMode.onUnfocus,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _titleController,
               decoration: InputDecoration(
                 hintText: _l10n.pleaseFillTitle,
@@ -158,10 +175,21 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
           Padding(
             padding: kPaddingAll,
             child: FilledButton(
-              onPressed: () => GetIt.I<AuthCubit>().signUp(
-                invitationCode: _codeController.text,
-                title: _titleController.text,
-              ),
+              onPressed: () async {
+                if (_formKey.currentState?.validate() ?? false) {
+                  await GetIt.I<AuthCubit>().signUp(
+                    invitationCode: _codeController.text,
+                    title: _titleController.text,
+                  );
+                } else {
+                  showSnackBar(
+                    context,
+                    isError: true,
+                    // TBD: l10n
+                    text: 'Some form fields are invalid',
+                  );
+                }
+              },
               child: Text(_l10n.buttonCreate),
             ),
           ),
