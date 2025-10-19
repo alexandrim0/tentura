@@ -168,6 +168,7 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
       BlocSelector<BeaconCreateCubit, BeaconCreateState, Set<String>>(
         selector: (state) => state.tags,
         builder: (_, tags) => Wrap(
+          runSpacing: kSpacingSmall,
           spacing: kSpacingSmall,
           children: [
             // Add Tag
