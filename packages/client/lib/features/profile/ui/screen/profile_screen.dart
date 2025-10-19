@@ -35,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
                 slivers: [
                   // Header
                   ProfileAppBar(
-                    key: Key('ProfileAppBar:${profile.hashCode}'),
+                    key: Key('ProfileAppBar:${profile.id}'),
                     profile: profile,
                   ),
 
@@ -43,15 +43,17 @@ class ProfileScreen extends StatelessWidget {
                   SliverPadding(
                     padding: kPaddingAll,
                     sliver: ProfileBody(
-                      key: Key('ProfileBody:${profile.hashCode}'),
+                      key: Key('ProfileBody:${profile.id}'),
                       profile: profile,
                     ),
                   ),
 
                   // Opinions List
-                  const SliverPadding(
+                  SliverPadding(
                     padding: kPaddingH,
-                    sliver: OpinionList(),
+                    sliver: OpinionList(
+                      key: Key('OpinionList:${profile.id}'),
+                    ),
                   ),
                 ],
               ),

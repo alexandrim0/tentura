@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:injectable/injectable.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/data/repository/clipboard_repository.dart';
@@ -35,13 +36,43 @@ class AccountCase {
 
   //
   //
-  Future<String> getSeedFromClipboard() =>
-      _clipboardRepository.getSeedFromClipboard();
+  Future<String> getSeedFromClipboard() async {
+    // TBD: throw specific Exception
+    try {
+      final seedEncoded = _base64Padded(
+        await _clipboardRepository.getStringFromClipboard(),
+      );
+      if (seedEncoded.isNotEmpty) {
+        final seedBinary = base64Decode(seedEncoded);
+        if (seedBinary.length == kSeedLength) {
+          return base64UrlEncode(seedBinary);
+        }
+      }
+    } catch (_) {}
+    return '';
+  }
 
   //
   //
-  Future<String> getCodeFromClipboard() =>
-      _clipboardRepository.getCodeFromClipboard(prefix: 'I');
+  Future<String> getCodeFromClipboard() async {
+    const prefix = 'I';
+    final text = await _clipboardRepository.getStringFromClipboard();
+
+    // TBD: more complex validating
+    // TBD: throw specific Exception
+    if (text.length == kIdLength && text.startsWith(prefix)) {
+      return text;
+    }
+
+    try {
+      final id = Uri.dataFromString(text).queryParameters['id'] ?? '';
+      if (id.length == kIdLength && id.startsWith(prefix)) {
+        return id;
+      }
+    } catch (_) {}
+
+    return '';
+  }
 
   //
   //

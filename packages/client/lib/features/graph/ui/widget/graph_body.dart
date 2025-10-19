@@ -100,7 +100,7 @@ class GraphBodyState extends State<GraphBody>
     nodeBuilder: (_, node) => GraphNodeWidget(
       key: ValueKey(node),
       nodeDetails: node,
-      withEye: node.id != _graphCubit.state.me.id,
+      withRating: node.id != _graphCubit.state.me.id,
       onTap: () => _graphCubit.setFocus(node),
       onDoubleTap: () => switch (node) {
         final UserNode n => _screenCubit.showProfile(n.id),

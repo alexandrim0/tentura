@@ -19,69 +19,67 @@ class ProfileViewBody extends StatelessWidget {
     final theme = Theme.of(context);
     return BlocSelector<ProfileViewCubit, ProfileViewState, Profile>(
       selector: (state) => state.profile,
-      builder: (context, profile) {
-        return SliverToBoxAdapter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Avatar
-              Center(
-                child: AvatarRated.big(profile: profile),
-              ),
+      builder: (context, profile) => SliverToBoxAdapter(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Avatar
+            Center(
+              child: AvatarRated.big(profile: profile),
+            ),
 
-              // Description
-              Padding(
-                padding: kPaddingT,
-                child: ShowMoreText(
-                  profile.description,
-                  style: theme.textTheme.bodyMedium,
-                  colorClickableText: theme.colorScheme.primary,
-                ),
+            // Description
+            Padding(
+              padding: kPaddingT,
+              child: ShowMoreText(
+                profile.description,
+                style: theme.textTheme.bodyMedium,
+                colorClickableText: theme.colorScheme.primary,
               ),
+            ),
 
+            Padding(
+              padding: kPaddingSmallT,
+              child: OutlinedButton.icon(
+                onPressed: () =>
+                    context.read<ScreenCubit>().showGraphFor(profile.id),
+                icon: const Icon(TenturaIcons.graph),
+                label: Text(l10n.showConnections),
+              ),
+            ),
+
+            // Show Beacons
+            Padding(
+              padding: kPaddingSmallT,
+              child: OutlinedButton.icon(
+                onPressed: () =>
+                    context.read<ScreenCubit>().showBeaconsOf(profile.id),
+                icon: const Icon(Icons.open_in_full),
+                label: Text(l10n.showBeacons),
+              ),
+            ),
+
+            if (profile.isNotFriend)
               Padding(
                 padding: kPaddingSmallT,
-                child: OutlinedButton.icon(
-                  onPressed: () =>
-                      context.read<ScreenCubit>().showGraphFor(profile.id),
-                  icon: const Icon(TenturaIcons.graph),
-                  label: Text(l10n.showConnections),
+                child: FilledButton.icon(
+                  onPressed: context.read<ProfileViewCubit>().addFriend,
+                  icon: const Icon(Icons.people),
+                  label: Text(l10n.addToMyField),
                 ),
               ),
 
-              // Show Beacons
-              Padding(
-                padding: kPaddingSmallT,
-                child: OutlinedButton.icon(
-                  onPressed: () =>
-                      context.read<ScreenCubit>().showBeaconsOf(profile.id),
-                  icon: const Icon(Icons.open_in_full),
-                  label: Text(l10n.showBeacons),
-                ),
+            // Opinions
+            Padding(
+              padding: kPaddingV,
+              child: Text(
+                l10n.communityFeedback,
+                style: theme.textTheme.headlineMedium,
               ),
-
-              if (profile.isNotFriend)
-                Padding(
-                  padding: kPaddingSmallT,
-                  child: FilledButton.icon(
-                    onPressed: context.read<ProfileViewCubit>().addFriend,
-                    icon: const Icon(Icons.people),
-                    label: Text(l10n.addToMyField),
-                  ),
-                ),
-
-              // Opinions
-              Padding(
-                padding: kPaddingV,
-                child: Text(
-                  l10n.communityFeedback,
-                  style: theme.textTheme.headlineMedium,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

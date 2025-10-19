@@ -1,4 +1,7 @@
+import 'package:tentura_root/domain/entity/coordinates.dart';
+
 import 'package:tentura_server/domain/entity/beacon_entity.dart';
+import 'package:tentura_server/domain/entity/image_entity.dart';
 
 import 'users.dart';
 
@@ -25,8 +28,17 @@ If you are bold enough to stand among dwarves of valor, reply to this call or se
     updatedAt: DateTime(2024, 10, 03),
     startAt: DateTime(2024, 10, 03),
     endAt: DateTime(2025, 10, 03),
+    coordinates: const Coordinates(lat: 10.20, long: -20.50),
+    image: ImageEntity(
+      id: 'e2e9107c-6b73-49f2-a62f-8c010d4434c6',
+      authorId: kUserThorin.id,
+      blurHash:
+          'q9DTa-Dk={_L-o?tHtRQRQM{r?4p%foxyB%LV@RjNHj[s.M|s:WBIVs:x@x[WDxtafV[%LofWERjV[RkM|V@RRWBVtayW;j@tjWC',
+      height: 337,
+      width: 600,
+    ),
     // TBD: add image parameters
-    author: kUserByPublicKey[kThorinKey]!,
+    author: kUserThorin,
   ),
 
   // Beacon without picture and comments

@@ -6,7 +6,6 @@ import 'package:tentura/consts.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 
 import '../../domain/enum.dart';
@@ -80,7 +79,7 @@ class _BeaconScreenState extends State<BeaconScreen> {
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       title: Text(_l10n.beaconsTitle),
-      leading: const DeepBackButton(),
+      leading: const AutoLeadingButton(),
       actions: [
         BlocSelector<BeaconCubit, BeaconState, BeaconFilter>(
           selector: (state) => state.filter,

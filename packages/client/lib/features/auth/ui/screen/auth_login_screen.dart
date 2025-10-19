@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
-import 'package:tentura/consts.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
@@ -112,11 +111,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                       kPaddingAll +
                       const EdgeInsets.only(bottom: 60 - kSpacingMedium),
                   child: FilledButton(
-                    onPressed: () async {
-                      await context.navigateToPath(kPathSignUp);
-                      // TBD: use ScreenCubit
-                      // context.read<ScreenCubit>().showProfileCreator();
-                    },
+                    onPressed: context.read<ScreenCubit>().showProfileCreator,
                     child: Text(l10n.createNewAccount),
                   ),
                 ),

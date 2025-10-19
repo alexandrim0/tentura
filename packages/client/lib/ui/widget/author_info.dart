@@ -5,7 +5,6 @@ import 'package:tentura/ui/bloc/screen_cubit.dart';
 
 import '../utils/ui_utils.dart';
 import 'avatar_rated.dart';
-import 'tentura_icons.dart';
 
 class AuthorInfo extends StatelessWidget {
   const AuthorInfo({
@@ -30,22 +29,11 @@ class AuthorInfo extends StatelessWidget {
           ),
 
           // User displayName
-          Expanded(
-            child: Text(
-              author.title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.headlineMedium,
-            ),
-          ),
-
-          // An Eye
-          Padding(
-            padding: kPaddingH,
-            child: Icon(
-              author.isSeeingMe ? TenturaIcons.eyeOpen : TenturaIcons.eyeClosed,
-              color: theme.colorScheme.onSurface,
-            ),
+          Text(
+            author.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.headlineMedium,
           ),
         ],
       ),

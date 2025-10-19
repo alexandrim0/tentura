@@ -106,7 +106,6 @@ class RootRouter extends RootStackRouter {
 
     // Login
     AutoRoute(
-      keepHistory: false,
       maintainState: false,
       page: AuthLoginRoute.page,
       path: kPathSignIn,
@@ -123,7 +122,7 @@ class RootRouter extends RootStackRouter {
       maintainState: false,
       fullscreenDialog: true,
       page: AuthRegisterRoute.page,
-      path: kPathSignUp,
+      path: '$kPathSignUp/:id',
       guards: [
         AutoRouteGuard.redirect(
           (_) => _authCubit.state.isAuthenticated ? const ProfileRoute() : null,
@@ -278,10 +277,11 @@ class RootRouter extends RootStackRouter {
               final String id when id.startsWith('I') =>
                 _authCubit.state.isAuthenticated
                     ? kPathConnect
-                    : _authCubit.state.accounts.isEmpty
-                    ? kPathSignUp
-                    : kPathSignIn,
+                    : '$kPathSignUp/$id',
               _ => kPathConnect,
+            },
+            queryParameters: {
+              kQueryIsDeepLink: 'true',
             },
           )
         : uri,

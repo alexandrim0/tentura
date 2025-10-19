@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/app/router/root_router.dart';
-import 'package:tentura/data/repository/clipboard_repository.dart';
 import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
+import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 import 'package:tentura/features/invitation/data/repository/invitation_repository.dart';
 import 'package:tentura/features/invitation/ui/dialog/invitation_accept_dialog.dart';
 
@@ -21,8 +20,6 @@ class ConnectScreen extends StatefulWidget {
 
 class _ConnectScreenState extends State<ConnectScreen> {
   final _inputController = TextEditingController();
-
-  final _clipboardRepository = GetIt.I<ClipboardRepository>();
 
   final _invitationRepository = GetIt.I<InvitationRepository>();
 
@@ -118,7 +115,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
   );
 
   Future<void> _getCodeFromClipboard() async =>
-      _inputController.text = await _clipboardRepository.getCodeFromClipboard();
+      _inputController.text = await GetIt.I<AuthCubit>().getCodeFromClipboard();
 
   Future<void> _goWithCode(String code) async {
     if (code.length != kIdLength) {

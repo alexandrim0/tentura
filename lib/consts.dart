@@ -2,13 +2,15 @@
 // Numbers
 //
 
+const kSeedLength = 32;
+
+const kPublicKeyLength = 44;
+
 const kIdLength = 13;
 
 const kTitleMinLength = 3;
 
 const kTitleMaxLength = 32;
-
-const kPublicKeyLength = 44;
 
 const kDescriptionMaxLength = 2_048;
 

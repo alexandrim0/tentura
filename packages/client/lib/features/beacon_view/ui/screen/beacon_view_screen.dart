@@ -2,11 +2,11 @@ import 'package:nil/nil.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura/consts.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/bottom_text_input.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
 import 'package:tentura/ui/widget/author_info.dart';
 
@@ -23,10 +23,13 @@ import '../widget/beacon_mine_control.dart';
 class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
   const BeaconViewScreen({
     @PathParam('id') this.id = '',
+    @QueryParam(kQueryIsDeepLink) this.isDeepLink,
     super.key,
   });
 
   final String id;
+
+  final String? isDeepLink;
 
   @override
   Widget wrappedRoute(_) => MultiBlocProvider(
@@ -38,7 +41,9 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
           id: id,
         ),
       ),
-      BlocProvider(create: (_) => CommentCubit()),
+      BlocProvider(
+        create: (_) => CommentCubit(),
+      ),
     ],
     child: MultiBlocListener(
       listeners: const [
@@ -64,7 +69,11 @@ class BeaconViewScreen extends StatelessWidget implements AutoRouteWrapper {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Beacon'),
-        leading: const DeepBackButton(),
+        leading: isDeepLink == 'true'
+            ? BackButton(
+                onPressed: () => AutoRouter.of(context).navigatePath(kPathHome),
+              )
+            : const AutoLeadingButton(),
         actions: [
           // More
           BlocSelector<BeaconViewCubit, BeaconViewState, bool>(
