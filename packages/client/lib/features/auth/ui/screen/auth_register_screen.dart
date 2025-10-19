@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
@@ -130,7 +131,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
                     icon: const Icon(Icons.paste_rounded),
                   ),
                 ),
-                maxLength: kIdLength,
+                // maxLength is unlimited to support codes in URLs
                 style: _textTheme.headlineLarge,
                 validator: (text) => invitationCodeValidator(_l10n, text),
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),
