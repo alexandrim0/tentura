@@ -58,3 +58,5 @@ const kBeaconPlaceholderUrl =
 const kFastAnimationDuration = Duration(milliseconds: 250);
 
 final kZeroAge = DateTime.fromMillisecondsSinceEpoch(0);
+
+final kInvitationCodeRegExp = RegExp('I[a-f0-9]{0,12}');

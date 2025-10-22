@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/services.dart';
+import 'package:auto_route/auto_route.dart';
 
 import 'package:tentura/env.dart';
 import 'package:tentura/ui/bloc/screen_cubit.dart';
@@ -50,8 +50,6 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
   final _env = GetIt.I<Env>();
 
   final _authCubit = GetIt.I<AuthCubit>();
-
-  final _formKey = GlobalKey<FormState>();
 
   final _codeController = TextEditingController();
 
@@ -103,98 +101,75 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
         ),
       ),
     ),
-    body: Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Invite Code
-          if (_env.needInviteCode)
-            Padding(
-              padding: kPaddingAll,
-              child: TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _codeController,
-                contextMenuBuilder: (_, state) =>
-                    AdaptiveTextSelectionToolbar.buttonItems(
-                      anchors: state.contextMenuAnchors,
-                      buttonItems: [
-                        ContextMenuButtonItem(
-                          type: ContextMenuButtonType.paste,
-                          onPressed: _getCodeFromClipboard,
-                        ),
-                      ],
-                    ),
-
-                decoration: InputDecoration(
-                  hintText: _l10n.pleaseEnterCode,
-                  labelText: _l10n.labelInvitationCode,
-                  suffix: IconButton(
-                    onPressed: _getCodeFromClipboard,
-                    icon: const Icon(Icons.paste_rounded),
-                  ),
-                ),
-                maxLengthEnforcement: MaxLengthEnforcement.none,
-                maxLength: kIdLength,
-                keyboardType: TextInputType.text,
-                style: _textTheme.headlineLarge,
-                validator: (text) => invitationCodeValidator(_l10n, text),
-                onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                onChanged: (value) {
-                  if (value.length > kIdLength) {
-                    final uri = Uri.tryParse(value);
-                    if (uri != null && uri.hasQuery) {
-                      final id = uri.queryParameters['id'];
-                      if (id != null) {
-                        _codeController.text = id;
-                      }
-                    }
-                  }
-                },
-              ),
-            ),
-
-          // Username
+    body: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Invite Code
+        if (_env.needInviteCode)
           Padding(
             padding: kPaddingAll,
             child: TextFormField(
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              controller: _titleController,
+              controller: _codeController,
+              contextMenuBuilder: (_, state) =>
+                  AdaptiveTextSelectionToolbar.buttonItems(
+                    anchors: state.contextMenuAnchors,
+                    buttonItems: [
+                      ContextMenuButtonItem(
+                        type: ContextMenuButtonType.paste,
+                        onPressed: _getCodeFromClipboard,
+                      ),
+                    ],
+                  ),
+
               decoration: InputDecoration(
-                hintText: _l10n.pleaseFillTitle,
-                labelText: _l10n.labelTitle,
+                hintText: _l10n.pleaseEnterCode,
+                labelText: _l10n.labelInvitationCode,
+                suffix: IconButton(
+                  onPressed: _getCodeFromClipboard,
+                  icon: const Icon(Icons.paste_rounded),
+                ),
               ),
-              maxLength: kTitleMaxLength,
+              maxLength: kIdLength,
+              keyboardType: TextInputType.text,
               style: _textTheme.headlineLarge,
-              validator: (text) => titleValidator(_l10n, text),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(kInvitationCodeRegExp),
+              ],
+              validator: (text) => invitationCodeValidator(_l10n, text),
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
             ),
           ),
 
-          // Register
-          Padding(
-            padding: kPaddingAll,
-            child: FilledButton(
-              onPressed: () async {
-                if (_formKey.currentState?.validate() ?? false) {
-                  await GetIt.I<AuthCubit>().signUp(
-                    invitationCode: _codeController.text,
-                    title: _titleController.text,
-                  );
-                } else {
-                  showSnackBar(
-                    context,
-                    isError: true,
-                    // TBD: l10n
-                    text: 'Some form fields are invalid',
-                  );
-                }
-              },
-              child: Text(_l10n.buttonCreate),
+        // Username
+        Padding(
+          padding: kPaddingAll,
+          child: TextFormField(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            controller: _titleController,
+            decoration: InputDecoration(
+              hintText: _l10n.pleaseFillTitle,
+              labelText: _l10n.labelTitle,
             ),
+            maxLength: kTitleMaxLength,
+            style: _textTheme.headlineLarge,
+            validator: (text) => titleValidator(_l10n, text),
+            onTapOutside: (_) => FocusScope.of(context).unfocus(),
           ),
-        ],
-      ),
+        ),
+
+        // Register
+        Padding(
+          padding: kPaddingAll,
+          child: FilledButton(
+            onPressed: () => GetIt.I<AuthCubit>().signUp(
+              invitationCode: _codeController.text,
+              title: _titleController.text,
+            ),
+            child: Text(_l10n.buttonCreate),
+          ),
+        ),
+      ],
     ),
   );
 

@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura/env.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
+import 'package:tentura/domain/exception/user_input_exception.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import 'package:tentura/features/profile/data/repository/profile_repository.dart';
@@ -131,13 +132,19 @@ class AuthCubit extends Cubit<AuthState> {
     required String title,
     required String invitationCode,
   }) async {
-    if (_env.needInviteCode && invitationCode.isEmpty) {
-      emit(
+    if (_env.needInviteCode && invitationCode.length < kIdLength) {
+      return emit(
         state.copyWith(
           status: StateHasError(const InvitationCodeIsWrongException()),
         ),
       );
-      return;
+    }
+    if (title.length < kTitleMinLength) {
+      return emit(
+        state.copyWith(
+          status: StateHasError(const TitleInputException.tooShort()),
+        ),
+      );
     }
 
     emit(state.copyWith(status: StateStatus.isLoading));
