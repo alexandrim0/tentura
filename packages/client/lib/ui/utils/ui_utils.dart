@@ -4,9 +4,12 @@ import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura_root/domain/entity/localizable.dart';
+
 import 'package:tentura/consts.dart';
 
 import '../bloc/state_base.dart';
+import '../l10n/l10n.dart';
 
 const kSpacingSmall = 8.0;
 const kSpacingMedium = 16.0;
@@ -106,12 +109,15 @@ void commonScreenBlocListener(
           ),
   final StateIsMessaging s => showSnackBar(
     context,
-    text: s.message,
+    text: s.message.toL10n(L10n.of(context)?.localeName),
   ),
   final StateHasError s => showSnackBar(
     context,
     isError: true,
-    text: s.error.toString(),
+    text: switch (s.error) {
+      final Localizable e => e.toL10n(L10n.of(context)?.localeName),
+      final Object e => e.toString(),
+    },
   ),
   _ => null,
 };

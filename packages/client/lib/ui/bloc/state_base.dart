@@ -1,3 +1,5 @@
+import 'package:tentura_root/domain/entity/localizable.dart';
+
 import 'package:tentura/consts.dart';
 
 export 'package:flutter/foundation.dart';
@@ -37,7 +39,7 @@ class StateIsLoading extends StateStatus {
 class StateIsMessaging extends StateStatus {
   StateIsMessaging(this.message);
 
-  final String? message;
+  final Localizable message;
 }
 
 class StateIsNavigating extends StateStatus {

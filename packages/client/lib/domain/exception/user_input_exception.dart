@@ -1,16 +1,15 @@
-sealed class UserInputException implements Exception {
-  const UserInputException(this.message);
+import 'package:tentura_root/domain/entity/localizable.dart';
 
-  final String message;
-
-  @override
-  String toString() => message;
+sealed class UserInputException extends LocalizableException {
+  const UserInputException();
 }
 
-final class TitleInputException extends UserInputException {
-  const TitleInputException(super.message);
+final class TitleTooShortException extends UserInputException {
+  const TitleTooShortException();
 
-  const TitleInputException.tooShort() : super('Title is too short');
+  @override
+  String get toEn => 'Title is too short';
 
-  const TitleInputException.tooLong() : super('Title is too long');
+  @override
+  String get toRu => 'Название слишком короткое';
 }

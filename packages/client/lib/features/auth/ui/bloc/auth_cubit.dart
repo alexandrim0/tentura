@@ -1,4 +1,4 @@
-// TBD: move not void public methods into state
+//
 // ignore_for_file: prefer_void_public_cubit_methods
 import 'dart:async';
 import 'package:injectable/injectable.dart';
@@ -142,7 +142,7 @@ class AuthCubit extends Cubit<AuthState> {
     if (title.length < kTitleMinLength) {
       return emit(
         state.copyWith(
-          status: StateHasError(const TitleInputException.tooShort()),
+          status: StateHasError(const TitleTooShortException()),
         ),
       );
     }
