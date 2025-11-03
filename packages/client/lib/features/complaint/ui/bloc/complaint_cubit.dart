@@ -2,11 +2,12 @@ import 'package:get_it/get_it.dart';
 import 'package:mailto/mailto.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import 'package:tentura_root/domain/enums.dart';
+
 import 'package:tentura/env.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import '../../domain/enum.dart';
 import 'complaint_state.dart';
 
 export 'complaint_state.dart';
@@ -18,9 +19,9 @@ class ComplaintCubit extends Cubit<ComplaintState> {
 
   ///
   void setType(ComplaintType? type) {
-    if (type == null) return;
-
-    emit(state.copyWith(type: type));
+    if (type != null) {
+      emit(state.copyWith(type: type));
+    }
   }
 
   ///

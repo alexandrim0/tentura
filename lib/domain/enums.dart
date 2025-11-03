@@ -4,3 +4,9 @@ enum UserPresenceStatus {
   offline,
   inactive,
 }
+
+enum ComplaintType {
+  unknown,
+  violatesCsaePolicy,
+  violatesPlatformRules,
+}
