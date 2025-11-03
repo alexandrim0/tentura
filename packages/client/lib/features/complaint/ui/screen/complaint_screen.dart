@@ -126,9 +126,6 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
               onPressed: () async {
                 if (_formKey.currentState?.validate() ?? false) {
                   await _cubit.submit();
-                  if (context.mounted) {
-                    context.read<ScreenCubit>().back();
-                  }
                 }
               },
               child: Text(_l10n.buttonSubmitComplaint),
