@@ -168,6 +168,11 @@
     "context": "FriendsScreen"
   },
 
+  "confirmInvitationRemoval": "Вы уверены, что хотите отменить приглашение? После этого человек не сможет зарегистрироваться.",
+  "@confirmInvitationRemoval": {
+    "context": "InvitationRemoveDialog"
+  },
+
   "confirmBeaconRemoval": "Вы уверены, что хотите удалить этот маяк?",
   "@confirmBeaconRemoval": {
     "context": "BeaconDeleteDialog"
