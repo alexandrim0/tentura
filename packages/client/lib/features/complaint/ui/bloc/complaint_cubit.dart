@@ -2,9 +2,11 @@ import 'package:get_it/get_it.dart';
 
 import 'package:tentura_root/domain/enums.dart';
 
+import 'package:tentura/domain/exception/generic_exception.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import '../../data/repository/complaint_repository.dart';
+import 'complaint_messages.dart';
 import 'complaint_state.dart';
 
 export 'complaint_state.dart';
@@ -36,14 +38,24 @@ class ComplaintCubit extends Cubit<ComplaintState> {
   Future<void> submit() async {
     emit(state.copyWith(status: StateStatus.isLoading));
     try {
-      await _complaintRepository.create(
+      if (await _complaintRepository.create(
         id: state.id,
         type: state.type,
         email: state.email,
         details: state.details,
-      );
-      // TBD: create Localizable message with Result Success
-      // emit(state.copyWith(status: StateIsMessaging()));
+      )) {
+        emit(
+          state.copyWith(
+            status: StateIsMessaging(const ComplaintSentMessage()),
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            status: StateHasError(const UnknownException()),
+          ),
+        );
+      }
       emit(state.copyWith(status: StateIsNavigating.back));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));

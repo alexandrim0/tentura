@@ -1,6 +1,6 @@
 import 'package:tentura_root/domain/entity/localizable.dart';
 
-sealed class UserInputException extends LocalizableException {
+abstract class UserInputException extends LocalizableException {
   const UserInputException();
 }
 

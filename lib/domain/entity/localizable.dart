@@ -15,3 +15,7 @@ abstract class Localizable {
 abstract class LocalizableException extends Localizable implements Exception {
   const LocalizableException();
 }
+
+abstract class LocalizableMessage extends Localizable implements Exception {
+  const LocalizableMessage();
+}
