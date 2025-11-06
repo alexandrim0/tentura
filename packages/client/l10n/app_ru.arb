@@ -80,7 +80,10 @@
   "@buttonScanQR": {
     "context": "Utils"
   },
-
+  "tagsText": "Тэги",
+  "@tagsText": {
+    "context": "Utils"
+  },
 
   "invitationCodeTooShort": "Код слишком короткий",
   "@invitationCodeTooShort": {
@@ -283,7 +286,7 @@
   "@labelComplaintType": {
     "context": "ComplaintScreen"
   },
-  "detailsRequired": "Подробности*",
+  "detailsRequired": "Подробности, минимум 3 символа",
   "@detailsRequired": {
     "context": "ComplaintScreen"
   },
@@ -597,5 +600,14 @@
   "closeButton": "Закрыть",
   "@closeButton": {
     "context": "PollDialog"
+  },
+
+  "addTagText": "Добавить тэг",
+  "@addTagText": {
+    "context": "AddTagDialog"
+  },
+  "enterTagNameHint": "Введите имя тэга",
+  "@enterTagNameHint": {
+    "context": "AddTagDialog"
   }
 }

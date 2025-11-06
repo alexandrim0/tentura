@@ -80,6 +80,10 @@
   "@buttonScanQR": {
     "context": "Utils"
   },
+  "tagsText": "Tags",
+  "@tagsText": {
+    "context": "Utils"
+  },
 
 
   "invitationCodeTooShort": "Code too short",
@@ -283,7 +287,7 @@
   "@labelComplaintType": {
     "context": "ComplaintScreen"
   },
-  "detailsRequired": "Details*",
+  "detailsRequired": "Details, minimum 3 characters",
   "@detailsRequired": {
     "context": "ComplaintScreen"
   },
@@ -597,5 +601,14 @@
   "closeButton": "Close",
   "@closeButton": {
     "context": "PollDialog"
+  },
+ 
+  "addTagText": "Add tag",
+  "@addTagText": {
+    "context": "AddTagDialog"
+  },
+  "enterTagNameHint": "Enter tag name",
+  "@enterTagNameHint": {
+    "context": "AddTagDialog"
   }
 }

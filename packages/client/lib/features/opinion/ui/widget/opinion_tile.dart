@@ -19,6 +19,7 @@ class OpinionTile extends StatelessWidget {
   });
 
   final Opinion opinion;
+
   final bool isMine;
 
   @override
@@ -26,13 +27,6 @@ class OpinionTile extends StatelessWidget {
     final l10n = L10n.of(context)!;
     final theme = Theme.of(context);
     final screenCubit = context.read<ScreenCubit>();
-    final avatarWithPadding = Padding(
-      padding: const EdgeInsets.only(right: kSpacingMedium),
-      child: AvatarRated.small(
-        profile: opinion.author,
-        withRating: !isMine,
-      ),
-    );
     return Column(
       children: [
         // Header
@@ -40,13 +34,18 @@ class OpinionTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Avatar
-            if (isMine)
-              avatarWithPadding
-            else
-              GestureDetector(
-                onTap: () => screenCubit.showProfile(opinion.author.id),
-                child: avatarWithPadding,
+            GestureDetector(
+              onTap: isMine
+                  ? null
+                  : () => screenCubit.showProfile(opinion.author.id),
+              child: Padding(
+                padding: const EdgeInsets.only(right: kSpacingMedium),
+                child: AvatarRated.small(
+                  profile: opinion.author,
+                  withRating: !isMine,
+                ),
               ),
+            ),
 
             // Body
             Expanded(
@@ -54,10 +53,21 @@ class OpinionTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Title
-                  Text(
-                    isMine ? l10n.labelMe : opinion.author.title,
-                    style: theme.textTheme.headlineMedium,
-                  ),
+                  if (isMine)
+                    Text(
+                      l10n.labelMe,
+                      style: theme.textTheme.headlineMedium,
+                    )
+                  else
+                    GestureDetector(
+                      onTap: () => screenCubit.showProfile(opinion.author.id),
+                      child: Text(
+                        opinion.author.title,
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
 
                   // Opinion
                   Padding(

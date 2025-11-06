@@ -47,8 +47,8 @@ class App extends StatelessWidget {
           final router = GetIt.I<RootRouter>();
           return MaterialApp.router(
             title: kAppTitle,
-            theme: themeLight,
-            darkTheme: themeDark,
+            theme: createAppTheme(colorSchemeLight),
+            darkTheme: createAppTheme(colorSchemeDark),
             themeMode: themeMode,
             debugShowCheckedModeBanner: false,
             routerConfig: router.config(

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:tentura/consts.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
+import 'package:tentura/ui/utils/string_input_formatter.dart';
 import 'package:tentura/ui/utils/string_input_validator.dart';
 
 class BeaconAddTagDialog extends StatefulWidget {
@@ -19,8 +20,10 @@ class BeaconAddTagDialog extends StatefulWidget {
 }
 
 class _BeaconAddTagDialogState extends State<BeaconAddTagDialog>
-    with StringInputValidator {
+    with StringInputValidator, StringInputFormatter {
   final _tagController = TextEditingController();
+
+  late final _textTheme = Theme.of(context).textTheme;
 
   late final _l10n = L10n.of(context)!;
 
@@ -32,39 +35,35 @@ class _BeaconAddTagDialogState extends State<BeaconAddTagDialog>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = L10n.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
     return AlertDialog.adaptive(
-      // TBD: l10n
-      title: const Text('Add tag'),
-      titleTextStyle: textTheme.headlineLarge,
+      title: Text(_l10n.addTagText),
+      titleTextStyle: _textTheme.headlineLarge,
       content: TextFormField(
         autofocus: true,
         controller: _tagController,
-        decoration: const InputDecoration(
-          // TBD: l10n
-          hintText: 'Enter tag name',
-          prefixIcon: Icon(Icons.tag),
+        decoration: InputDecoration(
+          hintText: _l10n.enterTagNameHint,
+          prefixIcon: const Icon(Icons.tag),
         ),
         inputFormatters: [
-          FilteringTextInputFormatter.allow(RegExp('[A-Za-z0-9_]')),
+          FilteringTextInputFormatter.allow(tagNameRegExp),
         ],
         maxLength: kTitleMaxLength,
         validator: (value) => titleValidator(_l10n, value),
         onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
       ),
-      contentTextStyle: textTheme.bodyMedium,
+      contentTextStyle: _textTheme.bodyMedium,
       actions: [
         // Yes
         TextButton(
           onPressed: () => Navigator.of(context).pop(_tagController.text),
-          child: Text(l10n.buttonYes),
+          child: Text(_l10n.buttonYes),
         ),
 
         // Cancel
         TextButton(
           onPressed: Navigator.of(context).pop,
-          child: Text(l10n.buttonCancel),
+          child: Text(_l10n.buttonCancel),
         ),
       ],
     );
