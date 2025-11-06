@@ -13,7 +13,7 @@ class ComplaintRepository extends RemoteRepository {
     required super.log,
   });
 
-  Future<bool> create({
+  Future<void> create({
     required String id,
     required String email,
     required String details,
