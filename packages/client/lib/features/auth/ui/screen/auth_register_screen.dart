@@ -28,21 +28,11 @@ class AuthRegisterScreen extends StatefulWidget implements AutoRouteWrapper {
   State<AuthRegisterScreen> createState() => _AuthRegisterScreenState();
 
   @override
-  Widget wrappedRoute(BuildContext context) => BlocProvider(
-    create: (_) => ScreenCubit(),
-    child: MultiBlocListener(
-      listeners: [
-        const BlocListener<ScreenCubit, ScreenState>(
-          listener: commonScreenBlocListener,
-        ),
-        BlocListener<AuthCubit, AuthState>(
-          bloc: GetIt.I<AuthCubit>(),
-          listener: commonScreenBlocListener,
-        ),
-      ],
-      child: this,
-    ),
-  );
+  Widget wrappedRoute(BuildContext context) =>
+      BlocListener<ScreenCubit, ScreenState>(
+        listener: commonScreenBlocListener,
+        child: this,
+      );
 }
 
 class _AuthRegisterScreenState extends State<AuthRegisterScreen>
@@ -66,15 +56,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
     if (invitationId.isNotEmpty) {
       _codeController.text = invitationId;
     } else {
-      unawaited(
-        _authCubit.getCodeFromClipboard().then((code) {
-          if (code.isNotEmpty) {
-            setState(() {
-              _codeController.text = code;
-            });
-          }
-        }),
-      );
+      unawaited(_getCodeFromClipboard(supressError: true));
     }
   }
 
@@ -109,6 +91,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
           Padding(
             padding: kPaddingAll,
             child: TextFormField(
+              autofocus: true,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: _codeController,
               contextMenuBuilder: (_, state) =>
@@ -162,7 +145,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
         Padding(
           padding: kPaddingAll,
           child: FilledButton(
-            onPressed: () => GetIt.I<AuthCubit>().signUp(
+            onPressed: () => _authCubit.signUp(
               invitationCode: _codeController.text,
               title: _titleController.text,
             ),
@@ -173,8 +156,12 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen>
     ),
   );
 
-  Future<void> _getCodeFromClipboard() async {
-    final code = await _authCubit.getCodeFromClipboard();
+  Future<void> _getCodeFromClipboard({
+    bool supressError = false,
+  }) async {
+    final code = await _authCubit.getInvitationCodeFromClipboard(
+      supressError: supressError,
+    );
     if (code.isNotEmpty) {
       _codeController.text = code;
     }

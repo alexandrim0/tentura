@@ -15,21 +15,11 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
   const AuthLoginScreen({super.key});
 
   @override
-  Widget wrappedRoute(BuildContext context) => BlocProvider(
-    create: (_) => ScreenCubit(),
-    child: MultiBlocListener(
-      listeners: [
-        const BlocListener<ScreenCubit, ScreenState>(
-          listener: commonScreenBlocListener,
-        ),
-        BlocListener<AuthCubit, AuthState>(
-          bloc: GetIt.I<AuthCubit>(),
-          listener: commonScreenBlocListener,
-        ),
-      ],
-      child: this,
-    ),
-  );
+  Widget wrappedRoute(BuildContext context) =>
+      BlocListener<ScreenCubit, ScreenState>(
+        listener: commonScreenBlocListener,
+        child: this,
+      );
 
   @override
   Widget build(BuildContext context) {
