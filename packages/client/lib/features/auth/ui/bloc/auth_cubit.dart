@@ -7,6 +7,7 @@ import 'package:tentura/env.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/domain/exception/user_input_exception.dart';
+import 'package:tentura/ui/bloc/common_messages.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
 
 import 'package:tentura/features/profile/data/repository/profile_repository.dart';
@@ -44,7 +45,9 @@ class AuthCubit extends Cubit<AuthState> {
           userId: state.currentAccountId,
         );
       } catch (e) {
-        state = state.copyWith(currentAccountId: '');
+        state = state.copyWith(
+          currentAccountId: '',
+        );
       }
     }
     return AuthCubit(
@@ -217,8 +220,37 @@ class AuthCubit extends Cubit<AuthState> {
 
   //
   //
-  Future<void> getSeedFromClipboard() async =>
-      addAccount(await _accountCase.getSeedFromClipboard());
+  Future<void> getSeedFromClipboard() async {
+    try {
+      return addAccount(await _accountCase.getSeedFromClipboard());
+    } catch (e) {
+      emit(state.copyWith(status: StateHasError(e)));
+    }
+  }
+
+  //
+  //
+  Future<String> getInvitationCodeFromClipboard({
+    bool supressError = false,
+  }) async {
+    try {
+      final code = await _accountCase.getCodeFromClipboard(prefix: 'I');
+      if (code.isEmpty) {
+        emit(
+          state.copyWith(
+            status: StateIsMessaging(const NoValidCodeMessage()),
+          ),
+        );
+      } else {
+        return code;
+      }
+    } catch (e) {
+      if (!supressError) {
+        emit(state.copyWith(status: StateHasError(e)));
+      }
+    }
+    return '';
+  }
 
   //
   //

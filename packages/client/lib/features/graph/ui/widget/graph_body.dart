@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:force_directed_graphview/force_directed_graphview.dart';
 
 import 'package:tentura/ui/bloc/screen_cubit.dart';
-import 'package:tentura/ui/theme.dart';
 
 import '../../domain/entity/edge_details.dart';
 import '../../domain/entity/node_details.dart';
@@ -80,7 +79,7 @@ class GraphBodyState extends State<GraphBody>
         curve: const EaseInOutReynolds(),
       ),
       highlightRadius: 0.15,
-      highlightColor: cBgDark,
+      highlightColor: Colors.indigo,
       isAnimated: _graphCubit.state.isAnimated,
     ),
     labelBuilder: widget.isLabeled

@@ -5,7 +5,6 @@ import 'package:tentura_root/domain/enums.dart';
 import 'package:tentura_server/data/repository/complaint_repository.dart';
 
 import '../entity/complaint_entity.dart';
-import '../exception.dart';
 
 @Injectable(order: 2)
 class ComplaintCase {
@@ -35,11 +34,9 @@ class ComplaintCase {
         ),
       );
       return true;
-    } on IdDuplicateException {
-      rethrow;
     } catch (e) {
       print(e);
-      return false;
+      rethrow;
     }
   }
 }

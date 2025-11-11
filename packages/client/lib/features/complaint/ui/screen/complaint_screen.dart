@@ -50,8 +50,6 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
 
   late final _cubit = context.read<ComplaintCubit>();
 
-  late final _colorScheme = Theme.of(context).colorScheme;
-
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
@@ -66,24 +64,26 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
           // Type
           BlocSelector<ComplaintCubit, ComplaintState, ComplaintType>(
             selector: (state) => state.type,
-            builder: (_, type) => DropdownButtonFormField<ComplaintType>(
-              initialValue: type,
-              items: [
-                DropdownMenuItem(
-                  value: ComplaintType.violatesCsaePolicy,
-                  child: Text(_l10n.violatesCSAE),
+            builder: (_, type) => Theme(
+              data: ThemeData.from(colorScheme: Theme.of(context).colorScheme),
+              child: DropdownButtonFormField<ComplaintType>(
+                initialValue: type,
+                items: [
+                  DropdownMenuItem(
+                    value: ComplaintType.violatesCsaePolicy,
+                    child: Text(_l10n.violatesCSAE),
+                  ),
+                  DropdownMenuItem(
+                    value: ComplaintType.violatesPlatformRules,
+                    child: Text(_l10n.violatesPlatformRules),
+                  ),
+                ],
+                onChanged: _cubit.setType,
+                decoration: InputDecoration(
+                  labelText: _l10n.labelComplaintType,
+                  border: const OutlineInputBorder(),
                 ),
-                DropdownMenuItem(
-                  value: ComplaintType.violatesPlatformRules,
-                  child: Text(_l10n.violatesPlatformRules),
-                ),
-              ],
-              onChanged: _cubit.setType,
-              decoration: InputDecoration(
-                labelText: _l10n.labelComplaintType,
-                border: const OutlineInputBorder(),
               ),
-              dropdownColor: _colorScheme.secondaryContainer,
             ),
           ),
 
@@ -92,6 +92,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
             padding: kPaddingV,
             child: TextFormField(
               maxLines: 5,
+              autofocus: true,
               decoration: InputDecoration(
                 labelText: _l10n.detailsRequired,
                 border: const OutlineInputBorder(),

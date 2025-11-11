@@ -3,64 +3,39 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'utils/ui_utils.dart';
 
-// core palette
-
-const _cPrimary = Color(0xFF014F86);
-const _cActiveIcon = Color(0xFF014F86);
-const _cPrimaryDark = Color(0xFF6CBCE3);
-// const _cSuccess = Color(0xFF00A676);
-const _cError = Color(0xFFD14343);
-const _cBgLight = Color(0xFFF4F4F4);
-const cBgDark = Color(0xFF0A1826);
-const _cSecondaryTextLight = Color(0xFF4B5563);
-const _cSecondaryTextDark = Color(0xFFE5E7EB);
-const _cSurfaceContainerLight = Color(0xFFFFFFFF);
-const _cSurfaceContainerDark = Color(0xFF1D2935);
-const _cOnSurfaceLight = Color(0xFF1A1A1A);
-const _cOnSurfaceDark = Color(0xFFE1E1E1);
-const _cBordersLight = Color(0xFF4B5563);
-const _cBordersDark = Color(0xFF444746);
-
-// LIGHT scheme
-
-const lightScheme = ColorScheme(
+const colorSchemeLight = ColorScheme(
   brightness: Brightness.light,
-  primary: _cPrimary,
+  primary: Color(0xFF014F86),
   onPrimary: Color(0xFFE5E7EB),
-  secondary: _cPrimaryDark,
-  onSecondary: _cOnSurfaceDark,
-  error: _cError,
+  secondary: Color(0xFF6CBCE3),
+  onSecondary: Color(0xFFE1E1E1),
+  error: Color(0xFFD14343),
   onError: Colors.white,
-  surface: _cBgLight,
-  surfaceContainer: _cSurfaceContainerLight,
-  onSurface: _cOnSurfaceLight,
-  onSurfaceVariant: _cSecondaryTextLight,
-  outlineVariant: _cBordersLight,
-  primaryFixed: _cActiveIcon,
+  surface: Color(0xFFF4F4F4),
+  surfaceContainer: Colors.white,
+  onSurface: Color(0xFF1A1A1A),
+  onSurfaceVariant: Color(0xFF4B5563),
+  outlineVariant: Color(0xFF4B5563),
+  primaryFixed: Color(0xFF014F86),
 );
 
-// DARK scheme
-
-const darkScheme = ColorScheme(
+const colorSchemeDark = ColorScheme(
   brightness: Brightness.dark,
-  primary: _cPrimaryDark,
-  onPrimary: cBgDark,
-  secondary: _cPrimaryDark,
-  onSecondary: _cOnSurfaceDark,
-  error: _cError,
+  primary: Color(0xFF6CBCE3),
+  onPrimary: Color(0xFF0A1826),
+  secondary: Color(0xFF014F86),
+  onSecondary: Color(0xFFE1E1E1),
+  error: Color(0xFFD14343),
   onError: Colors.white,
-  surface: cBgDark,
-  surfaceContainer: _cSurfaceContainerDark,
-  onSurface: _cOnSurfaceDark,
-  onSurfaceVariant: _cSecondaryTextDark,
-  outlineVariant: _cBordersDark,
-  primaryFixed: _cActiveIcon,
+  surface: Color(0xFF0A1826),
+  surfaceContainer: Color(0xFF1D2935),
+  onSurface: Color(0xFFE1E1E1),
+  onSurfaceVariant: Color(0xFFE5E7EB),
+  outlineVariant: Color(0xFF444746),
+  primaryFixed: Color(0xFF014F86),
 );
 
-final themeLight = _createAppTheme(lightScheme);
-final themeDark = _createAppTheme(darkScheme);
-
-ThemeData _createAppTheme(ColorScheme colorScheme) {
+ThemeData createAppTheme(ColorScheme colorScheme) {
   final buttonShape = RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(kBorderRadius),
   );
@@ -77,8 +52,17 @@ ThemeData _createAppTheme(ColorScheme colorScheme) {
     scaffoldBackgroundColor: colorScheme.surface,
     unselectedWidgetColor: colorScheme.onSurface,
 
-    //Dialog
-    dialogTheme: DialogThemeData(backgroundColor: colorScheme.surfaceContainer),
+    // Dialog
+    dialogTheme: DialogThemeData(
+      backgroundColor: colorScheme.surfaceContainer,
+    ),
+
+    // DropdownMenu
+    dropdownMenuTheme: const DropdownMenuThemeData(
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(),
+      ),
+    ),
 
     // Elevated Button
     elevatedButtonTheme: ElevatedButtonThemeData(

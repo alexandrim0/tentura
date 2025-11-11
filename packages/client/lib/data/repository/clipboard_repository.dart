@@ -5,12 +5,6 @@ import 'package:injectable/injectable.dart';
 class ClipboardRepository {
   const ClipboardRepository();
 
-  Future<String> getStringFromClipboard() async {
-    if (await Clipboard.hasStrings()) {
-      try {
-        return (await Clipboard.getData(Clipboard.kTextPlain))?.text ?? '';
-      } catch (_) {}
-    }
-    return '';
-  }
+  Future<String> getStringFromClipboard() async =>
+      (await Clipboard.getData(Clipboard.kTextPlain))?.text ?? '';
 }

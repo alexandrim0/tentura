@@ -25,7 +25,12 @@ class ChatPeerListTile extends StatelessWidget {
       ),
 
       // Title
-      title: Text(profile.title),
+      title: Text(
+        profile.title,
+        style: profile.isSeeingMe
+            ? const TextStyle(decoration: TextDecoration.underline)
+            : null,
+      ),
 
       // New messages indicator
       trailing: BlocSelector<ChatNewsCubit, ChatNewsState, int>(

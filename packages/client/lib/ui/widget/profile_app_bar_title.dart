@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 
@@ -26,7 +27,6 @@ class ProfileAppBarTitle extends StatelessWidget {
           style: textTheme.bodySmall?.copyWith(
             color: theme.hintColor,
             fontSize: textTheme.bodySmall?.fontSize,
-            decoration: TextDecoration.underline,
           ),
         ),
       ],
