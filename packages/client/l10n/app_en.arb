@@ -252,6 +252,18 @@
   "@createBeaconErrorTooShortQuestion": {
     "context": "BeaconCreateScreen"
   },
+  "beaconCreateSuccess": "Beacon created successfully!",
+  "@beaconCreateSuccess": {
+    "context": "BeaconCreateScreen"
+  },
+  "beaconCreateError": "Something went wrong, beacon was not created.",
+  "@beaconCreateError": {
+    "context": "BeaconCreateScreen"
+  },
+  "beaconViewButton": "View Beacon",
+  "@beaconViewButton": {
+    "context": "BeaconCreateScreen"
+  },
   "confirmBeaconPublishing": "Are you sure you want to publish this beacon?",
   "@confirmBeaconPublishing": {
     "context": "BeaconPublishDialog"

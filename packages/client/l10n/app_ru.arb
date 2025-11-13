@@ -252,6 +252,18 @@
   "@createBeaconErrorTooShortQuestion": {
     "context": "BeaconCreateScreen"
   },
+  "beaconCreateSuccess": "Маяк успешно создан!",
+  "@beaconCreateSuccess": {
+    "context": "BeaconCreateScreen"
+  },
+  "beaconCreateError": "Что-то пошло не так, маяк не создан. Попробуйте ещё раз.",
+  "@beaconCreateError": {
+    "context": "BeaconCreateScreen"
+  },
+  "beaconViewButton": "Посмотреть",
+  "@beaconViewButton": {
+    "context": "BeaconCreateScreen"
+  },
   "confirmBeaconPublishing": "Вы уверены, что хотите опубликовать этот маяк?",
   "@confirmBeaconPublishing": {
     "context": "BeaconPublishDialog"
