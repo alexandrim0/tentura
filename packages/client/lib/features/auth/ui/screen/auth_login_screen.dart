@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -6,6 +7,7 @@ import 'package:tentura/ui/dialog/qr_scan_dialog.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/widget/linear_pi_active.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../bloc/auth_cubit.dart';
 import '../widget/account_list_tile.dart';
@@ -90,6 +92,43 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                   child: OutlinedButton(
                     onPressed: authCubit.getSeedFromClipboard,
                     child: Text(l10n.recoverFromClipboard),
+                  ),
+                ),
+
+                // Info for new users
+                const Padding(
+                  padding: kPaddingV,
+                ),
+
+                Padding(
+                  padding: kPaddingH,
+                  child: Text.rich(
+                    TextSpan(
+                      text: l10n.firstTimeHerePrefix,
+                      children: [
+                        TextSpan(
+                          text: 'vadim@intersubjective.space',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              final uri = Uri(
+                                scheme: 'mailto',
+                                path: 'vadim@intersubjective.space',
+                              );
+                              if (await canLaunchUrl(uri)) {
+                                await launchUrl(uri);
+                              }
+                            },
+                        ),
+                        TextSpan(
+                          text: l10n.firstTimeHereSuffix,
+                        ), // всё после контакта
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
 

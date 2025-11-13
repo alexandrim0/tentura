@@ -112,6 +112,14 @@
   "@createNewAccount": {
     "context": "AccountAddDialog, AuthLoginScreen"
   },
+  "firstTimeHerePrefix": "First time here? We work by invitation. You can get an invite here: ",
+  "firstTimeHereSuffix": ". Just message us!",
+  "@firstTimeHerePrefix": {
+    "context": "AuthLoginScreen"
+  },
+  "@firstTimeHereSuffix": {
+    "context": "AuthLoginScreen"
+  },
   "pleaseFillTitle": "Please fill title",
   "@pleaseFillTitle": {
     "context": "AccountAddDialog, ProfileEditScreen"
@@ -164,8 +172,6 @@
   "@friendsTitle": {
     "context": "FriendsScreen"
   },
-
-
   "invitationsShowMenuItem": "Show Invitations",
   "@invitationsShowMenuItem": {
     "context": "FriendsScreen"
