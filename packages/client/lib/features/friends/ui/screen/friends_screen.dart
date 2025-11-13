@@ -25,6 +25,7 @@ class FriendsScreen extends StatelessWidget {
     return Scaffold(
       appBar: env.needInviteCode
           ? AppBar(
+              title: Text(l10n.friendsTitle),
               actions: [
                 PopupMenuButton<void>(
                   itemBuilder: (_) => <PopupMenuEntry<void>>[

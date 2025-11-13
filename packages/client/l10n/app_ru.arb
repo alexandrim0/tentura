@@ -84,7 +84,6 @@
   "@tagsText": {
     "context": "Utils"
   },
-
   "invitationCodeTooShort": "Код слишком короткий",
   "@invitationCodeTooShort": {
     "context": "CommonErrors"
@@ -109,8 +108,6 @@
   "@descriptionTooLong": {
     "context": "CommonErrors"
   },
-
-
   "createNewAccount": "Создать аккаунт",
   "@createNewAccount": {
     "context": "AccountAddDialog, AuthLoginScreen"
@@ -159,23 +156,22 @@
   "@removeFromList": {
     "context": "AccountListTile"
   },
-
-
   "invitationScreenTitle": "Приглашения",
   "@invitationScreenTitle": {
     "context": "InvitationScreen"
   },
-
+  "friendsTitle": "Друзья",
+  "@friendsTitle": {
+    "context": "FriendsScreen"
+  },
   "invitationsShowMenuItem": "Посмотреть приглашения",
   "@invitationsShowMenuItem": {
     "context": "FriendsScreen"
   },
-
   "confirmInvitationRemoval": "Вы уверены, что хотите отменить приглашение? После этого человек не сможет зарегистрироваться.",
   "@confirmInvitationRemoval": {
     "context": "InvitationRemoveDialog"
   },
-
   "confirmBeaconRemoval": "Вы уверены, что хотите удалить этот маяк?",
   "@confirmBeaconRemoval": {
     "context": "BeaconDeleteDialog"
@@ -212,7 +208,6 @@
   "@showOnMap": {
     "context": "BeaconInfo"
   },
-
   "createNewBeacon": "Создать маяк",
   "@createNewBeacon": {
     "context": "BeaconCreateScreen"
@@ -257,8 +252,6 @@
   "@confirmBeaconPublishingHint": {
     "context": "BeaconPublishDialog"
   },
-
-  
   "labelComments": "Комментарии",
   "@labelComments": {
     "context": "Comments"
@@ -311,12 +304,10 @@
   "@buttonSubmitComplaint": {
     "context": "ComplaintScreen"
   },
-
   "filterByTag": "Фильтр по тегу",
   "@filterByTag": {
     "context": "MyFieldScreen"
   },
-
   "writeCodeHere": "Если у вас есть код, введите его здесь:",
   "@writeCodeHere": {
     "context": "ConnectScreen"
@@ -333,7 +324,6 @@
   "@codeNotFoundError": {
     "context": "ConnectScreen"
   },
-
   "addNewTopic": "Добавить новую тему",
   "@addNewTopic": {
     "context": "Topics"
@@ -369,7 +359,6 @@
       }
     }
   },
-
   "tapToChooseLocation": "Нажмите, чтобы выбрать место",
   "@tapToChooseLocation": {
     "context": "ChooseLocationDialog"
@@ -542,7 +531,6 @@
   "@shareLink": {
     "context": "ShareCodeDialog"
   },
-
   "addPollOption": "Добавить голосование",
   "@addPollOption": {
     "context": "BeaconCreateScreen"
@@ -606,7 +594,6 @@
   "@closeButton": {
     "context": "PollDialog"
   },
-
   "addTagText": "Добавить тэг",
   "@addTagText": {
     "context": "AddTagDialog"

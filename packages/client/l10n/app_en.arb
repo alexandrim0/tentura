@@ -84,8 +84,6 @@
   "@tagsText": {
     "context": "Utils"
   },
-
-
   "invitationCodeTooShort": "Code too short",
   "@invitationCodeTooShort": {
     "context": "CommonErrors"
@@ -110,8 +108,6 @@
   "@descriptionTooLong": {
     "context": "CommonErrors"
   },
-
-
   "createNewAccount": "Create new Account",
   "@createNewAccount": {
     "context": "AccountAddDialog, AuthLoginScreen"
@@ -160,12 +156,15 @@
   "@removeFromList": {
     "context": "AccountListTile"
   },
-
-
   "invitationScreenTitle": "Invitations",
   "@invitationScreenTitle": {
     "context": "InvitationScreen"
   },
+  "friendsTitle": "Friends",
+  "@friendsTitle": {
+    "context": "FriendsScreen"
+  },
+
 
   "invitationsShowMenuItem": "Show Invitations",
   "@invitationsShowMenuItem": {
@@ -175,7 +174,6 @@
   "@confirmInvitationRemoval": {
     "context": "InvitationRemoveDialog"
   },
-
   "confirmBeaconRemoval": "Are you sure you want to delete this beacon?",
   "@confirmBeaconRemoval": {
     "context": "BeaconDeleteDialog"
@@ -212,7 +210,6 @@
   "@showOnMap": {
     "context": "BeaconInfo"
   },
-
   "createNewBeacon": "Create new Beacon",
   "@createNewBeacon": {
     "context": "BeaconCreateScreen"
@@ -257,8 +254,6 @@
   "@confirmBeaconPublishingHint": {
     "context": "BeaconPublishDialog"
   },
-
-  
   "labelComments": "Comments",
   "@labelComments": {
     "context": "Comments"
@@ -311,12 +306,10 @@
   "@buttonSubmitComplaint": {
     "context": "ComplaintScreen"
   },
-
   "filterByTag": "Filter by tag",
   "@filterByTag": {
     "context": "MyFieldScreen"
   },
-
   "writeCodeHere": "If you have the Code, please write it here:",
   "@writeCodeHere": {
     "context": "ConnectScreen"
@@ -333,7 +326,6 @@
   "@codeNotFoundError": {
     "context": "ConnectScreen"
   },
-
   "addNewTopic": "Add a new topic",
   "@addNewTopic": {
     "context": "Topics"
@@ -369,7 +361,6 @@
       }
     }
   },
-
   "tapToChooseLocation": "Tap to choose location",
   "@tapToChooseLocation": {
     "context": "ChooseLocationDialog"
@@ -542,7 +533,6 @@
   "@shareLink": {
     "context": "ShareCodeDialog"
   },
-
   "addPollOption": "Add Poll",
   "@addPollOption": {
     "context": "BeaconCreateScreen"
@@ -606,7 +596,6 @@
   "@closeButton": {
     "context": "PollDialog"
   },
- 
   "addTagText": "Add tag",
   "@addTagText": {
     "context": "AddTagDialog"
