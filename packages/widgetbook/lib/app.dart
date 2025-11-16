@@ -21,42 +21,46 @@ class WidgetbookApp extends StatelessWidget {
   const WidgetbookApp({super.key});
 
   @override
-  Widget build(BuildContext context) => Widgetbook(
-    darkTheme: themeDark,
-    lightTheme: themeLight,
-    directories: directories,
-    addons: [
-      // Have to be first
-      ViewportAddon(IosViewports.all),
-      MaterialThemeAddon(
-        themes: [
-          WidgetbookTheme(name: 'Dark', data: themeDark),
-          WidgetbookTheme(name: 'Light', data: themeLight),
-        ],
-      ),
-    ],
-    appBuilder: (_, child) => MaterialApp(
-      debugShowCheckedModeBanner: false,
-      supportedLocales: L10n.supportedLocales,
-      localizationsDelegates: L10n.localizationsDelegates,
-      onGenerateTitle: (context) => L10n.of(context)?.appTitle ?? kAppTitle,
-      builder: (_, _) => MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => ScreenCubit()),
-          BlocProvider.value(value: GetIt.I<ChatNewsCubit>()),
-          BlocProvider.value(value: GetIt.I<ContextCubit>()),
-          BlocProvider.value(value: GetIt.I<FriendsCubit>()),
-          BlocProvider.value(value: GetIt.I<LikeCubit>()),
-          BlocProvider.value(value: GetIt.I<MyFieldCubit>()),
-          BlocProvider.value(value: GetIt.I<FavoritesCubit>()),
-        ],
-        child: BlocListener<ScreenCubit, ScreenState>(
-          listenWhen: (_, c) => c.isNavigating || c.hasError,
-          // TBD: Navigation
-          listener: (context, state) {},
-          child: child,
+  Widget build(BuildContext context) {
+    final themeDark = createAppTheme(colorSchemeDark);
+    final themeLight = createAppTheme(colorSchemeLight);
+    return Widgetbook(
+      darkTheme: themeDark,
+      lightTheme: themeLight,
+      directories: directories,
+      addons: [
+        // Have to be first
+        ViewportAddon(IosViewports.all),
+        MaterialThemeAddon(
+          themes: [
+            WidgetbookTheme(name: 'Dark', data: themeDark),
+            WidgetbookTheme(name: 'Light', data: themeLight),
+          ],
+        ),
+      ],
+      appBuilder: (_, child) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        supportedLocales: L10n.supportedLocales,
+        localizationsDelegates: L10n.localizationsDelegates,
+        onGenerateTitle: (context) => L10n.of(context)?.appTitle ?? kAppTitle,
+        builder: (_, _) => MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => ScreenCubit()),
+            BlocProvider.value(value: GetIt.I<ChatNewsCubit>()),
+            BlocProvider.value(value: GetIt.I<ContextCubit>()),
+            BlocProvider.value(value: GetIt.I<FriendsCubit>()),
+            BlocProvider.value(value: GetIt.I<LikeCubit>()),
+            BlocProvider.value(value: GetIt.I<MyFieldCubit>()),
+            BlocProvider.value(value: GetIt.I<FavoritesCubit>()),
+          ],
+          child: BlocListener<ScreenCubit, ScreenState>(
+            listenWhen: (_, c) => c.isNavigating || c.hasError,
+            // TBD: Navigation
+            listener: (context, state) {},
+            child: child,
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

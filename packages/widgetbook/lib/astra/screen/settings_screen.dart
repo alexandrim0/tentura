@@ -3,7 +3,6 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
 import 'package:tentura/ui/dialog/show_seed_dialog.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
 
 import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 
@@ -24,7 +23,7 @@ class SettingScreen extends StatelessWidget {
     child: Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
-        leading: const DeepBackButton(),
+        leading: const BackButton(),
       ),
       body: Padding(
         padding: kPaddingAll,

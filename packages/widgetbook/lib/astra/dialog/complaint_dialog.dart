@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
 
 import '../widget/theme_astra.dart';
 
@@ -39,7 +38,7 @@ class _ComplaintDialogState extends State<ComplaintDialog> {
     child: Scaffold(
       appBar: AppBar(
         title: const Text('Submit Complaint'),
-        leading: const DeepBackButton(),
+        leading: const BackButton(),
       ),
       body: Padding(
         padding: kPaddingAll,

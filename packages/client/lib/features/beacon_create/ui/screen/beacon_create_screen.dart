@@ -68,33 +68,29 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen>
         // Publish Button
         Padding(
           padding: kPaddingH,
-          child:
-              BlocSelector<BeaconCreateCubit, BeaconCreateState, StateStatus>(
-                key: const Key('BeaconCreate.PublishButton'),
-                bloc: _beaconCreateCubit,
-                selector: (state) => state.status,
-                builder: (context, status) => TextButton(
-                  onPressed: status == StateStatus.isSuccess
-                      ? () async {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            final contextName = context
+          child: BlocSelector<BeaconCreateCubit, BeaconCreateState, bool>(
+            key: const Key('BeaconCreate.PublishButton'),
+            bloc: _beaconCreateCubit,
+            selector: (state) => state.canTryToPublish,
+            builder: (context, canTryToPublish) => TextButton(
+              onPressed: canTryToPublish
+                  ? () async {
+                      if (await BeaconPublishDialog.show(context) ?? false) {
+                        // Publish confirmed
+                        if (context.mounted) {
+                          await _beaconCreateCubit.publish(
+                            context: context
                                 .read<ContextCubit>()
                                 .state
-                                .selected;
-                            if (await BeaconPublishDialog.show(context) ??
-                                false) {
-                              if (context.mounted) {
-                                await _beaconCreateCubit.publish(
-                                  context: contextName,
-                                );
-                              }
-                            }
-                          }
+                                .selected,
+                          );
                         }
-                      : null,
-                  child: Text(_l10n.buttonPublish),
-                ),
-              ),
+                      }
+                    }
+                  : null,
+              child: Text(_l10n.buttonPublish),
+            ),
+          ),
         ),
       ],
       bottom: PreferredSize(
@@ -124,15 +120,27 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen>
 
     body: Form(
       key: _formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      onChanged: () => _beaconCreateCubit.validate(
+        _formKey.currentState?.validate() ?? false,
+      ),
       child: Padding(
         padding: kPaddingH + kPaddingLargeT,
-        child: TabBarView(
-          controller: _tabController,
-          children: const [
-            InfoTab(),
-            ImageTab(),
-            PollingTab(),
-          ],
+        child: BlocSelector<BeaconCreateCubit, BeaconCreateState, bool>(
+          key: const Key('BeaconCreate.FormBody'),
+          bloc: _beaconCreateCubit,
+          selector: (state) => state.isLoading,
+          builder: (context, isLoading) => AbsorbPointer(
+            absorbing: isLoading,
+            child: TabBarView(
+              controller: _tabController,
+              children: const [
+                InfoTab(),
+                ImageTab(),
+                PollingTab(),
+              ],
+            ),
+          ),
         ),
       ),
     ),

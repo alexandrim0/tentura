@@ -2,11 +2,11 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 1.3.16
+version: 1.3.17
 
 environment:
-  sdk: '>=3.9.2 <4.0.0'
-  flutter: ^3.35.7
+  sdk: '>=3.10.0 <4.0.0'
+  flutter: ^3.38.1
 
 dependencies:
   flutter:
@@ -21,7 +21,7 @@ dependencies:
   get_it: ^9.0.5
   latlong2: ^0.9.1
   injectable: ^2.6.0
-  auto_route: ^10.2.0
+  auto_route: ^10.2.2
   collection: ^1.19.1
   http_parser: ^4.1.2
   built_value: ^8.11.1
@@ -33,16 +33,14 @@ dependencies:
 
   # Platform related
   web: ^1.1.1
-  http: ^1.5.0
-  meta: ^1.16.0
+  http: ^1.6.0
+  meta: ^1.17.0
   drift: ^2.29.0
-  mailto: ^2.0.0
   geocoding: ^4.0.0
   drift_dev: ^2.29.0
   geolocator: ^14.0.2
   share_plus: ^12.0.1
-  image_picker: ^1.2.0
-  url_launcher: ^6.3.2
+  image_picker: ^1.2.1
   drift_flutter: ^0.2.7
   firebase_core: ^4.2.1
   share_handler: ^0.0.25
@@ -97,7 +95,7 @@ dev_dependencies:
   sentry_dart_plugin: ^3.0.0
   very_good_analysis: ^10.0.0
   injectable_generator: ^2.8.1
-  auto_route_generator: ^10.2.5
+  auto_route_generator: ^10.2.6
   flutter_launcher_icons: ^0.14.4
 
 flutter:

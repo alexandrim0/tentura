@@ -1,11 +1,12 @@
 import 'package:get_it/get_it.dart';
 
-import 'package:tentura/consts.dart';
 import 'package:tentura/data/repository/image_repository.dart';
 import 'package:tentura/domain/entity/coordinates.dart';
 import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/domain/entity/polling.dart';
+import 'package:tentura/domain/exception/user_input_exception.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
+import 'package:tentura/ui/l10n/common_messages.dart';
 
 import 'package:tentura/features/beacon/data/repository/beacon_repository.dart';
 
@@ -23,8 +24,8 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
        _imageRepository = imageRepository ?? GetIt.I<ImageRepository>(),
        super(
          BeaconCreateState(
-           variants: [''],
-           variantsKeys: [UniqueKey()],
+           variants: ['', ''],
+           variantsKeys: [UniqueKey(), UniqueKey()],
          ),
        );
 
@@ -98,12 +99,15 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
 
   ///
   ///
-  void removeVariant(int index) => emit(
-    state.copyWith(
-      variants: [...state.variants]..removeAt(index),
-      variantsKeys: [...state.variantsKeys]..removeAt(index),
-    ),
-  );
+  void removeVariant(int index) {
+    emit(
+      state.copyWith(
+        variants: [...state.variants]..removeAt(index),
+        variantsKeys: [...state.variantsKeys]..removeAt(index),
+      ),
+    );
+    validate();
+  }
 
   ///
   ///
@@ -127,27 +131,52 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
 
   ///
   ///
+  void validate([bool formValid = false]) {
+    var canPublish = formValid;
+
+    if (canPublish && state.hasPolling) {
+      try {
+        if (state.variants.where((e) => e.isNotEmpty).length < 2) {
+          throw const PollingTooFewVariantsException();
+        }
+        Polling.questionValidator(state.question);
+        state.variants.forEach(Polling.variantValidator);
+      } catch (_) {
+        canPublish = false;
+      }
+    }
+
+    if (state.canTryToPublish != canPublish) {
+      emit(state.copyWith(canTryToPublish: canPublish));
+    }
+  }
+
+  ///
+  ///
   Future<void> publish({required String context}) async {
     final variants = state.variants.where((e) => e.isNotEmpty).toList();
     final hasPolling = state.question.isNotEmpty && variants.isNotEmpty;
     if (hasPolling) {
-      if (state.question.length < kQuestionMinLength) {
-        emit(
+      if (state.question.length < Polling.questionMinLength) {
+        return emit(
           state.copyWith(
-            // TBD: l10n
-            status: StateHasError('Too short question.'),
+            status: StateHasError(const PollingQuestionTooShortException()),
           ),
         );
-        return;
       }
       if (variants.length < 2) {
-        emit(
+        return emit(
           state.copyWith(
-            // TBD: l10n
-            status: StateHasError('Too few variants. Must be at least 2.'),
+            status: StateHasError(const PollingTooFewVariantsException()),
           ),
         );
-        return;
+      }
+      if (variants.toSet().length != variants.length) {
+        return emit(
+          state.copyWith(
+            status: StateHasError(const PollingVariantsNotUniqueException()),
+          ),
+        );
       }
     }
 
@@ -179,6 +208,7 @@ class BeaconCreateCubit extends Cubit<BeaconCreateState> {
               : null,
         ),
       );
+      emit(state.copyWith(status: StateIsMessaging(const OkMessage())));
       emit(state.copyWith(status: StateIsNavigating.back));
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
