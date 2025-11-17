@@ -4,9 +4,12 @@ import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 
+import 'package:tentura_root/domain/entity/localizable.dart';
+
 import 'package:tentura/consts.dart';
 
 import '../bloc/state_base.dart';
+import '../l10n/l10n.dart';
 
 const kSpacingSmall = 8.0;
 const kSpacingMedium = 16.0;
@@ -42,7 +45,8 @@ const kBorderRadius = 8.0;
 final _fmtYMd = DateFormat.yMd();
 final _fmtHm = DateFormat.Hm();
 
-final _logger = GetIt.I<Logger>();
+final GlobalKey<ScaffoldMessengerState> snackbarKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 String dateFormatYMD(DateTime? dateTime) =>
     dateTime == null ? '' : _fmtYMd.format(dateTime);
@@ -60,11 +64,13 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
   Duration duration = const Duration(seconds: kSnackBarDuration),
 }) {
   final theme = Theme.of(context);
-  ScaffoldMessenger.of(context).clearSnackBars();
+  final scaffoldMessenger =
+      ScaffoldMessenger.maybeOf(context) ?? snackbarKey.currentState!
+        ..clearSnackBars();
   if (isError) {
-    _logger.d(text);
+    GetIt.I<Logger>().d(text);
   }
-  return ScaffoldMessenger.of(context).showSnackBar(
+  return scaffoldMessenger.showSnackBar(
     SnackBar(
       behavior: isFloating ? SnackBarBehavior.floating : null,
       margin: isFloating ? kPaddingAll : null,
@@ -94,9 +100,12 @@ Widget separatorBuilder(_, _) => const Divider(
 
 void commonScreenBlocListener(
   BuildContext context,
-  StateBase state,
-) => switch (state.status) {
-  final StateIsNavigating s =>
+  StateBase state, {
+  bool listenNavigatingState = true,
+  bool listenMessagingState = true,
+  bool listenHasErrorState = true,
+}) => switch (state.status) {
+  final StateIsNavigating s when listenNavigatingState =>
     s.path == kPathBack
         ? context.back()
         : context.router.pushPath(
@@ -104,14 +113,17 @@ void commonScreenBlocListener(
             includePrefixMatches: true,
             onFailure: GetIt.I<Logger>().e,
           ),
-  final StateIsMessaging s => showSnackBar(
+  final StateIsMessaging s when listenMessagingState => showSnackBar(
     context,
-    text: s.message,
+    text: s.message.toL10n(L10n.of(context)?.localeName),
   ),
-  final StateHasError s => showSnackBar(
+  final StateHasError s when listenHasErrorState => showSnackBar(
     context,
     isError: true,
-    text: s.error.toString(),
+    text: switch (s.error) {
+      final Localizable e => e.toL10n(L10n.of(context)?.localeName),
+      final Object e => e.toString(),
+    },
   ),
   _ => null,
 };

@@ -160,10 +160,9 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
       ),
 
       // Tags
-      const Padding(
+      Padding(
         padding: kPaddingSmallV,
-        // TBD: l10n
-        child: Text('Tags'),
+        child: Text(_l10n.tagsText),
       ),
       BlocSelector<BeaconCreateCubit, BeaconCreateState, Set<String>>(
         selector: (state) => state.tags,
@@ -173,13 +172,8 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
           children: [
             // Add Tag
             ActionChip(
-              avatar: Icon(
-                Icons.add,
-                color: _theme.colorScheme.onPrimary,
-              ),
-              // TBD: l10n
               label: Text(
-                'tag',
+                _l10n.addTagText,
                 style: _theme.chipTheme.labelStyle,
               ),
               onPressed: tags.length < 5

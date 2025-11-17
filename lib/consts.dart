@@ -14,12 +14,6 @@ const kTitleMaxLength = 32;
 
 const kDescriptionMaxLength = 2_048;
 
-const kQuestionMinLength = 8;
-
-const kQuestionMaxLength = 256;
-
-const kVariantMaxLength = 64;
-
 const int kRatingSector = 100 ~/ 4;
 
 /// In seconds

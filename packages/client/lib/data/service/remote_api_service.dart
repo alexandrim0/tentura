@@ -11,7 +11,7 @@ import 'remote_api_client/remote_api_client_ws.dart';
 //     if (dart.library.js_interop) 'remote_api_client/remote_api_client_web.dart';
 
 export 'package:ferry/ferry.dart'
-    show DataSource, FetchPolicy, OperationResponse;
+    show DataSource, FetchPolicy, OperationRequest, OperationResponse;
 export 'package:gql_exec/gql_exec.dart' show Context, HttpLinkHeaders;
 export 'package:web_socket_client/src/connection_state.dart';
 
@@ -44,6 +44,7 @@ final class RemoteApiService extends RemoteApiClient with RemoteApiClientWs {
   }
 }
 
+// TBD: remove
 extension ErrorHandler<TData, TVars> on OperationResponse<TData, TVars> {
   TData dataOrThrow({String? label}) {
     if (hasErrors) {
@@ -52,7 +53,9 @@ extension ErrorHandler<TData, TVars> on OperationResponse<TData, TVars> {
         label: label,
       );
     }
-    if (data == null) throw GraphQLNoDataException(label: label);
+    if (data == null) {
+      throw GraphQLNoDataException(label: label);
+    }
 
     return data!;
   }

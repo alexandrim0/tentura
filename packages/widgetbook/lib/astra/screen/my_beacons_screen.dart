@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
 import 'package:tentura/ui/utils/ui_utils.dart';
-import 'package:tentura/ui/widget/deep_back_button.dart';
 
 import 'package:tentura/features/beacon/ui/bloc/beacon_cubit.dart';
 import 'package:tentura/features/beacon/ui/widget/beacon_tile.dart';
@@ -30,7 +29,7 @@ class MyBeaconsScreen extends StatelessWidget {
     builder: (context, state) => Scaffold(
       appBar: AppBar(
         title: const Text('My Beacons'),
-        leading: const DeepBackButton(),
+        leading: const BackButton(),
       ),
       body: state.beacons.isEmpty
           ? Center(

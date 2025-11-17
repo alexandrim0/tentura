@@ -63,9 +63,13 @@ class BeaconInfo extends StatelessWidget {
                   maxLines: 1,
                   textAlign: TextAlign.left,
                   overflow: TextOverflow.ellipsis,
-                  style: isTitleLarge
-                      ? theme.textTheme.headlineLarge
-                      : theme.textTheme.headlineMedium,
+                  style:
+                      (isTitleLarge
+                              ? theme.textTheme.headlineLarge
+                              : theme.textTheme.headlineMedium)
+                          ?.copyWith(
+                            decoration: TextDecoration.underline,
+                          ),
                 ),
               ),
             ],

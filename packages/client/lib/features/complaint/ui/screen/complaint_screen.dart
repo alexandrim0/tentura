@@ -3,11 +3,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+import 'package:tentura_root/domain/enums.dart';
+
 import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 
-import '../../domain/enum.dart';
 import '../bloc/complaint_cubit.dart';
 
 @RoutePage()
@@ -49,8 +50,6 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
 
   late final _cubit = context.read<ComplaintCubit>();
 
-  late final _colorScheme = Theme.of(context).colorScheme;
-
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
@@ -65,24 +64,26 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
           // Type
           BlocSelector<ComplaintCubit, ComplaintState, ComplaintType>(
             selector: (state) => state.type,
-            builder: (_, type) => DropdownButtonFormField<ComplaintType>(
-              initialValue: type,
-              items: [
-                DropdownMenuItem(
-                  value: ComplaintType.violatesCsaePolicy,
-                  child: Text(_l10n.violatesCSAE),
+            builder: (_, type) => Theme(
+              data: ThemeData.from(colorScheme: Theme.of(context).colorScheme),
+              child: DropdownButtonFormField<ComplaintType>(
+                initialValue: type,
+                items: [
+                  DropdownMenuItem(
+                    value: ComplaintType.violatesCsaePolicy,
+                    child: Text(_l10n.violatesCSAE),
+                  ),
+                  DropdownMenuItem(
+                    value: ComplaintType.violatesPlatformRules,
+                    child: Text(_l10n.violatesPlatformRules),
+                  ),
+                ],
+                onChanged: _cubit.setType,
+                decoration: InputDecoration(
+                  labelText: _l10n.labelComplaintType,
+                  border: const OutlineInputBorder(),
                 ),
-                DropdownMenuItem(
-                  value: ComplaintType.violatesPlatformRules,
-                  child: Text(_l10n.violatesPlatformRules),
-                ),
-              ],
-              onChanged: _cubit.setType,
-              decoration: InputDecoration(
-                labelText: _l10n.labelComplaintType,
-                border: const OutlineInputBorder(),
               ),
-              dropdownColor: _colorScheme.secondaryContainer,
             ),
           ),
 
@@ -91,6 +92,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
             padding: kPaddingV,
             child: TextFormField(
               maxLines: 5,
+              autofocus: true,
               decoration: InputDecoration(
                 labelText: _l10n.detailsRequired,
                 border: const OutlineInputBorder(),
@@ -125,9 +127,6 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
               onPressed: () async {
                 if (_formKey.currentState?.validate() ?? false) {
                   await _cubit.submit();
-                  if (context.mounted) {
-                    context.read<ScreenCubit>().back();
-                  }
                 }
               },
               child: Text(_l10n.buttonSubmitComplaint),

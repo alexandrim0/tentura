@@ -37,7 +37,6 @@ class AccountCase {
   //
   //
   Future<String> getSeedFromClipboard() async {
-    // TBD: throw specific Exception
     try {
       final seedEncoded = _base64Padded(
         await _clipboardRepository.getStringFromClipboard(),
@@ -49,29 +48,28 @@ class AccountCase {
         }
       }
     } catch (_) {}
-    return '';
+    throw const AuthSeedIsWrongException();
   }
 
   //
   //
-  Future<String> getCodeFromClipboard() async {
-    const prefix = 'I';
+  Future<String> getCodeFromClipboard({
+    String prefix = '',
+  }) async {
     final text = await _clipboardRepository.getStringFromClipboard();
 
-    // TBD: more complex validating
-    // TBD: throw specific Exception
     if (text.length == kIdLength && text.startsWith(prefix)) {
       return text;
     }
 
     try {
-      final id = Uri.dataFromString(text).queryParameters['id'] ?? '';
+      final id = Uri.dataFromString(text).queryParameters['id']!;
       if (id.length == kIdLength && id.startsWith(prefix)) {
         return id;
       }
     } catch (_) {}
 
-    return '';
+    throw const InvitationCodeIsWrongException();
   }
 
   //

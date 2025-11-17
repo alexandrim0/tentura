@@ -61,6 +61,18 @@ final class IdWrongException extends ExceptionBase {
        );
 }
 
+final class IdDuplicateException extends ExceptionBase {
+  const IdDuplicateException({
+    String id = '',
+    String? description,
+  }) : super(
+         code: const GeneralExceptionCodes(
+           GeneralExceptionCode.idDuplicateException,
+         ),
+         description: description ?? 'Id already exists: [$id]',
+       );
+}
+
 final class PemKeyWrongException extends ExceptionBase {
   const PemKeyWrongException({
     String key = '',

@@ -17,6 +17,7 @@ import 'package:tentura_server/domain/entity/user_entity.dart';
 
 import 'table/beacons.dart';
 import 'table/comments.dart';
+import 'table/complaints.dart';
 import 'table/fcm_tokens.dart';
 import 'table/images.dart';
 import 'table/invitations.dart';
@@ -30,6 +31,7 @@ import 'table/users.dart';
 import 'table/vote_users.dart';
 
 export 'package:drift/drift.dart';
+export 'package:postgres/src/exceptions.dart';
 
 part 'tentura_db.g.dart';
 
@@ -38,6 +40,7 @@ part 'tentura_db.g.dart';
   tables: [
     Beacons,
     Comments,
+    Complaints,
     FcmTokens,
     Images,
     Invitations,

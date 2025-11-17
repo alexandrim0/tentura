@@ -1,15 +1,16 @@
 import 'dart:async';
-import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:tentura/consts.dart';
+import 'package:tentura/ui/bloc/screen_cubit.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
 import 'package:tentura/ui/theme.dart';
 
+import 'package:tentura/features/auth/ui/bloc/auth_cubit.dart';
 import 'package:tentura/features/settings/ui/bloc/settings_cubit.dart';
 
 import 'di/di.dart';
@@ -47,10 +48,11 @@ class App extends StatelessWidget {
           final router = GetIt.I<RootRouter>();
           return MaterialApp.router(
             title: kAppTitle,
-            theme: themeLight,
-            darkTheme: themeDark,
             themeMode: themeMode,
+            scaffoldMessengerKey: snackbarKey,
             debugShowCheckedModeBanner: false,
+            theme: createAppTheme(colorSchemeLight),
+            darkTheme: createAppTheme(colorSchemeDark),
             routerConfig: router.config(
               deepLinkBuilder: router.deepLinkBuilder,
               deepLinkTransformer: router.deepLinkTransformer,
@@ -72,20 +74,50 @@ class App extends StatelessWidget {
                 data: media.copyWith(
                   textScaler: TextScaler.noScaling,
                 ),
-                child: kIsWeb && media.orientation == Orientation.landscape
-                    ? ColoredBox(
-                        color: Theme.of(context).colorScheme.surfaceBright,
-                        child: Center(
-                          child: ConstrainedBox(
-                            constraints: kWebConstraints,
-                            child: AspectRatio(
-                              aspectRatio: kWebAspectRatio,
-                              child: child,
-                            ),
-                          ),
+                child: MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(
+                      value: GetIt.I<ScreenCubit>(),
+                    ),
+                    BlocProvider.value(
+                      value: GetIt.I<SettingsCubit>(),
+                    ),
+                    BlocProvider.value(
+                      value: GetIt.I<AuthCubit>(),
+                    ),
+                  ],
+                  child: MultiBlocListener(
+                    listeners: [
+                      BlocListener<ScreenCubit, ScreenState>(
+                        listener: (context, state) => commonScreenBlocListener(
+                          context,
+                          state,
+                          listenNavigatingState: false,
                         ),
-                      )
-                    : child,
+                      ),
+                      const BlocListener<SettingsCubit, SettingsState>(
+                        listener: commonScreenBlocListener,
+                      ),
+                      const BlocListener<AuthCubit, AuthState>(
+                        listener: commonScreenBlocListener,
+                      ),
+                    ],
+                    child: kIsWeb && media.orientation == Orientation.landscape
+                        ? ColoredBox(
+                            color: Theme.of(context).colorScheme.surfaceBright,
+                            child: Center(
+                              child: ConstrainedBox(
+                                constraints: kWebConstraints,
+                                child: AspectRatio(
+                                  aspectRatio: kWebAspectRatio,
+                                  child: child,
+                                ),
+                              ),
+                            ),
+                          )
+                        : child,
+                  ),
+                ),
               );
             },
           );

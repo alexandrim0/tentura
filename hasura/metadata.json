@@ -1,5 +1,5 @@
 {
-  "resource_version": 40,
+  "resource_version": 48,
   "metadata": {
     "version": 3,
     "sources": [
@@ -317,6 +317,12 @@
                 }
               }
             ]
+          },
+          {
+            "table": {
+              "name": "complaint",
+              "schema": "public"
+            }
           },
           {
             "table": {

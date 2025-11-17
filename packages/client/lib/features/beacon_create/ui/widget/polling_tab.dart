@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:tentura/consts.dart';
 import 'package:tentura/ui/l10n/l10n.dart';
 import 'package:tentura/ui/utils/ui_utils.dart';
+
+import 'package:tentura/features/polling/ui/widget/polling_question_input.dart';
+import 'package:tentura/features/polling/ui/widget/polling_variant_input.dart';
 
 import '../bloc/beacon_create_cubit.dart';
 
@@ -12,28 +14,15 @@ class PollingTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = L10n.of(context)!;
-    final theme = Theme.of(context);
     final cubit = context.read<BeaconCreateCubit>();
     return ListView(
       children: [
         // Poll Question
-        TextFormField(
-          decoration: InputDecoration(
-            labelText: l10n.pollQuestionFieldLabel,
-          ),
-          keyboardType: TextInputType.text,
+        PollingQuestionInput(
+          key: ValueKey(cubit),
+          labelText: l10n.pollQuestionFieldLabel,
           initialValue: cubit.state.question,
-          onTapOutside: (_) => FocusScope.of(context).unfocus(),
           onChanged: cubit.setQuestion,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return null;
-            } else if (value.length < kQuestionMinLength) {
-              return l10n.createBeaconErrorTooShortQuestion;
-            } else {
-              return null;
-            }
-          },
         ),
 
         // Label for Variants
@@ -41,7 +30,7 @@ class PollingTab extends StatelessWidget {
           padding: kPaddingT,
           child: Text(
             l10n.pollOptionsLabel,
-            style: theme.textTheme.bodyLarge,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
         ),
 
@@ -51,19 +40,11 @@ class PollingTab extends StatelessWidget {
           builder: (context, state) => Column(
             children: [
               for (var i = 0; i < state.variants.length; i++)
-                TextFormField(
+                PollingVariantInput(
                   key: state.variantsKeys[i],
-                  decoration: InputDecoration(
-                    labelText: l10n.optionLabel(i + 1),
-                    suffix: IconButton(
-                      color: theme.colorScheme.error,
-                      icon: const Icon(Icons.remove_circle_outline),
-                      onPressed: () => cubit.removeVariant(i),
-                    ),
-                  ),
-                  keyboardType: TextInputType.text,
+                  labelText: l10n.optionLabel(i + 1),
                   initialValue: state.variants[i],
-                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                  onRemove: () => cubit.removeVariant(i),
                   onChanged: (value) => cubit.setVariant(i, value),
                 ),
             ],

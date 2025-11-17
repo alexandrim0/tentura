@@ -4,7 +4,7 @@ import 'package:blurhash_shader/blurhash_shader.dart';
 
 import 'di.config.dart';
 
-@InjectableInit(preferRelativeImports: false)
+@InjectableInit()
 Future<GetIt> configureDependencies() async {
   await BlurHash.loadShader();
   return GetIt.I.init();

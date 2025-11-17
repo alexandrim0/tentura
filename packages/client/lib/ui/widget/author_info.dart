@@ -33,7 +33,9 @@ class AuthorInfo extends StatelessWidget {
             author.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.headlineMedium,
+            style: theme.textTheme.headlineMedium?.copyWith(
+              decoration: TextDecoration.underline,
+            ),
           ),
         ],
       ),
