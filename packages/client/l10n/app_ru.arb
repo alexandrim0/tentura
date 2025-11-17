@@ -117,7 +117,7 @@
     "context": "AccountAddDialog"
   },
   "firstTimeHerePrefix": "Впервые тут? Мы работаем по инвайтам. Получить инвайт можно вот здесь: ",
-  "firstTimeHereSuffix": ". Пишите!",
+  "firstTimeHereSuffix": "Пишите!",
   "@firstTimeHerePrefix": {
     "context": "AuthLoginScreen"
   },
