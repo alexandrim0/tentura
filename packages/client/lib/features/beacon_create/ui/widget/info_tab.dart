@@ -190,6 +190,7 @@ class _InfoTabState extends State<InfoTab> with StringInputValidator {
             for (final tag in tags)
               Chip(
                 label: Text(tag),
+                deleteIconColor: _theme.colorScheme.onPrimary,
                 onDeleted: () => _cubit.removeTag(tag),
               ),
           ],
