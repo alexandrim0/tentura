@@ -8,7 +8,7 @@ import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/domain/exception/user_input_exception.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-import 'package:tentura/ui/l10n/common_messages.dart';
+import 'package:tentura/ui/messages/common_messages.dart';
 
 import 'package:tentura/features/profile/data/repository/profile_repository.dart';
 
