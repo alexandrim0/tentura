@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:tentura/env.dart';
+import 'package:tentura/data/repository/platform_repository.dart';
 
 import 'package:tentura/features/auth/domain/use_case/account_case.dart';
 import 'package:tentura/features/auth/domain/use_case/auth_case.dart';
@@ -26,6 +27,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     Env env,
     AuthCase authCase,
     AccountCase accountCase,
+    PlatformRepository platformRepository,
     SettingsRepository settingsRepository,
   ) async {
     final isIntroEnabled = await settingsRepository.getIsIntroEnabled() ?? true;
@@ -37,7 +39,7 @@ class SettingsCubit extends Cubit<SettingsState> {
       settingsRepository: settingsRepository,
       state: SettingsState(
         introEnabled: isIntroEnabled,
-        visibleVersion: env.visibleVersion,
+        visibleVersion: await platformRepository.getAppVersion(),
         themeMode: ThemeMode.values.firstWhere(
           (themeMode) => themeMode.name == themeModeName,
           orElse: () => ThemeMode.system,
