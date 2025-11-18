@@ -61,4 +61,10 @@ class AuthCubitMock extends Cubit<AuthState> implements AuthCubit {
   Future<String> getInvitationCodeFromClipboard({bool supressError = false}) {
     throw UnimplementedError();
   }
+
+  @override
+  String get inviteEmail => 'widgetbook@example.com';
+
+  @override
+  Future<void> openInviteEmailUrl() async {}
 }
