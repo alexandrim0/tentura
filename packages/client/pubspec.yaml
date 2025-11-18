@@ -2,7 +2,7 @@ name: tentura
 description: 'Social network for communities'
 publish_to: 'none'
 
-version: 1.3.19
+version: 1.3.18
 
 environment:
   sdk: '>=3.10.0 <4.0.0'
@@ -81,6 +81,12 @@ dependencies:
   visibility_detector: ^0.4.0
   force_directed_graphview: ^0.6.2
   scrollable_positioned_list: ^0.3.8
+
+  # Build time
+  html: ^0.15.6
+  hooks: ^1.0.0
+  pubspec_parse: ^1.5.0
+  pretty_print_json: ^1.0.1
 
 dev_dependencies:
   flutter_test:
