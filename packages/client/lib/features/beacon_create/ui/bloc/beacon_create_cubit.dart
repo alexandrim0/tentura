@@ -6,7 +6,7 @@ import 'package:tentura/domain/entity/beacon.dart';
 import 'package:tentura/domain/entity/polling.dart';
 import 'package:tentura/domain/exception/user_input_exception.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-import 'package:tentura/ui/l10n/common_messages.dart';
+import 'package:tentura/ui/message/common_messages.dart';
 
 import 'package:tentura/features/beacon/data/repository/beacon_repository.dart';
 
