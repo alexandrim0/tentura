@@ -47,8 +47,8 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
           body: Padding(
             padding: kPaddingH,
             child: Column(
-              crossAxisAlignment: .stretch,
-              mainAxisAlignment: .spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 if (state.accounts.isEmpty)
                   // No accounts yet
@@ -56,7 +56,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                     padding: kPaddingAll,
                     child: Text(
                       l10n.alreadyHaveAccount,
-                      textAlign: .center,
+                      textAlign: TextAlign.center,
                     ),
                   )
                 else
@@ -98,11 +98,11 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                 Padding(
                   padding: kPaddingAll,
                   child: Column(
-                    mainAxisSize: .min,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         l10n.firstTimeHerePrefix,
-                        textAlign: .center,
+                        textAlign: TextAlign.center,
                       ),
                       TextButton(
                         onPressed: authCubit.openInviteEmailUrl,
@@ -110,7 +110,7 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                       ),
                       Text(
                         l10n.firstTimeHereSuffix,
-                        textAlign: .center,
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),

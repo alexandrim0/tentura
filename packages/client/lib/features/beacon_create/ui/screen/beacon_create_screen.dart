@@ -96,8 +96,8 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen>
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(40),
         child: Column(
-          mainAxisSize: .min,
-          crossAxisAlignment: .stretch,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             BlocSelector<BeaconCreateCubit, BeaconCreateState, bool>(
               key: const Key('BeaconCreate.LoadIndicator'),
@@ -120,7 +120,7 @@ class _BeaconCreateScreenState extends State<BeaconCreateScreen>
 
     body: Form(
       key: _formKey,
-      autovalidateMode: .onUserInteraction,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       onChanged: () => _beaconCreateCubit.validate(
         _formKey.currentState?.validate() ?? false,
       ),
