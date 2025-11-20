@@ -24,7 +24,7 @@ dependencies:
   auto_route: ^10.2.2
   collection: ^1.19.1
   http_parser: ^4.1.2
-  built_value: ^8.11.1
+  built_value: ^8.11.2
   flutter_bloc: ^9.1.1
   synchronized: ^3.4.0
   json_annotation: ^4.9.0
