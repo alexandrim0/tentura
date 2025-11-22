@@ -23,13 +23,10 @@ class AuthCubitMock extends Cubit<AuthState> implements AuthCubit {
       );
 
   @override
+  String get inviteEmail => 'email@invite.org';
+
+  @override
   Future<void> addAccount(String? seed) async {}
-
-  @override
-  bool checkIfIsMe(String id) => id == state.currentAccountId;
-
-  @override
-  bool checkIfIsNotMe(String id) => id != state.currentAccountId;
 
   @override
   Future<String> getSeedByAccountId(String id) async => 'seed';
@@ -47,7 +44,10 @@ class AuthCubitMock extends Cubit<AuthState> implements AuthCubit {
   Future<void> signOut() async {}
 
   @override
-  Future<void> signUp({required String title, String? invitationCode}) async {}
+  Future<void> signUp({
+    required String title,
+    String? invitationCode,
+  }) async {}
 
   @override
   Future<void> dispose() async {}
@@ -58,7 +58,12 @@ class AuthCubitMock extends Cubit<AuthState> implements AuthCubit {
   }
 
   @override
-  Future<String> getInvitationCodeFromClipboard({bool supressError = false}) {
+  Future<String> getInvitationCodeFromClipboard({
+    bool supressError = false,
+  }) {
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> openInviteEmailUrl() async {}
 }
