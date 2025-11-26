@@ -14,6 +14,16 @@ final class UnknownException extends GenericException {
   String get toRu => 'Неизвестная ошибка';
 }
 
+final class UnknownPlatformException extends GenericException {
+  const UnknownPlatformException();
+
+  @override
+  String get toEn => 'Unknown error';
+
+  @override
+  String get toRu => 'Неизвестная ошибка';
+}
+
 final class ConnectionUplinkException extends GenericException {
   const ConnectionUplinkException();
 

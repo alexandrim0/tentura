@@ -44,13 +44,14 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
               ),
             ),
           ),
-          body: SafeArea(
-            minimum: kPaddingH,
+          body: Padding(
+            padding: kPaddingH,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 if (state.accounts.isEmpty)
+                  // No accounts yet
                   Padding(
                     padding: kPaddingAll,
                     child: Text(
@@ -90,6 +91,28 @@ class AuthLoginScreen extends StatelessWidget implements AutoRouteWrapper {
                   child: OutlinedButton(
                     onPressed: authCubit.getSeedFromClipboard,
                     child: Text(l10n.recoverFromClipboard),
+                  ),
+                ),
+
+                // Info for new users
+                Padding(
+                  padding: kPaddingAll,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l10n.firstTimeHerePrefix,
+                        textAlign: TextAlign.center,
+                      ),
+                      TextButton(
+                        onPressed: authCubit.openInviteEmailUrl,
+                        child: Text(authCubit.inviteEmail),
+                      ),
+                      Text(
+                        l10n.firstTimeHereSuffix,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
 

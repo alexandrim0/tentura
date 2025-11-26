@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:share_handler/share_handler.dart'
     if (dart.library.js_interop) 'share_handler_dummy.dart';
 
-@lazySingleton
+@singleton
 class ShareHandlerService {
   ShareHandlerService(this._logger) {
     if (!kIsWeb) {

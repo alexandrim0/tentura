@@ -14,7 +14,7 @@ class InvitationRemoveDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = L10n.of(context)!;
     return AlertDialog.adaptive(
-      title: Text(l10n.labelConfirmation),
+      title: Text(l10n.confirmInvitationRemoval),
       actions: [
         // Remove
         TextButton(

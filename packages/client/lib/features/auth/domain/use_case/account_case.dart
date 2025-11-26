@@ -5,7 +5,8 @@ import 'package:injectable/injectable.dart';
 import 'package:tentura/consts.dart';
 import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
-import 'package:tentura/data/repository/clipboard_repository.dart';
+import 'package:tentura/domain/use_case/use_case_base.dart';
+import 'package:tentura/data/repository/platform_repository.dart';
 
 import 'package:tentura/features/profile/data/repository/profile_repository.dart';
 
@@ -15,19 +16,21 @@ import '../entity/account_entity.dart';
 import '../exception.dart';
 
 @singleton
-class AccountCase {
+final class AccountCase extends UseCaseBase {
   AccountCase(
     this._authLocalRepository,
     this._authRemoteRepository,
-    this._clipboardRepository,
-    this._profileRemoteRepository,
-  );
+    this._platformRepository,
+    this._profileRemoteRepository, {
+    required super.env,
+    required super.logger,
+  });
 
   final AuthLocalRepository _authLocalRepository;
 
   final AuthRemoteRepository _authRemoteRepository;
 
-  final ClipboardRepository _clipboardRepository;
+  final PlatformRepository _platformRepository;
 
   final ProfileRepository _profileRemoteRepository;
 
@@ -36,10 +39,19 @@ class AccountCase {
 
   //
   //
+  Future<void> openInviteEmailUrl() => _platformRepository.launchUri(
+    Uri(
+      scheme: 'mailto',
+      path: env.inviteEmail,
+    ),
+  );
+
+  //
+  //
   Future<String> getSeedFromClipboard() async {
     try {
       final seedEncoded = _base64Padded(
-        await _clipboardRepository.getStringFromClipboard(),
+        await _platformRepository.getStringFromClipboard(),
       );
       if (seedEncoded.isNotEmpty) {
         final seedBinary = base64Decode(seedEncoded);
@@ -56,7 +68,7 @@ class AccountCase {
   Future<String> getCodeFromClipboard({
     String prefix = '',
   }) async {
-    final text = await _clipboardRepository.getStringFromClipboard();
+    final text = await _platformRepository.getStringFromClipboard();
 
     if (text.length == kIdLength && text.startsWith(prefix)) {
       return text;

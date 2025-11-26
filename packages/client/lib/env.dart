@@ -12,7 +12,7 @@ class Env {
     String? complaintEmail,
     String? pathAppLinkView,
     String? osmUrlTemplate,
-    String? visibleVersion,
+    String? inviteEmail,
 
     // Websocket
     Duration? wsPingInterval,
@@ -38,14 +38,14 @@ class Env {
        pathAppLinkView = pathAppLinkView ?? kPathAppLinkView,
        complaintEmail =
            complaintEmail ?? const String.fromEnvironment('COMPLAINT_EMAIL'),
+       inviteEmail =
+           inviteEmail ?? const String.fromEnvironment('INVITE_EMAIL'),
        osmUrlTemplate =
            osmUrlTemplate ??
            const String.fromEnvironment(
              'OSM_LINK_BASE',
              defaultValue: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
            ),
-       visibleVersion =
-           visibleVersion ?? const String.fromEnvironment('VISIBLE_VERSION'),
 
        // Websocket
        wsPingInterval =
@@ -92,7 +92,7 @@ class Env {
   final String complaintEmail;
   final String pathAppLinkView;
   final String osmUrlTemplate;
-  final String visibleVersion;
+  final String inviteEmail;
 
   // Websocket
   final Duration wsPingInterval;

@@ -8,7 +8,7 @@ import 'package:tentura/domain/entity/profile.dart';
 import 'package:tentura/domain/entity/repository_event.dart';
 import 'package:tentura/domain/exception/user_input_exception.dart';
 import 'package:tentura/ui/bloc/state_base.dart';
-import 'package:tentura/ui/l10n/common_messages.dart';
+import 'package:tentura/ui/message/common_messages.dart';
 
 import 'package:tentura/features/profile/data/repository/profile_repository.dart';
 
@@ -86,6 +86,8 @@ class AuthCubit extends Cubit<AuthState> {
 
   late final StreamSubscription<RepositoryEvent<Profile>> _profileChanges;
 
+  String get inviteEmail => _env.inviteEmail;
+
   @disposeMethod
   Future<void> dispose() async {
     await _authChanges.cancel();
@@ -95,16 +97,40 @@ class AuthCubit extends Cubit<AuthState> {
 
   //
   //
-  bool checkIfIsMe(String id) => id == state.currentAccountId;
-
-  //
-  //
-  bool checkIfIsNotMe(String id) => id != state.currentAccountId;
+  Future<String> getInvitationCodeFromClipboard({
+    bool supressError = false,
+  }) async {
+    try {
+      final code = await _accountCase.getCodeFromClipboard(prefix: 'I');
+      if (code.isEmpty) {
+        emit(
+          state.copyWith(
+            status: StateIsMessaging(const NoValidCodeMessage()),
+          ),
+        );
+      } else {
+        return code;
+      }
+    } catch (e) {
+      if (!supressError) {
+        emit(state.copyWith(status: StateHasError(e)));
+      }
+    }
+    return '';
+  }
 
   //
   //
   Future<String> getSeedByAccountId(String accountId) =>
       _accountCase.getSeedByAccountId(accountId);
+
+  //
+  //
+  Future<String> getCodeFromClipboard() => _accountCase.getCodeFromClipboard();
+
+  //
+  //
+  Future<void> openInviteEmailUrl() => _accountCase.openInviteEmailUrl();
 
   //
   //
@@ -222,39 +248,11 @@ class AuthCubit extends Cubit<AuthState> {
   //
   Future<void> getSeedFromClipboard() async {
     try {
-      return addAccount(await _accountCase.getSeedFromClipboard());
+      await addAccount(await _accountCase.getSeedFromClipboard());
     } catch (e) {
       emit(state.copyWith(status: StateHasError(e)));
     }
   }
-
-  //
-  //
-  Future<String> getInvitationCodeFromClipboard({
-    bool supressError = false,
-  }) async {
-    try {
-      final code = await _accountCase.getCodeFromClipboard(prefix: 'I');
-      if (code.isEmpty) {
-        emit(
-          state.copyWith(
-            status: StateIsMessaging(const NoValidCodeMessage()),
-          ),
-        );
-      } else {
-        return code;
-      }
-    } catch (e) {
-      if (!supressError) {
-        emit(state.copyWith(status: StateHasError(e)));
-      }
-    }
-    return '';
-  }
-
-  //
-  //
-  Future<String> getCodeFromClipboard() => _accountCase.getCodeFromClipboard();
 
   //
   //
